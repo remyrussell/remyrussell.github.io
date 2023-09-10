@@ -1,51 +1,62 @@
 document.addEventListener("DOMContentLoaded", function() {
     fetch('resume.json')
-      .then(response => response.json())
-      .then(data => {
-        // Populate name and contact
-        document.getElementById('name').textContent = data.name;
-        document.getElementById('contact').textContent = data.contact;
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("name").textContent = data.name;
+            document.getElementById("contact").textContent = `${data.phone} | ${data.email}`;
+            document.getElementById("role").textContent = data.role;
 
-        // Populate product management section
-        populateList(data.productManagement, 'productManagementList');
-
-        // Populate professional experiences
-        const professionalExperienceContainer = document.getElementById('professionalExperience');
-        data.professionalExperience.forEach(experience => {
-            const article = document.createElement('article');
-            const h3 = document.createElement('h3');
-            h3.textContent = experience.title;
-            article.appendChild(h3);
-            article.appendChild(document.createElement('p').textContent = experience.company);
-            article.appendChild(document.createElement('p').textContent = experience.duration);
-            article.appendChild(document.createElement('p').textContent = experience.description);
-            
-            const ul = document.createElement('ul');
-            experience.responsibilities.forEach(responsibility => {
-                const li = document.createElement('li');
-                li.textContent = responsibility;
-                ul.appendChild(li);
+            const productManagementList = document.getElementById("productManagementList");
+            data.productManagement.forEach(item => {
+                let li = document.createElement("li");
+                li.textContent = item;
+                productManagementList.appendChild(li);
             });
-            article.appendChild(ul);
 
-            professionalExperienceContainer.appendChild(article);
+            const professionalExperienceList = document.getElementById("professionalExperienceList");
+            data.professionalExperience.forEach(exp => {
+                let expDiv = document.createElement("div");
+                expDiv.innerHTML = `
+                    <h3>${exp.position}, ${exp.company}</h3>
+                    <p>${exp.location}</p>
+                    <p>${exp.duration}</p>
+                    <p>${exp.description}</p>
+                    <ul>
+                        ${exp.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+                    </ul>
+                `;
+                professionalExperienceList.appendChild(expDiv);
+            });
+
+            document.getElementById("education").innerHTML = `
+                <h3>${data.education.degree}</h3>
+                <p>${data.education.institution}</p>
+                <p>${data.education.coursework}</p>
+            `;
+
+            const skillsList = document.getElementById("skillsList");
+            data.skills.skills.forEach(skill => {
+                let li = document.createElement("li");
+                li.textContent = skill;
+                skillsList.appendChild(li);
+            });
+
+            const toolsList = document.getElementById("toolsList");
+            data.skills.toolsAndFrameworks.forEach(tool => {
+                let li = document.createElement("li");
+                li.textContent = tool;
+                toolsList.appendChild(li);
+            });
+
+            const funList = document.getElementById("funList");
+            data.skills.fun.forEach(fun => {
+                let li = document.createElement("li");
+                li.textContent = fun;
+                funList.appendChild(li);
+            });
+
+        })
+        .catch(error => {
+            console.error("There was an error fetching or parsing the JSON:", error);
         });
-
-        // Populate education
-        document.getElementById('education').textContent = data.education;
-
-        // Populate skills, tools, and fun sections
-        populateList(data.skills, 'skillsList');
-        populateList(data.tools, 'toolsList');
-        populateList(data.fun, 'funList');
-    });
 });
-
-function populateList(items, listId) {
-    const ul = document.getElementById(listId);
-    items.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        ul.appendChild(li);
-    });
-}
