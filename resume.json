@@ -14,7 +14,7 @@
         {
             "position": "Business Analyst – Integrations, Engineering Team",
             "company": "Eccovia",
-            "logo": "assets/images/logos/eccovia.svg",
+            "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
             "duration": "February 2021 – Present",
             "description": "Leadership transitioned my role to the engineering team to leverage my technical skills and enthusiasm about our new integration implementations. I’ve since helped to shape Eccovia’s API product and solution designs to empower our customers in the Health and Human Services industry to serve their clients.",
