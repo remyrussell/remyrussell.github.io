@@ -1,93 +1,79 @@
-// Wait for the DOM to completely load before executing
-document.addEventListener("DOMContentLoaded", function() {
-    populateResumeData();
-    attachThemeToggleEvent();
-});
-
-// Attach theme toggle event
-function attachThemeToggleEvent() {
-    const themeToggleButton = document.getElementById("themeToggle");
-    
-    // Check if themeToggleButton exists before adding event listener
-    if (themeToggleButton) {
-        themeToggleButton.addEventListener("click", toggleTheme);
-    }
+// Functions related to theme toggling
+function setTheme(themeName) {
+    localStorage.setItem('theme', themeName);
+    document.documentElement.className = themeName;
 }
 
-// Toggle between light and dark mode
 function toggleTheme() {
-    const body = document.body;
-    if (body.classList.contains("dark-mode")) {
-        body.classList.remove("dark-mode");
+    if (localStorage.getItem('theme') === 'theme-dark') {
+        setTheme('theme-light');
     } else {
-        body.classList.add("dark-mode");
+        setTheme('theme-dark');
     }
 }
 
-// Populate resume data from JSON
-function populateResumeData() {
-    fetch('./resume.json')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("name").textContent = data.name;
-            document.getElementById("phone").textContent = data.phone;
-            document.getElementById("email").textContent = data.email;
-            document.getElementById("role").textContent = data.role;
-            
-            // Populate Product Management points
-            const pmList = document.getElementById("productManagement");
-            data.productManagement.forEach(item => {
-                let li = document.createElement("li");
-                li.textContent = item;
-                pmList.appendChild(li);
-            });
-
-            // Populate Professional Experience
-            const experienceContainer = document.getElementById("professionalExperience");
-            data.professionalExperience.forEach(exp => {
-                let div = document.createElement("div");
-                div.innerHTML = `
-                    <h3>${exp.position}</h3>
-                    <p><strong>${exp.company}, ${exp.location}</strong></p>
-                    <p>${exp.duration}</p>
-                    <p>${exp.description}</p>
-                    <ul>
-                        ${exp.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
-                    </ul>
-                `;
-                experienceContainer.appendChild(div);
-            });
-
-            // Populate Education
-            document.getElementById("degree").textContent = data.education.degree;
-            document.getElementById("institution").textContent = data.education.institution;
-            document.getElementById("coursework").textContent = data.education.coursework;
-
-            // Populate Skills
-            const skillsList = document.getElementById("skills");
-            data.skills.skills.forEach(skill => {
-                let li = document.createElement("li");
-                li.textContent = skill;
-                skillsList.appendChild(li);
-            });
-
-            // Populate Tools & Frameworks
-            const toolsList = document.getElementById("toolsAndFrameworks");
-            data.skills.toolsAndFrameworks.forEach(tool => {
-                let li = document.createElement("li");
-                li.textContent = tool;
-                toolsList.appendChild(li);
-            });
-
-            // Populate Fun
-            const funList = document.getElementById("fun");
-            data.skills.fun.forEach(fun => {
-                let li = document.createElement("li");
-                li.textContent = fun;
-                funList.appendChild(li);
-            });
-        })
-        .catch(error => {
-            console.error('There was an error fetching or processing the JSON data:', error);
-        });
+function keepThemeSetting() {
+    if (localStorage.getItem('theme') === 'theme-dark') {
+        setTheme('theme-dark');
+    } else {
+        setTheme('theme-light');
+    }
 }
+
+// Event attachment for theme toggling
+function attachThemeToggleEvent() {
+    let themeToggleButton = document.getElementById('themeToggleButton');
+    themeToggleButton.addEventListener('click', toggleTheme);
+}
+
+// Function to populate the resume content
+function populateResume(data) {
+    document.getElementById('name').innerText = data.name;
+    document.getElementById('role').innerText = data.role;
+    document.getElementById('email').innerText = data.email;
+    document.getElementById('phone').innerText = data.phone;
+    document.getElementById('productManagementList').innerHTML = data.productManagement.map(item => `<li>${item}</li>`).join('');
+
+    let experienceContainer = document.getElementById('professionalExperience');
+    for (let experience of data.professionalExperience) {
+        let experienceDiv = document.createElement('div');
+        experienceDiv.className = 'experience-item';
+
+        // Add company logo
+        let logoImg = document.createElement('img');
+        logoImg.src = experience.logo;
+        logoImg.alt = experience.company + ' logo';
+        logoImg.width = 100; // or any other size you want
+        experienceDiv.appendChild(logoImg);
+
+        // Add experience details
+        let detailsDiv = document.createElement('div');
+        detailsDiv.innerHTML = `
+            <h3>${experience.position} at ${experience.company}</h3>
+            <p>${experience.location} | ${experience.duration}</p>
+            <p>${experience.description}</p>
+            <ul>
+                ${experience.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+            </ul>
+        `;
+        experienceDiv.appendChild(detailsDiv);
+        experienceContainer.appendChild(experienceDiv);
+    }
+
+    // ... [Process other sections like skills, education, etc.]
+
+    // This is just a continuation. Add other sections accordingly.
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    keepThemeSetting();
+    attachThemeToggleEvent();
+
+    try {
+        let response = await fetch('/resume.json');
+        let data = await response.json();
+        populateResume(data);
+    } catch (err) {
+        console.error('Error fetching or parsing JSON:', err);
+    }
+});
