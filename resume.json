@@ -47,4 +47,18 @@
     "skills": {
         "skills": [
             "Teamwork, empathy, communication, transparency",
-            "Integrations and
+            "Integrations and data migrations, RESTful APIs, JSON, XML, Flat files",
+            "SQL (primarily querying) and basic understanding of Javascript, HTML, C++, MATLAB, VB",
+            "HL7 fundamentals (v2.x and FHIR) and experience implementing v2.x ADT and CDA integrations"
+        ],
+        "toolsAndFrameworks": [
+            "Microsoft, Atlassian, Postman, Lucidchart, Github",
+            "Agile, Scrum, Kanban, Waterfall"
+        ],
+        "fun": [
+            "Music (EDM software production, guitar, drums, piano)",
+            "Outdoors (Skiing, biking, hiking, camping)",
+            "Learning (blockchain, web3, healthcare, investing)"
+        ]
+    }
+}
