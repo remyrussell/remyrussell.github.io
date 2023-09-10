@@ -1,0 +1,92 @@
+{
+    "name": "Remy Russell",
+    "contact": {
+        "phone": "970.769.3383",
+        "email": "remyrussell@pm.me"
+    },
+    "title": "Product Management",
+    "objective": [
+        "Ensure success of the business and customers",
+        "Understand the customer and user experience to anticipate potential opportunities",
+        "Use quantitative and qualitative analysis to discover problems worth solving",
+        "Inspire cross-functional collaboration to design and develop valuable product features",
+        "Prioritize tasks for the engineers and partner with internal stakeholders to align on strategy"
+    ],
+    "professional_experience": [
+        {
+            "position": "Business Analyst – Integrations, Engineering Team",
+            "company": "Eccovia",
+            "location": "Salt Lake City, UT",
+            "start_date": "February 2021",
+            "end_date": "Present",
+            "description": [
+                "Leadership transitioned my role to the engineering team to leverage my technical skills and enthusiasm about our new integration implementations. I’ve since helped to shape Eccovia’s API product and solution designs to empower our customers in the Health and Human Services industry to serve their clients.",
+                "Onboarded strategic customer partners...",
+                "... transitioned three previously-implemented customer integrations to our new integration framework"
+            ]
+        },
+        {
+            "position": "Business Analyst, Solutions Delivery",
+            "company": "Eccovia",
+            "location": "Salt Lake City, UT",
+            "start_date": "April 2019",
+            "end_date": "February 2021",
+            "description": [
+                "Drove successful implementations for two of Eccovia’s largest new customers",
+                "... designing new destination schema for our solutions"
+            ]
+        },
+        {
+            "position": "Business Analyst II, MMIS Implementation Project",
+            "company": "CNSI",
+            "location": "Salt Lake City, UT",
+            "start_date": "August 2017",
+            "end_date": "April 2019",
+            "description": [
+                "Worked with internal team...",
+                "Documented comprehensive design details for the Provider Enrollment Subsystem to guide development and testing."
+            ]
+        },
+        {
+            "position": "Business Analyst, MMIS Implementation Project",
+            "company": "CNSI",
+            "location": "Lansing, MI",
+            "start_date": "June 2015",
+            "end_date": "August 2017",
+            "description": [
+                "Learned the end-to-end functionality...",
+                "... compliant with the program."
+            ]
+        },
+        {
+            "position": "Intern, Web Design for College of Engineering OSA",
+            "company": "University of Michigan, Ann Arbor",
+            "start_date": "May 2014",
+            "end_date": "April 2015",
+            "description": [
+                "On behalf of the College of Engineering Office of Student Affairs (OSA), I collaborated with over ten departments/programs to create, reorganize, and redesign their web content under a common WordPress theme to improve the user interface and the continuity across the web pages."
+            ]
+        }
+    ],
+    "education": {
+        "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship",
+        "institution": "University of Michigan, Ann Arbor",
+        "year": "2015",
+        "details": "Relevant coursework in relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, entrepreneurial market strategy, financial accounting, technical communication, etc."
+    },
+    "skills": [
+        "Teamwork, empathy, communication, transparency",
+        "Integrations and data migrations, RESTful APIs, JSON, XML, Flat files",
+        "SQL (primarily querying) and basic understanding of Javascript, HTML, C++, MATLAB, VB",
+        "HL7 fundamentals (v2.x and FHIR) and experience implementing v2.x ADT and CDA integrations"
+    ],
+    "tools_and_frameworks": [
+        "Microsoft, Atlassian, Postman, Lucidchart, Github",
+        "Agile, Scrum, Kanban, Waterfall"
+    ],
+    "hobbies": [
+        "Music (EDM software production, guitar, drums, piano)",
+        "Outdoors (Skiing, biking, hiking, camping)",
+        "Learning (blockchain, web3, healthcare, investing)"
+    ]
+}
