@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,33 +8,46 @@
     <link rel="stylesheet" href="styles.css">
     <script src="scripts.js" defer></script>
 </head>
-<body class="light-mode">
-    <header>
-        <h1 id="name">Remy Russell</h1>
-        <p id="phone">970.769.3383</p>
-        <p id="email">remyrussell@pm.me</p>
-    </header>
 
-    <section>
-        <h2>Product Management</h2>
-        <ul id="productManagement"></ul>
-    </section>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="name"></h1>
+            <div class="contact">
+                <p id="phone"></p>
+                <p id="email"></p>
+            </div>
+            <p id="role"></p>
+            <button id="themeToggle">Switch to Dark Mode</button>
+        </header>
 
-    <section>
-        <h2>Professional Experience</h2>
-        <div id="professionalExperience"></div>
-    </section>
+        <section id="productManagement">
+            <h2>Product Management</h2>
+            <ul></ul>
+        </section>
 
-    <section>
-        <h2>Education</h2>
-        <div id="education"></div>
-    </section>
+        <section id="professionalExperience">
+            <h2>Professional Experience</h2>
+            <!-- Dynamic content from JS will be appended here -->
+        </section>
 
-    <section>
-        <h2>Skills, Tools, etc.</h2>
-        <div id="skills"></div>
-    </section>
+        <section id="education">
+            <h2>Education</h2>
+            <h3 id="degree"></h3>
+            <p id="institution"></p>
+            <p id="coursework"></p>
+        </section>
 
-    <button id="toggleMode">Switch to Dark Mode</button>
+        <section id="skills">
+            <h2>Skills</h2>
+            <h3>Skills</h3>
+            <ul id="skillList"></ul>
+            <h3>Tools & Frameworks</h3>
+            <ul id="toolsAndFrameworks"></ul>
+            <h3>Fun</h3>
+            <ul id="funSkills"></ul>
+        </section>
+    </div>
 </body>
+
 </html>
