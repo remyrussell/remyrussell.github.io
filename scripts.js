@@ -1,68 +1,105 @@
-// Function to inject content from the JSON into the HTML
-function populateResume(data) {
-    document.getElementById("name").textContent = data.name;
-    document.getElementById("phone").textContent = data.phone;
-    document.getElementById("email").textContent = data.email;
+// When the document is fully loaded, execute the provided functions
+document.addEventListener('DOMContentLoaded', function () {
+    
+    // Fetch and populate the resume details from JSON
+    fetchResumeDetails();
+    
+    // Add event listener for theme toggle button
+    attachThemeToggleEvent();
+});
 
-    const productManagementList = document.getElementById("productManagement");
-    data.productManagement.forEach(item => {
-        let listItem = document.createElement("li");
-        listItem.textContent = item;
-        productManagementList.appendChild(listItem);
-    });
-
-    const professionalExperienceDiv = document.getElementById("professionalExperience");
-    data.professionalExperience.forEach(exp => {
-        let jobDiv = document.createElement("div");
-        let title = document.createElement("h3");
-        title.textContent = `${exp.role} – ${exp.team}, ${exp.company}`;
-        let duration = document.createElement("p");
-        duration.textContent = `${exp.startDate} – ${exp.endDate}`;
-        jobDiv.appendChild(title);
-        jobDiv.appendChild(duration);
-        if (exp.details) {
-            let details = document.createElement("p");
-            details.textContent = exp.details;
-            jobDiv.appendChild(details);
-        }
-        exp.bullets.forEach(bullet => {
-            let bulletItem = document.createElement("p");
-            bulletItem.textContent = `• ${bullet}`;
-            jobDiv.appendChild(bulletItem);
-        });
-        professionalExperienceDiv.appendChild(jobDiv);
-    });
-
-    const educationDiv = document.getElementById("education");
-    let degree = document.createElement("p");
-    degree.textContent = `${data.education.degree}, ${data.education.specialization} ${data.education.year} - ${data.education.institution}`;
-    educationDiv.appendChild(degree);
-
-    const skillsDiv = document.getElementById("skills");
-    skillsDiv.innerHTML = `
-        <strong>Skills:</strong> ${data.skills.join(", ")}<br>
-        <strong>Tools/Frameworks:</strong> ${data.tools.join(", ")}<br>
-        <strong>Fun:</strong> ${data.fun.join(", ")}
-    `;
-}
-
-document.addEventListener('DOMContentLoaded', function() {
+/**
+ * Function to fetch and populate the resume details from JSON
+ */
+function fetchResumeDetails() {
     fetch('resume.json')
         .then(response => response.json())
-        .then(data => {
-            populateResume(data);
+        .then(data => populateResume(data))
+        .catch(error => console.error('Error fetching JSON:', error));
+}
 
-            // Toggle Dark Mode functionality
-            const toggleButton = document.getElementById("toggleMode");
-            toggleButton.addEventListener("click", function() {
-                const currentMode = document.body.className;
-                if (currentMode === "light-mode") {
-                    document.body.className = "dark-mode";
-                    toggleButton.textContent = "Switch to Light Mode";
-                } else {
-                    document.body.className = "light-mode";
-                    toggleButton.textContent = "Switch to Dark Mode";
-                }
-            });
+/**
+ * Function to attach the event listener for theme toggle button
+ */
+function attachThemeToggleEvent() {
+    document.getElementById("themeToggle").addEventListener("click", function() {
+        let currentTheme = document.documentElement.getAttribute("data-theme");
+        if(currentTheme === "dark") {
+            document.documentElement.setAttribute("data-theme", "light");
+        } else {
+            document.documentElement.setAttribute("data-theme", "dark");
+        }
+    });
+}
+
+/**
+ * Function to dynamically populate the resume based on the provided JSON data
+ * @param {Object} data - The resume details in JSON format
+ */
+function populateResume(data) {
+    // Personal Info
+    document.getElementById('name').innerText = data.name;
+    document.getElementById('phone').innerText = data.phone;
+    document.getElementById('email').innerText = data.email;
+    document.getElementById('role').innerText = data.role;
+
+    // Product Management
+    let pmList = document.getElementById('productManagement');
+    data.productManagement.forEach(item => {
+        let li = document.createElement('li');
+        li.innerText = item;
+        pmList.appendChild(li);
+    });
+
+    // Professional Experience
+    let peContainer = document.getElementById('professionalExperience');
+    data.professionalExperience.forEach(exp => {
+        let div = document.createElement('div');
+        div.classList.add('experience-item');
+
+        let position = document.createElement('h4');
+        position.innerText = `${exp.position} at ${exp.company}, ${exp.location} (${exp.duration})`;
+        div.appendChild(position);
+
+        let description = document.createElement('p');
+        description.innerText = exp.description;
+        div.appendChild(description);
+
+        let ul = document.createElement('ul');
+        exp.highlights.forEach(highlight => {
+            let li = document.createElement('li');
+            li.innerText = highlight;
+            ul.appendChild(li);
         });
-});
+        div.appendChild(ul);
+
+        peContainer.appendChild(div);
+    });
+
+    // Education
+    document.getElementById('educationDegree').innerText = data.education.degree;
+    document.getElementById('educationInstitution').innerText = data.education.institution;
+    document.getElementById('educationCoursework').innerText = data.education.coursework;
+
+    // Skills
+    let skillsList = document.getElementById('skillsList');
+    data.skills.skills.forEach(skill => {
+        let li = document.createElement('li');
+        li.innerText = skill;
+        skillsList.appendChild(li);
+    });
+
+    let toolsList = document.getElementById('toolsAndFrameworks');
+    data.skills.toolsAndFrameworks.forEach(tool => {
+        let li = document.createElement('li');
+        li.innerText = tool;
+        toolsList.appendChild(li);
+    });
+
+    let funList = document.getElementById('funActivities');
+    data.skills.fun.forEach(activity => {
+        let li = document.createElement('li');
+        li.innerText = activity;
+        funList.appendChild(li);
+    });
+}
