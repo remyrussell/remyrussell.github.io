@@ -49,7 +49,7 @@ function populateResume(data) {
         let logoImg = document.createElement('img');
         logoImg.src = experience.logo;
         logoImg.alt = experience.company + ' logo';
-        logoImg.width = 100; // or any other size you want
+        logoImg.width = 100;
         experienceDiv.appendChild(logoImg);
 
         // Add experience details
@@ -66,9 +66,15 @@ function populateResume(data) {
         experienceContainer.appendChild(experienceDiv);
     }
 
-    // ... [Process other sections like skills, education, etc.]
+    // Populating the education details
+    document.getElementById('educationDegree').innerText = data.education.degree;
+    document.getElementById('educationInstitution').innerText = data.education.institution;
+    document.getElementById('educationCoursework').innerText = data.education.coursework;
 
-    // This is just a continuation. Add other sections accordingly.
+    // Populating the skills
+    document.getElementById('skillsList').innerHTML = data.skills.skills.map(skill => `<li>${skill}</li>`).join('');
+    document.getElementById('toolsAndFrameworksList').innerHTML = data.skills.toolsAndFrameworks.map(tool => `<li>${tool}</li>`).join('');
+    document.getElementById('funList').innerHTML = data.skills.fun.map(funItem => `<li>${funItem}</li>`).join('');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
