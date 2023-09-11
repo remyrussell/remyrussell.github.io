@@ -40,10 +40,12 @@
         }
     ],
     "education": {
-        "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
-        "institution": "University of Michigan, Ann Arbor",
-        "coursework": "Relevant coursework in relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, entrepreneurial market strategy, financial accounting, technical communication, etc."
-    },
+    "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
+    "institution": "University of Michigan, Ann Arbor",
+    "coursework": "Relevant coursework...",
+    "logo": "/assets/images/logos/umich-logo.png"
+    }
+,
     "skills": {
         "skills": [
             "Teamwork, empathy, communication, transparency",
