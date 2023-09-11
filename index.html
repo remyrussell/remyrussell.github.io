@@ -1,55 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remy Russell's Resume</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="scripts.js" defer></script>
+    <link rel="stylesheet" href="styles.css"> <!-- Your stylesheet link here -->
 </head>
-
 <body>
-    <div class="container">
-        <header>
-            <h1 id="name"></h1>
-            <div class="contact">
-                <p id="phone"></p>
-                <p id="email"></p>
-            </div>
-            <p id="role"></p>
-            <button id="themeToggleButton" class="theme-toggle">Switch to Dark Mode</button>
-        </header>
-
-        <section id="productManagement">
-            <h2>Product Management</h2>
-            <ul id="productManagementList"></ul>
-        </section>
-
-        <section id="professionalExperience">
-            <h2>Professional Experience</h2>
-        </section>
-
-        <section id="education">
-            <h2>Education</h2>
-            <h3 id="degree"></h3>
-            <p id="institution"></p>
-            <p id="coursework"></p>
-        </section>
-
-        <section id="skills">
-            <h2>Skills</h2>
-            
-            <h3>Core Skills</h3>
-            <ul id="skillList"></ul>
-            
-            <h3>Tools & Frameworks</h3>
-            <ul id="toolsAndFrameworks"></ul>
-            
-            <h3>Interests & Hobbies</h3>
-            <ul id="funSkills"></ul>
-        </section>
+    <div id="header">
+        <h1 id="name"></h1>
+        <h2 id="role"></h2>
+        <p id="email"></p>
+        <p id="phone"></p>
+        <button id="themeToggleButton">Toggle Theme</button>
     </div>
-</body>
 
+    <section id="productManagement">
+        <h2>Product Management</h2>
+        <ul id="productManagementList"></ul>
+    </section>
+
+    <section id="professionalExperience">
+        <h2>Professional Experience</h2>
+        <!-- Populated by JS -->
+    </section>
+
+    <section id="education">
+        <h2>Education</h2>
+        <div>
+            <!-- Education logo and details will be populated by JS -->
+        </div>
+    </section>
+
+    <section id="skills">
+        <h2>Skills</h2>
+        <ul id="skillList"></ul>
+        <ul id="toolsAndFrameworks"></ul>
+        <ul id="funSkills"></ul>
+    </section>
+
+    <script src="scripts.js"></script>
+</body>
 </html>
