@@ -67,14 +67,15 @@ function populateResume(data) {
     }
 
     // Populating the education details
-    document.getElementById('educationDegree').innerText = data.education.degree;
-    document.getElementById('educationInstitution').innerText = data.education.institution;
-    document.getElementById('educationCoursework').innerText = data.education.coursework;
+    document.getElementById('degree').innerText = data.education.degree;
+    document.getElementById('institution').innerText = data.education.institution;
+    document.getElementById('coursework').innerText = data.education.coursework;
 
     // Populating the skills
-    document.getElementById('skillsList').innerHTML = data.skills.skills.map(skill => `<li>${skill}</li>`).join('');
-    document.getElementById('toolsAndFrameworksList').innerHTML = data.skills.toolsAndFrameworks.map(tool => `<li>${tool}</li>`).join('');
-    document.getElementById('funList').innerHTML = data.skills.fun.map(funItem => `<li>${funItem}</li>`).join('');
+    document.getElementById('skillList').innerHTML = data.skills.skills.map(skill => `<li>${skill}</li>`).join('');
+    document.getElementById('toolsAndFrameworks').innerHTML = data.skills.toolsAndFrameworks.map(tool => `<li>${tool}</li>`).join('');
+    document.getElementById('funSkills').innerHTML = data.skills.fun.map(funItem => `<li>${funItem}</li>`).join('');
+
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
