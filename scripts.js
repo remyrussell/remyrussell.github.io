@@ -1,12 +1,10 @@
 // Functions related to theme toggling
 function setTheme(themeName) {
-    console.log('Setting theme to:', themeName); // Added for debugging
     localStorage.setItem('theme', themeName);
     document.documentElement.className = themeName;
 }
 
 function toggleTheme() {
-    console.log('Toggling theme...'); // Added for debugging
     if (localStorage.getItem('theme') === 'theme-dark') {
         setTheme('theme-light');
     } else {
@@ -25,11 +23,7 @@ function keepThemeSetting() {
 // Event attachment for theme toggling
 function attachThemeToggleEvent() {
     let themeToggleButton = document.getElementById('themeToggleButton');
-    if(themeToggleButton) { // Check if the button exists
-        themeToggleButton.addEventListener('click', toggleTheme);
-    } else {
-        console.error('Theme toggle button not found!'); // Log an error if the button isn't found
-    }
+    themeToggleButton.addEventListener('click', toggleTheme);
 }
 
 // Function to populate the resume content
@@ -67,16 +61,27 @@ function populateResume(data) {
     }
 
     // Populating the education details
-    document.getElementById('degree').innerText = data.education.degree;
-    document.getElementById('institution').innerText = data.education.institution;
-    document.getElementById('coursework').innerText = data.education.coursework;
-    document.getElementByID('educationLogo').src = data.education.logo;
+    let educationContainer = document.getElementById('education');
+    
+    // Add education logo
+    let eduLogoImg = document.createElement('img');
+    eduLogoImg.src = data.education.logo;
+    eduLogoImg.alt = "Education institution logo";
+    eduLogoImg.width = 100;
+    educationContainer.appendChild(eduLogoImg);
+
+    let eduDetailsDiv = document.createElement('div');
+    eduDetailsDiv.innerHTML = `
+        <h3>${data.education.degree}</h3>
+        <p>${data.education.institution}</p>
+        <p>${data.education.coursework}</p>
+    `;
+    educationContainer.appendChild(eduDetailsDiv);
 
     // Populating the skills
     document.getElementById('skillList').innerHTML = data.skills.skills.map(skill => `<li>${skill}</li>`).join('');
     document.getElementById('toolsAndFrameworks').innerHTML = data.skills.toolsAndFrameworks.map(tool => `<li>${tool}</li>`).join('');
     document.getElementById('funSkills').innerHTML = data.skills.fun.map(funItem => `<li>${funItem}</li>`).join('');
-
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
