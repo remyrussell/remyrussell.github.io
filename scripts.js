@@ -70,6 +70,7 @@ function populateResume(data) {
     document.getElementById('degree').innerText = data.education.degree;
     document.getElementById('institution').innerText = data.education.institution;
     document.getElementById('coursework').innerText = data.education.coursework;
+    document.getElementByID('educationLogo').src = data.education.logo;
 
     // Populating the skills
     document.getElementById('skillList').innerHTML = data.skills.skills.map(skill => `<li>${skill}</li>`).join('');
