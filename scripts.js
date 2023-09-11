@@ -23,7 +23,11 @@ function keepThemeSetting() {
 // Event attachment for theme toggling
 function attachThemeToggleEvent() {
     let themeToggleButton = document.getElementById('themeToggleButton');
-    themeToggleButton.addEventListener('click', toggleTheme);
+    if(themeToggleButton) {
+        themeToggleButton.addEventListener('click', toggleTheme);
+    } else {
+        console.error('Theme toggle button not found!');
+    }
 }
 
 // Function to populate the resume content
@@ -61,22 +65,10 @@ function populateResume(data) {
     }
 
     // Populating the education details
-    let educationContainer = document.getElementById('education');
-    
-    // Add education logo
-    let eduLogoImg = document.createElement('img');
-    eduLogoImg.src = data.education.logo;
-    eduLogoImg.alt = "Education institution logo";
-    eduLogoImg.width = 100;
-    educationContainer.appendChild(eduLogoImg);
-
-    let eduDetailsDiv = document.createElement('div');
-    eduDetailsDiv.innerHTML = `
-        <h3>${data.education.degree}</h3>
-        <p>${data.education.institution}</p>
-        <p>${data.education.coursework}</p>
-    `;
-    educationContainer.appendChild(eduDetailsDiv);
+    document.querySelector('.education-item img').src = data.education.logo;
+    document.getElementById('degree').innerText = data.education.degree;
+    document.getElementById('institution').innerText = data.education.institution;
+    document.getElementById('coursework').innerText = data.education.coursework;
 
     // Populating the skills
     document.getElementById('skillList').innerHTML = data.skills.skills.map(skill => `<li>${skill}</li>`).join('');
