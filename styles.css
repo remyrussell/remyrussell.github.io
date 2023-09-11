@@ -72,13 +72,12 @@ button.theme-toggle:hover {
 .experience-item, .education-item {
     display: flex;
     margin-top: 1.5rem;
-    align-items: center; /* Default to center alignment for mobile */
+    align-items: center; 
     flex-direction: column; /* Stack items vertically for mobile */
 }
 
 .experience-item img, .education-item img {
     max-width: 100px;
-    margin-right: 0; /* No right margin for mobile */
     margin-bottom: 1rem; /* Bottom margin for mobile */
 }
 
@@ -91,18 +90,19 @@ button.theme-toggle:hover {
 @media (min-width: 768px) {
     .experience-item, .education-item {
         flex-direction: row; /* Horizontal layout for larger screens */
-        align-items: flex-start; /* Reset alignment */
+        align-items: flex-start; /* Reset alignment for larger screens */
     }
 
     .experience-item img, .education-item img {
         margin-right: 1rem; /* Right margin for larger screens */
-        margin-bottom: 0; /* Reset bottom margin */
+        margin-bottom: 0; /* Reset bottom margin for larger screens */
     }
 
     .experience-item div, .education-item div {
         text-align: left; /* Left-align text for larger screens */
     }
 }
+
 
 /* Skills and Interests Sections */
 #skills h3, #funSkills h3 {
