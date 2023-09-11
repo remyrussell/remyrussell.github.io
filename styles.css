@@ -68,19 +68,19 @@ button.theme-toggle:hover {
     background-color: #555;
 }
 
-/* Experience items with company logos */
-.experience-item {
+/* Experience and Education items with logos */
+.experience-item, .education-item {
     display: flex;
     margin-top: 1.5rem;
     align-items: flex-start;
 }
 
-.experience-item img {
+.experience-item img, .education-item img {
     max-width: 100px;
     margin-right: 1rem;
 }
 
-.experience-item div {
+.experience-item div, .education-item div {
     flex: 1;
 }
 
@@ -98,4 +98,3 @@ ul {
 li {
     margin-bottom: 0.5rem;
 }
-
