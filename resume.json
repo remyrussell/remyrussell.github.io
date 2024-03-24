@@ -11,6 +11,22 @@
         "Prioritize tasks for the engineers and partner with internal stakeholders to align on strategy"
     ],
     "professionalExperience": [
+        
+        {
+            "position": "Associate Product Manager",
+            "company": "Eccovia",
+            "logo": "/assets/images/logos/eccovia.svg",
+            "location": "Salt Lake City, UT",
+            "duration": "February 2021 – Present",
+            "description": "Leadership transitioned my role to the engineering team to leverage my technical skills and enthusiasm about our new integration implementations. I’ve since helped to shape Eccovia’s API product and solution designs to empower our customers in the Health and Human Services industry to serve their clients.",
+            "highlights": [
+                "Onboarded strategic customer partners that were interested in leveraging Eccovia’s new API and worked with external developers to understand their experience throughout implementation",
+                "Elicited developer and customer feedback to inspire additional API end points and features",
+                "Analyzed APIs and integration specifications to define technical requirements for internal engineering resources",
+                "Lead integration implementations as a BA for over ten customer organizations and managed relationships with their integration partners",
+                "Established a consistent approach across new integrations solutions and transitioned three previously-implemented customer integrations to our new integration framework"
+            ]
+        },
         {
             "position": "Business Analyst – Integrations, Engineering Team",
             "company": "Eccovia",
