@@ -46,15 +46,16 @@
     "education": {
     "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
     "institution": "University of Michigan, Ann Arbor",
-    "coursework": "Relevant coursework...",
     "logo": "/assets/images/logos/umich-logo.png"
     }
 ,
     "skills": {
         "skills": [
-            "Teamwork, empathy, communication, transparency",
-            "Integrations and data migrations, RESTful APIs, JSON, XML, Flat files",
-            "SQL and basic understanding of Javascript, HTML, C++,,
+            "I excel at technical communication and can collaborate effectively with engineers",
+            "I am not afraid of complex problems and will take initiative and ownership to solve them",
+            "I can understand/articulate granular technical details or high-level strategy and harness that understanding to influence collabotators",
+            "I am quick to learn and embrace new tools, technologies, and methodologies that can increase productivity or efficiency",
+            "SQL",
             "HL7 fundamentals (v2.x and FHIR) and experience implementing v2.x ADT and CDA integrations"
         ],
         "toolsAndFrameworks": [
@@ -62,7 +63,7 @@
             "Agile, Scrum"
         ],
         "fun": [
-            "Attending concerts/festivals, occasionally making and frequently consuming music (primarily electronic, but I'm a guitar enthusiast and have a wirde range of taste :)
+            "Attending concerts/festivals, occasionally making and frequently consuming music (primarily electronic, but I'm a guitar enthusiast and have a wirde range of taste :)",
             "Outdoors (Skiing, mountain biking, hiking, camping)",
             "Listening to podcasts/audiobooks and reading about tech, healthcare, business, investing)"
         ]
