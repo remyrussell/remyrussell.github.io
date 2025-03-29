@@ -32,7 +32,9 @@ function toggleMenu() {
 // Event attachment for theme toggling and menu toggling
 function attachThemeToggleEvent() {
     let themeToggleCheckbox = document.getElementById('themeToggleButton');
-    themeToggleCheckbox.addEventListener('change', toggleTheme);
+    if (themeToggleCheckbox) {
+        themeToggleCheckbox.addEventListener('change', toggleTheme);
+    }
 
     let menuToggleButton = document.getElementById('menuToggleButton');
     menuToggleButton.addEventListener('click', toggleMenu);
