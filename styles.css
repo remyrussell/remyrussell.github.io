@@ -57,6 +57,7 @@ h2 {
 .theme-toggle-wrapper {
     position: relative;
     margin: 0.5rem 0;
+    display: none; /* Hidden by default */
 }
 
 .theme-toggle-checkbox {
@@ -232,6 +233,10 @@ button.menu-toggle:hover {
     display: block;
 }
 
+.menu.active .theme-toggle-wrapper {
+    display: block; /* Show theme toggle when menu is active */
+}
+
 /* Show menu toggle button and adjust layout on smaller screens */
 @media (max-width: 768px) {
     button.menu-toggle {
@@ -240,9 +245,6 @@ button.menu-toggle:hover {
     .menu {
         right: 2rem;
         width: 150px;
-    }
-    .menu.active .theme-toggle-wrapper {
-        display: block; /* Show theme toggle when menu is active */
     }
 }
 
