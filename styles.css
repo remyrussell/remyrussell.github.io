@@ -55,9 +55,8 @@ h2 {
 
 /* iOS-style toggle switch */
 .theme-toggle-wrapper {
-    position: fixed;
-    top: 2rem;
-    right: 2rem;
+    position: relative;
+    margin: 0.5rem 0;
 }
 
 .theme-toggle-checkbox {
@@ -134,8 +133,8 @@ h2 {
 
 /* Optional: Adjust for smaller screens */
 @media (max-width: 600px) {
-    .theme-toggle-wrapper {
-        right: 50px;
+    .menu {
+        right: 2rem;
     }
 }
 
@@ -148,7 +147,7 @@ button.menu-toggle {
     cursor: pointer;
     position: fixed;
     top: 2rem;
-    left: 2rem;
+    right: 2rem; /* Moved to upper right */
     color: #f7f7f7;
     font-size: 1.5rem;
     display: none;
@@ -167,7 +166,7 @@ button.menu-toggle:hover {
     display: none;
     position: fixed;
     top: 4rem;
-    left: 2rem;
+    right: 2rem; /* Align with menu toggle button */
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -238,12 +237,12 @@ button.menu-toggle:hover {
     button.menu-toggle {
         display: block;
     }
-    .theme-toggle-wrapper {
-        right: 50px;
-    }
     .menu {
-        left: 2rem;
+        right: 2rem;
         width: 150px;
+    }
+    .menu.active .theme-toggle-wrapper {
+        display: block; /* Show theme toggle when menu is active */
     }
 }
 
