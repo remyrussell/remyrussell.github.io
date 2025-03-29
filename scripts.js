@@ -18,7 +18,10 @@ function toggleTheme() {
 }
 
 function keepThemeSetting() {
-    if (localStorage.getItem('theme') === 'theme-dark') {
+    // Default to dark theme if no theme is set in localStorage
+    if (!localStorage.getItem('theme')) {
+        setTheme('theme-dark');
+    } else if (localStorage.getItem('theme') === 'theme-dark') {
         setTheme('theme-dark');
     } else {
         setTheme('theme-light');
