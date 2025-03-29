@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     padding: 2rem;
     color: #333;
-    background-color: #f7f7f7;
+    background-color: #f0f0f0; /* Changed to a really light grey */
     margin: 0;
     transition: background-color 0.3s ease;
 }
@@ -112,7 +112,7 @@ h2 {
 
 /* When the checkbox is checked (dark mode) */
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background-color: #c71585;
+    background-color: #c71585; /* Pinkish color for toggle */
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
@@ -192,28 +192,29 @@ button.menu-toggle:hover {
 }
 
 .menu a {
-    color: #333;
+    color: #c71585; /* Light pinkish color to match toggle */
     text-decoration: none;
     font-size: 1rem;
     display: block;
 }
 
 .theme-dark .menu a {
-    color: #f7f7f7;
+    color: #c71585; /* Keep pinkish color in dark mode for consistency */
 }
 
 .menu a:hover {
-    color: #007bff;
+    color: #a50f6b; /* Slightly darker pink on hover */
 }
 
 /* Style for icon-only links */
 .menu-icon {
     font-size: 1.5rem;
     padding: 0.5rem;
+    color: #c71585; /* Light pinkish color for icons */
 }
 
 .menu-icon:hover {
-    color: #007bff;
+    color: #a50f6b; /* Slightly darker pink on hover */
 }
 
 /* Style for the OnlyFans SVG logo */
@@ -221,12 +222,18 @@ button.menu-toggle:hover {
     width: 24px;
     height: 24px;
     vertical-align: middle;
+    filter: brightness(0) saturate(100%) invert(28%) sepia(74%) saturate(2965%) hue-rotate(316deg) brightness(97%) contrast(101%); /* Adjust to pinkish tone */
 }
 
 /* Style for text links */
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
+    color: #c71585; /* Light pinkish color */
+}
+
+.menu-text:hover {
+    color: #a50f6b; /* Slightly darker pink on hover */
 }
 
 .menu.active {
@@ -259,6 +266,7 @@ button.menu-toggle:hover {
 .experience-item img, .education-item img {
     max-width: 100px;
     margin-bottom: 1rem;
+    filter: brightness(0.9); /* Slight dimming to improve visibility on light background */
 }
 
 .experience-item div, .education-item div {
