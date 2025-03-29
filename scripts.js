@@ -9,13 +9,13 @@ function setTheme(themeName) {
     const toggleText = themeToggleButton.querySelector('.toggle-text');
 
     if (themeName === 'theme-dark') {
-        toggleIcons[0].style.transform = 'translateX(-20px)'; // Move sun left
-        toggleIcons[1].style.transform = 'translateX(0)'; // Move moon to center
-        toggleText.style.opacity = '0'; // Fade out text in dark mode
+        toggleIcons[0].style.transform = 'translateX(-20px)';
+        toggleIcons[1].style.transform = 'translateX(0)';
+        toggleText.style.opacity = '0';
     } else {
-        toggleIcons[0].style.transform = 'translateX(0)'; // Move sun to center
-        toggleIcons[1].style.transform = 'translateX(20px)'; // Move moon right
-        toggleText.style.opacity = '1'; // Show text in light mode
+        toggleIcons[0].style.transform = 'translateX(0)';
+        toggleIcons[1].style.transform = 'translateX(20px)';
+        toggleText.style.opacity = '1';
     }
 }
 
@@ -35,10 +35,19 @@ function keepThemeSetting() {
     }
 }
 
-// Event attachment for theme toggling
+// Function to toggle menu
+function toggleMenu() {
+    const menu = document.getElementById('menu');
+    menu.classList.toggle('active');
+}
+
+// Event attachment for theme toggling and menu toggling
 function attachThemeToggleEvent() {
     let themeToggleButton = document.getElementById('themeToggleButton');
     themeToggleButton.addEventListener('click', toggleTheme);
+
+    let menuToggleButton = document.getElementById('menuToggleButton');
+    menuToggleButton.addEventListener('click', toggleMenu);
 }
 
 // Function to populate the resume content
