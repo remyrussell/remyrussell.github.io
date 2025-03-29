@@ -112,7 +112,7 @@ h2 {
 
 /* When the checkbox is checked (dark mode) */
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background-color: #c71585; /* Lighter, magenta-themed purple */
+    background-color: #ff6934; /* Lighter, magenta-themed purple */
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
