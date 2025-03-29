@@ -51,58 +51,110 @@ h2 {
     color: #333;
 }
 
-/* Button styles */
+/* Button styles for dark mode toggle switch */
 button.theme-toggle {
     background-color: #333;
     color: #f7f7f7;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
+    padding: 0.5rem;
+    border-radius: 20px;
     cursor: pointer;
     position: fixed;
     top: 2rem;
     right: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    width: 120px;
+    transition: background-color 0.3s ease;
 }
 
 button.theme-toggle:hover {
     background-color: #555;
 }
 
+/* Style the icons and text */
+.toggle-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.toggle-text {
+    flex: 1;
+    text-align: center;
+    font-size: 0.9rem;
+    transition: opacity 0.3s ease;
+}
+
+/* Dark mode button adjustments */
+.theme-dark button.theme-toggle {
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+.theme-dark .toggle-icon .fa-sun {
+    color: #ffd700;
+}
+
+.theme-dark .toggle-icon .fa-moon {
+    color: #fff;
+}
+
+/* Light mode icon adjustments */
+.theme-light .toggle-icon .fa-sun {
+    color: #ffd700;
+}
+
+.theme-light .toggle-icon .fa-moon {
+    color: #333;
+}
+
+/* Optional: Hide text on smaller screens for a cleaner switch */
+@media (max-width: 600px) {
+    .toggle-text {
+        display: none;
+    }
+    button.theme-toggle {
+        width: 50px;
+        justify-content: space-between;
+    }
+}
+
 /* Experience and Education items with logos */
 .experience-item, .education-item {
     display: flex;
     margin-top: 1.5rem;
-    align-items: center; 
-    flex-direction: column; /* Stack items vertically for mobile */
+    align-items: center;
+    flex-direction: column;
 }
 
 .experience-item img, .education-item img {
     max-width: 100px;
-    margin-bottom: 1rem; /* Bottom margin for mobile */
+    margin-bottom: 1rem;
 }
 
 .experience-item div, .education-item div {
     flex: 1;
-    text-align: center; /* Center text for mobile */
+    text-align: center;
 }
 
 /* For screens wider than 768px */
 @media (min-width: 768px) {
     .experience-item, .education-item {
-        flex-direction: row; /* Horizontal layout for larger screens */
-        align-items: flex-start; /* Reset alignment for larger screens */
+        flex-direction: row;
+        align-items: flex-start;
     }
 
     .experience-item img, .education-item img {
-        margin-right: 1rem; /* Right margin for larger screens */
-        margin-bottom: 0; /* Reset bottom margin for larger screens */
+        margin-right: 1rem;
+        margin-bottom: 0;
     }
 
     .experience-item div, .education-item div {
-        text-align: left; /* Left-align text for larger screens */
+        text-align: left;
     }
 }
-
 
 /* Skills and Interests Sections */
 #skills h3, #funSkills h3 {
