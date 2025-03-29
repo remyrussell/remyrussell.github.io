@@ -135,7 +135,7 @@ button.menu-toggle {
     left: 2rem;
     color: #f7f7f7;
     font-size: 1.5rem;
-    display: none; /* Hidden by default on large screens */
+    display: none;
 }
 
 .theme-dark button.menu-toggle {
@@ -172,12 +172,14 @@ button.menu-toggle:hover {
 
 .menu li {
     margin: 0.5rem 0;
+    text-align: center;
 }
 
 .menu a {
     color: #333;
     text-decoration: none;
     font-size: 1rem;
+    display: block;
 }
 
 .theme-dark .menu a {
@@ -186,6 +188,42 @@ button.menu-toggle:hover {
 
 .menu a:hover {
     color: #007bff;
+}
+
+/* Style for icon-only links */
+.menu-icon {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+}
+
+.menu-icon:hover {
+    color: #007bff;
+}
+
+/* Style for text links */
+.menu-text {
+    font-size: 1rem;
+    padding: 0.5rem;
+}
+
+/* OnlyFans menu item styling */
+.menu-onlyfans {
+    background-color: #00aff0; /* OnlyFans blue */
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.theme-dark .menu-onlyfans {
+    background-color: #33cfff; /* Slightly lighter blue for dark mode */
+}
+
+.menu-onlyfans:hover {
+    background-color: #007bff;
+    color: #fff;
 }
 
 .menu.active {
@@ -198,7 +236,7 @@ button.menu-toggle:hover {
         display: block;
     }
     button.theme-toggle {
-        right: 50px; /* Adjust theme toggle position to avoid overlap */
+        right: 50px;
     }
     .menu {
         left: 2rem;
