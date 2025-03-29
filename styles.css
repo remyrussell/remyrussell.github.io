@@ -200,30 +200,17 @@ button.menu-toggle:hover {
     color: #007bff;
 }
 
+/* Style for the OnlyFans SVG logo */
+.onlyfans-logo {
+    width: 24px; /* Match the size of other icons */
+    height: 24px;
+    vertical-align: middle;
+}
+
 /* Style for text links */
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
-}
-
-/* OnlyFans menu item styling */
-.menu-onlyfans {
-    background-color: #00aff0; /* OnlyFans blue */
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.theme-dark .menu-onlyfans {
-    background-color: #33cfff; /* Slightly lighter blue for dark mode */
-}
-
-.menu-onlyfans:hover {
-    background-color: #007bff;
-    color: #fff;
 }
 
 .menu.active {
