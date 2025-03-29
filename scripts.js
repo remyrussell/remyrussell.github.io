@@ -4,7 +4,9 @@ function setTheme(themeName) {
     document.documentElement.className = themeName;
 
     const themeToggleCheckbox = document.getElementById('themeToggleButton');
-    themeToggleCheckbox.checked = (themeName === 'theme-dark');
+    if (themeToggleCheckbox) {
+        themeToggleCheckbox.checked = (themeName === 'theme-dark');
+    }
 }
 
 function toggleTheme() {
