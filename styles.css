@@ -112,7 +112,7 @@ h2 {
 
 /* When the checkbox is checked (dark mode) */
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background-color: #a07090; /* Darker purple for toggle in dark mode */
+    background-color: #c71585; /* Original magenta color */
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
@@ -168,7 +168,7 @@ button.menu-toggle:hover {
     position: fixed;
     top: 4rem;
     right: 2rem; /* Align with menu toggle button */
-    background-color: #e6c3d3; /* Light pinkish-purple background */
+    background-color: #f4d8e2; /* Lighter version of magenta */
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
@@ -176,7 +176,7 @@ button.menu-toggle:hover {
 }
 
 .theme-dark .menu {
-    background-color: #a07090; /* Darker purple for dark mode */
+    background-color: #d081a5; /* Darker magenta for dark mode */
     color: #f0f0f0;
 }
 
@@ -205,7 +205,7 @@ button.menu-toggle:hover {
 
 .menu a:hover {
     color: #f0f0f0; /* Light grey on hover */
-    background-color: #a07090; /* Darker purple on hover */
+    background-color: #c71585; /* Original magenta on hover */
 }
 
 /* Style for icon-only links */
@@ -217,7 +217,7 @@ button.menu-toggle:hover {
 
 .menu-icon:hover {
     color: #f0f0f0; /* Light grey on hover */
-    background-color: #a07090; /* Darker purple on hover */
+    background-color: #c71585; /* Original magenta on hover */
 }
 
 /* Style for the OnlyFans SVG logo */
@@ -237,7 +237,7 @@ button.menu-toggle:hover {
 
 .menu-text:hover {
     color: #f0f0f0; /* Light grey on hover */
-    background-color: #a07090; /* Darker purple on hover */
+    background-color: #c71585; /* Original magenta on hover */
 }
 
 .menu.active {
