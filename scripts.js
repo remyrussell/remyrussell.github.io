@@ -2,6 +2,21 @@
 function setTheme(themeName) {
     localStorage.setItem('theme', themeName);
     document.documentElement.className = themeName;
+
+    // Update button appearance
+    const themeToggleButton = document.getElementById('themeToggleButton');
+    const toggleIcons = themeToggleButton.querySelectorAll('.toggle-icon');
+    const toggleText = themeToggleButton.querySelector('.toggle-text');
+
+    if (themeName === 'theme-dark') {
+        toggleIcons[0].style.transform = 'translateX(-20px)'; // Move sun left
+        toggleIcons[1].style.transform = 'translateX(0)'; // Move moon to center
+        toggleText.style.opacity = '0'; // Fade out text in dark mode
+    } else {
+        toggleIcons[0].style.transform = 'translateX(0)'; // Move sun to center
+        toggleIcons[1].style.transform = 'translateX(20px)'; // Move moon right
+        toggleText.style.opacity = '1'; // Show text in light mode
+    }
 }
 
 function toggleTheme() {
@@ -39,14 +54,12 @@ function populateResume(data) {
         let experienceDiv = document.createElement('div');
         experienceDiv.className = 'experience-item';
 
-        // Add company logo
         let logoImg = document.createElement('img');
         logoImg.src = experience.logo;
         logoImg.alt = experience.company + ' logo';
         logoImg.width = 100;
         experienceDiv.appendChild(logoImg);
 
-        // Add experience details
         let detailsDiv = document.createElement('div');
         detailsDiv.innerHTML = `
             <h3>${experience.position} at ${experience.company}</h3>
@@ -60,10 +73,8 @@ function populateResume(data) {
         experienceContainer.appendChild(experienceDiv);
     }
 
-    // Populating the education details
     let educationContainer = document.getElementById('education');
     
-    // Add education logo
     let eduLogoImg = document.createElement('img');
     eduLogoImg.src = data.education.logo;
     eduLogoImg.alt = "Education institution logo";
@@ -78,7 +89,6 @@ function populateResume(data) {
     `;
     educationContainer.appendChild(eduDetailsDiv);
 
-    // Populating the skills
     document.getElementById('skillList').innerHTML = data.skills.skills.map(skill => `<li>${skill}</li>`).join('');
     document.getElementById('toolsAndFrameworks').innerHTML = data.skills.toolsAndFrameworks.map(tool => `<li>${tool}</li>`).join('');
     document.getElementById('funSkills').innerHTML = data.skills.fun.map(funItem => `<li>${funItem}</li>`).join('');
