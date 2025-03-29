@@ -95,4 +95,204 @@ h2 {
 }
 
 .theme-toggle-icon {
-    font-size: 1rem ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+    font-size: 1rem;
+    transition: opacity 0.3s ease;
+}
+
+.theme-toggle-icon.fa-sun {
+    color: #ffd700;
+    opacity: 0; /* Hidden in light mode */
+}
+
+.theme-toggle-icon.fa-moon {
+    color: #333;
+    opacity: 1; /* Visible in light mode */
+    position: absolute;
+}
+
+/* When the checkbox is checked (dark mode) */
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
+    background-color: #800080; /* Purple for dark mode */
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
+    transform: translateX(20px);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-sun {
+    opacity: 1; /* Visible in dark mode */
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
+    opacity: 0; /* Hidden in dark mode */
+}
+
+/* Dark mode adjustments */
+.theme-dark .theme-toggle-icon.fa-moon {
+    color: #fff;
+}
+
+/* Optional: Adjust for smaller screens */
+@media (max-width: 600px) {
+    .theme-toggle-wrapper {
+        right: 50px;
+    }
+}
+
+/* Hamburger menu button and menu styles */
+button.menu-toggle {
+    background-color: #333;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    color: #f7f7f7;
+    font-size: 1.5rem;
+    display: none;
+}
+
+.theme-dark button.menu-toggle {
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+button.menu-toggle:hover {
+    background-color: #555;
+}
+
+.menu {
+    display: none;
+    position: fixed;
+    top: 4rem;
+    left: 2rem;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.theme-dark .menu {
+    background-color: #444;
+    color: #f7f7f7;
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    margin: 0.5rem 0;
+    text-align: center;
+}
+
+.menu a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem;
+    display: block;
+}
+
+.theme-dark .menu a {
+    color: #f7f7f7;
+}
+
+.menu a:hover {
+    color: #007bff;
+}
+
+/* Style for icon-only links */
+.menu-icon {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+}
+
+.menu-icon:hover {
+    color: #007bff;
+}
+
+/* Style for the OnlyFans SVG logo */
+.onlyfans-logo {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+/* Style for text links */
+.menu-text {
+    font-size: 1rem;
+    padding: 0.5rem;
+}
+
+.menu.active {
+    display: block;
+}
+
+/* Show menu toggle button and adjust layout on smaller screens */
+@media (max-width: 768px) {
+    button.menu-toggle {
+        display: block;
+    }
+    .theme-toggle-wrapper {
+        right: 50px;
+    }
+    .menu {
+        left: 2rem;
+        width: 150px;
+    }
+}
+
+/* Experience and Education items with logos */
+.experience-item, .education-item {
+    display: flex;
+    margin-top: 1.5rem;
+    align-items: center;
+    flex-direction: column;
+}
+
+.experience-item img, .education-item img {
+    max-width: 100px;
+    margin-bottom: 1rem;
+}
+
+.experience-item div, .education-item div {
+    flex: 1;
+    text-align: center;
+}
+
+/* For screens wider than 768px */
+@media (min-width: 768px) {
+    .experience-item, .education-item {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .experience-item img, .education-item img {
+        margin-right: 1rem;
+        margin-bottom: 0;
+    }
+
+    .experience-item div, .education-item div {
+        text-align: left;
+    }
+}
+
+/* Skills and Interests Sections */
+#skills h3, #funSkills h3 {
+    margin-top: 1.5rem;
+}
+
+ul {
+    list-style-type: disc;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
