@@ -35,21 +35,21 @@ h2 {
 
 /* Dark mode styles */
 .theme-dark {
-    background-color: #333;
-    color: #f7f7f7;
+    background-color: #333; /* Dark grey */
+    color: #f0f0f0; /* Light grey text */
 }
 
 .theme-dark .container {
-    background-color: #444;
-    color: #f7f7f7;
+    background-color: #444; /* Medium grey */
+    color: #f0f0f0;
 }
 
 .theme-dark h2 {
-    border-color: #777;
+    border-color: #777; /* Medium grey border */
 }
 
 .theme-dark button {
-    background-color: #f7f7f7;
+    background-color: #f0f0f0;
     color: #333;
 }
 
@@ -112,7 +112,7 @@ h2 {
 
 /* When the checkbox is checked (dark mode) */
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background-color: #c71585; /* Pinkish color for toggle */
+    background-color: #a07090; /* Darker purple for toggle in dark mode */
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
@@ -149,13 +149,13 @@ button.menu-toggle {
     position: fixed;
     top: 2rem;
     right: 2rem; /* Moved to upper right */
-    color: #f7f7f7;
+    color: #f0f0f0;
     font-size: 1.5rem;
     display: none;
 }
 
 .theme-dark button.menu-toggle {
-    background-color: #f7f7f7;
+    background-color: #f0f0f0;
     color: #333;
 }
 
@@ -168,7 +168,7 @@ button.menu-toggle:hover {
     position: fixed;
     top: 4rem;
     right: 2rem; /* Align with menu toggle button */
-    background-color: #fff;
+    background-color: #e6c3d3; /* Light pinkish-purple background */
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
@@ -176,8 +176,8 @@ button.menu-toggle:hover {
 }
 
 .theme-dark .menu {
-    background-color: #444;
-    color: #f7f7f7;
+    background-color: #a07090; /* Darker purple for dark mode */
+    color: #f0f0f0;
 }
 
 .menu ul {
@@ -189,37 +189,35 @@ button.menu-toggle:hover {
 .menu li {
     margin: 0.5rem 0;
     text-align: center;
-    background-color: #c71585; /* Pinkish background for menu items */
-    border-radius: 5px; /* Rounded corners for a polished look */
 }
 
 .menu a {
-    color: #fff; /* White text for contrast against pink background */
+    color: #fff; /* White text for contrast */
     text-decoration: none;
     font-size: 1rem;
     display: block;
-    padding: 0.5rem; /* Add padding for better click area */
+    padding: 0.5rem;
 }
 
 .theme-dark .menu a {
-    color: #fff; /* Keep white text in dark mode for consistency */
+    color: #fff; /* White text in dark mode */
 }
 
 .menu a:hover {
-    color: #f0f0f0; /* Lighter grey on hover for contrast */
-    background-color: #a50f6b; /* Slightly darker pink on hover */
+    color: #f0f0f0; /* Light grey on hover */
+    background-color: #a07090; /* Darker purple on hover */
 }
 
 /* Style for icon-only links */
 .menu-icon {
     font-size: 1.5rem;
     padding: 0.5rem;
-    color: #fff; /* White icons for contrast */
+    color: #fff; /* White icons */
 }
 
 .menu-icon:hover {
-    color: #f0f0f0; /* Lighter grey on hover */
-    background-color: #a50f6b; /* Slightly darker pink on hover */
+    color: #f0f0f0; /* Light grey on hover */
+    background-color: #a07090; /* Darker purple on hover */
 }
 
 /* Style for the OnlyFans SVG logo */
@@ -227,19 +225,19 @@ button.menu-toggle:hover {
     width: 24px;
     height: 24px;
     vertical-align: middle;
-    filter: brightness(0) invert(1); /* White OnlyFans logo for contrast */
+    filter: brightness(0) invert(1); /* White OnlyFans logo */
 }
 
 /* Style for text links */
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
-    color: #fff; /* White text for contrast */
+    color: #fff; /* White text */
 }
 
 .menu-text:hover {
-    color: #f0f0f0; /* Lighter grey on hover */
-    background-color: #a50f6b; /* Slightly darker pink on hover */
+    color: #f0f0f0; /* Light grey on hover */
+    background-color: #a07090; /* Darker purple on hover */
 }
 
 .menu.active {
@@ -272,7 +270,7 @@ button.menu-toggle:hover {
 .experience-item img, .education-item img {
     max-width: 100px;
     margin-bottom: 1rem;
-    filter: brightness(0.9); /* Slight dimming to improve visibility on light background */
+    filter: brightness(0.9); /* Slight dimming for visibility */
 }
 
 .experience-item div, .education-item div {
