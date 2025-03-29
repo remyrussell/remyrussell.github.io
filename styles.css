@@ -141,7 +141,7 @@ h2 {
 
 /* Hamburger menu button and menu styles */
 button.menu-toggle {
-    background-color: #333;
+    background-color: #333; /* Matches menu background in light mode */
     border: none;
     padding: 0.5rem;
     border-radius: 5px;
@@ -155,7 +155,7 @@ button.menu-toggle {
 }
 
 .theme-dark button.menu-toggle {
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; /* Matches menu background in dark mode */
     color: #333;
 }
 
@@ -168,7 +168,7 @@ button.menu-toggle:hover {
     position: fixed;
     top: 4rem;
     right: 2rem; /* Align with menu toggle button */
-    background-color: #d3d3d3; /* Consistent light grey background */
+    background-color: #333; /* Matches hamburger icon in light mode */
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
@@ -176,7 +176,7 @@ button.menu-toggle:hover {
 }
 
 .theme-dark .menu {
-    background-color: #d3d3d3; /* Same grey in dark mode */
+    background-color: #f0f0f0; /* Matches hamburger icon in dark mode */
     color: #333;
 }
 
@@ -192,7 +192,7 @@ button.menu-toggle:hover {
 }
 
 .menu a {
-    color: #333; /* Dark text for contrast against grey */
+    color: #c71585; /* Pink text to match slider */
     text-decoration: none;
     font-size: 1rem;
     display: block;
@@ -200,24 +200,24 @@ button.menu-toggle:hover {
 }
 
 .theme-dark .menu a {
-    color: #f0f0f0; /* Light text in dark mode */
+    color: #c71585; /* Pink text in dark mode */
 }
 
 .menu a:hover {
     color: #fff; /* White on hover */
-    background-color: #c71585; /* Original magenta on hover */
+    background-color: #c71585; /* Pink background on hover */
 }
 
 /* Style for icon-only links */
 .menu-icon {
     font-size: 1.5rem;
     padding: 0.5rem;
-    color: #333; /* Dark icons */
+    color: #c71585; /* Pink icons */
 }
 
 .menu-icon:hover {
     color: #fff; /* White on hover */
-    background-color: #c71585; /* Original magenta on hover */
+    background-color: #c71585; /* Pink background on hover */
 }
 
 /* Style for the OnlyFans SVG logo */
@@ -225,19 +225,19 @@ button.menu-toggle:hover {
     width: 24px;
     height: 24px;
     vertical-align: middle;
-    filter: brightness(0) invert(0.3); /* Adjusted to dark grey for contrast */
+    filter: brightness(0) invert(0.7); /* Adjusted to pinkish tone matching #c71585 */
 }
 
 /* Style for text links */
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
-    color: #333; /* Dark text */
+    color: #c71585; /* Pink text */
 }
 
 .menu-text:hover {
     color: #fff; /* White on hover */
-    background-color: #c71585; /* Original magenta on hover */
+    background-color: #c71585; /* Pink background on hover */
 }
 
 .menu.active {
