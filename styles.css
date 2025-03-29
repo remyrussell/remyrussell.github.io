@@ -5,6 +5,7 @@ body {
     color: #333;
     background-color: #f7f7f7;
     margin: 0;
+    transition: background-color 0.3s ease;
 }
 
 .container {
@@ -14,6 +15,7 @@ body {
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 h1, h2, h3 {
@@ -118,6 +120,89 @@ button.theme-toggle:hover {
     button.theme-toggle {
         width: 50px;
         justify-content: space-between;
+    }
+}
+
+/* Hamburger menu button and menu styles */
+button.menu-toggle {
+    background-color: #333;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    color: #f7f7f7;
+    font-size: 1.5rem;
+    display: none; /* Hidden by default on large screens */
+}
+
+.theme-dark button.menu-toggle {
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+button.menu-toggle:hover {
+    background-color: #555;
+}
+
+.menu {
+    display: none;
+    position: fixed;
+    top: 4rem;
+    left: 2rem;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.theme-dark .menu {
+    background-color: #444;
+    color: #f7f7f7;
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    margin: 0.5rem 0;
+}
+
+.menu a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.theme-dark .menu a {
+    color: #f7f7f7;
+}
+
+.menu a:hover {
+    color: #007bff;
+}
+
+.menu.active {
+    display: block;
+}
+
+/* Show menu toggle button and adjust layout on smaller screens */
+@media (max-width: 768px) {
+    button.menu-toggle {
+        display: block;
+    }
+    button.theme-toggle {
+        right: 50px; /* Adjust theme toggle position to avoid overlap */
+    }
+    .menu {
+        left: 2rem;
+        width: 150px;
     }
 }
 
