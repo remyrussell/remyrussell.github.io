@@ -168,7 +168,7 @@ button.menu-toggle:hover {
     position: fixed;
     top: 4rem;
     right: 2rem; /* Align with menu toggle button */
-    background-color: #f4d8e2; /* Lighter version of magenta */
+    background-color: #d3d3d3; /* Consistent light grey background */
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
@@ -176,8 +176,8 @@ button.menu-toggle:hover {
 }
 
 .theme-dark .menu {
-    background-color: #d081a5; /* Darker magenta for dark mode */
-    color: #f0f0f0;
+    background-color: #d3d3d3; /* Same grey in dark mode */
+    color: #333;
 }
 
 .menu ul {
@@ -192,7 +192,7 @@ button.menu-toggle:hover {
 }
 
 .menu a {
-    color: #fff; /* White text for contrast */
+    color: #333; /* Dark text for contrast against grey */
     text-decoration: none;
     font-size: 1rem;
     display: block;
@@ -200,11 +200,11 @@ button.menu-toggle:hover {
 }
 
 .theme-dark .menu a {
-    color: #fff; /* White text in dark mode */
+    color: #f0f0f0; /* Light text in dark mode */
 }
 
 .menu a:hover {
-    color: #f0f0f0; /* Light grey on hover */
+    color: #fff; /* White on hover */
     background-color: #c71585; /* Original magenta on hover */
 }
 
@@ -212,11 +212,11 @@ button.menu-toggle:hover {
 .menu-icon {
     font-size: 1.5rem;
     padding: 0.5rem;
-    color: #fff; /* White icons */
+    color: #333; /* Dark icons */
 }
 
 .menu-icon:hover {
-    color: #f0f0f0; /* Light grey on hover */
+    color: #fff; /* White on hover */
     background-color: #c71585; /* Original magenta on hover */
 }
 
@@ -225,18 +225,18 @@ button.menu-toggle:hover {
     width: 24px;
     height: 24px;
     vertical-align: middle;
-    filter: brightness(0) invert(1); /* White OnlyFans logo */
+    filter: brightness(0) invert(0.3); /* Adjusted to dark grey for contrast */
 }
 
 /* Style for text links */
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
-    color: #fff; /* White text */
+    color: #333; /* Dark text */
 }
 
 .menu-text:hover {
-    color: #f0f0f0; /* Light grey on hover */
+    color: #fff; /* White on hover */
     background-color: #c71585; /* Original magenta on hover */
 }
 
