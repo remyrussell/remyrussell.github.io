@@ -101,18 +101,18 @@ h2 {
 
 .theme-toggle-icon.fa-sun {
     color: #ffd700;
-    opacity: 0; /* Hidden in light mode */
+    opacity: 0;
 }
 
 .theme-toggle-icon.fa-moon {
     color: #333;
-    opacity: 1; /* Visible in light mode */
+    opacity: 1;
     position: absolute;
 }
 
 /* When the checkbox is checked (dark mode) */
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background-color: #800080; /* Purple for dark mode */
+    background-color: #c71585; /* Lighter, magenta-themed purple */
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
@@ -120,11 +120,11 @@ h2 {
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-sun {
-    opacity: 1; /* Visible in dark mode */
+    opacity: 1;
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
-    opacity: 0; /* Hidden in dark mode */
+    opacity: 0;
 }
 
 /* Dark mode adjustments */
