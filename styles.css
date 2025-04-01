@@ -39,6 +39,11 @@ h2 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow when sticky */
 }
 
+/* Ensure h3 headers in Skills section are not sticky */
+#skills h3 {
+    position: static; /* Override any inherited stickiness */
+}
+
 .contact p {
     margin: 0.5rem 0;
 }
@@ -185,150 +190,4 @@ button.menu-toggle:hover {
     right: 2rem;
     background-color: #333;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    padding: 1rem;
-}
-
-.theme-dark .menu {
-    background-color: #333;
-    color: #f0f0f0;
-}
-
-.menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menu li {
-    margin: 0.5rem 0;
-    text-align: center;
-}
-
-.menu a {
-    color: #c71585;
-    text-decoration: none;
-    font-size: 1rem;
-    display: block;
-    padding: 0.5rem;
-}
-
-.theme-dark .menu a {
-    color: #c71585;
-}
-
-.menu a:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-/* Style for icon-only links */
-.menu-icon {
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    color: #c71585;
-}
-
-.menu-icon:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-/* Style for the prank SVG logo */
-.prank-logo {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-    filter: brightness(0) invert(0.7);
-}
-
-/* Style for text links */
-.menu-text {
-    font-size: 1rem;
-    padding: 0.5rem;
-    color: #c71585;
-}
-
-.menu-text:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.menu.active {
-    display: block;
-}
-
-.menu.active .theme-toggle-wrapper {
-    display: block;
-}
-
-/* Adjust menu width on smaller screens */
-@media (max-width: 768px) {
-    .menu {
-        right: 2rem;
-        width: 150px;
-    }
-}
-
-/* Experience and Education items with logos */
-.experience-item, .education-item {
-    display: flex;
-    margin-top: 1.5rem;
-    align-items: center;
-    flex-direction: column;
-}
-
-.experience-item img, .education-item img {
-    max-width: 100px;
-    margin-bottom: 1rem;
-    filter: brightness(0.9);
-}
-
-.experience-item div, .education-item div {
-    flex: 1;
-    text-align: center;
-}
-
-/* For screens wider than 768px */
-@media (min-width: 768px) {
-    .experience-item, .education-item {
-        flex-direction: row;
-        align-items: flex-start;
-    }
-
-    .experience-item img, .education-item img {
-        margin-right: 1rem;
-        margin-bottom: 0;
-    }
-
-    .experience-item div, .education-item div {
-        text-align: left;
-    }
-}
-
-/* Skills and Interests Sections */
-#skills h3, #funSkills h3 {
-    margin-top: 1.5rem;
-}
-
-ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
-}
-
-li {
-    margin-bottom: 0.5rem;
-}
-
-/* New sections styling */
-#certifications, #languages {
-    margin-top: 2rem;
-}
-
-#certifications ul, #languages ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
-}
+    box-shadow:
