@@ -105,24 +105,6 @@ function populateResume(data) {
     document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
     document.getElementById('toolsAndFrameworks').innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
     document.getElementById('funSkills').innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
-
-    // Populate certifications if they exist
-    let certificationContainer = document.getElementById('certificationList');
-    if (data.certifications && certificationContainer) {
-        certificationContainer.innerHTML = data.certifications.map(cert => `<li>${cert.name} - ${cert.issuer}, ${cert.date}</li>`).join('');
-        document.getElementById('certifications').style.display = 'block';
-    } else if (certificationContainer) {
-        certificationContainer.innerHTML = '<li>Certifications Not Found</li>';
-    }
-
-    // Populate languages if they exist
-    let languageContainer = document.getElementById('languageList');
-    if (data.languages && languageContainer) {
-        languageContainer.innerHTML = data.languages.map(lang => `<li>${lang}</li>`).join('');
-        document.getElementById('languages').style.display = 'block';
-    } else if (languageContainer) {
-        languageContainer.innerHTML = '<li>Languages Not Found</li>';
-    }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
