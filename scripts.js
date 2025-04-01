@@ -50,7 +50,7 @@ function populateResume(data) {
     document.getElementById('role').innerText = data.role || 'Role Not Found';
     document.getElementById('email').innerText = data.contact?.email || 'Email Not Found';
     document.getElementById('phone').innerText = data.contact?.phone || 'Phone Not Found';
-    document.getElementById('productManagementList').innerHTML = data.productManagement?.map(item => `<li>${item}</li>`).join('') || '<li>Data Not Found</li>';
+    document.getElementById('productManagementList').innerHTML = data.productManagement?.map(item => `<li>${item}</li>`).join('') || '<li>Product Management Data Not Found</li>';
 
     let experienceContainer = document.getElementById('professionalExperience');
     experienceContainer.innerHTML = ''; // Clear existing content
@@ -102,7 +102,7 @@ function populateResume(data) {
         educationContainer.innerHTML = '<p>Education Data Not Found</p>';
     }
 
-    document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Skills Not Found</li>';
+    document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
     document.getElementById('toolsAndFrameworks').innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
     document.getElementById('funSkills').innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
 
@@ -130,16 +130,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     attachThemeToggleEvent();
 
     try {
-        let response = await fetch('/resume.json');
+        console.log('Attempting to fetch resume.json...');
+        let response = await fetch('/resume.json', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        console.log('Fetch response:', response);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        let data = await response.json();
-        populateResume(data);
-    } catch (err) {
-        console.error('Error fetching or parsing JSON:', err);
-        // Fallback: Display a message if data fails to load
-        document.getElementById('professionalExperience').innerHTML = '<p>Error loading experience. Check console for details.</p>';
-        document.getElementById('education').innerHTML = '<p>Error loading education. Check console for details.</p>';
-    }
-});
+        let data = await response.json(); ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
