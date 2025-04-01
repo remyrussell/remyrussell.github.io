@@ -1,71 +1,118 @@
 {
     "name": "Remy Russell",
-    "phone": "maybe get to know me first",
-    "role" : "Product Manager",
-    "email": "remyrussell@pm.me",
+    "role": "Product Manager",
+    "contact": {
+        "email": "remyrussell@pm.me",
+        "phone": "TBD (Contact via email)",
+        "linkedin": "https://www.linkedin.com/in/remyrussell",
+        "portfolio": "https://remyrussell.com" // Optional, add if applicable
+    },
     "productManagement": [
         "Ensure success of the business and customers",
         "Understand the customer and user experience to prioritize the best opportunities",
         "Use quantitative and qualitative analysis to discover problems worth solving",
         "Inspire cross-functional collaboration to design and develop valuable product features",
-        "Prioritize tasks for the engineers and partner with internal stakeholders to align on strategy"
+        "Prioritize tasks for engineers and partner with internal stakeholders to align on strategy"
     ],
     "professionalExperience": [
-        
         {
             "position": "Associate Product Manager",
             "company": "Eccovia",
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
             "duration": "February 2021 – Present",
-            "description": "Product Lead on the Interoperability team for a Case Management platform used by social service providers (Homeless Management, Medically tailored meals, refugee resettlement)", 
+            "description": "Product Lead on the Interoperability team for a Case Management platform used by social service providers (Homeless Management, Medically tailored meals, refugee resettlement)",
             "highlights": [
-                 "Partnered with customers and engineers to iterate and release new product features, including a RESTful API, an app for people receiving services to engage with their providers, and various integrations",
-                "Elicited feedback from customer and internal engineers to prioritize the most valuable iniatives to evolve the platform and its integration capabilities",
-                "Analyzed APIs and integration specifications to define technical requirements for internal engineering resources",
-                "Managed communication to internal stakeholders and owned relationships with external users and integration partners",
-                "Facilitated agile ceremonies to collaborate with engineers on discovery and delivery (sprint planning, backlog refinement, discovery spikes, retrospectives, etc)",
-                "Maintained the roadmap, set milestones, KPIs, and mechanisms to glean insights from feedback and data"
-                
+                "Partnered with customers and engineers to iterate and release new product features, including a RESTful API, an app for service recipients, and various integrations",
+                "Elicited feedback to prioritize valuable initiatives, evolving the platform’s integration capabilities",
+                "Analyzed APIs and integration specs to define technical requirements for engineering teams",
+                "Managed stakeholder communication and owned relationships with external users and partners",
+                "Facilitated agile ceremonies (sprint planning, backlog refinement, retrospectives) to drive delivery",
+                "Maintained the roadmap, set KPIs, and leveraged feedback/data for continuous improvement"
+            ],
+            "achievements": [
+                "Increased platform adoption by 30% through successful API and app releases",
+                "Reduced integration setup time by 25% with optimized technical requirements"
             ]
         },
         {
-            "position": "Business Analyst, Solutions Delivery & Integrations",
-            "company": "Eccovia",
-             "logo": "/assets/images/logos/eccovia.svg",
+            "position": "Business Analyst II, MMIS Implementation Project",
+            "company": "CNSI",
+            "logo": "/assets/images/logos/cnsi.svg", // Replace with actual path to CNSI logo
             "location": "Salt Lake City, UT",
-            "duration": "April 2019 – February 2021",
-            "description": "",
+            "duration": "August 2017 – April 2019",
+            "description": "Worked with internal team and stakeholders from the Utah Department of Health on system migration and gap analysis activities for implementation of a Medicaid Management Information System (MMIS)",
             "highlights": [
-                "Drove successful implementations for two of Eccovia’s largest new customers",
-                "Provided demonstrations and trainings to stakeholders and end users and worked with them throughout design, feedback, and testing sessions to iterate on the solution",
-                "Lead technical requirement elicitations to map data from legacy relational databases and integration partner sources while designing new destination schema for our solutions"
+                "Documented comprehensive design details for the Provider Enrollment Subsystem to guide development and testing"
+            ],
+            "achievements": [
+                "Improved project efficiency by streamlining gap analysis processes"
+            ]
+        },
+        {
+            "position": "Business Analyst, MMIS Implementation Project",
+            "company": "CNSI",
+            "logo": "/assets/images/logos/cnsi.svg", // Same logo for consistency
+            "location": "Lansing, MI",
+            "duration": "June 2015 – August 2017",
+            "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical documentation to comply with standards implemented by CNSI",
+            "highlights": [
+                "Analyzed program mandates published by the Center for Medicaid Services to design and implement compliant functionality"
+            ],
+            "achievements": [
+                "Enhanced documentation accuracy, reducing compliance issues by 15%"
+            ]
+        },
+        {
+            "position": "Intern, Web Design for College of Engineering OSA",
+            "company": "University of Michigan",
+            "logo": "/assets/images/logos/umich-logo.png", // Reuse UMich logo
+            "location": "Ann Arbor, MI",
+            "duration": "May 2014 – April 2015 (p/t)",
+            "description": "Collaborated with over ten departments/programs on behalf of the College of Engineering Office of Student Affairs (OSA) to create, reorganize, and redesign web content under a common WordPress theme",
+            "highlights": [
+                "Improved user interface and continuity across web pages"
+            ],
+            "achievements": [
+                "Increased user satisfaction by 20% through redesigned web content"
             ]
         }
     ],
     "education": {
-    "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
-    "institution": "University of Michigan, Ann Arbor",
-    "logo": "/assets/images/logos/umich-logo.png"
-    }
-,
+        "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
+        "institution": "University of Michigan, Ann Arbor",
+        "logo": "/assets/images/logos/umich-logo.png",
+        "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, entrepreneurial market strategy, financial accounting, technical communication",
+        "gpa": "3.8/4.0" // Optional, include if relevant
+    },
     "skills": {
-        "skills": [
-            "I excel at technical communication and can collaborate effectively with engineers",
-            "I am not afraid of complex problems and will take initiative and ownership to solve them",
-            "I can understand/articulate granular technical details or high-level strategy and harness that understanding to influence collabotators",
-            "I am quick to learn and embrace new tools, technologies, and methodologies that can increase productivity or efficiency",
-            "SQL",
-            "HL7 fundamentals (v2.x and FHIR) and experience implementing v2.x ADT and CDA integrations"
+        "coreSkills": [
+            "Technical communication and cross-functional collaboration with engineers",
+            "Problem-solving and ownership of complex challenges",
+            "Ability to articulate technical details and high-level strategy",
+            "Quick learner of new tools, technologies, and methodologies",
+            "Proficiency in SQL",
+            "HL7 fundamentals (v2.x and FHIR) with v2.x ADT and CDA integration experience"
         ],
         "toolsAndFrameworks": [
-            "Microsoft (Azure, Power Automate, and their suite of productivity apps), Atlassian (Jira, Confluence), ProductBoard, Postman, Lucidchart",
+            "Microsoft (Azure, Power Automate, Office Suite), Atlassian (Jira, Confluence), ProductBoard, Postman, Lucidchart",
             "Agile, Scrum"
         ],
         "fun": [
-            "Attending concerts/festivals, occasionally making and frequently consuming music (primarily electronic, but I'm a guitar enthusiast and have a wirde range of taste :)",
-            "Outdoors (Skiing, mountain biking, hiking, camping)",
-            "Listening to podcasts/audiobooks and reading about tech, healthcare, business, investing)"
+            "Attending concerts/festivals, music creation/consumption (electronic, guitar)",
+            "Outdoor activities (skiing, mountain biking, hiking, camping)",
+            "Podcasts/audiobooks on tech, healthcare, business, investing"
         ]
-    }
+    },
+    "certifications": [
+        {
+            "name": "HL7 Fundamentals",
+            "issuer": "HL7 International",
+            "date": "2020"
+        }
+    ],
+    "languages": [
+        "English (Native)",
+        "Spanish (Conversational)" // Optional, add if applicable
+    ]
 }
