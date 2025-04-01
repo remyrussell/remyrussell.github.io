@@ -27,6 +27,13 @@ h2 {
     margin-top: 2rem;
     border-bottom: 1px solid #ccc;
     padding-bottom: 0.5rem;
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Match container background */
+    z-index: 10; /* Ensure header stays above other content */
+    padding-top: 0.5rem; /* Add some padding for aesthetics */
+    padding-bottom: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow when sticky */
 }
 
 .contact p {
@@ -46,6 +53,7 @@ h2 {
 
 .theme-dark h2 {
     border-color: #777;
+    background-color: #444; /* Match container background in dark mode */
 }
 
 .theme-dark button {
@@ -151,7 +159,8 @@ button.menu-toggle {
     right: 2rem;
     color: #f0f0f0;
     font-size: 1.5rem;
-    display: none;
+    display: block; /* Always show the hamburger menu */
+    z-index: 20; /* Ensure it stays above sticky headers */
 }
 
 .theme-dark button.menu-toggle {
@@ -248,14 +257,15 @@ button.menu-toggle:hover {
     display: block;
 }
 
-/* Show menu toggle button and adjust layout on smaller screens */
+/* Adjust menu width on smaller screens */
 @media (max-width: 768px) {
-    button.menu-toggle {
-        display: block;
-    }
     .menu {
         right: 2rem;
         width: 150px;
+    }
+
+    h2 {
+        top: 4rem; /* Account for the hamburger menu height */
     }
 }
 
