@@ -5,7 +5,6 @@
         "email": "remyrussell@pm.me",
         "phone": "TBD (Contact via email)",
         "linkedin": "https://www.linkedin.com/in/remyrussell",
-        "portfolio": "https://remyrussell.com" // Optional, add if applicable
     },
     "productManagement": [
         "Ensure success of the business and customers",
@@ -52,7 +51,7 @@
         {
             "position": "Business Analyst, MMIS Implementation Project",
             "company": "CNSI",
-            "logo": "/assets/images/logos/cnsi.svg", // Same logo for consistency
+            "logo": "/assets/images/logos/cnsi.png", // Same logo for consistency
             "location": "Lansing, MI",
             "duration": "June 2015 – August 2017",
             "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical documentation to comply with standards implemented by CNSI",
