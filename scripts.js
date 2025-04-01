@@ -18,7 +18,6 @@ function toggleTheme() {
 }
 
 function keepThemeSetting() {
-    // Default to dark theme if no theme is set in localStorage
     if (!localStorage.getItem('theme')) {
         setTheme('theme-dark');
     } else if (localStorage.getItem('theme') === 'theme-dark') {
@@ -47,63 +46,73 @@ function attachThemeToggleEvent() {
 
 // Function to populate the resume content
 function populateResume(data) {
-    document.getElementById('name').innerText = data.name;
-    document.getElementById('role').innerText = data.role;
-    document.getElementById('email').innerText = data.contact.email;
-    document.getElementById('phone').innerText = data.contact.phone;
-    document.getElementById('productManagementList').innerHTML = data.productManagement.map(item => `<li>${item}</li>`).join('');
+    document.getElementById('name').innerText = data.name || 'Name Not Found';
+    document.getElementById('role').innerText = data.role || 'Role Not Found';
+    document.getElementById('email').innerText = data.contact?.email || 'Email Not Found';
+    document.getElementById('phone').innerText = data.contact?.phone || 'Phone Not Found';
+    document.getElementById('productManagementList').innerHTML = data.productManagement?.map(item => `<li>${item}</li>`).join('') || '<li>Data Not Found</li>';
 
     let experienceContainer = document.getElementById('professionalExperience');
     experienceContainer.innerHTML = ''; // Clear existing content
-    for (let experience of data.professionalExperience) {
-        let experienceDiv = document.createElement('div');
-        experienceDiv.className = 'experience-item';
-        let logoImg = document.createElement('img');
-        logoImg.src = experience.logo;
-        logoImg.alt = experience.company + ' logo';
-        logoImg.width = 100;
-        experienceDiv.appendChild(logoImg);
+    if (data.professionalExperience) {
+        data.professionalExperience.forEach(experience => {
+            let experienceDiv = document.createElement('div');
+            experienceDiv.className = 'experience-item';
+            let logoImg = document.createElement('img');
+            logoImg.src = experience.logo || '';
+            logoImg.alt = experience.company + ' logo' || 'Company Logo';
+            logoImg.width = 100;
+            experienceDiv.appendChild(logoImg);
 
-        let detailsDiv = document.createElement('div');
-        detailsDiv.innerHTML = `
-            <h3>${experience.position} at ${experience.company}</h3>
-            <p>${experience.location} | ${experience.duration}</p>
-            <p>${experience.description}</p>
-            <ul>
-                ${experience.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
-                ${experience.achievements ? experience.achievements.map(ach => `<li><strong>Achievement:</strong> ${ach}</li>`).join('') : ''}
-            </ul>
-        `;
-        experienceDiv.appendChild(detailsDiv);
-        experienceContainer.appendChild(experienceDiv);
+            let detailsDiv = document.createElement('div');
+            detailsDiv.innerHTML = `
+                <h3>${experience.position} at ${experience.company || 'Company Not Found'}</h3>
+                <p>${experience.location} | ${experience.duration}</p>
+                <p>${experience.description || 'Description Not Found'}</p>
+                <ul>
+                    ${experience.highlights?.map(highlight => `<li>${highlight}</li>`).join('') || '<li>Highlights Not Found</li>'}
+                    ${experience.achievements ? experience.achievements.map(ach => `<li><strong>Achievement:</strong> ${ach}</li>`).join('') : ''}
+                </ul>
+            `;
+            experienceDiv.appendChild(detailsDiv);
+            experienceContainer.appendChild(experienceDiv);
+        });
+    } else {
+        experienceContainer.innerHTML = '<p>Professional Experience Data Not Found</p>';
     }
 
     let educationContainer = document.getElementById('education');
     educationContainer.innerHTML = ''; // Clear existing content
-    let eduLogoImg = document.createElement('img');
-    eduLogoImg.src = data.education.logo;
-    eduLogoImg.alt = "Education institution logo";
-    eduLogoImg.width = 100;
-    educationContainer.appendChild(eduLogoImg);
+    if (data.education) {
+        let eduLogoImg = document.createElement('img');
+        eduLogoImg.src = data.education.logo || '';
+        eduLogoImg.alt = "Education institution logo";
+        eduLogoImg.width = 100;
+        educationContainer.appendChild(eduLogoImg);
 
-    let eduDetailsDiv = document.createElement('div');
-    eduDetailsDiv.innerHTML = `
-        <h3>${data.education.degree}</h3>
-        <p>${data.education.institution}</p>
-        <p>${data.education.coursework || ''}</p>
-        ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
-    `;
-    educationContainer.appendChild(eduDetailsDiv);
+        let eduDetailsDiv = document.createElement('div');
+        eduDetailsDiv.innerHTML = `
+            <h3>${data.education.degree || 'Degree Not Found'}</h3>
+            <p>${data.education.institution || 'Institution Not Found'}</p>
+            <p>${data.education.coursework || ''}</p>
+            ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
+        `;
+        educationContainer.appendChild(eduDetailsDiv);
+    } else {
+        educationContainer.innerHTML = '<p>Education Data Not Found</p>';
+    }
 
-    document.getElementById('skillList').innerHTML = data.skills.coreSkills.map(skill => `<li>${skill}</li>`).join('');
-    document.getElementById('toolsAndFrameworks').innerHTML = data.skills.toolsAndFrameworks.map(tool => `<li>${tool}</li>`).join('');
-    document.getElementById('funSkills').innerHTML = data.skills.fun.map(funItem => `<li>${funItem}</li>`).join('');
+    document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Skills Not Found</li>';
+    document.getElementById('toolsAndFrameworks').innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
+    document.getElementById('funSkills').innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
 
     // Populate certifications if they exist
     let certificationContainer = document.getElementById('certificationList');
     if (data.certifications && certificationContainer) {
         certificationContainer.innerHTML = data.certifications.map(cert => `<li>${cert.name} - ${cert.issuer}, ${cert.date}</li>`).join('');
         document.getElementById('certifications').style.display = 'block';
+    } else if (certificationContainer) {
+        certificationContainer.innerHTML = '<li>Certifications Not Found</li>';
     }
 
     // Populate languages if they exist
@@ -111,6 +120,8 @@ function populateResume(data) {
     if (data.languages && languageContainer) {
         languageContainer.innerHTML = data.languages.map(lang => `<li>${lang}</li>`).join('');
         document.getElementById('languages').style.display = 'block';
+    } else if (languageContainer) {
+        languageContainer.innerHTML = '<li>Languages Not Found</li>';
     }
 }
 
@@ -120,9 +131,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         let response = await fetch('/resume.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         let data = await response.json();
         populateResume(data);
     } catch (err) {
         console.error('Error fetching or parsing JSON:', err);
+        // Fallback: Display a message if data fails to load
+        document.getElementById('professionalExperience').innerHTML = '<p>Error loading experience. Check console for details.</p>';
+        document.getElementById('education').innerHTML = '<p>Error loading education. Check console for details.</p>';
     }
 });
