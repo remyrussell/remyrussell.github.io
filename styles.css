@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     padding: 2rem;
     color: #333;
-    background-color: #f0f0f0; /* Light grey background */
+    background-color: #f0f0f0;
     margin: 0;
     transition: background-color 0.3s ease;
 }
@@ -35,17 +35,17 @@ h2 {
 
 /* Dark mode styles */
 .theme-dark {
-    background-color: #333; /* Dark grey */
-    color: #f0f0f0; /* Light grey text */
+    background-color: #333;
+    color: #f0f0f0;
 }
 
 .theme-dark .container {
-    background-color: #444; /* Medium grey */
+    background-color: #444;
     color: #f0f0f0;
 }
 
 .theme-dark h2 {
-    border-color: #777; /* Medium grey border */
+    border-color: #777;
 }
 
 .theme-dark button {
@@ -57,7 +57,7 @@ h2 {
 .theme-toggle-wrapper {
     position: relative;
     margin: 0.5rem 0;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .theme-toggle-checkbox {
@@ -112,7 +112,7 @@ h2 {
 
 /* When the checkbox is checked (dark mode) */
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background-color: #c71585; /* Original magenta color */
+    background-color: #c71585;
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
@@ -141,21 +141,21 @@ h2 {
 
 /* Hamburger menu button and menu styles */
 button.menu-toggle {
-    background-color: #333; /* Matches menu background */
+    background-color: #333;
     border: none;
     padding: 0.5rem;
     border-radius: 5px;
     cursor: pointer;
     position: fixed;
     top: 2rem;
-    right: 2rem; /* Moved to upper right */
+    right: 2rem;
     color: #f0f0f0;
     font-size: 1.5rem;
     display: none;
 }
 
 .theme-dark button.menu-toggle {
-    background-color: #f0f0f0; /* Contrasts in dark mode */
+    background-color: #f0f0f0;
     color: #333;
 }
 
@@ -167,8 +167,8 @@ button.menu-toggle:hover {
     display: none;
     position: fixed;
     top: 4rem;
-    right: 2rem; /* Align with menu toggle button */
-    background-color: #333; /* Consistent dark background */
+    right: 2rem;
+    background-color: #333;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
@@ -176,7 +176,7 @@ button.menu-toggle:hover {
 }
 
 .theme-dark .menu {
-    background-color: #333; /* Same dark background in dark mode */
+    background-color: #333;
     color: #f0f0f0;
 }
 
@@ -192,7 +192,7 @@ button.menu-toggle:hover {
 }
 
 .menu a {
-    color: #c71585; /* Pink text to match slider */
+    color: #c71585;
     text-decoration: none;
     font-size: 1rem;
     display: block;
@@ -200,24 +200,24 @@ button.menu-toggle:hover {
 }
 
 .theme-dark .menu a {
-    color: #c71585; /* Pink text in dark mode */
+    color: #c71585;
 }
 
 .menu a:hover {
-    color: #fff; /* White on hover */
-    background-color: #c71585; /* Pink background on hover */
+    color: #fff;
+    background-color: #c71585;
 }
 
 /* Style for icon-only links */
 .menu-icon {
     font-size: 1.5rem;
     padding: 0.5rem;
-    color: #c71585; /* Pink icons */
+    color: #c71585;
 }
 
 .menu-icon:hover {
-    color: #fff; /* White on hover */
-    background-color: #c71585; /* Pink background on hover */
+    color: #fff;
+    background-color: #c71585;
 }
 
 /* Style for the OnlyFans SVG logo */
@@ -225,19 +225,19 @@ button.menu-toggle:hover {
     width: 24px;
     height: 24px;
     vertical-align: middle;
-    filter: brightness(0) invert(0.7); /* Adjusted to pinkish tone matching #c71585 */
+    filter: brightness(0) invert(0.7);
 }
 
 /* Style for text links */
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
-    color: #c71585; /* Pink text */
+    color: #c71585;
 }
 
 .menu-text:hover {
-    color: #fff; /* White on hover */
-    background-color: #c71585; /* Pink background on hover */
+    color: #fff;
+    background-color: #c71585;
 }
 
 .menu.active {
@@ -245,7 +245,7 @@ button.menu-toggle:hover {
 }
 
 .menu.active .theme-toggle-wrapper {
-    display: block; /* Show theme toggle when menu is active */
+    display: block;
 }
 
 /* Show menu toggle button and adjust layout on smaller screens */
@@ -270,7 +270,7 @@ button.menu-toggle:hover {
 .experience-item img, .education-item img {
     max-width: 100px;
     margin-bottom: 1rem;
-    filter: brightness(0.9); /* Slight dimming for visibility */
+    filter: brightness(0.9);
 }
 
 .experience-item div, .education-item div {
@@ -308,4 +308,15 @@ ul {
 
 li {
     margin-bottom: 0.5rem;
+}
+
+/* New sections styling */
+#certifications, #languages {
+    margin-top: 2rem;
+}
+
+#certifications ul, #languages ul {
+    list-style-type: disc;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
 }
