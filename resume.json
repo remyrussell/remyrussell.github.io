@@ -4,7 +4,7 @@
     "contact": {
         "email": "remyrussell@pm.me",
         "phone": "TBD (Contact via email)",
-        "linkedin": "https://www.linkedin.com/in/remyrussell",
+        "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
     "productManagement": [
         "Ensure success of the business and customers",
@@ -37,7 +37,7 @@
         {
             "position": "Business Analyst II, MMIS Implementation Project",
             "company": "CNSI",
-            "logo": "/assets/images/logos/CNSI.png", // Updated to .png
+            "logo": "/assets/images/logos/CNSI.png",
             "location": "Salt Lake City, UT",
             "duration": "August 2017 – April 2019",
             "description": "Worked with internal team and stakeholders from the Utah Department of Health on system migration and gap analysis activities for implementation of a Medicaid Management Information System (MMIS)",
@@ -51,10 +51,10 @@
         {
             "position": "Business Analyst, MMIS Implementation Project",
             "company": "CNSI",
-            "logo": "/assets/images/logos/CNSI.png", // Updated to .png
+            "logo": "/assets/images/logos/CNSI.png",
             "location": "Lansing, MI",
             "duration": "June 2015 – August 2017",
-            "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical documentation to comply with standards implemented by CNSI",
+            "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical documentation to comply with standards in the field",
             "highlights": [
                 "Analyzed program mandates published by the Center for Medicaid Services to design and implement compliant functionality"
             ],
@@ -68,7 +68,7 @@
             "logo": "/assets/images/logos/umich-logo.png",
             "location": "Ann Arbor, MI",
             "duration": "May 2014 – April 2015 (p/t)",
-            "description": "Collaborated with over ten departments/programs on behalf of the College of Engineering Office of Student Affairs (OSA) to create, reorganize, and redesign web content under a common WordPress theme",
+            "description": "Collaborated with over ten departments/programs on behalf of the College of Engineering Office of Student Affairs (OSA) to create, reorganize, and redesign web content under a new content management system",
             "highlights": [
                 "Improved user interface and continuity across web pages"
             ],
@@ -81,8 +81,8 @@
         "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
         "institution": "University of Michigan, Ann Arbor",
         "logo": "/assets/images/logos/umich-logo.png",
-        "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, entrepreneurial market strategy, financial accounting, technical communication",
-        "gpa": "3.8/4.0" // Optional, include if relevant
+        "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, entrepreneurship",
+        "gpa": "3.8/4.0"
     },
     "skills": {
         "coreSkills": [
@@ -112,6 +112,6 @@
     ],
     "languages": [
         "English (Native)",
-        "Spanish (Conversational)" // Optional, add if applicable
+        "Spanish (Conversational)"
     ]
 }
