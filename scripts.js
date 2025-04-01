@@ -50,7 +50,7 @@ function populateResume(data) {
     document.getElementById('role').innerText = data.role || 'Role Not Found';
     document.getElementById('email').innerText = data.contact?.email || 'Email Not Found';
     document.getElementById('phone').innerText = data.contact?.phone || 'Phone Not Found';
-    document.getElementById('productManagementList').innerHTML = data.productManagement?.map(item => `<li>${item}</li>`).join('') || '<li>Product Management Data Not Found</li>';
+    document.getElementById('summaryList').innerHTML = data.Summary?.map(item => `<li>${item}</li>`).join('') || '<li>Summary Data Not Found</li>';
 
     let experienceContainer = document.getElementById('professionalExperience');
     experienceContainer.innerHTML = ''; // Clear existing content
@@ -131,11 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         console.log('Attempting to fetch resume.json...');
-        let response = await fetch('/resume.json?raw=true', {
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
+        let response = await fetch('/resume.json');
         console.log('Fetch response:', response);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
