@@ -18,7 +18,7 @@
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
             "duration": "February 2021 – Present",
-            "description": "Product Lead on the Interoperability team for a Case Management platform used by social service providers (Homeless Management, Medically tailored meals, refugee resettlement)",
+            "description": "Product Lead on the Platform and Interoperability teams for a Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, and more)",
             "highlights": [
                 "Partnered with customers and engineers to iterate and release new product features, including a RESTful API, an app for service recipients, and various integrations",
                 "Elicited feedback to prioritize valuable initiatives, evolving the platform’s integration capabilities",
@@ -28,8 +28,9 @@
                 "Maintained the roadmap, set KPIs, and leveraged feedback/data for continuous improvement"
             ],
             "achievements": [
-                "Increased platform adoption by 30% through successful API and app releases",
-                "Reduced integration setup time by 25% with optimized technical requirements"
+                "Helped drive growth in ARR from 10M to 15M by expanding features, supporting/improving implementation processes, and increasing platform interoperability, ultimately leading to CaseWorthy's acquisition of Eccovia",
+                "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
+                "Helped establish a Product Catalog and a platform-based, microservice approach to solving new problems in a way that enabled future growth/expansion"
             ]
         },
         {
@@ -40,7 +41,7 @@
             "duration": "August 2017 – April 2019",
             "description": "Worked with internal team and stakeholders from the Utah Department of Health on system migration and gap analysis activities for implementation of a Medicaid Management Information System (MMIS)",
             "highlights": [
-                "Documented comprehensive design details for the Provider Enrollment Subsystem to guide development and testing"
+                "Partnered with the State customer stakeholders to define and document comprehensive design details for the Provider Enrollment Subsystem (to guide development and testing)"
             ],
             "achievements": [
                 "Improved project efficiency by streamlining gap analysis processes"
@@ -70,9 +71,6 @@
             "highlights": [
                 "Improved user interface and continuity across web pages"
             ],
-            "achievements": [
-                "Increased user satisfaction by 20% through redesigned web content"
-            ]
         }
     ],
     "education": {
@@ -80,7 +78,6 @@
         "institution": "University of Michigan, Ann Arbor",
         "logo": "/assets/images/logos/umich-logo.png",
         "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, entrepreneurship",
-        "gpa": "3.8/4.0"
     },
     "skills": {
         "coreSkills": [
