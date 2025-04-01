@@ -130,8 +130,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     attachThemeToggleEvent();
 
     try {
-        console.log('Attempting to fetch resume.json from raw GitHub URL...');
-        let response = await fetch('https://raw.githubusercontent.com/remyrussell/remyrussell.github.io/main/resume.json', {
+        console.log('Attempting to fetch resume.json...');
+        let response = await fetch('/resume.json?raw=true', {
             headers: {
                 'Accept': 'application/json'
             }
