@@ -28,11 +28,21 @@ h2 {
     border-bottom: 1px solid #ccc;
     padding-bottom: 0.5rem;
     position: sticky;
-    top: 0;
+    top: 4rem; /* Account for the hamburger menu height */
     background-color: #fff; /* Match container background */
-    z-index: 10; /* Ensure header stays above other content */
+    z-index: 10; /* Ensure section headers stay above other content */
     padding-top: 0.5rem; /* Add some padding for aesthetics */
     padding-bottom: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow when sticky */
+}
+
+.experience-item h3 {
+    position: sticky;
+    top: 6.5rem; /* Position below the sticky h2 (4rem for h2 + 2.5rem for h2 height and padding) */
+    background-color: #fff; /* Match container background */
+    z-index: 9; /* Below h2 but above other content */
+    padding: 0.5rem 0;
+    margin: 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow when sticky */
 }
 
@@ -53,6 +63,10 @@ h2 {
 
 .theme-dark h2 {
     border-color: #777;
+    background-color: #444; /* Match container background in dark mode */
+}
+
+.theme-dark .experience-item h3 {
     background-color: #444; /* Match container background in dark mode */
 }
 
@@ -262,10 +276,6 @@ button.menu-toggle:hover {
     .menu {
         right: 2rem;
         width: 150px;
-    }
-
-    h2 {
-        top: 4rem; /* Account for the hamburger menu height */
     }
 }
 
