@@ -38,7 +38,7 @@
         {
             "position": "Business Analyst II, MMIS Implementation Project",
             "company": "CNSI",
-            "logo": "/assets/images/logos/cnsi.png", // Updated to .png
+            "logo": "/assets/images/logos/CNSI.png", // Updated to .png
             "location": "Salt Lake City, UT",
             "duration": "August 2017 – April 2019",
             "description": "Worked with internal team and stakeholders from the Utah Department of Health on system migration and gap analysis activities for implementation of a Medicaid Management Information System (MMIS)",
@@ -52,7 +52,7 @@
         {
             "position": "Business Analyst, MMIS Implementation Project",
             "company": "CNSI",
-            "logo": "/assets/images/logos/cnsi.png", // Updated to .png
+            "logo": "/assets/images/logos/CNSI.png", // Updated to .png
             "location": "Lansing, MI",
             "duration": "June 2015 – August 2017",
             "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical documentation to comply with standards implemented by CNSI",
