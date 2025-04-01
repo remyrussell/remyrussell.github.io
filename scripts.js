@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         console.log('Attempting to fetch resume.json...');
-        let response = await fetch('/resume.json', {
+        let response = await fetch('/resume.json?raw=true', {
             headers: {
                 'Accept': 'application/json'
             }
@@ -140,4 +140,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        let data = await response.json(); ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+        let data = await response.json();
+        console.log('Fetched data:', data);
+        populateResume(data);
+    } catch (err) {
+        console.error('Error fetching or parsing JSON:', err);
+        // Fallback: Display a message if data fails to load
+        document.getElementById('professionalExperience').innerHTML = '<p>Error loading experience. Check console for details.</p>';
+        document.getElementById('education').innerHTML = '<p>Error loading education. Check console for details.</p>';
+    }
+});
