@@ -6,6 +6,7 @@ body {
     background-color: #f0f0f0;
     margin: 0;
     transition: background-color 0.3s ease;
+    text-align: left; /* Ensure all text is left-aligned by default */
 }
 
 .container {
@@ -16,6 +17,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
+    text-align: left; /* Reinforce left alignment for container content */
 }
 
 h1, h2, h3 {
@@ -208,7 +210,7 @@ button.menu-toggle:hover {
 
 .menu li {
     margin: 0.5rem 0;
-    text-align: center;
+    text-align: center; /* Keep menu items centered */
 }
 
 .menu a {
@@ -292,7 +294,7 @@ button.menu-toggle:hover {
 
 .experience-item div, .education-item div {
     flex: 1;
-    text-align: center;
+    text-align: left; /* Left-align text in experience and education items */
 }
 
 /* For screens wider than 768px */
@@ -308,7 +310,7 @@ button.menu-toggle:hover {
     }
 
     .experience-item div, .education-item div {
-        text-align: left;
+        text-align: left; /* Ensure left alignment on desktop */
     }
 }
 
@@ -321,6 +323,7 @@ ul {
     list-style-type: disc;
     padding-left: 1rem;
     margin-top: 0.5rem;
+    text-align: left; /* Ensure lists are left-aligned */
 }
 
 li {
@@ -336,4 +339,5 @@ li {
     list-style-type: disc;
     padding-left: 1rem;
     margin-top: 0.5rem;
+    text-align: left; /* Ensure lists are left-aligned */
 }
