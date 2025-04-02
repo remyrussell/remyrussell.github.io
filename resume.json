@@ -31,7 +31,7 @@
                 "Helped drive growth in ARR from 10M to 15M by expanding features, supporting/improving implementation processes, and increasing platform interoperability, ultimately leading to CaseWorthy's acquisition of Eccovia",
                 "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
                 "Helped establish a Product Catalog and a platform-based, microservice approach to solving new problems in a way that enabled future growth/expansion",
-                "Lead new growth intiatives and gained experience shipping and/or scrapping MVPS to integrate with third parties to extend user capabilities (e.g. Twilio for Email & SMS, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Medicaid Payers, external data warehouses, etc.)"
+                "Led new growth initiatives and gained experience shipping and/or scrapping MVPs to integrate with third parties to extend user capabilities (e.g., Twilio for Email & SMS, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Medicaid Payers, external data warehouses, etc.)"
             ]
         },
         {
@@ -48,7 +48,6 @@
             "achievements": [
                 "Successfully implemented new and complex solutions for two of Eccovia's top ten customers by ARR",
                 "Pushed the platform interoperability capabilities to the limits and drove the evolution of features to unlock the capabilities requested by our customers"
-
             ]
         },
         {
@@ -60,7 +59,7 @@
             "description": "Worked with internal team and stakeholders from the Utah Department of Health on system migration and gap analysis activities for implementation of a Medicaid Management Information System ...",
             "highlights": [
                 "Partnered with the State customer stakeholders to define and document comprehensive design details for the Provider Enrollment Subsystem (to guide development and testing)"
-            ],
+            ]
         },
         {
             "position": "Business Analyst, MMIS Implementation Project",
@@ -81,7 +80,7 @@
         "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
         "institution": "University of Michigan, Ann Arbor",
         "logo": "/assets/images/logos/umich-logo.png",
-        "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, and mmore"
+        "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, and more"
     },
     "skills": {
         "coreSkills": [
@@ -91,7 +90,7 @@
             "Quick learner of new tools, technologies, and methodologies",
             "Proficiency in SQL and ability to read and understand most programming languages with time",
             "HL7 fundamentals (v2.x and FHIR) with v2.x ADT and CDA integration experience",
-            "Experience with Revenue Cycle Management integrationssfor Medicaid eligibility checks and claim submission and remittance (X12 EDI Standards)"
+            "Experience with Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission and remittance (X12 EDI Standards)"
         ],
         "toolsAndFrameworks": [
             "Microsoft (Azure, Power Automate, PowerBI), Atlassian (Jira, Confluence), ProductBoard, Figma, Postman, Lucidchart",
