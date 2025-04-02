@@ -18,9 +18,9 @@
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
             "duration": "February 2021 – Present",
-            "description": "Product Lead on the Platform and Interoperability teams for a Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, ...)",
+            "description": "Product Lead on the Platform and Interoperability teams for a Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, Enhanced Care Management, and more)",
             "highlights": [
-                "Partnered with customers and engineers to iterate and release new product features, including a RESTful API, an app for service recipients, and various integrations",
+                "Partnered with internal and external customers and engineers to iterate and release new product features, including a RESTful API, a mobile-responsive web app for service recipients, various tools to support no-code or low-code integration design, platform improvements such as SSO and 2-Step Verification, scheduled file exports, and more",
                 "Elicited feedback to prioritize valuable initiatives, evolving the platform’s integration capabilities",
                 "Analyzed APIs and integration specs to define technical requirements for engineering teams",
                 "Managed stakeholder communication and owned relationships with external users and partners",
@@ -28,9 +28,24 @@
                 "Maintained the roadmap, set KPIs, and leveraged feedback/data for continuous improvement"
             ],
             "achievements": [
-                "Helped drive growth in ARR from 10M to 15M by expanding features, supporting/improving implementation processes, and increasing platform interoperability, ultimately leading to ...",
+                "Helped drive growth in ARR from 10M to 15M by expanding features, supporting/improving implementation processes, and increasing platform interoperability, ultimately leading to CaseWorthy's acquisition of Eccovia",
                 "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
-                "Helped establish a Product Catalog and a platform-based, microservice approach to solving new problems in a way that enabled future growth/expansion"
+                "Helped establish a Product Catalog and a platform-based, microservice approach to solving new problems in a way that enabled future growth/expansion",
+                "Lead new growth intiatives and gained experience shipping and/or scrapping MVPS to integrate with third parties to extend user capabilities (e.g. Twilio for Email & SMS, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Medicaid Payers, external data warehouses, etc.)"
+            ]
+        },
+        {
+            "position": "Business Analyst, Solutiions Delivery",
+            "company": "Eccovia",
+            "logo": "/assets/images/logos/eccovia.svg",
+            "location": "Salt Lake City, UT",
+            "duration": "August 2019 – February 2021",
+            "description": "TBA",
+            "highlights": [
+                "TBA"
+            ],
+            "achievements": [
+                "TBA"
             ]
         },
         {
@@ -60,24 +75,13 @@
             "achievements": [
                 "Enhanced documentation accuracy, reducing compliance issues by 15%"
             ]
-        },
-        {
-            "position": "Intern, Web Design for College of Engineering OSA",
-            "company": "University of Michigan",
-            "logo": "/assets/images/logos/umich-logo.png",
-            "location": "Ann Arbor, MI",
-            "duration": "May 2014 – April 2015 (p/t)",
-            "description": "Collaborated with over ten departments/programs on behalf of the College of Engineering Office of Student Affairs (OSA) to create, reorganize, and redesign web content ...",
-            "highlights": [
-                "Improved user interface and continuity across web pages"
-            ]
         }
     ],
     "education": {
         "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
         "institution": "University of Michigan, Ann Arbor",
         "logo": "/assets/images/logos/umich-logo.png",
-        "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, ..."
+        "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, and mmore"
     },
     "skills": {
         "coreSkills": [
@@ -86,10 +90,11 @@
             "Ability to articulate technical details and high-level strategy",
             "Quick learner of new tools, technologies, and methodologies",
             "Proficiency in SQL",
-            "HL7 fundamentals (v2.x and FHIR) with v2.x ADT and CDA integration experience"
+            "HL7 fundamentals (v2.x and FHIR) with v2.x ADT and CDA integration experience",
+            "Experience with Revenue Cycle Management integrationssfor Medicaid eligibility checks and claim submission and remittance (X12 EDI Standards)"
         ],
         "toolsAndFrameworks": [
-            "Microsoft (Azure, Power Automate, Office Suite), Atlassian (Jira, Confluence), ProductBoard, Postman, Lucidchart",
+            "Microsoft (Azure, Power Automate, PowerBI), Atlassian (Jira, Confluence), ProductBoard, Figma, Postman, Lucidchart",
             "Agile, Scrum"
         ],
         "fun": [
