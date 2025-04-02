@@ -27,8 +27,12 @@ h1, h2, h3 {
 
 h2 {
     margin-top: 2rem;
-    border-bottom: 1px solid #ccc;
+    margin-bottom: 1.5rem; /* Increase spacing below the header */
+    border-bottom: 2px solid #ccc; /* Thicker border for more prominence */
     padding-bottom: 0.5rem;
+    font-size: 1.75rem; /* Increase font size */
+    font-weight: bold; /* Ensure bold text */
+    color: #333; /* Consistent color */
 }
 
 .experience-item h3 {
@@ -80,6 +84,7 @@ h2 {
 
 .theme-dark h2 {
     border-color: #777;
+    color: #f0f0f0; /* Adjust color for dark mode */
 }
 
 .theme-dark .experience-item h3 {
