@@ -3,7 +3,7 @@
     "role": "Product Manager",
     "contact": {
         "email": "remyrussell@pm.me",
-        "phone": "TBD (Contact via email)",
+        "phone": "(970) 769-3383",
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
     "Summary": [
@@ -35,17 +35,20 @@
             ]
         },
         {
-            "position": "Business Analyst, Solutiions Delivery",
+            "position": "Business Analyst, Solutions Delivery",
             "company": "Eccovia",
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
             "duration": "August 2019 – February 2021",
             "description": "TBA",
             "highlights": [
-                "TBA"
+                "Led problem discovery and requirements gathering with new customers during the initial design and implementation of their solution on the case management platform",
+                "Supported complex data migration efforts, custom integration solutions, and training/onboarding of new users"
             ],
             "achievements": [
-                "TBA"
+                "Successfully implemented new and complex solutions for two of Eccovia's top ten customers by ARR",
+                "Pushed the platform interoperability capabilities to the limits and drove the evolution of features to unlock the capabilities requested by our customers"
+
             ]
         },
         {
@@ -58,9 +61,6 @@
             "highlights": [
                 "Partnered with the State customer stakeholders to define and document comprehensive design details for the Provider Enrollment Subsystem (to guide development and testing)"
             ],
-            "achievements": [
-                "Improved project efficiency by streamlining gap analysis processes"
-            ]
         },
         {
             "position": "Business Analyst, MMIS Implementation Project",
@@ -89,7 +89,7 @@
             "Problem-solving and ownership of complex challenges",
             "Ability to articulate technical details and high-level strategy",
             "Quick learner of new tools, technologies, and methodologies",
-            "Proficiency in SQL",
+            "Proficiency in SQL and ability to read and understand most programming languages with time",
             "HL7 fundamentals (v2.x and FHIR) with v2.x ADT and CDA integration experience",
             "Experience with Revenue Cycle Management integrationssfor Medicaid eligibility checks and claim submission and remittance (X12 EDI Standards)"
         ],
@@ -100,7 +100,8 @@
         "fun": [
             "Attending concerts/festivals, music creation/consumption (electronic, guitar)",
             "Outdoor activities (skiing, mountain biking, hiking, camping)",
-            "Podcasts/audiobooks on tech, healthcare, business, investing"
+            "Podcasts/audiobooks on tech, healthcare, business, investing",
+            "'Vibecoding' and otherwise playing with LLMs to help me solve problems"
         ]
     },
     "certifications": [
