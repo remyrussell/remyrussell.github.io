@@ -84,11 +84,13 @@ function populateResume(data) {
     let educationContainer = document.getElementById('education');
     educationContainer.innerHTML = ''; // Clear existing content
     if (data.education) {
+        let educationDiv = document.createElement('div');
+        educationDiv.className = 'education-item'; // Add education-item class
         let eduLogoImg = document.createElement('img');
         eduLogoImg.src = data.education.logo || '';
         eduLogoImg.alt = "Education institution logo";
         eduLogoImg.width = 100;
-        educationContainer.appendChild(eduLogoImg);
+        educationDiv.appendChild(eduLogoImg);
 
         let eduDetailsDiv = document.createElement('div');
         eduDetailsDiv.innerHTML = `
@@ -97,7 +99,8 @@ function populateResume(data) {
             <p>${data.education.coursework || ''}</p>
             ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
         `;
-        educationContainer.appendChild(eduDetailsDiv);
+        educationDiv.appendChild(eduDetailsDiv);
+        educationContainer.appendChild(educationDiv);
     } else {
         educationContainer.innerHTML = '<p>Education Data Not Found</p>';
     }
