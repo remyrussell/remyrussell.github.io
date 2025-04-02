@@ -9,7 +9,7 @@
     "Summary": [
         "Understand the users, buyers, and the problems worth solving to ensure success of the business",
         "Inspire cross-functional collaboration to align on the most promising strategies",
-        "Drive the execution of the vision through rapid iteration of discovery and delivery with engineering partners"
+        "Drive the execution of the vision through rapid iteration of discovery and delivery"
     ],
     "professionalExperience": [
         {
@@ -20,11 +20,10 @@
             "duration": "February 2021 – March 2025",
             "description": "Product Lead on the Platform and Interoperability teams for a Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, and more)",
             "highlights": [
-                "Partnered with internal and external customers and engineers to iterate and release new product features, including a RESTful API, a web app for service recipients, various tools to support no-code or low-code integration design, platform improvements such as SSO and 2-Step Verification, scheduled file exports, and more",
                 "Elicited feedback to prioritize valuable initiatives, evolving the platform’s integration capabilities",
-                "Analyzed APIs and integration specs to define technical requirements for engineering teams",
+                "Analyzed APIs and integration use cases to define technical requirements for engineering teams",
                 "Managed stakeholder communication and owned relationships with external users and partners",
-                "Maintained the roadmap, set KPIs, and leveraged feedback/data for continuous improvement"
+                "Maintained the roadmap, defined KPIs and established mechanisms to measure them, and leveraged feedback/data for continuous improvement"
             ],
             "achievements": [
                 "Helped drive growth in ARR from 10M to 15M by expanding features, supporting/improving implementation processes, and increasing platform interoperability, ultimately leading to CaseWorthy's acquisition of Eccovia",
