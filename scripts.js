@@ -53,6 +53,15 @@ function populateResume(data) {
     document.getElementById('summaryList').innerHTML = data.Summary?.map(item => `<li>${item}</li>`).join('') || '<li>Summary Data Not Found</li>';
 
     let experienceContainer = document.getElementById('professionalExperience');
+    console.log('Professional Experience Container:', experienceContainer);
+    // Ensure the h2 header exists
+    let experienceHeader = experienceContainer.querySelector('h2');
+    if (!experienceHeader) {
+        console.warn('Professional Experience h2 header not found!');
+        let newHeader = document.createElement('h2');
+        newHeader.innerText = 'Professional Experience';
+        experienceContainer.prepend(newHeader);
+    }
     // Remove existing experience-item divs to prevent duplication
     const existingExperienceItems = experienceContainer.querySelectorAll('.experience-item');
     existingExperienceItems.forEach(item => item.remove());
@@ -87,19 +96,27 @@ function populateResume(data) {
             experienceContainer.appendChild(experienceDiv);
         });
     } else {
-        // If no data, append a fallback message after the header
         let fallbackDiv = document.createElement('div');
         fallbackDiv.innerHTML = '<p>Professional Experience Data Not Found</p>';
         experienceContainer.appendChild(fallbackDiv);
     }
 
     let educationContainer = document.getElementById('education');
+    console.log('Education Container:', educationContainer);
+    // Ensure the h2 header exists
+    let educationHeader = educationContainer.querySelector('h2');
+    if (!educationHeader) {
+        console.warn('Education h2 header not found!');
+        let newHeader = document.createElement('h2');
+        newHeader.innerText = 'Education';
+        educationContainer.prepend(newHeader);
+    }
     // Remove existing education-item divs to prevent duplication
     const existingEducationItems = educationContainer.querySelectorAll('.education-item');
     existingEducationItems.forEach(item => item.remove());
     if (data.education) {
         let educationDiv = document.createElement('div');
-        educationDiv.className = 'education-item'; // Add education-item class
+        educationDiv.className = 'education-item';
         let eduLogoImg = document.createElement('img');
         eduLogoImg.src = data.education.logo || '';
         eduLogoImg.alt = "Education institution logo";
@@ -116,7 +133,6 @@ function populateResume(data) {
         educationDiv.appendChild(eduDetailsDiv);
         educationContainer.appendChild(educationDiv);
     } else {
-        // If no education data, append a fallback message after the header
         let fallbackDiv = document.createElement('div');
         fallbackDiv.innerHTML = '<p>Education Data Not Found</p>';
         educationContainer.appendChild(fallbackDiv);
