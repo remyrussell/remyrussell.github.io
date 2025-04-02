@@ -50,6 +50,23 @@ h2 {
     margin: 0.5rem 0;
 }
 
+/* Style for achievements list */
+.achievements {
+    margin-top: 1rem;
+}
+
+.achievements strong {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.achievements ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 0;
+}
+
 /* Dark mode styles */
 .theme-dark {
     background-color: #333;
