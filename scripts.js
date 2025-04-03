@@ -54,6 +54,14 @@ function attachThemeToggleEvent() {
     }
 }
 
+// Function to format ISO date to "Month, Year"
+function formatDate(isoDate) {
+    if (!isoDate) return '';
+    const date = new Date(isoDate);
+    const options = { year: 'numeric', month: 'long' };
+    return date.toLocaleDateString('en-US', options);
+}
+
 // Function to populate the resume content
 function populateResume(data) {
     document.getElementById('name').innerText = data.name || 'Name Not Found';
@@ -62,7 +70,12 @@ function populateResume(data) {
     if (data.contact?.phone) {
         document.getElementById('phone').innerText = data.contact.phone || '';
     } // Only set phone if it exists
-    document.getElementById('summaryList').innerHTML = data.summary?.split('. ').map(item => `<li>${item.trim()}${item.includes('success') ? '. <strong>Currently seeking remote or hybrid roles in the Salt Lake City area.</strong>' : ''}</li>`).join('') || '<li>Summary Data Not Found</li>';
+    const locationNote = document.createElement('p');
+    locationNote.className = 'location-note';
+    locationNote.innerText = 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
+    document.querySelector('header').insertBefore(locationNote, document.getElementById('summary'));
+
+    document.getElementById('summaryList').innerHTML = data.summary?.split('. ').map(item => `<li>${item.trim()}</li>`).join('') || '<li>Summary Data Not Found</li>';
 
     let experienceContainer = document.getElementById('professionalExperience');
     console.log('Professional Experience Container:', experienceContainer);
@@ -89,21 +102,23 @@ function populateResume(data) {
             let detailsDiv = document.createElement('div');
             detailsDiv.className = 'details';
 
-            // Non-sticky header with position, date range, and location
+            // Non-sticky header with position, date range below, and location
             let stickyHeader = document.createElement('div');
             stickyHeader.className = 'sticky-header';
             let positionHeader = document.createElement('h3');
             positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
+            stickyHeader.appendChild(positionHeader);
+            detailsDiv.appendChild(stickyHeader);
+
             let dateRange = document.createElement('span');
             dateRange.className = 'date-range';
-            dateRange.innerText = `${experience.duration.start} – ${experience.duration.end || 'Present'}`;
+            dateRange.innerText = `${formatDate(experience.duration.start)} through ${formatDate(experience.duration.end) || 'Present'}`;
+            detailsDiv.appendChild(dateRange);
+
             let locationSpan = document.createElement('span');
             locationSpan.className = 'location';
             locationSpan.innerText = experience.location || '';
-            stickyHeader.appendChild(positionHeader);
-            stickyHeader.appendChild(dateRange);
-            stickyHeader.appendChild(locationSpan);
-            detailsDiv.appendChild(stickyHeader);
+            detailsDiv.appendChild(locationSpan);
 
             // Description and highlights
             let descriptionPara = document.createElement('p');
