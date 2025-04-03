@@ -197,21 +197,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         console.log('Attempting to fetch resume.json...');
-        // Try relative path first, then absolute as fallback
-        let response = await fetch('./resume.json');
+        let response = await fetch('./resume.json', { cache: 'no-store' });
         if (!response.ok) {
             console.log('Relative path failed, trying absolute path...');
-            response = await fetch('https://remyrussell.github.io/resume.json');
+            response = await fetch('https://remyrussell.github.io/resume.json', { cache: 'no-store' });
         }
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        let data = await response.json();
-        console.log('Fetched data:', data);
+        const responseText = await response.text();
+        console.log('Raw response:', responseText);
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseErr) {
+            console.error('JSON parsing failed:', parseErr.message);
+            document.body.innerHTML = '<p>JSON Error: ' + parseErr.message + '</p><pre>' + responseText + '</pre>';
+            return;
+        }
+        console.log('Parsed data:', data);
+        document.body.innerText = ''; // Clear any raw text
         populateResume(data);
     } catch (err) {
-        console.error('Error fetching or parsing JSON:', err.message, err.stack);
-        document.getElementById('professionalExperience').innerHTML = '<p>Error loading experience. Check console for details. Status: ' + (err.message || 'Unknown') + '</p>';
-        document.getElementById('education').innerHTML = '<p>Error loading education. Check console for details. Status: ' + (err.message || 'Unknown') + '</p>';
+        console.error('Error fetching or processing JSON:', err.message, err.stack);
+        document.getElementById('professionalExperience').innerHTML = '<p>Error loading experience: ' + err.message + '</p>';
+        document.getElementById('education').innerHTML = '<p>Error loading education: ' + err.message + '</p>';
     }
 });
