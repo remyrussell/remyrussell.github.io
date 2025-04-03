@@ -1,32 +1,37 @@
 {
+    "metadata": {
+        "version": "1.0",
+        "lastUpdated": "2023-10-01"
+    },
     "name": "Remy Russell",
     "role": "Product Manager",
     "contact": {
         "email": "remyrussell@pm.me",
-        "phone": "please contact via email",
+        "phone": null,
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
-    "Summary": [
-        "Understand the users, buyers, and the problems worth solving to ensure success of the business",
-        "Inspire cross-functional collaboration to align on the most promising strategies",
-        "Drive the execution of the vision through rapid iteration of discovery and delivery"
-    ],
+    "summary": "Understand the users, buyers, and the problems worth solving to ensure success of the business. Inspire cross-functional collaboration to align on the most promising strategies. Drive the execution of the vision through rapid iteration of discovery and delivery",
     "professionalExperience": [
         {
             "position": "Associate Product Manager, Platform and Integrations teams",
             "company": "Eccovia",
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
-            "duration": "February 2021 – March 2025",
+            "duration": {
+                "start": "2021-02-01",
+                "end": "2025-03-31"
+            },
             "description": "Product Lead for a Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, and more)",
             "highlights": [
                 "Elicited qualitative & quantitative insights to prioritize valuable initiatives, evolving the platform’s capabilities",
-                "Analyzed integration partner APIs and partnered with engineering to design the best solutions to extend user calabilities and enable growth",
+                "Analyzed integration partner APIs and partnered with engineering to design the best solutions to extend user capabilities and enable growth",
                 "Managed stakeholder communication and owned relationships with external users and partners",
                 "Partnered with Sales, Client Success, and implementation teams to establish and maintain the roadmap, define KPIs, and establish mechanisms to measure & communicate them"
             ],
             "achievements": [
-                "Helped drive growth in ARR by over 50% by expanding platform capabilities, supporting/improving implementation processes, and increasing platform interoperability, ultimately leading to acquisition",
+                "Helped drive growth in ARR by over 50% by expanding platform capabilities",
+                "Supported/improved implementation processes",
+                "Increased platform interoperability, ultimately leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
                 "Helped establish a clear product catalog and a platform-based, microservice approach to enable growth/expansion across multiple customers on the platform",
                 "Led new growth initiatives and gained experience shipping and/or scrapping MVPs to integrate with third parties to extend user capabilities (e.g., Twilio for Email & SMS, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Medicaid Payers, a Claims Processing System, a pharmacy benefit manager, external data warehouses, etc.)"
@@ -37,17 +42,20 @@
             "company": "Eccovia",
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
-            "duration": "April 2019 – February 2021",
+            "duration": {
+                "start": "2019-04-01",
+                "end": "2021-02-01"
+            },
             "description": "Led problem discovery and requirements gathering with new customers during the initial design and implementation of their solution on the case management platform.",
             "highlights": [
                 "Worked with project managers, implementation engineers, and customer contacts to implement over 10 new solutions, creating happy and sticky customers",
                 "Drove the iterative discovery/delivery process for complex data migration efforts, custom integration solutions, and facilitated UAT and post-go-live support",
-                "Improved my SQL skills, my understanding of healthcare interoperability, and of various approaches to solving interoperability challenges by necessity when delivering contracted features with a small team "
+                "Improved my SQL skills, my understanding of healthcare interoperability, and of various approaches to solving interoperability challenges by necessity when delivering contracted features with a small team"
             ],
             "achievements": [
                 "Successfully implemented new solutions for two of Eccovia's top ten largest customers by ARR",
-                "Took ownership of all new integration use cases (over a dozen), and after finding patterns/similarities, advocated for and started designing agnostic services to support multiple customers or integration partners"
-                "Drove the platform's evolution to unlock the capabilities requested by our customers (e.g. scheduled exports, API access to storage accounts, generic and purpose-built RESTful endpoints, etc."
+                "Took ownership of all new integration use cases (over a dozen), and after finding patterns/similarities, advocated for and started designing agnostic services to support multiple customers or integration partners",
+                "Drove the platform's evolution to unlock the capabilities requested by our customers (e.g., scheduled exports, API access to storage accounts, generic and purpose-built RESTful endpoints, etc.)"
             ]
         },
         {
@@ -55,8 +63,11 @@
             "company": "CNSI",
             "logo": "/assets/images/logos/CNSI.png",
             "location": "Salt Lake City, UT",
-            "duration": "August 2017 – April 2019",
-            "description": "Worked with internal team and stakeholders from the Utah Department of Health on system migration and gap analysis activities for implementation of a Medicaid Management Information System ...",
+            "duration": {
+                "start": "2017-08-01",
+                "end": "2019-04-01"
+            },
+            "description": "Worked with internal team and stakeholders from the Utah Department of Health on system migration and gap analysis activities for implementation of a new Medicaid Management Information System to replace the legacy MMIS",
             "highlights": [
                 "Partnered with the State customer stakeholders to define and document comprehensive design details for the Provider Enrollment Subsystem (to guide development and testing)"
             ]
@@ -66,8 +77,11 @@
             "company": "CNSI",
             "logo": "/assets/images/logos/CNSI.png",
             "location": "Lansing, MI",
-            "duration": "June 2015 – August 2017",
-            "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical documentation to comply with standards ...",
+            "duration": {
+                "start": "2015-06-01",
+                "end": "2017-08-01"
+            },
+            "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical system design documentation to comply with UML standards",
             "highlights": [
                 "Analyzed program mandates published by the Center for Medicaid Services to design and implement compliant functionality"
             ]
@@ -77,7 +91,17 @@
         "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
         "institution": "University of Michigan, Ann Arbor",
         "logo": "/assets/images/logos/umich-logo.png",
-        "coursework": "Relational database design, computer programming, process improvement, modeling, simulation, statistical analysis, decision analysis, lean management, business development, and more"
+        "coursework": [
+            "Relational database design",
+            "Computer programming",
+            "Process improvement",
+            "Modeling",
+            "Simulation",
+            "Statistical analysis",
+            "Decision analysis",
+            "Lean management",
+            "Business development"
+        ]
     },
     "skills": {
         "coreSkills": [
@@ -90,14 +114,21 @@
             "Experience with Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission and remittance (X12 EDI Standards)"
         ],
         "toolsAndFrameworks": [
-            "Microsoft (Azure, Power Automate, PowerBI), Atlassian (Jira, Confluence), ProductBoard, Figma, Postman, Lucidchart",
-            "Agile, Scrum"
+            "Microsoft (Azure, Power Automate, PowerBI)",
+            "Atlassian (Jira, Confluence)",
+            "ProductBoard",
+            "Figma",
+            "Postman",
+            "Lucidchart",
+            "Agile",
+            "Scrum"
         ],
         "fun": [
-            "Attending concerts/festivals, music creation/consumption (electronic, guitar)",
+            "Attending concerts/festivals",
+            "Music creation/consumption (electronic, guitar)",
             "Outdoor activities (skiing, mountain biking, hiking, camping)",
             "Podcasts/audiobooks on tech, healthcare, business, investing",
-            "'Vibecoding' and otherwise playing with LLMs to help me solve problems"
+            "'Vibecoding' and playing with LLMs to solve problems"
         ]
     },
     "certifications": [
