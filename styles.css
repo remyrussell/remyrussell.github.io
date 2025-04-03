@@ -1,4 +1,4 @@
-/* General stylez */
+/* General styles */
 body {
     font-family: Arial, sans-serif;
     padding: 2rem;
@@ -28,21 +28,25 @@ h2 {
     border-bottom: 1px solid #ccc;
 }
 
-/* Experience and Education items with logos next to title */
+/* Experience and Education items */
 .experience-item, .education-item {
     margin-top: 1.5rem;
 }
 
 .experience-item .header-with-logo, .education-item .header-with-logo {
     display: flex;
-    align-items: center; /* Vertically center logo and title */
+    align-items: flex-start; /* Align top for multi-line content */
     margin-bottom: 0.5rem;
 }
 
 .experience-item img, .education-item img {
-    max-width: 50px; /* Smaller logo size for better fit */
+    max-width: 100px; /* Bigger logo size */
     margin-right: 1rem;
     filter: brightness(0.9);
+}
+
+.experience-item .header-content, .education-item .header-content {
+    flex: 1; /* Take remaining space */
 }
 
 .experience-item .sticky-header, .education-item .sticky-header {
@@ -52,14 +56,14 @@ h2 {
 
 .experience-item .sticky-header h3, .education-item .sticky-header h3 {
     margin: 0;
-    font-size: 1.25em; /* Slightly smaller for balance */
+    font-size: 1.25em;
 }
 
 .experience-item .date-range, .education-item .date-range {
     display: block;
     font-size: 1em;
     color: #666;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
 }
 
 .experience-item .location, .education-item .location {
@@ -100,7 +104,7 @@ h2 {
 
 .achievements ul {
     list-style-type: disc;
-    padding-left: 1rem; /* Standard indent for bullets */
+    padding-left: 1rem;
     margin-top: 0;
 }
 
