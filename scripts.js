@@ -50,11 +50,10 @@ function populateResume(data) {
     document.getElementById('role').innerText = data.role || 'Role Not Found';
     document.getElementById('email').innerText = data.contact?.email || 'Email Not Found';
     document.getElementById('phone').innerText = data.contact?.phone || 'Phone Not Found';
-    document.getElementById('summaryList').innerHTML = data.Summary?.map(item => `<li>${item}</li>`).join('') || '<li>Summary Data Not Found</li>';
+    document.getElementById('summaryList').innerHTML = data.summary?.split('. ').map(item => `<li>${item.trim()}</li>`).join('') || '<li>Summary Data Not Found</li>';
 
     let experienceContainer = document.getElementById('professionalExperience');
     console.log('Professional Experience Container:', experienceContainer);
-    // Ensure the h2 header exists
     let experienceHeader = experienceContainer.querySelector('h2');
     if (!experienceHeader) {
         console.warn('Professional Experience h2 header not found!');
@@ -62,7 +61,6 @@ function populateResume(data) {
         newHeader.innerText = 'Professional Experience';
         experienceContainer.prepend(newHeader);
     }
-    // Remove existing experience-item divs to prevent duplication
     const existingExperienceItems = experienceContainer.querySelectorAll('.experience-item');
     existingExperienceItems.forEach(item => item.remove());
     if (data.professionalExperience) {
@@ -78,7 +76,7 @@ function populateResume(data) {
             let detailsDiv = document.createElement('div');
             detailsDiv.innerHTML = `
                 <h3>${experience.position} at ${experience.company || 'Company Not Found'}</h3>
-                <p>${experience.location} | ${experience.duration}</p>
+                <p>${experience.location} | ${experience.duration.start} – ${experience.duration.end || 'Present'}</p>
                 <p>${experience.description || 'Description Not Found'}</p>
                 <ul>
                     ${experience.highlights?.map(highlight => `<li>${highlight}</li>`).join('') || '<li>Highlights Not Found</li>'}
@@ -103,7 +101,6 @@ function populateResume(data) {
 
     let educationContainer = document.getElementById('education');
     console.log('Education Container:', educationContainer);
-    // Ensure the h2 header exists
     let educationHeader = educationContainer.querySelector('h2');
     if (!educationHeader) {
         console.warn('Education h2 header not found!');
@@ -111,7 +108,6 @@ function populateResume(data) {
         newHeader.innerText = 'Education';
         educationContainer.prepend(newHeader);
     }
-    // Remove existing education-item divs to prevent duplication
     const existingEducationItems = educationContainer.querySelectorAll('.education-item');
     existingEducationItems.forEach(item => item.remove());
     if (data.education) {
@@ -127,7 +123,7 @@ function populateResume(data) {
         eduDetailsDiv.innerHTML = `
             <h3>${data.education.degree || 'Degree Not Found'}</h3>
             <p>${data.education.institution || 'Institution Not Found'}</p>
-            <p>${data.education.coursework || ''}</p>
+            <p>${data.education.coursework?.join(', ') || ''}</p>
             ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
         `;
         educationDiv.appendChild(eduDetailsDiv);
@@ -159,7 +155,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         populateResume(data);
     } catch (err) {
         console.error('Error fetching or parsing JSON:', err);
-        // Fallback: Display a message if data fails to load
         document.getElementById('professionalExperience').innerHTML = '<p>Error loading experience. Check console for details.</p>';
         document.getElementById('education').innerHTML = '<p>Error loading education. Check console for details.</p>';
     }
