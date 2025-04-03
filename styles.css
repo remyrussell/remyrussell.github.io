@@ -39,9 +39,6 @@ h2 {
 .experience-item .sticky-header {
     padding: 0.5rem 0;
     margin: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .experience-item .sticky-header h3 {
@@ -49,15 +46,18 @@ h2 {
     font-size: 1.5em; /* Match your h3 style */
 }
 
-.experience-item .sticky-header .date-range {
+.experience-item .date-range {
+    display: block;
     font-size: 1em;
     color: #666;
+    margin-top: 0.5rem;
 }
 
-.experience-item .sticky-header .location {
+.experience-item .location {
+    display: block;
     font-size: 1em;
     color: #666;
-    margin-left: 1rem;
+    margin-top: 0.25rem;
 }
 
 /* Ensure h3 headers in Skills section are not sticky */
@@ -71,6 +71,12 @@ h2 {
 
 .contact p#phone:empty {
     display: none; /* Hide phone number if null */
+}
+
+.location-note {
+    font-style: italic;
+    color: #666;
+    margin: 0.5rem 0;
 }
 
 /* Style for achievements list */
@@ -111,11 +117,15 @@ h2 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark mode */
 }
 
-.theme-dark .experience-item .sticky-header .date-range {
+.theme-dark .experience-item .date-range {
     color: #bbb;
 }
 
-.theme-dark .experience-item .sticky-header .location {
+.theme-dark .experience-item .location {
+    color: #bbb;
+}
+
+.theme-dark .location-note {
     color: #bbb;
 }
 
