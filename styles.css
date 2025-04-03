@@ -6,7 +6,7 @@ body {
     background-color: #f0f0f0;
     margin: 0;
     transition: background-color 0.3s ease;
-    text-align: left; /* Ensure aall text is left-aligned by default */
+    text-align: left; /* Ensure al text is left-aligned by default */
 }
 
 .container {
