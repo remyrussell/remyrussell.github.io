@@ -68,28 +68,50 @@ function populateResume(data) {
             let experienceDiv = document.createElement('div');
             experienceDiv.className = 'experience-item';
             let logoImg = document.createElement('img');
+            logoImg.className = 'logo-img';
             logoImg.src = experience.logo || '';
             logoImg.alt = experience.company + ' logo' || 'Company Logo';
             logoImg.width = 100;
             experienceDiv.appendChild(logoImg);
 
             let detailsDiv = document.createElement('div');
-            detailsDiv.innerHTML = `
-                <h3>${experience.position} at ${experience.company || 'Company Not Found'}</h3>
-                <p>${experience.location} | ${experience.duration.start} – ${experience.duration.end || 'Present'}</p>
-                <p>${experience.description || 'Description Not Found'}</p>
-                <ul>
-                    ${experience.highlights?.map(highlight => `<li>${highlight}</li>`).join('') || '<li>Highlights Not Found</li>'}
-                </ul>
-                ${experience.achievements ? `
-                    <div class="achievements">
-                        <strong>Achievements</strong>
-                        <ul>
-                            ${experience.achievements.map(ach => `<li>${ach}</li>`).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
-            `;
+            detailsDiv.className = 'details';
+
+            // Sticky header with position and date range
+            let stickyHeader = document.createElement('div');
+            stickyHeader.className = 'sticky-header';
+            let positionHeader = document.createElement('h3');
+            positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
+            let dateRange = document.createElement('span');
+            dateRange.className = 'date-range';
+            dateRange.innerText = `${experience.duration.start} – ${experience.duration.end || 'Present'}`;
+            stickyHeader.appendChild(positionHeader);
+            stickyHeader.appendChild(dateRange);
+            detailsDiv.appendChild(stickyHeader);
+
+            // Description and highlights
+            let descriptionPara = document.createElement('p');
+            descriptionPara.className = 'description';
+            descriptionPara.innerText = experience.description || 'Description Not Found';
+            detailsDiv.appendChild(descriptionPara);
+
+            let highlightsList = document.createElement('ul');
+            highlightsList.innerHTML = experience.highlights?.map(highlight => `<li>${highlight}</li>`).join('') || '<li>Highlights Not Found</li>';
+            detailsDiv.appendChild(highlightsList);
+
+            // Achievements (if present)
+            if (experience.achievements) {
+                let achievementsDiv = document.createElement('div');
+                achievementsDiv.className = 'achievements';
+                let achievementsTitle = document.createElement('strong');
+                achievementsTitle.innerText = 'Achievements';
+                let achievementsList = document.createElement('ul');
+                achievementsList.innerHTML = experience.achievements.map(ach => `<li>${ach}</li>`).join('');
+                achievementsDiv.appendChild(achievementsTitle);
+                achievementsDiv.appendChild(achievementsList);
+                detailsDiv.appendChild(achievementsDiv);
+            }
+
             experienceDiv.appendChild(detailsDiv);
             experienceContainer.appendChild(experienceDiv);
         });
@@ -114,12 +136,14 @@ function populateResume(data) {
         let educationDiv = document.createElement('div');
         educationDiv.className = 'education-item';
         let eduLogoImg = document.createElement('img');
+        eduLogoImg.className = 'logo-img';
         eduLogoImg.src = data.education.logo || '';
         eduLogoImg.alt = "Education institution logo";
         eduLogoImg.width = 100;
         educationDiv.appendChild(eduLogoImg);
 
         let eduDetailsDiv = document.createElement('div');
+        eduDetailsDiv.className = 'details';
         eduDetailsDiv.innerHTML = `
             <h3>${data.education.degree || 'Degree Not Found'}</h3>
             <p>${data.education.institution || 'Institution Not Found'}</p>
