@@ -102,7 +102,6 @@ function populateResume(data) {
             let detailsDiv = document.createElement('div');
             detailsDiv.className = 'details';
 
-            // Non-sticky header with position, date range below, and location
             let stickyHeader = document.createElement('div');
             stickyHeader.className = 'sticky-header';
             let positionHeader = document.createElement('h3');
@@ -120,7 +119,6 @@ function populateResume(data) {
             locationSpan.innerText = experience.location || '';
             detailsDiv.appendChild(locationSpan);
 
-            // Description and highlights
             let descriptionPara = document.createElement('p');
             descriptionPara.className = 'description';
             descriptionPara.innerText = experience.description || 'Description Not Found';
@@ -130,7 +128,6 @@ function populateResume(data) {
             highlightsList.innerHTML = experience.highlights?.map(highlight => `<li>${highlight}</li>`).join('') || '<li>Highlights Not Found</li>';
             detailsDiv.appendChild(highlightsList);
 
-            // Achievements (if present)
             if (experience.achievements) {
                 let achievementsDiv = document.createElement('div');
                 achievementsDiv.className = 'achievements';
@@ -200,8 +197,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         console.log('Attempting to fetch resume.json...');
-        let response = await fetch('/resume.json');
-        console.log('Fetch response:', response);
+        // Try relative path first, then absolute as fallback
+        let response = await fetch('./resume.json');
+        if (!response.ok) {
+            console.log('Relative path failed, trying absolute path...');
+            response = await fetch('https://remyrussell.github.io/resume.json');
+        }
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -209,8 +210,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Fetched data:', data);
         populateResume(data);
     } catch (err) {
-        console.error('Error fetching or parsing JSON:', err);
-        document.getElementById('professionalExperience').innerHTML = '<p>Error loading experience. Check console for details.</p>';
-        document.getElementById('education').innerHTML = '<p>Error loading education. Check console for details.</p>';
+        console.error('Error fetching or parsing JSON:', err.message, err.stack);
+        document.getElementById('professionalExperience').innerHTML = '<p>Error loading experience. Check console for details. Status: ' + (err.message || 'Unknown') + '</p>';
+        document.getElementById('education').innerHTML = '<p>Error loading education. Check console for details. Status: ' + (err.message || 'Unknown') + '</p>';
     }
 });
