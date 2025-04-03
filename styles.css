@@ -35,16 +35,10 @@ h2 {
     color: #333; /* Consistent color */
 }
 
-/* Sticky header for experience items */
+/* Non-sticky header for experience items */
 .experience-item .sticky-header {
-    position: -webkit-sticky; /* For Safari */
-    position: sticky;
-    top: 4rem; /* Position below the hamburger menu */
-    background-color: #fff; /* Match container background */
-    z-index: 9; /* Below menu and button */
     padding: 0.5rem 0;
     margin: 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow when sticky */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -60,6 +54,12 @@ h2 {
     color: #666;
 }
 
+.experience-item .sticky-header .location {
+    font-size: 1em;
+    color: #666;
+    margin-left: 1rem;
+}
+
 /* Ensure h3 headers in Skills section are not sticky */
 #skills h3 {
     position: static; /* Override any inherited stickiness */
@@ -67,6 +67,10 @@ h2 {
 
 .contact p {
     margin: 0.5rem 0;
+}
+
+.contact p#phone:empty {
+    display: none; /* Hide phone number if null */
 }
 
 /* Style for achievements list */
@@ -108,6 +112,10 @@ h2 {
 }
 
 .theme-dark .experience-item .sticky-header .date-range {
+    color: #bbb;
+}
+
+.theme-dark .experience-item .sticky-header .location {
     color: #bbb;
 }
 
