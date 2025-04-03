@@ -1,389 +1,193 @@
-/* General styles */
-body {
-    font-family: Arial, sans-serif;
-    padding: 2rem;
-    color: #333;
-    background-color: #f0f0f0;
-    margin: 0;
-    transition: background-color 0.3s ease;
+function formatDate(dateString) {
+    if (!dateString) return "Present";
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long' };
+    return date.toLocaleDateString('en-US', options);
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
+function keepThemeSetting() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
+    const themeToggle = document.getElementById('themeToggleButton');
+    if (themeToggle) themeToggle.checked = savedTheme === 'dark';
 }
 
-h1, h2, h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
-
-h2 {
-    margin-top: 2rem;
-    border-bottom: 1px solid #ccc;
-}
-
-/* Experience and Education items */
-.experience-item, .education-item {
-    margin-top: 1.5rem;
-}
-
-.experience-item .header-with-logo, .education-item .header-with-logo {
-    display: flex;
-    align-items: flex-start; /* Align top for multi-line content */
-    margin-bottom: 0.5rem;
-}
-
-.experience-item img, .education-item img {
-    max-width: 100px; /* Bigger logo size */
-    margin-right: 1rem;
-    filter: brightness(0.9);
-}
-
-.experience-item .header-content, .education-item .header-content {
-    flex: 1; /* Take remaining space */
-}
-
-.experience-item .sticky-header, .education-item .sticky-header {
-    padding: 0;
-    margin: 0;
-}
-
-.experience-item .sticky-header h3, .education-item .sticky-header h3 {
-    margin: 0;
-    font-size: 1.25em;
-}
-
-.experience-item .date-range, .education-item .date-range {
-    display: block;
-    font-size: 1em;
-    color: #666;
-    margin-top: 0.25rem;
-}
-
-.experience-item .location, .education-item .location {
-    display: block;
-    font-size: 1em;
-    color: #666;
-    margin-top: 0.25rem;
-}
-
-.experience-item .details, .education-item .details {
-    margin-left: 0; /* No indent for content below */
-}
-
-/* Other content styling */
-.contact p {
-    margin: 0.5rem 0;
-}
-
-.contact p#phone:empty {
-    display: none;
-}
-
-.location-note {
-    font-style: italic;
-    color: #666;
-    margin: 0.5rem 0;
-}
-
-.achievements {
-    margin-top: 1rem;
-}
-
-.achievements strong {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.achievements ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0;
-}
-
-/* Dark mode styles */
-.theme-dark {
-    background-color: #333;
-    color: #f0f0f0;
-}
-
-.theme-dark .container {
-    background-color: #444;
-    color: #f0f0f0;
-}
-
-.theme-dark h2 {
-    border-color: #777;
-}
-
-.theme-dark .experience-item .sticky-header,
-.theme-dark .education-item .sticky-header {
-    background-color: #444;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.theme-dark .experience-item .date-range,
-.theme-dark .education-item .date-range {
-    color: #bbb;
-}
-
-.theme-dark .experience-item .location,
-.theme-dark .education-item .location {
-    color: #bbb;
-}
-
-.theme-dark .location-note {
-    color: #bbb;
-}
-
-.theme-dark button {
-    background-color: #f0f0f0;
-    color: #333;
-}
-
-/* iOS-style toggle switch */
-.theme-toggle-wrapper {
-    position: relative;
-    margin: 0.5rem 0;
-    display: none;
-}
-
-.theme-toggle-checkbox {
-    display: none;
-}
-
-.theme-toggle-label {
-    display: inline-block;
-    cursor: pointer;
-}
-
-.theme-toggle-track {
-    display: block;
-    width: 51px;
-    height: 31px;
-    background-color: #ccc;
-    border-radius: 15px;
-    position: relative;
-    transition: background-color 0.3s ease;
-}
-
-.theme-toggle-knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 27px;
-    height: 27px;
-    background-color: #fff;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.theme-toggle-icon {
-    font-size: 1rem;
-    transition: opacity 0.3s ease;
-}
-
-.theme-toggle-icon.fa-sun {
-    color: #000000;
-    opacity: 0;
-}
-
-.theme-toggle-icon.fa-moon {
-    color: #333;
-    opacity: 1;
-    position: absolute;
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background-color: #c71585;
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
-    transform: translateX(20px);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-sun {
-    opacity: 1;
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
-    opacity: 0;
-}
-
-.theme-dark .theme-toggle-icon.fa-moon {
-    color: #fff;
-}
-
-/* Hamburger menu styles */
-button.menu-toggle {
-    background-color: #333;
-    border: none;
-    padding: 0.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    position: fixed;
-    top: 2rem;
-    right: 2rem;
-    color: #f0f0f0;
-    font-size: 1.5rem;
-    display: block;
-    z-index: 1001;
-}
-
-.theme-dark button.menu-toggle {
-    background-color: #f0f0f0;
-    color: #333;
-}
-
-button.menu-toggle:hover {
-    background-color: #555;
-}
-
-.menu {
-    display: none;
-    position: fixed;
-    top: 4rem;
-    right: 2rem;
-    background-color: #333;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    padding: 1rem;
-    max-height: calc(100vh - 6rem);
-    overflow-y: auto;
-}
-
-.theme-dark .menu {
-    background-color: #333;
-    color: #f0f0f0;
-}
-
-.menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menu li {
-    margin: 0.5rem 0;
-    text-align: center;
-}
-
-.menu a {
-    color: #c71585;
-    text-decoration: none;
-    font-size: 1rem;
-    display: block;
-    padding: 0.5rem;
-}
-
-.theme-dark .menu a {
-    color: #c71585;
-}
-
-.menu a:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.menu-icon {
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    color: #c71585;
-}
-
-.menu-icon:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.prank-logo {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-    filter: brightness(0) invert(0.7);
-}
-
-.menu-text {
-    font-size: 1rem;
-    padding: 0.5rem;
-    color: #c71585;
-}
-
-.menu-text:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.menu.active {
-    display: block;
-}
-
-.menu.active .theme-toggle-wrapper {
-    display: block;
-}
-
-@media (max-width: 768px) {
-    .menu {
-        right: 2rem;
-        width: 150px;
+function attachThemeToggleEvent() {
+    const themeToggle = document.getElementById('themeToggleButton');
+    if (themeToggle) {
+        themeToggle.addEventListener('change', () => {
+            const isDark = themeToggle.checked;
+            document.body.className = isDark ? 'theme-dark' : '';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    }
+    const menuToggleButton = document.getElementById('menuToggleButton');
+    const menu = document.getElementById('menu');
+    if (menuToggleButton && menu) {
+        menuToggleButton.addEventListener('click', () => menu.classList.toggle('active'));
+    }
+    const backToTopButton = document.getElementById('backToTop');
+    if (backToTopButton) {
+        backToTopButton.addEventListener('click', () => {
+            try {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                console.error('Scroll failed:', e);
+                window.scrollTo(0, 0);
+            }
+        });
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+            const viewportHeight = window.innerHeight;
+            backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
+        });
     }
 }
 
-/* Skills and Interests Sections */
-#skills h3, #funSkills h3 {
-    margin-top: 1.5rem;
-}
+document.addEventListener('DOMContentLoaded', async () => {
+    keepThemeSetting();
+    attachThemeToggleEvent();
 
-ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
-}
+    try {
+        console.log('Fetching resume.json...');
+        let response = await fetch('./resume.json', { cache: 'no-store' });
+        if (!response.ok) {
+            console.log('Relative path failed, trying absolute path...');
+            response = await fetch('https://remyrussell.github.io/resume.json', { cache: 'no-store' });
+        }
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Parsed data:', data);
 
-li {
-    margin-bottom: 0.5rem;
-}
+        document.getElementById('name').innerText = data.name || 'Name Not Found';
+        document.getElementById('role').innerText = data.role || 'Role Not Found';
+        document.getElementById('email').innerText = data.contact?.email || 'Email Not Found';
+        document.getElementById('phone').innerText = data.contact?.phone || '';
+        const locationNote = document.createElement('p');
+        locationNote.className = 'location-note';
+        locationNote.innerText = 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
+        const container = document.querySelector('.container');
+        const summarySection = document.getElementById('summary');
+        container.insertBefore(locationNote, summarySection);
 
-/* Back to Top Button */
-.back-to-top {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background-color: #333;
-    color: #f0f0f0;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, opacity 0.3s ease;
-    z-index: 1000;
-    display: none;
-}
+        document.getElementById('summaryList').innerHTML = data.summary?.split('. ').map(item => `<li>${item.trim()}</li>`).join('') || '<li>Summary Data Not Found</li>';
 
-.theme-dark .back-to-top {
-    background-color: #f0f0f0;
-    color: #333;
-}
+        const experienceContainer = document.getElementById('professionalExperience');
+        experienceContainer.innerHTML = '<h2>Professional Experience</h2>';
+        let previousCompany = null;
+        if (data.professionalExperience) {
+            data.professionalExperience.forEach((experience) => {
+                const experienceDiv = document.createElement('div');
+                experienceDiv.className = 'experience-item';
 
-.back-to-top:hover {
-    background-color: #555;
-}
+                if (experience.company !== previousCompany) {
+                    const logoImg = document.createElement('img');
+                    logoImg.className = 'logo-img';
+                    logoImg.src = experience.logo || '';
+                    logoImg.alt = `${experience.company} logo`;
+                    logoImg.width = 100;
+                    experienceDiv.appendChild(logoImg);
+                }
+                previousCompany = experience.company;
 
-.theme-dark .back-to-top:hover {
-    background-color: #ccc;
-}
+                const headerContent = document.createElement('div');
+                headerContent.className = 'header-content';
+
+                const stickyHeader = document.createElement('div');
+                stickyHeader.className = 'sticky-header';
+                const positionHeader = document.createElement('h3');
+                positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
+                stickyHeader.appendChild(positionHeader);
+                headerContent.appendChild(stickyHeader);
+
+                const dateRange = document.createElement('span');
+                dateRange.className = 'date-range';
+                dateRange.innerText = `${formatDate(experience.duration.start)} through ${formatDate(experience.duration.end) || 'Present'}`;
+                headerContent.appendChild(dateRange);
+
+                const locationSpan = document.createElement('span');
+                locationSpan.className = 'location';
+                locationSpan.innerText = experience.location || '';
+                headerContent.appendChild(locationSpan);
+
+                experienceDiv.appendChild(headerContent);
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'details';
+
+                const descriptionPara = document.createElement('p');
+                descriptionPara.className = 'description';
+                descriptionPara.innerText = experience.description || 'Description Not Found';
+                detailsDiv.appendChild(descriptionPara);
+
+                const highlightsList = document.createElement('ul');
+                highlightsList.innerHTML = experience.highlights?.map(highlight => `<li>${highlight}</li>`).join('') || '<li>Highlights Not Found</li>';
+                detailsDiv.appendChild(highlightsList);
+
+                if (experience.achievements) {
+                    const achievementsDiv = document.createElement('div');
+                    achievementsDiv.className = 'achievements';
+                    const achievementsTitle = document.createElement('strong');
+                    achievementsTitle.innerText = 'Achievements';
+                    const achievementsList = document.createElement('ul');
+                    achievementsList.innerHTML = experience.achievements.map(ach => `<li>${ach}</li>`).join('');
+                    achievementsDiv.appendChild(achievementsTitle);
+                    achievementsDiv.appendChild(achievementsList);
+                    detailsDiv.appendChild(achievementsDiv);
+                }
+
+                experienceDiv.appendChild(detailsDiv);
+                experienceContainer.appendChild(experienceDiv);
+            });
+        }
+
+        const educationContainer = document.getElementById('education');
+        educationContainer.innerHTML = '<h2>Education</h2>';
+        if (data.education) {
+            const educationDiv = document.createElement('div');
+            educationDiv.className = 'education-item';
+
+            const eduLogoImg = document.createElement('img');
+            eduLogoImg.className = 'logo-img';
+            eduLogoImg.src = data.education.logo || '';
+            eduLogoImg.alt = "Education institution logo";
+            eduLogoImg.width = 100;
+            educationDiv.appendChild(eduLogoImg);
+
+            const headerContent = document.createElement('div');
+            headerContent.className = 'header-content';
+
+            const stickyHeader = document.createElement('div');
+            stickyHeader.className = 'sticky-header';
+            const degreeHeader = document.createElement('h3');
+            degreeHeader.innerText = data.education.degree || 'Degree Not Found';
+            stickyHeader.appendChild(degreeHeader);
+            headerContent.appendChild(stickyHeader);
+
+            const eduDetailsSpan = document.createElement('span');
+            eduDetailsSpan.innerText = data.education.institution || 'Institution Not Found';
+            headerContent.appendChild(eduDetailsSpan);
+
+            educationDiv.appendChild(headerContent);
+
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = 'details';
+            detailsDiv.innerHTML = `
+                <p>${data.education.coursework?.join(', ') || ''}</p>
+                ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
+            `;
+            educationDiv.appendChild(detailsDiv);
+            educationContainer.appendChild(educationDiv);
+        }
+
+        document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
+        document.getElementById('toolsAndFrameworks').innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
+        document.getElementById('funSkills').innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
+    } catch (err) {
+        console.error('Error:', err.message);
+        document.getElementById('professionalExperience').innerHTML = `<p>Error loading experience: ${err.message}</p>`;
+        document.getElementById('education').innerHTML = `<p>Error loading education: ${err.message}</p>`;
+    }
+});
