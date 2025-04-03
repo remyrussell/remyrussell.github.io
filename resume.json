@@ -42,12 +42,12 @@
             "highlights": [
                 "Worked with project managers, implementation engineers, and customer contacts to implement over 10 new solutions, creating happy and sticky customers",
                 "Drove the iterative discovery/delivery process for complex data migration efforts, custom integration solutions, and facilitated UAT and post-go-live support",
-                "Improved my SQL skills, my understanding of healthcare interoperability, and understanding of by necessity through designing complex d "
+                "Improved my SQL skills, my understanding of healthcare interoperability, and of various approaches to solving interoperability challenges by necessity when delivering contracted features with a small team "
             ],
             "achievements": [
                 "Successfully implemented new solutions for two of Eccovia's top ten largest customers by ARR",
-                "Took ownership of all new integration use cases, and after finding patterns/similarities, advocated for and started designing agnostic services to support multiple customers and integration partners"
-                "Pushed the platform's interoperability capabilities to their limits and drove the platform's evolution to unlock the capabilities requested by our customers"
+                "Took ownership of all new integration use cases (over a dozen), and after finding patterns/similarities, advocated for and started designing agnostic services to support multiple customers or integration partners"
+                "Drove the platform's evolution to unlock the capabilities requested by our customers (e.g. scheduled exports, API access to storage accounts, generic and purpose-built RESTful endpoints, etc."
             ]
         },
         {
