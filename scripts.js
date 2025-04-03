@@ -6,7 +6,7 @@ function formatDate(dateString) {
 }
 
 function keepThemeSetting() {
-    const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to 'dark'
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
     const themeToggle = document.getElementById('themeToggleButton');
     if (themeToggle) themeToggle.checked = savedTheme === 'dark';
@@ -33,7 +33,7 @@ function attachThemeToggleEvent() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (e) {
                 console.error('Scroll failed:', e);
-                window.scrollTo(0, 0); // Fallback
+                window.scrollTo(0, 0);
             }
         });
         window.addEventListener('scroll', () => {
@@ -47,37 +47,49 @@ function attachThemeToggleEvent() {
         exportPdfButton.addEventListener('click', () => {
             if (typeof html2pdf === 'undefined') {
                 console.error('html2pdf.js not loaded');
-                alert('PDF export failed: Library not loaded. Please try again later.');
+                alert('PDF export failed: Library not loaded.');
                 return;
             }
             console.log('Exporting to PDF...');
             const element = document.querySelector('.container');
-            // Force light theme for PDF
+            const menu = document.getElementById('menu');
+            const menuButton = document.getElementById('menuToggleButton');
+            // Store original states
             const originalClass = document.body.className;
-            document.body.className = ''; // Remove theme-dark
+            const originalMenuDisplay = menu.style.display;
+            const originalButtonDisplay = menuButton.style.display;
+            // Force light theme and hide menu/button
+            document.body.className = '';
+            menu.style.display = 'none';
+            menuButton.style.display = 'none';
             const opt = {
-                margin: [0.25, 0.25, 0.25, 0.25], // Reduced margins
+                margin: [0.2, 0.2, 0.2, 0.2], // Tighter margins
                 filename: 'Remy_Russell_Resume.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
+                image: { type: 'jpeg', quality: 0.95 },
                 html2canvas: { 
-                    scale: 1, // Reduced scale for better fit
-                    useCORS: true // Handle external images if needed
+                    scale: 0.8, // Further reduced scale for smaller text
+                    useCORS: true,
+                    width: 816, // 8.5in at 96dpi (letter width)
+                    scrollY: 0 // Capture from top
                 },
                 jsPDF: { 
                     unit: 'in', 
-                    format: 'letter', // 8.5x11
+                    format: 'letter', 
                     orientation: 'portrait',
                     putOnlyUsedFonts: true,
-                    compress: true // Compress to fit
+                    compress: true
                 },
-                pagebreak: { mode: ['avoid-all'] } // Avoid awkward breaks
+                pagebreak: { 
+                    mode: ['css', 'legacy'], // Respect CSS breaks
+                    before: '.experience-item', // Break before experience items if multi-page
+                    avoid: ['h2', 'h3', 'li'] // Avoid breaking headings/lists
+                }
             };
             html2pdf()
                 .set(opt)
                 .from(element)
-                .output('datauristring') // Generate PDF as data URI
+                .output('datauristring')
                 .then(pdfDataUri => {
-                    // Open in new tab
                     const newWindow = window.open();
                     if (newWindow) {
                         newWindow.document.write(`<iframe src="${pdfDataUri}" style="width:100%;height:100vh;border:none;"></iframe>`);
@@ -85,19 +97,21 @@ function attachThemeToggleEvent() {
                         console.log('PDF opened in new window');
                     } else {
                         console.warn('Popup blocked; falling back to download');
-                        html2pdf().set(opt).from(element).save(); // Fallback to download
+                        html2pdf().set(opt).from(element).save();
                     }
-                    // Restore original theme
+                    // Restore original states
                     document.body.className = originalClass;
+                    menu.style.display = originalMenuDisplay;
+                    menuButton.style.display = originalButtonDisplay;
                 })
                 .catch(err => {
                     console.error('PDF export failed:', err);
                     alert('Failed to export PDF: ' + err.message);
-                    document.body.className = originalClass; // Restore theme on error
+                    document.body.className = originalClass;
+                    menu.style.display = originalMenuDisplay;
+                    menuButton.style.display = originalButtonDisplay;
                 });
         });
-    } else {
-        console.warn('Export PDF button not found');
     }
 }
 
