@@ -1,98 +1,98 @@
 /* General styles */
 body {
     font-family: Arial, sans-serif;
-    padding: 2rem;
+    padding: 1rem; /* Reduced from 2rem for PDF */
     color: #333;
     background-color: #f0f0f0;
     margin: 0;
     transition: background-color 0.3s ease;
-    text-align: left; /* Ensure all text is left-aligned by default */
+    text-align: left;
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
     background-color: #fff;
-    padding: 2rem;
+    padding: 1rem; /* Reduced from 2rem for PDF */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
-    text-align: left; /* Reinforce left alignment for container content */
+    text-align: left;
 }
 
 h1, h2, h3 {
     margin-top: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem; /* Reduced from 1rem */
 }
 
 h2 {
-    margin-top: 2rem;
-    margin-bottom: 1.5rem; /* Increase spacing below the header */
-    border-bottom: 2px solid #ccc; /* Thicker border for more prominence */
-    padding-bottom: 0.5rem;
-    font-size: 1.75rem; /* Increase font size */
-    font-weight: bold; /* Ensure bold text */
-    color: #333; /* Consistent color */
+    margin-top: 1rem; /* Reduced from 2rem */
+    margin-bottom: 1rem; /* Reduced from 1.5rem */
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 0.25rem; /* Reduced from 0.5rem */
+    font-size: 1.5rem; /* Slightly smaller */
+    font-weight: bold;
+    color: #333;
 }
 
 /* Non-sticky header for experience items */
 .experience-item .sticky-header {
-    padding: 0.5rem 0;
+    padding: 0.25rem 0; /* Reduced from 0.5rem */
     margin: 0;
 }
 
 .experience-item .sticky-header h3 {
     margin: 0;
-    font-size: 1.5em; /* Match your h3 style */
+    font-size: 1.25em; /* Slightly smaller */
 }
 
 .experience-item .date-range {
     display: block;
-    font-size: 1em;
+    font-size: 0.9em; /* Slightly smaller */
     color: #666;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem; /* Reduced */
 }
 
 .experience-item .location {
     display: block;
-    font-size: 1em;
+    font-size: 0.9em;
     color: #666;
-    margin-top: 0.25rem;
+    margin-top: 0.125rem; /* Reduced */
 }
 
 /* Ensure h3 headers in Skills section are not sticky */
 #skills h3 {
-    position: static; /* Override any inherited stickiness */
+    position: static;
 }
 
 .contact p {
-    margin: 0.5rem 0;
+    margin: 0.25rem 0; /* Reduced */
 }
 
 .contact p#phone:empty {
-    display: none; /* Hide phone number if null */
+    display: none;
 }
 
 .location-note {
     font-style: italic;
     color: #666;
-    margin: 0.5rem 0;
+    margin: 0.25rem 0; /* Reduced */
 }
 
 /* Style for achievements list */
 .achievements {
-    margin-top: 1rem;
+    margin-top: 0.5rem; /* Reduced */
 }
 
 .achievements strong {
     display: block;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem; /* Reduced */
 }
 
 .achievements ul {
     list-style-type: disc;
-    padding-left: 1.5rem;
+    padding-left: 1rem;
     margin-top: 0;
 }
 
@@ -109,12 +109,12 @@ h2 {
 
 .theme-dark h2 {
     border-color: #777;
-    color: #f0f0f0; /* Adjust color for dark mode */
+    color: #f0f0f0;
 }
 
 .theme-dark .experience-item .sticky-header {
-    background-color: #444; /* Match container background in dark mode */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark mode */
+    background-color: #444;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .theme-dark .experience-item .date-range {
@@ -191,7 +191,6 @@ h2 {
     position: absolute;
 }
 
-/* When the checkbox is checked (dark mode) */
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
     background-color: #c71585;
 }
@@ -208,7 +207,6 @@ h2 {
     opacity: 0;
 }
 
-/* Dark mode adjustments */
 .theme-dark .theme-toggle-icon.fa-moon {
     color: #fff;
 }
@@ -232,8 +230,8 @@ button.menu-toggle {
     right: 2rem;
     color: #f0f0f0;
     font-size: 1.5rem;
-    display: block; /* Always show the hamburger menu */
-    z-index: 1001; /* Increased to be above sticky headers */
+    display: block;
+    z-index: 1001;
 }
 
 .theme-dark button.menu-toggle {
@@ -248,15 +246,15 @@ button.menu-toggle:hover {
 .menu {
     display: none;
     position: fixed;
-    top: 4rem; /* Aligns with sticky header offset */
+    top: 4rem;
     right: 2rem;
     background-color: #333;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Ensure it stays above most content but below button */
+    z-index: 1000;
     padding: 1rem;
-    max-height: calc(100vh - 6rem); /* Prevent overflow */
-    overflow-y: auto; /* Add scroll if content exceeds height */
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
 }
 
 .theme-dark .menu {
@@ -272,7 +270,7 @@ button.menu-toggle:hover {
 
 .menu li {
     margin: 0.5rem 0;
-    text-align: center; /* Keep menu items centered */
+    text-align: center;
 }
 
 .menu a {
@@ -348,20 +346,20 @@ button.menu-toggle:hover {
 /* Experience and Education items with logos */
 .experience-item, .education-item {
     display: flex;
-    margin-top: 1.5rem;
+    margin-top: 0.75rem; /* Reduced from 1.5rem */
     align-items: center;
     flex-direction: column;
 }
 
 .experience-item img, .education-item img {
-    max-width: 100px;
-    margin-bottom: 1rem;
+    max-width: 80px; /* Reduced from 100px */
+    margin-bottom: 0.5rem; /* Reduced */
     filter: brightness(0.9);
 }
 
 .experience-item div, .education-item div {
     flex: 1;
-    text-align: left; /* Left-align text in experience and education items */
+    text-align: left;
 }
 
 /* For screens wider than 768px */
@@ -372,48 +370,48 @@ button.menu-toggle:hover {
     }
 
     .experience-item img, .education-item img {
-        margin-right: 1rem;
+        margin-right: 0.5rem; /* Reduced */
         margin-bottom: 0;
     }
 
     .experience-item div, .education-item div {
-        text-align: left; /* Ensure left alignment on desktop */
+        text-align: left;
     }
 }
 
 /* Skills and Interests Sections */
 #skills h3, #funSkills h3 {
-    margin-top: 1.5rem;
+    margin-top: 0.75rem; /* Reduced */
 }
 
 ul {
     list-style-type: disc;
     padding-left: 1rem;
-    margin-top: 0.5rem;
-    text-align: left; /* Ensure lists are left-aligned */
+    margin-top: 0.25rem; /* Reduced */
+    text-align: left;
 }
 
 li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem; /* Reduced */
 }
 
 /* New sections styling */
 #certifications, #languages {
-    margin-top: 2rem;
+    margin-top: 1rem; /* Reduced */
 }
 
 #certifications ul, #languages ul {
     list-style-type: disc;
     padding-left: 1rem;
-    margin-top: 0.5rem;
-    text-align: left; /* Ensure lists are left-aligned */
+    margin-top: 0.25rem;
+    text-align: left;
 }
 
 /* Back to Top Button */
 .back-to-top {
     position: fixed;
     bottom: 2rem;
-    right: 2rem; /* Ensure bottom-right positioning */
+    right: 2rem;
     background-color: #333;
     color: #f0f0f0;
     border: none;
@@ -425,7 +423,7 @@ li {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease, opacity 0.3s ease;
     z-index: 1000;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .theme-dark .back-to-top {
