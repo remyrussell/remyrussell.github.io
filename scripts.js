@@ -33,17 +33,14 @@ function attachThemeToggleEvent() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (e) {
                 console.error('Scroll failed:', e);
-                window.scrollTo(0, 0); // Fallback for older browsers
+                window.scrollTo(0, 0); // Fallback
             }
         });
-        // Show/hide button based on scroll position
         window.addEventListener('scroll', () => {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
             const viewportHeight = window.innerHeight;
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
         });
-    } else {
-        console.warn('Back to Top button not found');
     }
     const exportPdfButton = document.getElementById('exportPdf');
     if (exportPdfButton) {
@@ -55,19 +52,49 @@ function attachThemeToggleEvent() {
             }
             console.log('Exporting to PDF...');
             const element = document.querySelector('.container');
+            // Force light theme for PDF
+            const originalClass = document.body.className;
+            document.body.className = ''; // Remove theme-dark
             const opt = {
-                margin: 0.5,
+                margin: [0.25, 0.25, 0.25, 0.25], // Reduced margins
                 filename: 'Remy_Russell_Resume.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                html2canvas: { 
+                    scale: 1, // Reduced scale for better fit
+                    useCORS: true // Handle external images if needed
+                },
+                jsPDF: { 
+                    unit: 'in', 
+                    format: 'letter', // 8.5x11
+                    orientation: 'portrait',
+                    putOnlyUsedFonts: true,
+                    compress: true // Compress to fit
+                },
+                pagebreak: { mode: ['avoid-all'] } // Avoid awkward breaks
             };
-            html2pdf().set(opt).from(element).save().then(() => {
-                console.log('PDF exported successfully');
-            }).catch(err => {
-                console.error('PDF export failed:', err);
-                alert('Failed to export PDF: ' + err.message);
-            });
+            html2pdf()
+                .set(opt)
+                .from(element)
+                .output('datauristring') // Generate PDF as data URI
+                .then(pdfDataUri => {
+                    // Open in new tab
+                    const newWindow = window.open();
+                    if (newWindow) {
+                        newWindow.document.write(`<iframe src="${pdfDataUri}" style="width:100%;height:100vh;border:none;"></iframe>`);
+                        newWindow.document.close();
+                        console.log('PDF opened in new window');
+                    } else {
+                        console.warn('Popup blocked; falling back to download');
+                        html2pdf().set(opt).from(element).save(); // Fallback to download
+                    }
+                    // Restore original theme
+                    document.body.className = originalClass;
+                })
+                .catch(err => {
+                    console.error('PDF export failed:', err);
+                    alert('Failed to export PDF: ' + err.message);
+                    document.body.className = originalClass; // Restore theme on error
+                });
         });
     } else {
         console.warn('Export PDF button not found');
