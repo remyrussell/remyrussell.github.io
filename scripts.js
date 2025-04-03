@@ -6,7 +6,7 @@ function formatDate(dateString) {
 }
 
 function keepThemeSetting() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to 'dark'
     document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
     const themeToggle = document.getElementById('themeToggleButton');
     if (themeToggle) themeToggle.checked = savedTheme === 'dark';
@@ -25,6 +25,24 @@ function attachThemeToggleEvent() {
     const menu = document.getElementById('menu');
     if (menuToggleButton && menu) {
         menuToggleButton.addEventListener('click', () => menu.classList.toggle('active'));
+    }
+    const backToTopButton = document.getElementById('backToTop');
+    if (backToTopButton) {
+        backToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
+    const exportPdfButton = document.getElementById('exportPdf');
+    if (exportPdfButton) {
+        exportPdfButton.addEventListener('click', () => {
+            const element = document.querySelector('.container');
+            const opt = {
+                margin: 0.5,
+                filename: 'Remy_Russell_Resume.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } // 8.5x11 inches
+            };
+            html2pdf().set(opt).from(element).save();
+        });
     }
 }
 
