@@ -1,110 +1,98 @@
 /* General styles */
 body {
     font-family: Arial, sans-serif;
-    padding: 0.5rem; /* Further reduced */
+    padding: 2rem;
     color: #333;
     background-color: #f0f0f0;
     margin: 0;
     transition: background-color 0.3s ease;
-    text-align: left;
-    font-size: 12px; /* Base font size reduced */
+    text-align: left; /* Ensure all text is left-aligned by default */
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
     background-color: #fff;
-    padding: 0.5rem; /* Further reduced */
+    padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
-    text-align: left;
+    text-align: left; /* Reinforce left alignment for container content */
 }
 
 h1, h2, h3 {
     margin-top: 0;
-    margin-bottom: 0.25rem; /* Further reduced */
-}
-
-h1 {
-    font-size: 1.5em; /* Smaller */
+    margin-bottom: 1rem;
 }
 
 h2 {
-    margin-top: 0.5rem; /* Further reduced */
-    margin-bottom: 0.5rem; /* Further reduced */
-    border-bottom: 1px solid #ccc; /* Thinner */
-    padding-bottom: 0.125rem; /* Reduced */
-    font-size: 1.2rem; /* Smaller */
-    font-weight: bold;
-    color: #333;
-}
-
-h3 {
-    font-size: 1em; /* Smaller */
+    margin-top: 2rem;
+    margin-bottom: 1.5rem; /* Increase spacing below the header */
+    border-bottom: 2px solid #ccc; /* Thicker border for more prominence */
+    padding-bottom: 0.5rem;
+    font-size: 1.75rem; /* Increase font size */
+    font-weight: bold; /* Ensure bold text */
+    color: #333; /* Consistent color */
 }
 
 /* Non-sticky header for experience items */
 .experience-item .sticky-header {
-    padding: 0.125rem 0; /* Further reduced */
+    padding: 0.5rem 0;
     margin: 0;
 }
 
 .experience-item .sticky-header h3 {
     margin: 0;
-    font-size: 1em;
+    font-size: 1.5em; /* Match your h3 style */
 }
 
 .experience-item .date-range {
     display: block;
-    font-size: 0.8em; /* Smaller */
+    font-size: 1em;
     color: #666;
-    margin-top: 0.125rem; /* Reduced */
+    margin-top: 0.5rem;
 }
 
 .experience-item .location {
     display: block;
-    font-size: 0.8em;
+    font-size: 1em;
     color: #666;
-    margin-top: 0.0625rem; /* Reduced */
+    margin-top: 0.25rem;
 }
 
 /* Ensure h3 headers in Skills section are not sticky */
 #skills h3 {
-    position: static;
+    position: static; /* Override any inherited stickiness */
 }
 
 .contact p {
-    margin: 0.125rem 0; /* Reduced */
-    font-size: 0.9em; /* Smaller */
+    margin: 0.5rem 0;
 }
 
 .contact p#phone:empty {
-    display: none;
+    display: none; /* Hide phone number if null */
 }
 
 .location-note {
     font-style: italic;
     color: #666;
-    margin: 0.125rem 0; /* Reduced */
-    font-size: 0.9em; /* Smaller */
+    margin: 0.5rem 0;
 }
 
 /* Style for achievements list */
 .achievements {
-    margin-top: 0.25rem; /* Reduced */
+    margin-top: 1rem;
 }
 
 .achievements strong {
     display: block;
     font-weight: bold;
-    margin-bottom: 0.125rem; /* Reduced */
-    font-size: 0.9em; /* Smaller */
+    margin-bottom: 0.5rem;
 }
 
 .achievements ul {
     list-style-type: disc;
-    padding-left: 0.75rem; /* Reduced */
+    padding-left: 1.5rem;
     margin-top: 0;
 }
 
@@ -121,12 +109,12 @@ h3 {
 
 .theme-dark h2 {
     border-color: #777;
-    color: #f0f0f0;
+    color: #f0f0f0; /* Adjust color for dark mode */
 }
 
 .theme-dark .experience-item .sticky-header {
-    background-color: #444;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background-color: #444; /* Match container background in dark mode */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark mode */
 }
 
 .theme-dark .experience-item .date-range {
@@ -203,6 +191,7 @@ h3 {
     position: absolute;
 }
 
+/* When the checkbox is checked (dark mode) */
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
     background-color: #c71585;
 }
@@ -219,6 +208,7 @@ h3 {
     opacity: 0;
 }
 
+/* Dark mode adjustments */
 .theme-dark .theme-toggle-icon.fa-moon {
     color: #fff;
 }
@@ -242,8 +232,8 @@ button.menu-toggle {
     right: 2rem;
     color: #f0f0f0;
     font-size: 1.5rem;
-    display: block;
-    z-index: 1001;
+    display: block; /* Always show the hamburger menu */
+    z-index: 1001; /* Increased to be above sticky headers */
 }
 
 .theme-dark button.menu-toggle {
@@ -258,15 +248,15 @@ button.menu-toggle:hover {
 .menu {
     display: none;
     position: fixed;
-    top: 4rem;
+    top: 4rem; /* Aligns with sticky header offset */
     right: 2rem;
     background-color: #333;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 1000; /* Ensure it stays above most content but below button */
     padding: 1rem;
-    max-height: calc(100vh - 6rem);
-    overflow-y: auto;
+    max-height: calc(100vh - 6rem); /* Prevent overflow */
+    overflow-y: auto; /* Add scroll if content exceeds height */
 }
 
 .theme-dark .menu {
@@ -282,7 +272,7 @@ button.menu-toggle:hover {
 
 .menu li {
     margin: 0.5rem 0;
-    text-align: center;
+    text-align: center; /* Keep menu items centered */
 }
 
 .menu a {
@@ -322,16 +312,11 @@ button.menu-toggle:hover {
     filter: brightness(0) invert(0.7);
 }
 
-/* Style for text links and buttons in menu */
+/* Style for text links */
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
     color: #c71585;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
 }
 
 .menu-text:hover {
@@ -358,20 +343,20 @@ button.menu-toggle:hover {
 /* Experience and Education items with logos */
 .experience-item, .education-item {
     display: flex;
-    margin-top: 0.5rem; /* Further reduced */
+    margin-top: 1.5rem;
     align-items: center;
     flex-direction: column;
 }
 
 .experience-item img, .education-item img {
-    max-width: 60px; /* Further reduced */
-    margin-bottom: 0.25rem; /* Reduced */
+    max-width: 100px;
+    margin-bottom: 1rem;
     filter: brightness(0.9);
 }
 
 .experience-item div, .education-item div {
     flex: 1;
-    text-align: left;
+    text-align: left; /* Left-align text in experience and education items */
 }
 
 /* For screens wider than 768px */
@@ -382,49 +367,48 @@ button.menu-toggle:hover {
     }
 
     .experience-item img, .education-item img {
-        margin-right: 0.25rem; /* Reduced */
+        margin-right: 1rem;
         margin-bottom: 0;
     }
 
     .experience-item div, .education-item div {
-        text-align: left;
+        text-align: left; /* Ensure left alignment on desktop */
     }
 }
 
 /* Skills and Interests Sections */
 #skills h3, #funSkills h3 {
-    margin-top: 0.5rem; /* Reduced */
+    margin-top: 1.5rem;
 }
 
 ul {
     list-style-type: disc;
-    padding-left: 0.75rem; /* Reduced */
-    margin-top: 0.125rem; /* Reduced */
-    text-align: left;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+    text-align: left; /* Ensure lists are left-aligned */
 }
 
 li {
-    margin-bottom: 0.125rem; /* Reduced */
-    font-size: 0.85em; /* Smaller */
+    margin-bottom: 0.5rem;
 }
 
 /* New sections styling */
 #certifications, #languages {
-    margin-top: 0.5rem; /* Reduced */
+    margin-top: 2rem;
 }
 
 #certifications ul, #languages ul {
     list-style-type: disc;
-    padding-left: 0.75rem;
-    margin-top: 0.125rem;
-    text-align: left;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+    text-align: left; /* Ensure lists are left-aligned */
 }
 
 /* Back to Top Button */
 .back-to-top {
     position: fixed;
     bottom: 2rem;
-    right: 2rem;
+    right: 2rem; /* Bottom-right positioning */
     background-color: #333;
     color: #f0f0f0;
     border: none;
@@ -436,7 +420,7 @@ li {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease, opacity 0.3s ease;
     z-index: 1000;
-    display: none;
+    display: none; /* Hidden until scrolled */
 }
 
 .theme-dark .back-to-top {
