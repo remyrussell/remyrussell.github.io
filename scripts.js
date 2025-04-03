@@ -90,31 +90,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                     logoImg.className = 'logo-img';
                     logoImg.src = experience.logo || '';
                     logoImg.alt = `${experience.company} logo`;
-                    logoImg.width = 50;
+                    logoImg.width = 100; // Bigger logo
                     headerDiv.appendChild(logoImg);
                 }
                 previousCompany = experience.company;
+
+                const headerContent = document.createElement('div');
+                headerContent.className = 'header-content';
 
                 const stickyHeader = document.createElement('div');
                 stickyHeader.className = 'sticky-header';
                 const positionHeader = document.createElement('h3');
                 positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
                 stickyHeader.appendChild(positionHeader);
-                headerDiv.appendChild(stickyHeader);
-                experienceDiv.appendChild(headerDiv);
-
-                const detailsDiv = document.createElement('div');
-                detailsDiv.className = 'details';
+                headerContent.appendChild(stickyHeader);
 
                 const dateRange = document.createElement('span');
                 dateRange.className = 'date-range';
                 dateRange.innerText = `${formatDate(experience.duration.start)} through ${formatDate(experience.duration.end) || 'Present'}`;
-                detailsDiv.appendChild(dateRange);
+                headerContent.appendChild(dateRange);
 
                 const locationSpan = document.createElement('span');
                 locationSpan.className = 'location';
                 locationSpan.innerText = experience.location || '';
-                detailsDiv.appendChild(locationSpan);
+                headerContent.appendChild(locationSpan);
+
+                headerDiv.appendChild(headerContent);
+                experienceDiv.appendChild(headerDiv);
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'details';
 
                 const descriptionPara = document.createElement('p');
                 descriptionPara.className = 'description';
@@ -155,25 +160,33 @@ document.addEventListener('DOMContentLoaded', async () => {
             eduLogoImg.className = 'logo-img';
             eduLogoImg.src = data.education.logo || '';
             eduLogoImg.alt = "Education institution logo";
-            eduLogoImg.width = 50;
+            eduLogoImg.width = 100; // Bigger logo
             headerDiv.appendChild(eduLogoImg);
+
+            const headerContent = document.createElement('div');
+            headerContent.className = 'header-content';
 
             const stickyHeader = document.createElement('div');
             stickyHeader.className = 'sticky-header';
             const degreeHeader = document.createElement('h3');
             degreeHeader.innerText = data.education.degree || 'Degree Not Found';
             stickyHeader.appendChild(degreeHeader);
-            headerDiv.appendChild(stickyHeader);
+            headerContent.appendChild(stickyHeader);
+
+            const eduDetailsSpan = document.createElement('span');
+            eduDetailsSpan.innerText = data.education.institution || 'Institution Not Found';
+            headerContent.appendChild(eduDetailsSpan);
+
+            headerDiv.appendChild(headerContent);
             educationDiv.appendChild(headerDiv);
 
-            const eduDetailsDiv = document.createElement('div');
-            eduDetailsDiv.className = 'details';
-            eduDetailsDiv.innerHTML = `
-                <p>${data.education.institution || 'Institution Not Found'}</p>
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = 'details';
+            detailsDiv.innerHTML = `
                 <p>${data.education.coursework?.join(', ') || ''}</p>
                 ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
             `;
-            educationDiv.appendChild(eduDetailsDiv);
+            educationDiv.appendChild(detailsDiv);
             educationContainer.appendChild(educationDiv);
         }
 
