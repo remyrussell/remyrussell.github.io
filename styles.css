@@ -1,4 +1,4 @@
-/* General stylez */
+/* General styles */
 body {
     font-family: Arial, sans-serif;
     padding: 2rem;
@@ -99,8 +99,8 @@ h2 {
 }
 
 .theme-dark .experience-item .sticky-header {
-    background-color: #444; /* Match container background in dark mode */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark mode */
+    background-color: #444;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .theme-dark .experience-item .date-range {
@@ -218,8 +218,8 @@ button.menu-toggle {
     right: 2rem;
     color: #f0f0f0;
     font-size: 1.5rem;
-    display: block; /* Always show the hamburger menu */
-    z-index: 1001; /* Increased to be above sticky headers */
+    display: block;
+    z-index: 1001;
 }
 
 .theme-dark button.menu-toggle {
@@ -234,15 +234,15 @@ button.menu-toggle:hover {
 .menu {
     display: none;
     position: fixed;
-    top: 4rem; /* Aligns with sticky header offset */
+    top: 4rem;
     right: 2rem;
     background-color: #333;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Ensure it stays above most content but below button */
+    z-index: 1000;
     padding: 1rem;
-    max-height: calc(100vh - 6rem); /* Prevent overflow */
-    overflow-y: auto; /* Add scroll if content exceeds height */
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
 }
 
 .theme-dark .menu {
@@ -258,7 +258,7 @@ button.menu-toggle:hover {
 
 .menu li {
     margin: 0.5rem 0;
-    text-align: center; /* Keep menu items centered */
+    text-align: center;
 }
 
 .menu a {
@@ -326,21 +326,21 @@ button.menu-toggle:hover {
     }
 }
 
-/* Experience and Education items with logos */
+/* Experience and Education items with logos centered above */
 .experience-item, .education-item {
-    display: flex;
     margin-top: 1.5rem;
-    align-items: center;
+    text-align: center; /* Center-align content */
 }
 
 .experience-item img, .education-item img {
     max-width: 100px;
-    margin-right: 1rem;
+    margin: 0 auto 1rem auto; /* Center horizontally, space below */
+    display: block; /* Ensure block-level for centering */
     filter: brightness(0.9);
 }
 
 .experience-item div, .education-item div {
-    flex: 1;
+    text-align: left; /* Left-align text content below logo */
 }
 
 /* Skills and Interests Sections */
@@ -373,7 +373,7 @@ li {
 .back-to-top {
     position: fixed;
     bottom: 2rem;
-    right: 2rem; /* Bottom-right positioning */
+    right: 2rem;
     background-color: #333;
     color: #f0f0f0;
     border: none;
@@ -385,7 +385,7 @@ li {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease, opacity 0.3s ease;
     z-index: 1000;
-    display: none; /* Hidden until scrolled */
+    display: none;
 }
 
 .theme-dark .back-to-top {
