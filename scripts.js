@@ -6,7 +6,7 @@ function formatDate(dateString) {
 }
 
 function keepThemeSetting() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark as requested
     document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
     const themeToggle = document.getElementById('themeToggleButton');
     if (themeToggle) themeToggle.checked = savedTheme === 'dark';
@@ -33,84 +33,14 @@ function attachThemeToggleEvent() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (e) {
                 console.error('Scroll failed:', e);
-                window.scrollTo(0, 0);
+                window.scrollTo(0, 0); // Fallback for older browsers
             }
         });
+        // Show/hide button based on scroll position
         window.addEventListener('scroll', () => {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
             const viewportHeight = window.innerHeight;
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
-        });
-    }
-    const exportPdfButton = document.getElementById('exportPdf');
-    if (exportPdfButton) {
-        exportPdfButton.addEventListener('click', () => {
-            if (typeof html2pdf === 'undefined') {
-                console.error('html2pdf.js not loaded');
-                alert('PDF export failed: Library not loaded.');
-                return;
-            }
-            console.log('Exporting to PDF...');
-            const element = document.querySelector('.container');
-            const menu = document.getElementById('menu');
-            const menuButton = document.getElementById('menuToggleButton');
-            // Store original states
-            const originalClass = document.body.className;
-            const originalMenuDisplay = menu.style.display;
-            const originalButtonDisplay = menuButton.style.display;
-            // Force light theme and hide menu/button
-            document.body.className = '';
-            menu.style.display = 'none';
-            menuButton.style.display = 'none';
-            const opt = {
-                margin: [0.2, 0.2, 0.2, 0.2], // Tighter margins
-                filename: 'Remy_Russell_Resume.pdf',
-                image: { type: 'jpeg', quality: 0.95 },
-                html2canvas: { 
-                    scale: 0.8, // Further reduced scale for smaller text
-                    useCORS: true,
-                    width: 816, // 8.5in at 96dpi (letter width)
-                    scrollY: 0 // Capture from top
-                },
-                jsPDF: { 
-                    unit: 'in', 
-                    format: 'letter', 
-                    orientation: 'portrait',
-                    putOnlyUsedFonts: true,
-                    compress: true
-                },
-                pagebreak: { 
-                    mode: ['css', 'legacy'], // Respect CSS breaks
-                    before: '.experience-item', // Break before experience items if multi-page
-                    avoid: ['h2', 'h3', 'li'] // Avoid breaking headings/lists
-                }
-            };
-            html2pdf()
-                .set(opt)
-                .from(element)
-                .output('datauristring')
-                .then(pdfDataUri => {
-                    const newWindow = window.open();
-                    if (newWindow) {
-                        newWindow.document.write(`<iframe src="${pdfDataUri}" style="width:100%;height:100vh;border:none;"></iframe>`);
-                        newWindow.document.close();
-                        console.log('PDF opened in new window');
-                    } else {
-                        console.warn('Popup blocked; falling back to download');
-                        html2pdf().set(opt).from(element).save();
-                    }
-                    // Restore original states
-                    document.body.className = originalClass;
-                    menu.style.display = originalMenuDisplay;
-                    menuButton.style.display = originalButtonDisplay;
-                })
-                .catch(err => {
-                    console.error('PDF export failed:', err);
-                    alert('Failed to export PDF: ' + err.message);
-                    document.body.className = originalClass;
-                    menu.style.display = originalMenuDisplay;
-                    menuButton.style.display = originalButtonDisplay;
-                });
         });
     }
 }
