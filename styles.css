@@ -6,7 +6,7 @@ body {
     background-color: #f0f0f0;
     margin: 0;
     transition: background-color 0.3s ease;
-    text-align: left; /* Ensure al text is left-aligned by default */
+    text-align: left; /* Ensure all text is left-aligned by default */
 }
 
 .container {
@@ -312,11 +312,16 @@ button.menu-toggle:hover {
     filter: brightness(0) invert(0.7);
 }
 
-/* Style for text links */
+/* Style for text links and buttons in menu */
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
     color: #c71585;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
 }
 
 .menu-text:hover {
@@ -402,4 +407,36 @@ li {
     padding-left: 1rem;
     margin-top: 0.5rem;
     text-align: left; /* Ensure lists are left-aligned */
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem; /* Ensure bottom-right positioning */
+    background-color: #333;
+    color: #f0f0f0;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    z-index: 1000;
+    display: none; /* Hidden by default */
+}
+
+.theme-dark .back-to-top {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.back-to-top:hover {
+    background-color: #555;
+}
+
+.theme-dark .back-to-top:hover {
+    background-color: #ccc;
 }
