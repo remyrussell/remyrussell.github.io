@@ -20,32 +20,34 @@
             "duration": "February 2021 – March 2025",
             "description": "Product Lead for a Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, and more)",
             "highlights": [
-                "Elicited insights to prioritize valuable initiatives, evolving the platform’s capabilities",
-                "Analyzed APIs and integration use cases to extend user calabilities and defined technical requirements for engineering teams",
+                "Elicited qualitative & quantitative insights to prioritize valuable initiatives, evolving the platform’s capabilities",
+                "Analyzed integration partner APIs and partnered with engineering to design the best solutions to extend user calabilities and enable growth",
                 "Managed stakeholder communication and owned relationships with external users and partners",
-                "Maintained the roadmap, defined KPIs and established mechanisms to measure them"
+                "Partnered with Sales, Client Success, and implementation teams to establish and maintain the roadmap, define KPIs, and establish mechanisms to measure & communicate them"
             ],
             "achievements": [
-                "Helped drive growth in ARR from 10M to 15M by expanding features, supporting/improving implementation processes, and increasing platform interoperability, ultimately leading to CaseWorthy's acquisition of Eccovia",
+                "Helped drive growth in ARR by over 50% by expanding platform capabilities, supporting/improving implementation processes, and increasing platform interoperability, ultimately leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
-                "Helped establish a Product Catalog and a platform-based, microservice approach to solving new problems in a way that enabled future growth/expansion",
+                "Helped establish a clear product catalog and a platform-based, microservice approach to enable growth/expansion across multiple customers on the platform",
                 "Led new growth initiatives and gained experience shipping and/or scrapping MVPs to integrate with third parties to extend user capabilities (e.g., Twilio for Email & SMS, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Medicaid Payers, a Claims Processing System, a pharmacy benefit manager, external data warehouses, etc.)"
             ]
         },
         {
-            "position": "Business Analyst, Solutions Delivery",
+            "position": "Business Analyst, Solutions Delivery and Integrations",
             "company": "Eccovia",
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
             "duration": "April 2019 – February 2021",
-            "description": "TBA",
+            "description": "Led problem discovery and requirements gathering with new customers during the initial design and implementation of their solution on the case management platform.",
             "highlights": [
-                "Led problem discovery and requirements gathering with new customers during the initial design and implementation of their solution on the case management platform",
-                "Supported complex data migration efforts, custom integration solutions, and training/onboarding of new users"
+                "Worked with project managers, implementation engineers, and customer contacts to implement over 10 new solutions, creating happy and sticky customers",
+                "Drove the iterative discovery/delivery process for complex data migration efforts, custom integration solutions, and facilitated UAT and post-go-live support",
+                "Improved my SQL skills, my understanding of healthcare interoperability, and understanding of by necessity through designing complex d "
             ],
             "achievements": [
-                "Successfully implemented new and complex solutions for two of Eccovia's top ten customers by ARR",
-                "Pushed the platform interoperability capabilities to the limits and drove the evolution of features to unlock the capabilities requested by our customers"
+                "Successfully implemented new solutions for two of Eccovia's top ten largest customers by ARR",
+                "Took ownership of all new integration use cases, and after finding patterns/similarities, advocated for and started designing agnostic services to support multiple customers and integration partners"
+                "Pushed the platform's interoperability capabilities to their limits and drove the platform's evolution to unlock the capabilities requested by our customers"
             ]
         },
         {
