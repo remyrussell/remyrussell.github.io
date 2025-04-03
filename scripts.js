@@ -59,8 +59,10 @@ function populateResume(data) {
     document.getElementById('name').innerText = data.name || 'Name Not Found';
     document.getElementById('role').innerText = data.role || 'Role Not Found';
     document.getElementById('email').innerText = data.contact?.email || 'Email Not Found';
-    document.getElementById('phone').innerText = data.contact?.phone || 'Phone Not Found';
-    document.getElementById('summaryList').innerHTML = data.summary?.split('. ').map(item => `<li>${item.trim()}</li>`).join('') || '<li>Summary Data Not Found</li>';
+    if (data.contact?.phone) {
+        document.getElementById('phone').innerText = data.contact.phone || '';
+    } // Only set phone if it exists
+    document.getElementById('summaryList').innerHTML = data.summary?.split('. ').map(item => `<li>${item.trim()}${item.includes('success') ? '. <strong>Currently seeking remote or hybrid roles in the Salt Lake City area.</strong>' : ''}</li>`).join('') || '<li>Summary Data Not Found</li>';
 
     let experienceContainer = document.getElementById('professionalExperience');
     console.log('Professional Experience Container:', experienceContainer);
@@ -87,7 +89,7 @@ function populateResume(data) {
             let detailsDiv = document.createElement('div');
             detailsDiv.className = 'details';
 
-            // Sticky header with position and date range
+            // Non-sticky header with position, date range, and location
             let stickyHeader = document.createElement('div');
             stickyHeader.className = 'sticky-header';
             let positionHeader = document.createElement('h3');
@@ -95,8 +97,12 @@ function populateResume(data) {
             let dateRange = document.createElement('span');
             dateRange.className = 'date-range';
             dateRange.innerText = `${experience.duration.start} – ${experience.duration.end || 'Present'}`;
+            let locationSpan = document.createElement('span');
+            locationSpan.className = 'location';
+            locationSpan.innerText = experience.location || '';
             stickyHeader.appendChild(positionHeader);
             stickyHeader.appendChild(dateRange);
+            stickyHeader.appendChild(locationSpan);
             detailsDiv.appendChild(stickyHeader);
 
             // Description and highlights
