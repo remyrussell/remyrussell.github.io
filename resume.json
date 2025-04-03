@@ -13,7 +13,7 @@
     "summary": "Understand the users, buyers, and the problems worth solving to ensure success of the business. Inspire cross-functional collaboration to align on the most promising strategies. Drive the execution of the vision through rapid iteration of discovery and delivery",
     "professionalExperience": [
         {
-            "position": "Associate Product Manager, Platform and Integrations teams",
+            "position": "Product, Platform and Integrations teams",
             "company": "Eccovia",
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
@@ -45,7 +45,6 @@
             },
             "description": "Led problem discovery and requirements gathering with new customers during the initial design and implementation of their solution on the case management platform.",
             "highlights": [
-                "Worked with project managers, implementation engineers, and customer contacts to implement over 10 new solutions, creating happy and sticky customers",
                 "Drove the iterative discovery/delivery process for complex data migration efforts, custom integration solutions, and facilitated UAT and post-go-live support",
                 "Improved my SQL skills, my understanding of healthcare interoperability, and of various approaches to solving interoperability challenges by necessity when delivering contracted features with a small team"
             ],
@@ -122,7 +121,7 @@
             "Traveling and/or attending concerts/festivals",
             "Music creation/consumption (electronic, guitar)",
             "Outdoor activities (skiing, mountain biking, hiking, camping)",
-            "Podcasts/audiobooks on anything related to tech, health, or science related",
+            "Podcasts/audiobooks on anything related to tech, health, or science related"
         ]
     },
     "certifications": [
