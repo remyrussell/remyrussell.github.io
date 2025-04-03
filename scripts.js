@@ -28,21 +28,49 @@ function attachThemeToggleEvent() {
     }
     const backToTopButton = document.getElementById('backToTop');
     if (backToTopButton) {
-        backToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        backToTopButton.addEventListener('click', () => {
+            try {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                console.error('Scroll failed:', e);
+                window.scrollTo(0, 0); // Fallback for older browsers
+            }
+        });
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+            const viewportHeight = window.innerHeight;
+            backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
+        });
+    } else {
+        console.warn('Back to Top button not found');
     }
     const exportPdfButton = document.getElementById('exportPdf');
     if (exportPdfButton) {
         exportPdfButton.addEventListener('click', () => {
+            if (typeof html2pdf === 'undefined') {
+                console.error('html2pdf.js not loaded');
+                alert('PDF export failed: Library not loaded. Please try again later.');
+                return;
+            }
+            console.log('Exporting to PDF...');
             const element = document.querySelector('.container');
             const opt = {
                 margin: 0.5,
                 filename: 'Remy_Russell_Resume.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } // 8.5x11 inches
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
-            html2pdf().set(opt).from(element).save();
+            html2pdf().set(opt).from(element).save().then(() => {
+                console.log('PDF exported successfully');
+            }).catch(err => {
+                console.error('PDF export failed:', err);
+                alert('Failed to export PDF: ' + err.message);
+            });
         });
+    } else {
+        console.warn('Export PDF button not found');
     }
 }
 
