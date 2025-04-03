@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
         console.log('Parsed data:', data);
 
-        // Clear existing content to prevent duplication
         document.getElementById('name').innerText = data.name || 'Name Not Found';
         document.getElementById('role').innerText = data.role || 'Role Not Found';
         document.getElementById('email').innerText = data.contact?.email || 'Email Not Found';
@@ -76,31 +75,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('summaryList').innerHTML = data.summary?.split('. ').map(item => `<li>${item.trim()}</li>`).join('') || '<li>Summary Data Not Found</li>';
 
         const experienceContainer = document.getElementById('professionalExperience');
-        experienceContainer.innerHTML = '<h2>Professional Experience</h2>'; // Reset content
+        experienceContainer.innerHTML = '<h2>Professional Experience</h2>';
         let previousCompany = null;
         if (data.professionalExperience) {
             data.professionalExperience.forEach((experience) => {
                 const experienceDiv = document.createElement('div');
                 experienceDiv.className = 'experience-item';
 
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'header-with-logo';
+
                 if (experience.company !== previousCompany) {
                     const logoImg = document.createElement('img');
                     logoImg.className = 'logo-img';
                     logoImg.src = experience.logo || '';
                     logoImg.alt = `${experience.company} logo`;
-                    logoImg.width = 100;
-                    experienceDiv.appendChild(logoImg);
+                    logoImg.width = 50;
+                    headerDiv.appendChild(logoImg);
                 }
                 previousCompany = experience.company;
 
-                const detailsDiv = document.createElement('div');
-                detailsDiv.className = 'details';
                 const stickyHeader = document.createElement('div');
                 stickyHeader.className = 'sticky-header';
                 const positionHeader = document.createElement('h3');
                 positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
                 stickyHeader.appendChild(positionHeader);
-                detailsDiv.appendChild(stickyHeader);
+                headerDiv.appendChild(stickyHeader);
+                experienceDiv.appendChild(headerDiv);
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'details';
 
                 const dateRange = document.createElement('span');
                 dateRange.className = 'date-range';
@@ -139,21 +143,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const educationContainer = document.getElementById('education');
-        educationContainer.innerHTML = '<h2>Education</h2>'; // Reset content
+        educationContainer.innerHTML = '<h2>Education</h2>';
         if (data.education) {
             const educationDiv = document.createElement('div');
             educationDiv.className = 'education-item';
+
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'header-with-logo';
+
             const eduLogoImg = document.createElement('img');
             eduLogoImg.className = 'logo-img';
             eduLogoImg.src = data.education.logo || '';
             eduLogoImg.alt = "Education institution logo";
-            eduLogoImg.width = 100;
-            educationDiv.appendChild(eduLogoImg);
+            eduLogoImg.width = 50;
+            headerDiv.appendChild(eduLogoImg);
+
+            const stickyHeader = document.createElement('div');
+            stickyHeader.className = 'sticky-header';
+            const degreeHeader = document.createElement('h3');
+            degreeHeader.innerText = data.education.degree || 'Degree Not Found';
+            stickyHeader.appendChild(degreeHeader);
+            headerDiv.appendChild(stickyHeader);
+            educationDiv.appendChild(headerDiv);
 
             const eduDetailsDiv = document.createElement('div');
             eduDetailsDiv.className = 'details';
             eduDetailsDiv.innerHTML = `
-                <h3>${data.education.degree || 'Degree Not Found'}</h3>
                 <p>${data.education.institution || 'Institution Not Found'}</p>
                 <p>${data.education.coursework?.join(', ') || ''}</p>
                 ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
