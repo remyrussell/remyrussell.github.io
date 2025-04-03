@@ -1,19 +1,20 @@
 /* General styles */
 body {
     font-family: Arial, sans-serif;
-    padding: 1rem; /* Reduced from 2rem for PDF */
+    padding: 0.5rem; /* Further reduced */
     color: #333;
     background-color: #f0f0f0;
     margin: 0;
     transition: background-color 0.3s ease;
     text-align: left;
+    font-size: 12px; /* Base font size reduced */
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
     background-color: #fff;
-    padding: 1rem; /* Reduced from 2rem for PDF */
+    padding: 0.5rem; /* Further reduced */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -22,42 +23,50 @@ body {
 
 h1, h2, h3 {
     margin-top: 0;
-    margin-bottom: 0.5rem; /* Reduced from 1rem */
+    margin-bottom: 0.25rem; /* Further reduced */
+}
+
+h1 {
+    font-size: 1.5em; /* Smaller */
 }
 
 h2 {
-    margin-top: 1rem; /* Reduced from 2rem */
-    margin-bottom: 1rem; /* Reduced from 1.5rem */
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 0.25rem; /* Reduced from 0.5rem */
-    font-size: 1.5rem; /* Slightly smaller */
+    margin-top: 0.5rem; /* Further reduced */
+    margin-bottom: 0.5rem; /* Further reduced */
+    border-bottom: 1px solid #ccc; /* Thinner */
+    padding-bottom: 0.125rem; /* Reduced */
+    font-size: 1.2rem; /* Smaller */
     font-weight: bold;
     color: #333;
 }
 
+h3 {
+    font-size: 1em; /* Smaller */
+}
+
 /* Non-sticky header for experience items */
 .experience-item .sticky-header {
-    padding: 0.25rem 0; /* Reduced from 0.5rem */
+    padding: 0.125rem 0; /* Further reduced */
     margin: 0;
 }
 
 .experience-item .sticky-header h3 {
     margin: 0;
-    font-size: 1.25em; /* Slightly smaller */
+    font-size: 1em;
 }
 
 .experience-item .date-range {
     display: block;
-    font-size: 0.9em; /* Slightly smaller */
+    font-size: 0.8em; /* Smaller */
     color: #666;
-    margin-top: 0.25rem; /* Reduced */
+    margin-top: 0.125rem; /* Reduced */
 }
 
 .experience-item .location {
     display: block;
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: #666;
-    margin-top: 0.125rem; /* Reduced */
+    margin-top: 0.0625rem; /* Reduced */
 }
 
 /* Ensure h3 headers in Skills section are not sticky */
@@ -66,7 +75,8 @@ h2 {
 }
 
 .contact p {
-    margin: 0.25rem 0; /* Reduced */
+    margin: 0.125rem 0; /* Reduced */
+    font-size: 0.9em; /* Smaller */
 }
 
 .contact p#phone:empty {
@@ -76,23 +86,25 @@ h2 {
 .location-note {
     font-style: italic;
     color: #666;
-    margin: 0.25rem 0; /* Reduced */
+    margin: 0.125rem 0; /* Reduced */
+    font-size: 0.9em; /* Smaller */
 }
 
 /* Style for achievements list */
 .achievements {
-    margin-top: 0.5rem; /* Reduced */
+    margin-top: 0.25rem; /* Reduced */
 }
 
 .achievements strong {
     display: block;
     font-weight: bold;
-    margin-bottom: 0.25rem; /* Reduced */
+    margin-bottom: 0.125rem; /* Reduced */
+    font-size: 0.9em; /* Smaller */
 }
 
 .achievements ul {
     list-style-type: disc;
-    padding-left: 1rem;
+    padding-left: 0.75rem; /* Reduced */
     margin-top: 0;
 }
 
@@ -346,14 +358,14 @@ button.menu-toggle:hover {
 /* Experience and Education items with logos */
 .experience-item, .education-item {
     display: flex;
-    margin-top: 0.75rem; /* Reduced from 1.5rem */
+    margin-top: 0.5rem; /* Further reduced */
     align-items: center;
     flex-direction: column;
 }
 
 .experience-item img, .education-item img {
-    max-width: 80px; /* Reduced from 100px */
-    margin-bottom: 0.5rem; /* Reduced */
+    max-width: 60px; /* Further reduced */
+    margin-bottom: 0.25rem; /* Reduced */
     filter: brightness(0.9);
 }
 
@@ -370,7 +382,7 @@ button.menu-toggle:hover {
     }
 
     .experience-item img, .education-item img {
-        margin-right: 0.5rem; /* Reduced */
+        margin-right: 0.25rem; /* Reduced */
         margin-bottom: 0;
     }
 
@@ -381,29 +393,30 @@ button.menu-toggle:hover {
 
 /* Skills and Interests Sections */
 #skills h3, #funSkills h3 {
-    margin-top: 0.75rem; /* Reduced */
+    margin-top: 0.5rem; /* Reduced */
 }
 
 ul {
     list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.25rem; /* Reduced */
+    padding-left: 0.75rem; /* Reduced */
+    margin-top: 0.125rem; /* Reduced */
     text-align: left;
 }
 
 li {
-    margin-bottom: 0.25rem; /* Reduced */
+    margin-bottom: 0.125rem; /* Reduced */
+    font-size: 0.85em; /* Smaller */
 }
 
 /* New sections styling */
 #certifications, #languages {
-    margin-top: 1rem; /* Reduced */
+    margin-top: 0.5rem; /* Reduced */
 }
 
 #certifications ul, #languages ul {
     list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.25rem;
+    padding-left: 0.75rem;
+    margin-top: 0.125rem;
     text-align: left;
 }
 
