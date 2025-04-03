@@ -30,7 +30,11 @@ function keepThemeSetting() {
 // Function to toggle menu
 function toggleMenu() {
     const menu = document.getElementById('menu');
-    menu.classList.toggle('active');
+    if (menu) {
+        menu.classList.toggle('active');
+    } else {
+        console.error('Menu element not found!');
+    }
 }
 
 // Event attachment for theme toggling and menu toggling
@@ -38,10 +42,16 @@ function attachThemeToggleEvent() {
     let themeToggleCheckbox = document.getElementById('themeToggleButton');
     if (themeToggleCheckbox) {
         themeToggleCheckbox.addEventListener('change', toggleTheme);
+    } else {
+        console.warn('Theme toggle checkbox not found!');
     }
 
     let menuToggleButton = document.getElementById('menuToggleButton');
-    menuToggleButton.addEventListener('click', toggleMenu);
+    if (menuToggleButton) {
+        menuToggleButton.addEventListener('click', toggleMenu);
+    } else {
+        console.error('Menu toggle button not found!');
+    }
 }
 
 // Function to populate the resume content
