@@ -21,8 +21,8 @@
                 "start": "2021-02-01",
                 "end": "2025-03-31"
             },
-            "description": "Product Lead for a configurable Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)"
-                "highlights": [
+            "description": "Product Lead for a configurable Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
+            "highlights": [
                 "Partnered with Leadership, Engineering, Sales, and other teams to establish and maintain the roadmap, define KPIs, and create mechanisms to measure & communicate priority and progress",
                 "Gained experience delivering or scrapping POCs and MVPs, often to extend platform capabilities by integrating with third parties (e.g., Twilio for Email & SMS, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Medicaid Payers, Claims Processing Systems, etc.)"
             ],
