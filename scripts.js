@@ -82,16 +82,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const experienceDiv = document.createElement('div');
                 experienceDiv.className = 'experience-item';
 
-                const headerDiv = document.createElement('div');
-                headerDiv.className = 'header-with-logo';
-
                 if (experience.company !== previousCompany) {
                     const logoImg = document.createElement('img');
                     logoImg.className = 'logo-img';
                     logoImg.src = experience.logo || '';
                     logoImg.alt = `${experience.company} logo`;
-                    logoImg.width = 100; // Bigger logo
-                    headerDiv.appendChild(logoImg);
+                    logoImg.width = 100;
+                    experienceDiv.appendChild(logoImg);
                 }
                 previousCompany = experience.company;
 
@@ -115,8 +112,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 locationSpan.innerText = experience.location || '';
                 headerContent.appendChild(locationSpan);
 
-                headerDiv.appendChild(headerContent);
-                experienceDiv.appendChild(headerDiv);
+                experienceDiv.appendChild(headerContent);
 
                 const detailsDiv = document.createElement('div');
                 detailsDiv.className = 'details';
@@ -153,15 +149,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             const educationDiv = document.createElement('div');
             educationDiv.className = 'education-item';
 
-            const headerDiv = document.createElement('div');
-            headerDiv.className = 'header-with-logo';
-
             const eduLogoImg = document.createElement('img');
             eduLogoImg.className = 'logo-img';
             eduLogoImg.src = data.education.logo || '';
             eduLogoImg.alt = "Education institution logo";
-            eduLogoImg.width = 100; // Bigger logo
-            headerDiv.appendChild(eduLogoImg);
+            eduLogoImg.width = 100;
+            educationDiv.appendChild(eduLogoImg);
 
             const headerContent = document.createElement('div');
             headerContent.className = 'header-content';
@@ -177,8 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             eduDetailsSpan.innerText = data.education.institution || 'Institution Not Found';
             headerContent.appendChild(eduDetailsSpan);
 
-            headerDiv.appendChild(headerContent);
-            educationDiv.appendChild(headerDiv);
+            educationDiv.appendChild(headerContent);
 
             const detailsDiv = document.createElement('div');
             detailsDiv.className = 'details';
