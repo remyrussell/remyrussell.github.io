@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('funSkills').innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
     } catch (err) {
         console.error('Error:', err.message);
-        document.getElementById('professionalExperience').innerHTML = `<p>Error loading experience: ${err.message}</p>`;
+        document.getElementById('professionalExperience').innerHTML = `<p>Error loading experience, dawg: ${err.message}</p>`;
         document.getElementById('education').innerHTML = `<p>Error loading education: ${err.message}</p>`;
     }
 });
