@@ -26,7 +26,8 @@
                 "Partnered with Leadership, Engineering, Sales, and other teams to establish and maintain the roadmap, define KPIs, and create mechanisms to measure & communicate priority and progress",
                 "Delivered and scrapped POCs and MVPs for new native features or for third party integrations (e.g., Twilio, Microsoft Power Automate, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Claims Processing Systems, DocuSeal, etc.)",
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, ultimately leading to acquisition",
-                "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases"
+                "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
+                "Evolved the platform based on customer requests (e.g., SSO and 2-Step Verification for native users, in-app file previews, scheduled CSV exports, API access to Azure storage accounts, etc.)"
             ]
         },
         {
@@ -41,8 +42,7 @@
             "description": "Problem discovery, requirements gathering, and solutioning with new customers to implement solutions on the case management platform.",
             "highlights": [
                 "Drove the successful implementation for two of Eccovia's top ten largest customers by ARR, including complex data migration and integration use cases",
-                "Took ownership of all new integration use cases across new customers (over a dozen) and helped transition our technical strategy towards agnostic services to support multiple customers or integration partners",
-                "Evolved our ability to deliver capabilities requested by our customers (e.g., scheduled CSV exports, API access to Azure storage accounts, generic and purpose-built RESTful endpoints, etc.)"
+                "Took ownership of all new integration use cases across new customers (over a dozen) and helped transition our technical strategy towards agnostic services to support multiple customers or integration partners"
             ]
         },
         {
