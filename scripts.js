@@ -25,7 +25,7 @@ function attachThemeToggleEvent() {
     const menu = document.getElementById('menu');
     if (menuToggleButton && menu) {
         menuToggleButton.addEventListener('click', () => {
-            console.log('Menu toggle clicked'); // Debug log
+            console.log('Menu toggle clicked');
             menu.classList.toggle('active');
         });
     } else {
@@ -73,7 +73,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const container = document.querySelector('.container');
         const summarySection = document.getElementById('summary');
-        // Check if locationNote already exists to prevent duplication
         if (!document.querySelector('.location-note')) {
             const locationNote = document.createElement('p');
             locationNote.className = 'location-note';
@@ -132,19 +131,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 detailsDiv.appendChild(descriptionPara);
 
                 const highlightsList = document.createElement('ul');
-                highlightsList.innerHTML = experience.highlights?.map(highlight => `<li>${highlight}</li>`).join('') || '<li>Highlights Not Found</li>';
-                detailsDiv.appendChild(highlightsList);
-
-                if (experience.achievements) {
-                    const achievementsDiv = document.createElement('div');
-                    achievementsDiv.className = 'achievements';
-                    const achievementsTitle = document.createElement('strong');
-                    achievementsTitle.innerText = 'Achievements';
-                    const achievementsList = document.createElement('ul');
-                    achievementsList.innerHTML = experience.achievements.map(ach => `<li>${ach}</li>`).join('');
-                    achievementsDiv.appendChild(achievementsTitle);
-                    achievementsDiv.appendChild(achievementsList);
-                    detailsDiv.appendChild(achievementsDiv);
+                const combinedHighlights = [...(experience.highlights || []), ...(experience.achievements || [])];
+                highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
+                if (combinedHighlights.length > 0) {
+                    detailsDiv.appendChild(highlightsList);
                 }
 
                 experienceDiv.appendChild(detailsDiv);
