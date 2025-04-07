@@ -41,7 +41,7 @@ h2 {
 }
 
 .experience-item .header-content, .education-item .header-content {
-    text-align: left; /* Left-align header content */
+    text-align: left;
 }
 
 .experience-item .sticky-header, .education-item .sticky-header {
@@ -70,7 +70,7 @@ h2 {
 
 .experience-item .details, .education-item .details {
     margin-left: 0;
-    text-align: left; /* Left-align details content */
+    text-align: left;
 }
 
 /* Ensure bullets are left-aligned with standard indent */
@@ -78,7 +78,7 @@ h2 {
     list-style-type: disc;
     padding-left: 1rem;
     margin-top: 0.5rem;
-    text-align: left; /* Explicitly left-align bullets */
+    text-align: left;
 }
 
 /* Other content styling */
@@ -94,23 +94,6 @@ h2 {
     font-style: italic;
     color: #666;
     margin: 0.5rem 0;
-}
-
-.achievements {
-    margin-top: 1rem;
-}
-
-.achievements strong {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.achievements ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0;
-    text-align: left; /* Left-align achievements bullets */
 }
 
 /* Dark mode styles */
