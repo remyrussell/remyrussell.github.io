@@ -10,7 +10,7 @@
         "phone": null,
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
-    "summary": "Understand the users, buyers, and the opportunites to ensure success of the business. Inspire cross-functional collaboration to align on the most promising strategies. Drive the execution of the vision through rapid iteration of discovery and delivery",
+    "summary": "Understand the users, buyers, and the opportunites to ensure success of the business. Drive the execution of the vision through rapid iteration of discovery and delivery",
     "professionalExperience": [
         {
             "position": "Associate Product Manager, Platform and Integrations",
@@ -42,6 +42,7 @@
                 "end": "2021-02-01"
             },
             "description": "Problem discovery, requirements gathering, and solutioning with new customers while implementing their new solutions on the case management platform.",
+            "highlights": [],
             "achievements": [
                 "Drove the successful implementation for two of Eccovia's top ten largest customers by ARR, including complex data migration and integration use cases",
                 "Took ownership of all new integration use cases (over a dozen) and helped transition our techniical strategy towards agnostic services to support multiple customers or integration partners",
