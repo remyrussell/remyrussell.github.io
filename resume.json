@@ -39,10 +39,10 @@
                 "start": "2019-04-01",
                 "end": "2021-02-01"
             },
-            "description": "Problem discovery, requirements gathering, and solutioning with new customers while implementing their new solutions on the case management platform.",
+            "description": "Problem discovery, requirements gathering, and solutioning with new customers to implement solutions on the case management platform.",
             "highlights": [
                 "Drove the successful implementation for two of Eccovia's top ten largest customers by ARR, including complex data migration and integration use cases",
-                "Took ownership of all new integration use cases (over a dozen) and helped transition our technical strategy towards agnostic services to support multiple customers or integration partners",
+                "Took ownership of all new integration use cases across new customers (over a dozen) and helped transition our technical strategy towards agnostic services to support multiple customers or integration partners",
                 "Drove the platform's evolution to unlock the capabilities requested by our customers (e.g., scheduled exports, API access to storage accounts, generic and purpose-built RESTful endpoints, etc.)"
             ]
         },
@@ -96,9 +96,9 @@
         "coreSkills": [
             "Problem-solving and ownership of complex challenges",
             "Ability to articulate both technical details and high-level strategy to varying types of stakeholders",
-            "Quick learner of new tools, technologies, and methodologies",
+            "Quick learner and adopter of new tools, technologies, and methodologies",
             "Proficiency in SQL and basic understanding of most programming languages, particularly since leveraging LLMs",
-            "Healthcare Interoperability experience including HL7 fundamentals (v2.x and FHIR) with v2.x ADT and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission/remittance (X12 EDI Standards)"
+            "Healthcare Interoperability experience including HL7 (v2.x and FHIR) and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission/remittance (X12 EDI Standards)"
         ],
         "toolsAndFrameworks": [
             "Roadmapping and Sprint Planning (Atlassian Jira Plans, MS Project, ProductBoard)",
@@ -109,8 +109,8 @@
             "Dual-track Agile, Scrum (Jira Boards for backlog refinement, Kanban, sprint planning, release planning, etc.)"
         ],
         "fun": [
-            "Outdoor activities (skiing, mountain biking, hiking, camping)",
-            "Music creation/consumption (electronic, guitar)",
+            "Outdoor activities (skiing, mountain biking, hiking, camping, overlanding)",
+            "Music creation/consumption (electronic, guitar, piano)",
             "Podcasts/audiobooks on anything related to tech, health, or science"
         ]
     },
