@@ -29,7 +29,7 @@ function attachThemeToggleEvent() {
             menu.classList.toggle('active');
         });
     } else {
-        console.error('Menu elements not found:', { menuToggleButton, menu });
+        console.error('Darn, menu elements not found:', { menuToggleButton, menu });
     }
     const backToTopButton = document.getElementById('backToTop');
     if (backToTopButton) {
