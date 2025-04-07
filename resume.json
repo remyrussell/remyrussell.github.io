@@ -98,7 +98,6 @@
     },
     "skills": {
         "coreSkills": [
-            "Technical communication and cross-functional collaboration",
             "Problem-solving and ownership of complex challenges",
             "Ability to articulate both technical details and high-level strategy to varying types of stakeholders",
             "Quick learner of new tools, technologies, and methodologies",
@@ -114,10 +113,9 @@
             "Dual-track Agile, Scrum (Jira Boards for backlog refinement, Kanban, sprint planning, release planning, etc.)"
         ],
         "fun": [
-            "Traveling and/or attending concerts/festivals",
-            "Music creation/consumption (electronic, guitar)",
             "Outdoor activities (skiing, mountain biking, hiking, camping)",
-            "Podcasts/audiobooks on anything related to tech, health, or science related"
+            "Music creation/consumption (electronic, guitar)",
+            "Podcasts/audiobooks on anything related to tech, health, or science"
         ]
     },
     "certifications": [
