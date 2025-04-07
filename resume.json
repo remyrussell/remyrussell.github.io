@@ -10,7 +10,7 @@
         "phone": null,
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
-    "summary": "Understand the users, buyers, and the opportunites to ensure success of the business. Drive the execution of the vision through rapid iteration of discovery and delivery",
+    "summary": "Understand the users, buyers, and the opportunities to ensure success of the business. Drive the execution of the vision through rapid iteration of discovery and delivery",
     "professionalExperience": [
         {
             "position": "Associate Product Manager, Platform and Integrations",
@@ -24,9 +24,7 @@
             "description": "Product Lead for a configurable Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
             "highlights": [
                 "Partnered with Leadership, Engineering, Sales, and other teams to establish and maintain the roadmap, define KPIs, and create mechanisms to measure & communicate priority and progress",
-                "Gained experience delivering or scrapping POCs and MVPs, often to extend platform capabilities by integrating with third parties (e.g., Twilio for Email & SMS, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Medicaid Payers, Claims Processing Systems, etc.)"
-            ],
-            "achievements": [
+                "Gained experience delivering or scrapping POCs and MVPs, often to extend platform capabilities by integrating with third parties (e.g., Twilio for Email & SMS, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Medicaid Payers, Claims Processing Systems, etc.)",
                 "Helped drive growth in ARR by over 50% by expanding platform capabilities, ultimately leading to Eccovia's acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
                 "Helped establish a clear product catalog and a platform-based, microservice approach to enable growth/expansion across multiple customers on the platform"
@@ -42,10 +40,9 @@
                 "end": "2021-02-01"
             },
             "description": "Problem discovery, requirements gathering, and solutioning with new customers while implementing their new solutions on the case management platform.",
-            "highlights": [],
-            "achievements": [
+            "highlights": [
                 "Drove the successful implementation for two of Eccovia's top ten largest customers by ARR, including complex data migration and integration use cases",
-                "Took ownership of all new integration use cases (over a dozen) and helped transition our techniical strategy towards agnostic services to support multiple customers or integration partners",
+                "Took ownership of all new integration use cases (over a dozen) and helped transition our technical strategy towards agnostic services to support multiple customers or integration partners",
                 "Drove the platform's evolution to unlock the capabilities requested by our customers (e.g., scheduled exports, API access to storage accounts, generic and purpose-built RESTful endpoints, etc.)"
             ]
         },
@@ -99,14 +96,14 @@
             "Problem-solving and ownership of complex challenges",
             "Ability to articulate both technical details and high-level strategy to varying types of stakeholders",
             "Quick learner of new tools, technologies, and methodologies",
-            "Proficiency in SQL and basic understanding of most programming languagues, particularly since leveraging LLMs",
-            "Healhcare Interoperability experience including HL7 fundamentals (v2.x and FHIR) with v2.x ADT and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submissioin/remittance (X12 EDI Standards)"
+            "Proficiency in SQL and basic understanding of most programming languages, particularly since leveraging LLMs",
+            "Healthcare Interoperability experience including HL7 fundamentals (v2.x and FHIR) with v2.x ADT and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission/remittance (X12 EDI Standards)"
         ],
         "toolsAndFrameworks": [
             "Roadmapping and Sprint Planning (Atlassian Jira Plans, MS Project, ProductBoard)",
             "Insight collection/consolidation (Hubspot, Atlassian Jira Discovery, ProductBoard, Microsoft Forms, Teams, Azure Dashboards, SQL, etc)",
             "Mock-ups and low-fi prototyping (Figma, LLMs)",
-            "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, Vizio, FigJam, LLMs)",
+            "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, Visio, FigJam, LLMs)",
             "No or low-code API Testing (Postman, Microsoft Power Automate, Zapier)",
             "Dual-track Agile, Scrum (Jira Boards for backlog refinement, Kanban, sprint planning, release planning, etc.)"
         ],
