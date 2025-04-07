@@ -10,7 +10,7 @@
         "phone": null,
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
-    "summary": "Understand the users, buyers, and the problems worth solving to ensure success of the business. Inspire cross-functional collaboration to align on the most promising strategies. Drive the execution of the vision through rapid iteration of discovery and delivery",
+    "summary": "Understand the users, buyers, and the opportunites to ensure success of the business. Inspire cross-functional collaboration to align on the most promising strategies. Drive the execution of the vision through rapid iteration of discovery and delivery",
     "professionalExperience": [
         {
             "position": "Associate Product Manager, Platform and Integrations",
@@ -47,7 +47,7 @@
             ],
             "achievements": [
                 "Successfully implemented new solutions for two of Eccovia's top ten largest customers by ARR",
-                "Took ownership of all new integration use cases (over a dozen), and after finding patterns/similarities, advocated for and started designing agnostic services to support multiple customers or integration partners",
+                "Took ownership of all new integration use cases (over a dozen) and helped transition our techniical strategy towards agnostic services to support multiple customers or integration partners",
                 "Drove the platform's evolution to unlock the capabilities requested by our customers (e.g., scheduled exports, API access to storage accounts, generic and purpose-built RESTful endpoints, etc.)"
             ]
         },
@@ -102,14 +102,13 @@
             "Problem-solving and ownership of complex challenges",
             "Ability to articulate both technical details and high-level strategy to varying types of stakeholders",
             "Quick learner of new tools, technologies, and methodologies",
-            "Proficiency in SQL and ability to read and understand most programming languages, particularly since incorporating LLMs into my toolkit",
+            "Proficiency in SQL and basic understanding of most programming languagues, particularly since leveraging LLMs",
             "Healhcare Interoperability experience including HL7 fundamentals (v2.x and FHIR) with v2.x ADT and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submissioin/remittance (X12 EDI Standards)"
         ],
         "toolsAndFrameworks": [
             "Roadmapping and Sprint Planning (Atlassian Jira Plans, MS Project, ProductBoard)",
             "Insight collection/consolidation (Hubspot, Atlassian Jira Discovery, ProductBoard, Microsoft Forms, Teams, Azure Dashboards, SQL, etc)",
             "Mock-ups and low-fi prototyping (Figma, LLMs)",
-            "Documentation, Training, and Releases (HelpJuice, Microsoft Stream, Atlassian Confluence and Jiral Release features, ReleaseNotes.io)",
             "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, Vizio, FigJam, LLMs)",
             "No or low-code API Testing (Postman, Microsoft Power Automate, Zapier)",
             "Dual-track Agile, Scrum (Jira Boards for backlog refinement, Kanban, sprint planning, release planning, etc.)"
