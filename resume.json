@@ -10,10 +10,10 @@
         "phone": null,
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
-    "summary": "An optimistic product leader with over four years of Product Management and six years of Business Analysis experience, with a track record of driving execution through rapid iteration of discovery and delivery. An engineering background, an outcome-oriented mindset, and dedication to understanding the users, buyers, and opportunities to ensure success of the business",
+    "summary": "An optimistic product leader with over four years of Product Management and six years of Business Analysis experience, with an outcome-oriented mindset and dedication to understanding the users, buyers, and opportunities to ensure success of the business",
     "professionalExperience": [
         {
-            "position": "Associate Product Manager, Platform and Integrations",
+            "position": "Associate Product Manager, Engineering",
             "company": "Eccovia",
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
@@ -21,7 +21,7 @@
                 "start": "2021-02-01",
                 "end": "2025-03-31"
             },
-            "description": "Product Lead for a configurable Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
+            "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
             "highlights": [
                 "Partnered with Leadership, Engineering, Sales, and other teams to establish and maintain the roadmap, define KPIs, and create mechanisms to measure & communicate priority and progress",
                 "Delivered and scrapped POCs and MVPs for new native features or for third party integrations (e.g., Twilio, Microsoft Power Automate, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Claims Processing Systems, DocuSeal, etc.)",
@@ -94,15 +94,15 @@
         "coreSkills": [
             "Problem-solving and ownership of complex challenges",
             "Ability to articulate both technical details and high-level strategy to varying types of stakeholders",
-            "Quick learner and adopter of new tools, technologies, and methodologies",
+            "Quick learner and adopter of new tools, technologies, and methodologies (daily user of Grok 3 for personal use and employer's internal LLM for work",
             "Proficiency in SQL and basic understanding of most programming languages, particularly since leveraging LLMs",
             "Healthcare Interoperability experience including HL7 (v2.x and FHIR) and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission/remittance (X12 EDI Standards)"
         ],
         "toolsAndFrameworks": [
             "Roadmapping and Sprint Planning (Atlassian Jira Plans, MS Project, ProductBoard)",
             "Insight collection/consolidation (Hubspot, Atlassian Jira Discovery, ProductBoard, Microsoft Forms, Teams, Azure Dashboards, SQL, etc)",
-            "Mock-ups and low-fi prototyping (Figma, LLMs)",
-            "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, Visio, FigJam, LLMs)",
+            "Mock-ups and low-fi prototyping (Figma, AI Tools)",
+            "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, Visio, FigJam, AI tools)",
             "No or low-code API Testing (Postman, Microsoft Power Automate, Zapier)",
             "Dual-track Agile, Scrum (Jira Boards for backlog refinement, Kanban, sprint planning, release planning, etc.)"
         ],
