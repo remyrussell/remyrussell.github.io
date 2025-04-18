@@ -375,3 +375,30 @@ li {
 .theme-dark .back-to-top:hover {
     background-color: #ccc;
 }
+.download-pdf {
+    background-color: #333;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #f0f0f0;
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.download-pdf:hover {
+    background-color: #555;
+}
+
+.theme-dark .download-pdf {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.theme-dark .download-pdf:hover {
+    background-color: #ccc;
+}
