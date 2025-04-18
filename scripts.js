@@ -103,7 +103,7 @@ function generateResumePDF(data) {
     let previousCompany = null;
     if (data.professionalExperience) {
         data.professionalExperience.forEach(exp => {
-            // Logo (commented out; uncomment if you can convert logos to base64)
+            // Logo (commented out; uncomment if you can convert logos to base64, dummy)
             /*
             if (exp.company !== previousCompany && exp.logo) {
                 try {
