@@ -375,6 +375,8 @@ li {
 .theme-dark .back-to-top:hover {
     background-color: #ccc;
 }
+
+/* Download PDF Button */
 .download-pdf {
     background-color: #333;
     border: none;
