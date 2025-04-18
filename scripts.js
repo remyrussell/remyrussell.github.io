@@ -76,7 +76,7 @@ function generateResumePDF(data) {
         doc.setFont('Helvetica', style);
         const lines = doc.splitTextToSize(text, maxWidth);
         doc.text(lines, x, y);
-        return y + (lines.length * size * 0.35);
+        return y + (lines.length * size * 0.5); // Increased line spacing
     }
 
     yPosition = addText(data.name || 'Remy Russell', 12, 'bold', margin, yPosition, contentWidth);
@@ -84,22 +84,22 @@ function generateResumePDF(data) {
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
     if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
     if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 8, 'normal', margin, yPosition, contentWidth);
+        yPosition = addText(contactInfo.join(' | '), 7.5, 'normal', margin, yPosition, contentWidth);
     }
     if (data.role) {
         yPosition = addText(data.role, 10, 'italic', margin, yPosition, contentWidth);
     }
-    yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 8, 'italic', margin, yPosition, contentWidth);
-    yPosition += 3;
+    yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 7.5, 'italic', margin, yPosition, contentWidth);
+    yPosition += 4;
 
     yPosition = addText('Summary', 10, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         const summaryItems = data.summary.split('. ').filter(item => item.trim());
         summaryItems.forEach(item => {
-            yPosition = addText(`- ${item.trim()}.`, 8, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`- ${item.trim()}.`, 7.5, 'normal', margin, yPosition, contentWidth);
         });
     }
-    yPosition += 3;
+    yPosition += 4;
 
     yPosition = addText('Professional Experience', 10, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
@@ -108,60 +108,59 @@ function generateResumePDF(data) {
             const title = `${exp.position} at ${exp.company}`;
             yPosition = addText(title, 9, 'bold', margin, yPosition, contentWidth);
             const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-            yPosition = addText(`${duration} | ${exp.location}`, 8, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`${duration} | ${exp.location}`, 7.5, 'normal', margin, yPosition, contentWidth);
             if (exp.description) {
-                yPosition = addText(exp.description, 8, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(exp.description, 7.5, 'normal', margin, yPosition, contentWidth);
             }
             if (exp.highlights) {
                 exp.highlights.forEach(highlight => {
-                    yPosition = addText(`- ${highlight}`, 8, 'normal', margin, yPosition, contentWidth);
+                    yPosition = addText(`- ${highlight}`, 7.5, 'normal', margin, yPosition, contentWidth);
                 });
             }
             yPosition += 2;
         });
     }
-    yPosition += 3;
+    yPosition += 4;
 
     yPosition = addText('Education', 10, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
         yPosition = addText(data.education.degree, 9, 'bold', margin, yPosition, contentWidth);
-        yPosition = addText(data.education.institution, 8, 'normal', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.institution, 7.5, 'normal', margin, yPosition, contentWidth);
         if (data.education.coursework) {
-            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 8, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 7.5, 'normal', margin, yPosition, contentWidth);
         }
     }
-    yPosition += 3;
+    yPosition += 4;
 
     yPosition = addText('Skills', 10, 'bold', margin, yPosition, contentWidth);
     if (data.skills) {
         if (data.skills.coreSkills) {
             yPosition = addText('Core Skills', 9, 'bold', margin, yPosition, contentWidth);
             data.skills.coreSkills.forEach(skill => {
-                yPosition = addText(`- ${skill}`, 8, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(`- ${skill}`, 7.5, 'normal', margin, yPosition, contentWidth);
             });
         }
         if (data.skills.toolsAndFrameworks) {
             yPosition = addText('Tools & Frameworks', 9, 'bold', margin, yPosition, contentWidth);
             data.skills.toolsAndFrameworks.forEach(tool => {
-                yPosition = addText(`- ${tool}`, 8, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(`- ${tool}`, 7.5, 'normal', margin, yPosition, contentWidth);
             });
         }
         if (data.skills.fun) {
             yPosition = addText('Interests & Hobbies', 9, 'bold', margin, yPosition, contentWidth);
             data.skills.fun.forEach(fun => {
-                yPosition = addText(`- ${fun}`, 8, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(`- ${fun}`, 7.5, 'normal', margin, yPosition, contentWidth);
             });
         }
     }
 
-    doc.save('Remy_Russell_Resume.pdf');
+    doc.output('dataurlnewwindow');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     keepThemeSetting();
     attachThemeToggleEvent();
 
-    // Embedded resume.json data as fallback
     const fallbackData = {
         "metadata": {
             "version": "1.1",
