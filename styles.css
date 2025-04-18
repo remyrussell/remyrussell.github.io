@@ -268,19 +268,24 @@ button.menu-toggle:hover {
     text-align: center;
 }
 
-.menu a {
+.menu a, .menu button.download-pdf {
     color: #c71585;
     text-decoration: none;
     font-size: 1rem;
     display: block;
     padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
 }
 
-.theme-dark .menu a {
+.theme-dark .menu a, .theme-dark .menu button.download-pdf {
     color: #c71585;
 }
 
-.menu a:hover {
+.menu a:hover, .menu button.download-pdf:hover {
     color: #fff;
     background-color: #c71585;
 }
@@ -378,29 +383,9 @@ li {
 
 /* Download PDF Button */
 .download-pdf {
-    background-color: #333;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #f0f0f0;
     font-size: 1rem;
-    margin: 0.5rem 0;
+    padding: 0.5rem;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.download-pdf:hover {
-    background-color: #555;
-}
-
-.theme-dark .download-pdf {
-    background-color: #f0f0f0;
-    color: #333;
-}
-
-.theme-dark .download-pdf:hover {
-    background-color: #ccc;
 }
