@@ -14,7 +14,6 @@
             <a href="/index.html" class="back-link">Back to Resume</a>
         </header>
         <section class="gallery">
-            <!-- Replace these with your actual dog photos -->
             <img src="/assets/images/dogs/dog1.jpeg" alt="Dog 1" class="dog-photo">
             <img src="/assets/images/dogs/dog2.jpeg" alt="Dog 2" class="dog-photo">
             <img src="/assets/images/dogs/dog3.jpeg" alt="Dog 3" class="dog-photo">
@@ -25,5 +24,12 @@
             <img src="/assets/images/dogs/dog8.jpeg" alt="Dog 8" class="dog-photo">
         </section>
     </div>
+    <script>
+        // Apply the saved theme or default to dark
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
+        });
+    </script>
 </body>
 </html>
