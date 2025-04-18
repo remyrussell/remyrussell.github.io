@@ -76,7 +76,7 @@ function generateResumePDF(data) {
         doc.setFont('Helvetica', style);
         const lines = doc.splitTextToSize(text, maxWidth);
         doc.text(lines, x, y);
-        return y + (lines.length * size * 0.5); // Increased line spacing
+        return y + (lines.length * size * 0.5);
     }
 
     yPosition = addText(data.name || 'Remy Russell', 12, 'bold', margin, yPosition, contentWidth);
@@ -84,8 +84,9 @@ function generateResumePDF(data) {
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
     if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
     if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 7.5, 'normal', margin, yPosition, contentWidth);
+        yPosition = addText(contactInfo.join(' | '), 7.5, 'normal', margin, yPosition + 1, contentWidth); // Reduced spacing after name
     }
+    yPosition += 3; // Increased spacing before role
     if (data.role) {
         yPosition = addText(data.role, 10, 'italic', margin, yPosition, contentWidth);
     }
@@ -154,7 +155,26 @@ function generateResumePDF(data) {
         }
     }
 
-    doc.output('dataurlnewwindow');
+    // Generate PDF as Blob and open in new tab with default filename
+    const pdfOutput = doc.output('blob');
+    const url = URL.createObjectURL(pdfOutput);
+    const newTab = window.open(url, '_blank');
+    if (newTab) {
+        newTab.document.title = 'Remy_Russell_Resume.pdf';
+        // Add a hidden link to set the filename for download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Remy_Russell_Resume.pdf';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        newTab.onload = () => {
+            link.click();
+            document.body.removeChild(link);
+        };
+    } else {
+        console.error('Failed to open new tab. Pop-up blocker may be enabled.');
+        alert('Unable to open PDF in new tab. Please allow pop-ups and try again.');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -273,8 +293,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             "fun": [
                 "Outdoor activities (skiing, mountain biking, hiking, camping, overlanding)",
                 "Music creation/consumption (electronic, guitar, piano)",
-                "Podcasts/audiobooks on anything related to tech, health, or science",
-                "Spoiling my dogs (an aussie/collie and a red heeler/corgie)"
+                "Podcasts/audiobooks on anything related to tech, health, or science"
             ]
         },
         "certifications": [
