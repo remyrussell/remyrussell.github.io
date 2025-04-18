@@ -273,7 +273,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             "fun": [
                 "Outdoor activities (skiing, mountain biking, hiking, camping, overlanding)",
                 "Music creation/consumption (electronic, guitar, piano)",
-                "Podcasts/audiobooks on anything related to tech, health, or science"
+                "Podcasts/audiobooks on anything related to tech, health, or science",
+                "Spoiling my dogs (an aussie/collie and a red heeler/corgie)"
             ]
         },
         "certifications": [
