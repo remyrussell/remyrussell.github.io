@@ -1,35 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photos of My Dogs</title>
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/dogs.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Photos of My Dogs</h1>
-            <a href="/index.html" class="back-link">Back to Resume</a>
-        </header>
-        <section class="gallery">
-            <img src="/assets/images/dogs/dog1.jpeg" alt="Dog 1" class="dog-photo">
-            <img src="/assets/images/dogs/dog2.jpeg" alt="Dog 2" class="dog-photo">
-            <img src="/assets/images/dogs/dog3.jpeg" alt="Dog 3" class="dog-photo">
-            <img src="/assets/images/dogs/dog4.jpeg" alt="Dog 4" class="dog-photo">
-            <img src="/assets/images/dogs/dog5.jpeg" alt="Dog 5" class="dog-photo">
-            <img src="/assets/images/dogs/dog6.jpeg" alt="Dog 6" class="dog-photo">
-            <img src="/assets/images/dogs/dog7.jpeg" alt="Dog 7" class="dog-photo">
-            <img src="/assets/images/dogs/dog8.jpeg" alt="Dog 8" class="dog-photo">
-        </section>
-    </div>
-    <script>
-        // Apply the saved theme or default to dark
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
-        });
-    </script>
-</body>
-</html>
+/* Override styles.css for full-width display */
+body {
+    font-family: Arial, sans-serif;
+    padding: 2rem 0 !important; /* Ensure no side padding */
+    color: #333;
+    background-color: #f0f0f0;
+    margin: 0;
+    transition: background-color 0.3s ease;
+}
+
+.container {
+    max-width: 100% !important; /* Override max-width from styles.css */
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.theme-dark {
+    background-color: #333;
+    color: #f0f0f0;
+}
+
+.theme-dark .container {
+    background-color: #444;
+    color: #f0f0f0;
+}
+
+/* Gallery styling */
+.gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.dog-photo {
+    width: 100vw; /* Full viewport width */
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+.dog-photo:hover {
+    transform: scale(1.02);
+}
+
+/* Back link */
+.back-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #c71585;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem;
+}
+
+.back-link:hover {
+    color: #fff;
+    background-color: #c71585;
+}
+
+.theme-dark .back-link {
+    color: #c71585;
+}
+
+.theme-dark .back-link:hover {
+    color: #fff;
+    background-color: #c71585;
+}
