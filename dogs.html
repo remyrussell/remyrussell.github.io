@@ -24,11 +24,32 @@
             <img src="/assets/images/dogs/dog8.jpeg" alt="Dog 8" class="dog-photo">
         </section>
     </div>
+    <button id="backToTop" class="back-to-top" title="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
     <script>
         // Apply the saved theme or default to dark
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
+
+            // Back to Top button functionality
+            const backToTopButton = document.getElementById('backToTop');
+            if (backToTopButton) {
+                backToTopButton.addEventListener('click', () => {
+                    try {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } catch (e) {
+                        console.error('Scroll failed:', e);
+                        window.scrollTo(0, 0);
+                    }
+                });
+                window.addEventListener('scroll', () => {
+                    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+                    const viewportHeight = window.innerHeight;
+                    backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
+                });
+            }
         });
     </script>
 </body>
