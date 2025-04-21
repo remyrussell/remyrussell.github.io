@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-    max-width: 100% !important; /* Override max-width from styles.css */
+    max-width: 100% !important; /* Overridee max-width from styles.css */
     margin: 0 auto;
     background-color: #fff;
     padding: 2rem;
