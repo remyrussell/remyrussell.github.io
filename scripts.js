@@ -12,6 +12,25 @@ function keepThemeSetting() {
     if (themeToggle) themeToggle.checked = savedTheme === 'dark';
 }
 
+function toggleDropdown() {
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isVisible = menu.style.display === 'block';
+            menu.style.display = isVisible ? 'none' : 'block';
+        });
+        // Close dropdown if clicking outside
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+    });
+}
+
 function attachThemeToggleEvent() {
     const themeToggle = document.getElementById('themeToggleButton');
     if (themeToggle) {
@@ -47,6 +66,7 @@ function attachThemeToggleEvent() {
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
         });
     }
+    toggleDropdown(); // Initialize dropdown functionality
 }
 
 function generateResumePDF(data) {
@@ -84,9 +104,9 @@ function generateResumePDF(data) {
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
     if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
     if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 7.5, 'normal', margin, yPosition + 1, contentWidth); // Reduced spacing after name
+        yPosition = addText(contactInfo.join(' | '), 7.5, 'normal', margin, yPosition + 1, contentWidth);
     }
-    yPosition += 3; // Increased spacing before role
+    yPosition += 3;
     if (data.role) {
         yPosition = addText(data.role, 10, 'italic', margin, yPosition, contentWidth);
     }
@@ -133,44 +153,55 @@ function generateResumePDF(data) {
     }
     yPosition += 4;
 
+    // Skills section in two columns
     yPosition = addText('Skills', 10, 'bold', margin, yPosition, contentWidth);
     if (data.skills) {
+        const columnWidth = (contentWidth - 2) / 2; // 2mm gap between columns
+        const leftColumnX = margin;
+        const rightColumnX = margin + columnWidth + 2;
+
+        // Draw vertical line separator
+        doc.setLineWidth(0.2);
+        doc.line(margin + columnWidth + 1, yPosition - 5, margin + columnWidth + 1, yPosition + 60); // Adjust height based on content
+
+        let leftY = yPosition;
+        let rightY = yPosition;
+
+        // Core Skills (Left Column)
         if (data.skills.coreSkills) {
-            yPosition = addText('Core Skills', 9, 'bold', margin, yPosition, contentWidth);
+            leftY = addText('Core Skills', 9, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.coreSkills.forEach(skill => {
-                yPosition = addText(`- ${skill}`, 7.5, 'normal', margin, yPosition, contentWidth);
+                leftY = addText(`- ${skill}`, 7.5, 'normal', leftColumnX, leftY, columnWidth);
             });
         }
+
+        // Tools & Frameworks (Right Column)
         if (data.skills.toolsAndFrameworks) {
-            yPosition = addText('Tools & Frameworks', 9, 'bold', margin, yPosition, contentWidth);
+            rightY = addText('Tools & Frameworks', 9, 'bold', rightColumnX, rightY, columnWidth);
             data.skills.toolsAndFrameworks.forEach(tool => {
-                yPosition = addText(`- ${tool}`, 7.5, 'normal', margin, yPosition, contentWidth);
+                rightY = addText(`- ${tool}`, 7.5, 'normal', rightColumnX, rightY, columnWidth);
             });
         }
+
+        // Interests & Hobbies (Right Column, continued)
         if (data.skills.fun) {
-            yPosition = addText('Interests & Hobbies', 9, 'bold', margin, yPosition, contentWidth);
+            rightY += 2;
+            rightY = addText('Interests & Hobbies', 9, 'bold', rightColumnX, rightY, columnWidth);
             data.skills.fun.forEach(fun => {
-                yPosition = addText(`- ${fun}`, 7.5, 'normal', margin, yPosition, contentWidth);
+                rightY = addText(`- ${fun}`, 7.5, 'normal', rightColumnX, rightY, columnWidth);
             });
         }
+
+        // Update yPosition to the maximum of left and right columns
+        yPosition = Math.max(leftY, rightY);
     }
 
-    // Generate PDF as Blob and open in new tab with default filename
+    // Open PDF in new tab without auto-download
     const pdfOutput = doc.output('blob');
     const url = URL.createObjectURL(pdfOutput);
     const newTab = window.open(url, '_blank');
     if (newTab) {
         newTab.document.title = 'Remy_Russell_Resume.pdf';
-        // Add a hidden link to set the filename for download
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'Remy_Russell_Resume.pdf';
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        newTab.onload = () => {
-            link.click();
-            document.body.removeChild(link);
-        };
     } else {
         console.error('Failed to open new tab. Pop-up blocker may be enabled.');
         alert('Unable to open PDF in new tab. Please allow pop-ups and try again.');
