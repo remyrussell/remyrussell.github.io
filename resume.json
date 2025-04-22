@@ -96,16 +96,16 @@
             "Problem-solving and ownership of complex challenges",
             "Ability to articulate both technical details and high-level strategy to varying types of stakeholders",
             "Quick learner and adopter of new tools, technologies, and methodologies",
-            "Proficiency in SQL and basic understanding of programming languages",
-            "Healthcare Interoperability experience including HL7 (v2.x and FHIR) and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission/remittance (X12 EDI Standards)",
+            "Proficiency in SQL and basic understanding of most programming languages and SDLC",
+            "Healthcare Interoperability experience including HL7 (v2.x and FHIR) and Revenue Cycle Management integrations for Medicaid billing (X12 EDI Standards)",
             "Daily user of AI tools for professional and personal use cases (Grok 3 is currently my favorite)"
         ],
         "toolsAndFrameworks": [
             "Roadmapping and Sprint Planning (Atlassian Jira Plans, MS Project, ProductBoard)",
-            "Insight collection/consolidation (Hubspot, Atlassian Jira Discovery, ProductBoard, Microsoft Forms, Teams, Azure Dashboards, SQL, etc)",
+            "Insight collection/consolidation (Hubspot, Atlassian Jira Discovery, ProductBoard, Azure Dashboards, SQL, etc)",
             "Mock-ups and low-fi prototyping (Figma, AI Tools)",
-            "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, Visio, FigJam, AI tools)",
-            "No or low-code API Testing (Postman, Microsoft Power Automate, Zapier)",
+            "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, Visio, AI tools)",
+            "No or low-code API Testing (Microsoft Power Automate, Zapier, Postman)",
             "Dual-track Agile, Scrum (Jira Boards for backlog refinement, Kanban, sprint planning, release planning, etc.)"
         ],
         "fun": [
