@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Parsed data:', data);
     } catch (err) {
         console.error('Fetch error:', err.message);
-        document.getElementById('name').innerText = 'Error: Unto load resume data';
+        document.getElementById('name').innerText = 'Error: Unable to load resume data';
         document.getElementById('role').innerText = '';
         document.getElementById('email').innerText = '';
         document.getElementById('phone').innerText = '';
