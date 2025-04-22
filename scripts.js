@@ -152,6 +152,43 @@ function generateResumePDF(data) {
     }
     yPosition += 4;
 
+    // Skills subsections in two columns, without the "Skills" header
+    if (data.skills) {
+        const columnWidth = (contentWidth - 2) / 2;
+        const leftColumnX = margin;
+        const rightColumnX = margin + columnWidth + 2;
+
+        doc.setLineWidth(0.2);
+        doc.line(margin + columnWidth + 1, yPosition - 5, margin + columnWidth + 1, yPosition + 60);
+
+        let leftY = yPosition;
+        let rightY = yPosition;
+
+        if (data.skills.coreSkills) {
+            leftY = addText('Core Skills', 9.5, 'bold', leftColumnX, leftY, columnWidth);
+            data.skills.coreSkills.forEach(skill => {
+                leftY = addText(`- ${skill}`, 8, 'normal', leftColumnX, leftY, columnWidth);
+            });
+        }
+
+        if (data.skills.toolsAndFrameworks) {
+            rightY = addText('Tools & Frameworks', 9.5, 'bold', rightColumnX, rightY, columnWidth);
+            data.skills.toolsAndFrameworks.forEach(tool => {
+                rightY = addText(`- ${tool}`, 8, 'normal', rightColumnX, rightY, columnWidth);
+            });
+        }
+
+        if (data.skills.fun) {
+            rightY += 2;
+            rightY = addText('Interests & Hobbies', 9.5, 'bold', rightColumnX, rightY, columnWidth);
+            data.skills.fun.forEach(fun => {
+                rightY = addText(`- ${fun}`, 8, 'normal', rightColumnX, rightY, columnWidth);
+            });
+        }
+
+        yPosition = Math.max(leftY, rightY);
+    }
+
     const pdfOutput = doc.output('blob');
     const url = URL.createObjectURL(pdfOutput);
     const newTab = window.open(url, '_blank');
@@ -167,7 +204,129 @@ document.addEventListener('DOMContentLoaded', async () => {
     keepThemeSetting();
     attachThemeToggleEvent();
 
-
+    const fallbackData = {
+        "metadata": {
+            "version": "1.1",
+            "lastUpdated": "2025-04-02"
+        },
+        "name": "Remy Russell",
+        "role": "Product Manager",
+        "contact": {
+            "email": "remyrussell@pm.me",
+            "phone": null,
+            "linkedin": "https://www.linkedin.com/in/remyrussell"
+        },
+        "summary": "An optimistic product leader with three years of Product Management and seven years of Business Analysis experience evolving health tech platforms through rapid iteration of discovery and delivery. An engineering background, an outcome-oriented mindset, and dedication to understanding the users, buyers, and opportunities to ensure success of the business",
+        "professionalExperience": [
+            {
+                "position": "Associate Product Manager, Engineering",
+                "company": "Eccovia",
+                "logo": "/assets/images/logos/eccovia.svg",
+                "location": "Salt Lake City, UT",
+                "duration": {
+                    "start": "2022-03-14",
+                    "end": "2025-03-31"
+                },
+                "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
+                "highlights": [
+                    "Partnered with Leadership, Engineering, Sales, and other teams to establish and maintain the roadmap, define KPIs, and create mechanisms to measure & communicate priority and progress",
+                    "Delivered and scrapped POCs and MVPs for new native features or for third party integrations (e.g., Twilio, Microsoft Power Automate, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Claims Processing Systems, DocuSeal, etc.)",
+                    "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, ultimately leading to acquisition",
+                    "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
+                    "Evolved the platform based on customer requests (e.g., SSO and 2-Step Verification for native users, in-app file previews, scheduled CSV exports, API access to Azure storage accounts, etc.)"
+                ]
+            },
+            {
+                "position": "Business Analyst, Solutions Delivery",
+                "company": "Eccovia",
+                "logo": "/assets/images/logos/eccovia.svg",
+                "location": "Salt Lake City, UT",
+                "duration": {
+                    "start": "2019-04-01",
+                    "end": "2022-03-13"
+                },
+                "description": "Problem discovery, requirements gathering, and solutioning with new customers to implement solutions on the case management platform.",
+                "highlights": [
+                    "Drove the successful implementation for two of Eccovia's top ten largest customers by ARR, including complex data migration and integration use cases",
+                    "Took ownership of all new integration use cases across new customers (over a dozen) and helped transition our technical strategy towards agnostic services to support multiple customers or integration partners"
+                ]
+            },
+            {
+                "position": "Business Analyst II, MMIS Implementation Project",
+                "company": "CNSI",
+                "logo": "/assets/images/logos/CNSI.png",
+                "location": "Salt Lake City, UT",
+                "duration": {
+                    "start": "2017-08-01",
+                    "end": "2019-04-01"
+                },
+                "description": "System migration and gap analysis activities for implementation of a new Medicaid Management Information System for the Utah Department of Health",
+                "highlights": [
+                    "Collaborated with the State customer stakeholders and internal engineers to define and document comprehensive design details for the Provider Enrollment Subsystem to guide development and testing"
+                ]
+            },
+            {
+                "position": "Business Analyst, MMIS Implementation Project",
+                "company": "CNSI",
+                "logo": "/assets/images/logos/CNSI.png",
+                "location": "Lansing, MI",
+                "duration": {
+                    "start": "2015-06-01",
+                    "end": "2017-08-01"
+                },
+                "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical system design documentation to comply with UML standards",
+                "highlights": [
+                    "Analyzed program mandates published by the Center for Medicaid Services to design and implement compliant functionality"
+                ]
+            }
+        ],
+        "education": {
+            "degree": "BSE in Industrial & Operations Engineering, Certificate in Entrepreneurship 2015",
+            "institution": "University of Michigan, Ann Arbor",
+            "logo": "/assets/images/logos/umich-logo.png",
+            "coursework": [
+                "Relational database design",
+                "Computer programming",
+                "Process improvement",
+                "Modeling",
+                "Simulation",
+                "Statistical and decision analysis",
+                "Lean management",
+                "Business development",
+                "Accounting"
+            ]
+        },
+        "skills": {
+            "coreSkills": [
+                "Problem-solving and ownership of complex challenges",
+                "Ability to articulate both technical details and high-level strategy to varying types of stakeholders",
+                "Quick learner and adopter of new tools, technologies, and methodologies",
+                "Proficiency in SQL and basic understanding of programming languages",
+                "Healthcare Interoperability experience including HL7 (v2.x and FHIR) and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission/remittance (X12 EDI Standards)",
+                "Daily user of AI tools for professional and personal use cases (Grok 3 is currently my favorite)"
+            ],
+            "toolsAndFrameworks": [
+                "Roadmapping and Sprint Planning (Atlassian Jira Plans, MS Project, ProductBoard)",
+                "Insight collection/consolidation (Hubspot, Atlassian Jira Discovery, ProductBoard, Microsoft Forms, Teams, Azure Dashboards, SQL, etc)",
+                "Mock-ups and low-fi prototyping (Figma, AI Tools)",
+                "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, Visio, FigJam, AI tools)",
+                "No or low-code API Testing (Postman, Microsoft Power Automate, Zapier)",
+                "Dual-track Agile, Scrum (Jira Boards for backlog refinement, Kanban, sprint planning, release planning, etc.)"
+            ],
+            "fun": [
+                "Outdoor activities (skiing, mountain biking, hiking, camping, overlanding)",
+                "Music creation/consumption (electronic, guitar, piano)",
+                "Podcasts/audiobooks on anything related to tech, health, or science"
+            ]
+        },
+        "certifications": [
+            {
+                "name": "HL7 Fundamentals",
+                "issuer": "HL7 International",
+                "date": "2020"
+            }
+        ]
+    };
 
     let data;
     try {
@@ -305,6 +464,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             educationDiv.appendChild(detailsDiv);
             educationContainer.appendChild(educationDiv);
         }
+
+        document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
+        document.getElementById('toolsAndFrameworks').innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
+        document.getElementById('funSkills').innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
 
         const downloadPdfButton = document.getElementById('downloadPdfButton');
         if (downloadPdfButton) {
