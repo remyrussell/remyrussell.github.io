@@ -97,16 +97,16 @@
             "Articulating technical details or high-level strategy to varying stakeholders",
             "Quick learner and adopter of new tools, technologies, processes",
             "Proficiency in SQL, basic understanding of programming and SDLC concepts",
-            "Healthcare Interoperability experience including HL7 (v2.x and FHIR) and Revenue Cycle Management integrations for Medicaid billing (X12 EDI Standards)",
+            "Healthcare Interoperability experience (HL7 v2.x and FHIR)", 
+            "Revenue Cycle Management interoperability experience for Medicaid reimbursement (X12 EDI Standards)",
             "Daily user of AI tools for professional and personal use cases"
         ],
         "toolsAndFrameworks": [
-            "Roadmapping and Sprint Planning (Jira)",
             "Insight collection/consolidation (Hubspot, ProductBoard, Azure Dashboards, SQL, etc)",
             "Mock-ups and low-fi prototyping (Figma, AI Tools)",
             "Designing, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, AI tools)",
             "No or low-code API Testing (Microsoft Power Automate, Zapier, Postman)",
-            "Dual-track Agile, Scrum (Jira for backlog refinement, Kanban workflows, sprint ceremonies, etc.)"
+            "Dual-track Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban workflows, sprint ceremonies, etc.)"
         ],
         "fun": [
             "Outdoor activities (skiing, mountain biking, hiking, camping, overlanding)",
