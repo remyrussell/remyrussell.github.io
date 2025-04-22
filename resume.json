@@ -24,7 +24,7 @@
             },
             "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health)",
             "highlights": [
-                "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, ultimately leading to acquisition",
+                "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations' developers to use for their integrationss",
                 "Evolved the platform and product lines based on business priorities and insights (e.g., SSO and 2-Step Verification for native users, in-app file previews, scheduled CSV exports, API access to Azure storage accounts)",
                 "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, and measure/communicate progress",
@@ -96,9 +96,9 @@
             "Problem-solving and ownership of complex challenges",
             "Articulating technical details or high-level strategy to varying stakeholders",
             "Quick learner and adopter of new tools, technologies, processes",
-            "Proficiency in SQL and basic understanding of most programming languages and SDLC",
+            "Proficiency in SQL, basic understanding of programming and SDLC concepts",
             "Healthcare Interoperability experience including HL7 (v2.x and FHIR) and Revenue Cycle Management integrations for Medicaid billing (X12 EDI Standards)",
-            "Daily user of AI tools for professional and personal use cases (Grok 3 is currently my favorite)"
+            "Daily user of AI tools for professional and personal use cases"
         ],
         "toolsAndFrameworks": [
             "Roadmapping and Sprint Planning (Jira)",
