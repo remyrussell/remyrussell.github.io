@@ -100,8 +100,8 @@ function generateResumePDF(data) {
 
     function addSectionSeparator(y) {
         doc.setLineWidth(0.2);
-        doc.line(margin, y - 2, pageWidth - margin, y - 2); // Horizontal line before the section
-        return y;
+        doc.line(margin, y - 5, pageWidth - margin, y - 5); // Draw line 5mm above current position
+        return y + 3; // Add 3mm gap after the line before the header
     }
 
     yPosition = addText(data.name || 'Remy Russell', 14, 'bold', margin, yPosition, contentWidth);
@@ -116,7 +116,7 @@ function generateResumePDF(data) {
         yPosition = addText(data.role, 11, 'italic', margin, yPosition, contentWidth);
     }
     yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 9, 'italic', margin, yPosition, contentWidth);
-    yPosition += 3; // Reduced section spacing
+    yPosition += 3;
 
     yPosition = addSectionSeparator(yPosition);
     yPosition = addText('Summary', 11, 'bold', margin, yPosition, contentWidth);
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('phone').innerText = '';
         document.getElementById('summaryList').innerHTML = '<li>Error: Unable to load summary</li>';
         document.getElementById('professionalExperience').innerHTML = '<h2>Professional Experience</h2><p>Error: Unable to load experience</p>';
-        document.getElementById('education').innerHTML = '<h2>Education</h2><p>Error: Unable to load education</p>';
+        document.getElementById('education').innerHTML = '<h2>Education</h2><p>Error: Unto load education</p>';
         document.getElementById('skillList').innerHTML = '<li>Error: Unable to load core skills</li>';
         document.getElementById('toolsAndFrameworks').innerHTML = '<li>Error: Unable to load tools</li>';
         document.getElementById('funSkills').innerHTML = '<li>Error: Unable to load interests</li>';
