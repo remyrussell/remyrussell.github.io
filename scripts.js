@@ -22,7 +22,6 @@ function toggleDropdown() {
             const isVisible = menu.style.display === 'block';
             menu.style.display = isVisible ? 'none' : 'block';
         });
-        // Close dropdown if clicking outside
         document.addEventListener('click', (e) => {
             if (!dropdown.contains(e.target)) {
                 menu.style.display = 'none';
@@ -66,7 +65,7 @@ function attachThemeToggleEvent() {
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
         });
     }
-    toggleDropdown(); // Initialize dropdown functionality
+    toggleDropdown();
 }
 
 function generateResumePDF(data) {
@@ -104,20 +103,20 @@ function generateResumePDF(data) {
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
     if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
     if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 7.5, 'normal', margin, yPosition + 1, contentWidth);
+        yPosition = addText(contactInfo.join(' | '), 8, 'normal', margin, yPosition + 1, contentWidth);
     }
     yPosition += 3;
     if (data.role) {
         yPosition = addText(data.role, 10, 'italic', margin, yPosition, contentWidth);
     }
-    yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 7.5, 'italic', margin, yPosition, contentWidth);
+    yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 8, 'italic', margin, yPosition, contentWidth);
     yPosition += 4;
 
     yPosition = addText('Summary', 10, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         const summaryItems = data.summary.split('. ').filter(item => item.trim());
         summaryItems.forEach(item => {
-            yPosition = addText(`- ${item.trim()}.`, 7.5, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`- ${item.trim()}.`, 8, 'normal', margin, yPosition, contentWidth);
         });
     }
     yPosition += 4;
@@ -127,15 +126,15 @@ function generateResumePDF(data) {
     if (data.professionalExperience) {
         data.professionalExperience.forEach(exp => {
             const title = `${exp.position} at ${exp.company}`;
-            yPosition = addText(title, 9, 'bold', margin, yPosition, contentWidth);
+            yPosition = addText(title, 9.5, 'bold', margin, yPosition, contentWidth);
             const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-            yPosition = addText(`${duration} | ${exp.location}`, 7.5, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`${duration} | ${exp.location}`, 8, 'normal', margin, yPosition, contentWidth);
             if (exp.description) {
-                yPosition = addText(exp.description, 7.5, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(exp.description, 8, 'normal', margin, yPosition, contentWidth);
             }
             if (exp.highlights) {
                 exp.highlights.forEach(highlight => {
-                    yPosition = addText(`- ${highlight}`, 7.5, 'normal', margin, yPosition, contentWidth);
+                    yPosition = addText(`- ${highlight}`, 8, 'normal', margin, yPosition, contentWidth);
                 });
             }
             yPosition += 2;
@@ -145,58 +144,14 @@ function generateResumePDF(data) {
 
     yPosition = addText('Education', 10, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
-        yPosition = addText(data.education.degree, 9, 'bold', margin, yPosition, contentWidth);
-        yPosition = addText(data.education.institution, 7.5, 'normal', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.degree, 9.5, 'bold', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.institution, 8, 'normal', margin, yPosition, contentWidth);
         if (data.education.coursework) {
-            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 7.5, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 8, 'normal', margin, yPosition, contentWidth);
         }
     }
     yPosition += 4;
 
-    // Skills section in two columns
-    yPosition = addText('Skills', 10, 'bold', margin, yPosition, contentWidth);
-    if (data.skills) {
-        const columnWidth = (contentWidth - 2) / 2; // 2mm gap between columns
-        const leftColumnX = margin;
-        const rightColumnX = margin + columnWidth + 2;
-
-        // Draw vertical line separator
-        doc.setLineWidth(0.2);
-        doc.line(margin + columnWidth + 1, yPosition - 5, margin + columnWidth + 1, yPosition + 60); // Adjust height based on content
-
-        let leftY = yPosition;
-        let rightY = yPosition;
-
-        // Core Skills (Left Column)
-        if (data.skills.coreSkills) {
-            leftY = addText('Core Skills', 9, 'bold', leftColumnX, leftY, columnWidth);
-            data.skills.coreSkills.forEach(skill => {
-                leftY = addText(`- ${skill}`, 7.5, 'normal', leftColumnX, leftY, columnWidth);
-            });
-        }
-
-        // Tools & Frameworks (Right Column)
-        if (data.skills.toolsAndFrameworks) {
-            rightY = addText('Tools & Frameworks', 9, 'bold', rightColumnX, rightY, columnWidth);
-            data.skills.toolsAndFrameworks.forEach(tool => {
-                rightY = addText(`- ${tool}`, 7.5, 'normal', rightColumnX, rightY, columnWidth);
-            });
-        }
-
-        // Interests & Hobbies (Right Column, continued)
-        if (data.skills.fun) {
-            rightY += 2;
-            rightY = addText('Interests & Hobbies', 9, 'bold', rightColumnX, rightY, columnWidth);
-            data.skills.fun.forEach(fun => {
-                rightY = addText(`- ${fun}`, 7.5, 'normal', rightColumnX, rightY, columnWidth);
-            });
-        }
-
-        // Update yPosition to the maximum of left and right columns
-        yPosition = Math.max(leftY, rightY);
-    }
-
-    // Open PDF in new tab without auto-download
     const pdfOutput = doc.output('blob');
     const url = URL.createObjectURL(pdfOutput);
     const newTab = window.open(url, '_blank');
@@ -472,10 +427,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             educationDiv.appendChild(detailsDiv);
             educationContainer.appendChild(educationDiv);
         }
-
-        document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
-        document.getElementById('toolsAndFrameworks').innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
-        document.getElementById('funSkills').innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
 
         const downloadPdfButton = document.getElementById('downloadPdfButton');
         if (downloadPdfButton) {
