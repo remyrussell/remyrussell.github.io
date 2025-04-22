@@ -98,12 +98,6 @@ function generateResumePDF(data) {
         return y + (lines.length * size * 0.4); // Adjusted line spacing to 0.4 * font size
     }
 
-    function addSectionSeparator(y) {
-        doc.setLineWidth(0.2);
-        doc.line(margin, y - 5, pageWidth - margin, y - 5); // Draw line 5mm above current position
-        return y + 3; // Add 3mm gap after the line before the header
-    }
-
     yPosition = addText(data.name || 'Remy Russell', 14, 'bold', margin, yPosition, contentWidth);
     let contactInfo = [];
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
@@ -116,9 +110,8 @@ function generateResumePDF(data) {
         yPosition = addText(data.role, 11, 'italic', margin, yPosition, contentWidth);
     }
     yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 9, 'italic', margin, yPosition, contentWidth);
-    yPosition += 3;
+    yPosition += 2; // Reduced section spacing
 
-    yPosition = addSectionSeparator(yPosition);
     yPosition = addText('Summary', 11, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         const summaryItems = data.summary.split('. ').filter(item => item.trim());
@@ -126,9 +119,8 @@ function generateResumePDF(data) {
             yPosition = addText(`- ${item.trim()}.`, 9, 'normal', margin, yPosition, contentWidth);
         });
     }
-    yPosition += 3;
+    yPosition += 2; // Reduced section spacing
 
-    yPosition = addSectionSeparator(yPosition);
     yPosition = addText('Professional Experience', 11, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
     if (data.professionalExperience) {
@@ -146,12 +138,11 @@ function generateResumePDF(data) {
                     yPosition = addText(`- ${highlight}`, 9, 'normal', margin, yPosition, contentWidth);
                 });
             }
-            yPosition += 2;
+            yPosition += 1; // Reduced job spacing
         });
     }
-    yPosition += 3;
+    yPosition += 2; // Reduced section spacing
 
-    yPosition = addSectionSeparator(yPosition);
     yPosition = addText('Education', 11, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
         yPosition = addText(data.education.degree, 10, 'bold', margin, yPosition, contentWidth);
@@ -160,11 +151,10 @@ function generateResumePDF(data) {
             yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 9, 'normal', margin, yPosition, contentWidth);
         }
     }
-    yPosition += 3;
+    yPosition += 2; // Reduced section spacing
 
     // Skills subsections in two columns
     if (data.skills) {
-        yPosition = addSectionSeparator(yPosition);
         const columnWidth = (contentWidth - 2) / 2;
         const leftColumnX = margin;
         const rightColumnX = margin + columnWidth + 2;
