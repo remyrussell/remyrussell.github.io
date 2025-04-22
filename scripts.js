@@ -115,55 +115,55 @@ function generateResumePDF(data) {
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
     if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
     if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 9, 'normal', margin, yPosition + 1, contentWidth);
+        yPosition = addText(contactInfo.join(' | '), 9.5, 'normal', margin, yPosition + 1, contentWidth);
     }
     yPosition += 3;
     if (data.role) {
         yPosition = addText(data.role, 11, 'italic', margin, yPosition, contentWidth);
     }
-    yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 9, 'italic', margin, yPosition, contentWidth);
-    yPosition += 2; // Reduced section spacing
+    yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 9.5, 'italic', margin, yPosition, contentWidth);
+    yPosition += 4; // Increased section spacing
 
-    yPosition = addText('Summary', 11, 'bold', margin, yPosition, contentWidth);
+    yPosition = addText('Summary', 12, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         const summaryItems = data.summary.split('. ').filter(item => item.trim());
         summaryItems.forEach(item => {
-            yPosition = addText(`- ${item.trim()}.`, 9, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`- ${item.trim()}.`, 9.5, 'normal', margin, yPosition, contentWidth);
         });
     }
-    yPosition += 2; // Reduced section spacing
+    yPosition += 4; // Increased section spacing
 
-    yPosition = addText('Professional Experience', 11, 'bold', margin, yPosition, contentWidth);
+    yPosition = addText('Professional Experience', 12, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
     if (data.professionalExperience) {
         data.professionalExperience.forEach(exp => {
             const title = `${exp.position} at ${exp.company}`;
-            yPosition = addText(title, 10, 'bold', margin, yPosition, contentWidth);
+            yPosition = addText(title, 11, 'bold', margin, yPosition, contentWidth);
             const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-            yPosition = addText(`${duration} | ${exp.location}`, 9, 'italic', margin, yPosition, contentWidth);
+            yPosition = addText(`${duration} | ${exp.location}`, 9.5, 'italic', margin, yPosition, contentWidth);
             if (exp.description) {
-                yPosition = addText(exp.description, 9, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(exp.description, 9.5, 'normal', margin, yPosition, contentWidth);
                 yPosition += 1; // Add 1mm space before highlights
             }
             if (exp.highlights) {
                 exp.highlights.forEach(highlight => {
-                    yPosition = addText(`- ${highlight}`, 9, 'normal', margin, yPosition, contentWidth);
+                    yPosition = addText(`- ${highlight}`, 9.5, 'normal', margin, yPosition, contentWidth);
                 });
             }
-            yPosition += 1; // Reduced job spacing
+            yPosition += 2; // Increased job spacing
         });
     }
-    yPosition += 2; // Reduced section spacing
+    yPosition += 4; // Increased section spacing
 
-    yPosition = addText('Education', 11, 'bold', margin, yPosition, contentWidth);
+    yPosition = addText('Education', 12, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
-        yPosition = addText(data.education.degree, 10, 'bold', margin, yPosition, contentWidth);
-        yPosition = addText(data.education.institution, 9, 'normal', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.degree, 11, 'bold', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.institution, 9.5, 'normal', margin, yPosition, contentWidth);
         if (data.education.coursework) {
-            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 9, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 9.5, 'normal', margin, yPosition, contentWidth);
         }
     }
-    yPosition += 2; // Reduced section spacing
+    yPosition += 4; // Increased section spacing
 
     // Skills subsections in two columns
     if (data.skills) {
@@ -179,25 +179,25 @@ function generateResumePDF(data) {
 
         // Left column: Core Skills and Interests & Hobbies (longer content)
         if (data.skills.coreSkills) {
-            leftY = addText('Core Skills', 11, 'bold', leftColumnX, leftY, columnWidth);
+            leftY = addText('Core Skills', 12, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.coreSkills.forEach(skill => {
-                leftY = addText(`- ${skill}`, 9, 'normal', leftColumnX, leftY, columnWidth);
+                leftY = addText(`- ${skill}`, 9.5, 'normal', leftColumnX, leftY, columnWidth);
             });
         }
 
         if (data.skills.fun) {
             leftY += 2;
-            leftY = addText('Interests & Hobbies', 11, 'bold', leftColumnX, leftY, columnWidth);
+            leftY = addText('Interests & Hobbies', 12, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.fun.forEach(fun => {
-                leftY = addText(`- ${fun}`, 9, 'normal', leftColumnX, leftY, columnWidth);
+                leftY = addText(`- ${fun}`, 9.5, 'normal', leftColumnX, leftY, columnWidth);
             });
         }
 
         // Right column: Tools & Frameworks
         if (data.skills.toolsAndFrameworks) {
-            rightY = addText('Tools & Frameworks', 11, 'bold', rightColumnX, rightY, columnWidth);
+            rightY = addText('Tools & Frameworks', 12, 'bold', rightColumnX, rightY, columnWidth);
             data.skills.toolsAndFrameworks.forEach(tool => {
-                rightY = addText(`- ${tool}`, 9, 'normal', rightColumnX, rightY, columnWidth);
+                rightY = addText(`- ${tool}`, 9.5, 'normal', rightColumnX, rightY, columnWidth);
             });
         }
 
@@ -234,13 +234,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Parsed data:', data);
     } catch (err) {
         console.error('Fetch error:', err.message);
-        document.getElementById('name').innerText = 'Error: Unable to load resume data';
+        document.getElementById('name').innerText = 'Error: Unto load resume data';
         document.getElementById('role').innerText = '';
         document.getElementById('email').innerText = '';
         document.getElementById('phone').innerText = '';
         document.getElementById('summaryList').innerHTML = '<li>Error: Unable to load summary</li>';
         document.getElementById('professionalExperience').innerHTML = '<h2>Professional Experience</h2><p>Error: Unable to load experience</p>';
-        document.getElementById('education').innerHTML = '<h2>Education</h2><p>Error: Unto load education</p>';
+        document.getElementById('education').innerHTML = '<h2>Education</h2><p>Error: Unable to load education</p>';
         document.getElementById('skillList').innerHTML = '<li>Error: Unable to load core skills</li>';
         document.getElementById('toolsAndFrameworks').innerHTML = '<li>Error: Unable to load tools</li>';
         document.getElementById('funSkills').innerHTML = '<li>Error: Unable to load interests</li>';
