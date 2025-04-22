@@ -107,7 +107,7 @@ function generateResumePDF(data) {
         doc.setFont('Helvetica', style);
         const lines = doc.splitTextToSize(text, maxWidth);
         doc.text(lines, x, y);
-        return y + (lines.length * size * 0.45); // Increased line spacing to 0.45 * font size
+        return y + (lines.length * size * 0.45); // Line spacing
     }
 
     yPosition = addText(data.name || 'Remy Russell', 14, 'bold', margin, yPosition, contentWidth);
@@ -124,7 +124,7 @@ function generateResumePDF(data) {
         const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
         yPosition = addText(combinedText, 9.5, 'italic', margin, yPosition, contentWidth);
     }
-    yPosition += 4; // Increased section spacing
+    yPosition += 3; // Reduced section spacing
 
     yPosition = addText('Summary', 11.5, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
@@ -133,7 +133,7 @@ function generateResumePDF(data) {
             yPosition = addText(`- ${item.trim()}.`, 9, 'normal', margin, yPosition, contentWidth);
         });
     }
-    yPosition += 4; // Increased section spacing
+    yPosition += 3; // Reduced section spacing
 
     yPosition = addText('Professional Experience', 11.5, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
@@ -152,10 +152,10 @@ function generateResumePDF(data) {
                     yPosition = addText(`- ${highlight}`, 9, 'normal', margin, yPosition, contentWidth);
                 });
             }
-            yPosition += 2; // Increased job spacing
+            yPosition += 2; // Job spacing
         });
     }
-    yPosition += 4; // Increased section spacing
+    yPosition += 3; // Reduced section spacing
 
     yPosition = addText('Education', 11.5, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
@@ -165,7 +165,7 @@ function generateResumePDF(data) {
             yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 9, 'normal', margin, yPosition, contentWidth);
         }
     }
-    yPosition += 4; // Increased section spacing
+    yPosition += 3; // Reduced section spacing
 
     // Skills subsections in two columns
     if (data.skills) {
