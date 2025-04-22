@@ -107,7 +107,7 @@ function generateResumePDF(data) {
         doc.setFont('Helvetica', style);
         const lines = doc.splitTextToSize(text, maxWidth);
         doc.text(lines, x, y);
-        return y + (lines.length * size * 0.4); // Adjusted line spacing to 0.4 * font size
+        return y + (lines.length * size * 0.35); // Adjusted line spacing to 0.35 * font size
     }
 
     yPosition = addText(data.name || 'Remy Russell', 14, 'bold', margin, yPosition, contentWidth);
@@ -117,12 +117,14 @@ function generateResumePDF(data) {
     if (contactInfo.length) {
         yPosition = addText(contactInfo.join(' | '), 9.5, 'normal', margin, yPosition + 1, contentWidth);
     }
-    yPosition += 3;
-    if (data.role) {
-        yPosition = addText(data.role, 11, 'italic', margin, yPosition, contentWidth);
+    yPosition += 2;
+    if (data.role || data.seeking) {
+        const roleText = data.role || '';
+        const seekingText = data.seeking || '';
+        const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
+        yPosition = addText(combinedText, 10, 'italic', margin, yPosition, contentWidth);
     }
-    yPosition = addText('Currently seeking remote or hybrid roles in the Salt Lake City area.', 9.5, 'italic', margin, yPosition, contentWidth);
-    yPosition += 4; // Increased section spacing
+    yPosition += 3; // Reduced section spacing
 
     yPosition = addText('Summary', 12, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
@@ -131,7 +133,7 @@ function generateResumePDF(data) {
             yPosition = addText(`- ${item.trim()}.`, 9.5, 'normal', margin, yPosition, contentWidth);
         });
     }
-    yPosition += 4; // Increased section spacing
+    yPosition += 3; // Reduced section spacing
 
     yPosition = addText('Professional Experience', 12, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
@@ -150,10 +152,10 @@ function generateResumePDF(data) {
                     yPosition = addText(`- ${highlight}`, 9.5, 'normal', margin, yPosition, contentWidth);
                 });
             }
-            yPosition += 2; // Increased job spacing
+            yPosition += 1.5; // Reduced job spacing
         });
     }
-    yPosition += 4; // Increased section spacing
+    yPosition += 3; // Reduced section spacing
 
     yPosition = addText('Education', 12, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
@@ -163,7 +165,7 @@ function generateResumePDF(data) {
             yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 9.5, 'normal', margin, yPosition, contentWidth);
         }
     }
-    yPosition += 4; // Increased section spacing
+    yPosition += 3; // Reduced section spacing
 
     // Skills subsections in two columns
     if (data.skills) {
@@ -258,7 +260,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!document.querySelector('.location-note')) {
             const locationNote = document.createElement('p');
             locationNote.className = 'location-note';
-            locationNote.innerText = 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
+            locationNote.innerText = data.seeking || 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
             container.insertBefore(locationNote, summarySection);
         }
 
