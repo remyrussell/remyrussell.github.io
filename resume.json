@@ -5,6 +5,7 @@
     },
     "name": "Remy Russell",
     "role": "Product Manager",
+    "seeking": "Currently seeking remote or hybrid roles in the Salt Lake City area.",
     "contact": {
         "email": "remyrussell@pm.me",
         "phone": null,
@@ -99,7 +100,7 @@
             "Healthcare Interoperability experience including HL7 (v2.x and FHIR) and Revenue Cycle Management integrations for Medicaid eligibility checks and claim submission/remittance (X12 EDI Standards)",
             "Daily user of AI tools for professional and personal use cases (Grok 3 is currently my favorite)"
         ],
-        "toolsAndFrameworks": [
+        "toolsAndFrameworks":̣[
             "Roadmapping and Sprint Planning (Atlassian Jira Plans, MS Project, ProductBoard)",
             "Insight collection/consolidation (Hubspot, Atlassian Jira Discovery, ProductBoard, Microsoft Forms, Teams, Azure Dashboards, SQL, etc)",
             "Mock-ups and low-fi prototyping (Figma, AI Tools)",
