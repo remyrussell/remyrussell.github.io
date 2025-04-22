@@ -14,7 +14,7 @@
     "professionalExperience": [
         {
             "position": "Associate Product Manager, Engineering",
-            "company": "Eccovia",
+            "company": "CaseWorthy (formerly Eccovia)",
             "logo": "/assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
             "duration": {
@@ -23,11 +23,11 @@
             },
             "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by social service providers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
             "highlights": [
-                "Partnered with Leadership, Engineering, Sales, and other teams to establish and maintain the roadmap, define KPIs, and create mechanisms to measure & communicate priority and progress",
-                "Delivered and scrapped POCs and MVPs for new native features or for third party integrations (e.g., Twilio, Microsoft Power Automate, Onfleet and WorkWave for last-mile delivery operations, Health Information Exchanges, Claims Processing Systems, DocuSeal, etc.)",
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, ultimately leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations to start using it for their custom integration use cases",
-                "Evolved the platform based on customer requests (e.g., SSO and 2-Step Verification for native users, in-app file previews, scheduled CSV exports, API access to Azure storage accounts, etc.)"
+                "Evolved the platform based on customer requests (e.g., SSO and 2-Step Verification for native users, in-app file previews, scheduled CSV exports, API access to Azure storage accounts, etc.)",
+                "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, and create mechanisms to measure & communicate progress",
+                "Delivered and scrapped POCs and MVPs for new native features or for third party integrations (e.g., Health Information Exchanges, Claims Processing Systems, Twilio, Onfleet and WorkWave for last-mile delivery operations, etc.)"
             ]
         },
         {
@@ -68,7 +68,7 @@
                 "start": "2015-06-01",
                 "end": "2017-08-01"
             },
-            "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and re-authored technical system design documentation to comply with UML standards",
+            "description": "Learned the end-to-end functionality of CNSI’s 'Electronic Medicaid Incentive Payment Program' solution and partnered with Michigan DOH stakeholders to re-author technical system design documentation to comply with Universal Modeling Language standards",
             "highlights": [
                 "Analyzed program mandates published by the Center for Medicaid Services to design and implement compliant functionality"
             ]
