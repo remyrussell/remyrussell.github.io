@@ -26,9 +26,9 @@
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded over 10 customer organizations' developers",
-                "Evolved the platform and product lines based on business priorities and insights (e.g., SSO and 2-Step Verification, in-app file previews, scheduled CSV exports, API capabilities, etc.)",
-                "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, and measure/communicate progress",
-                "Delivered and scrapped POCs/MVPs for new features and integrations (e.g., secure messaging with clients, retreiving clinical data from a Health Information Exchange, Twilio integration for SMS and email, Onfleet and WorkWave for last-mile delivery operations)"
+                "Evolved the platform and product lines based on business priorities and insights (e.g., SSO and 2-Step Verification, scheduled CSV exports, enhancements to no-code designer tools, database task orchestrator, etc.)",
+                "Partnered with an Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, and measure/communicate progress",
+                "Delivered and scrapped POCs/MVPs for new features and integrations (e.g., secure messaging with clients, retreiving clinical data via Health Information Exchange, system-generated SMS and email notifications, last-mile delivery capabilities via Onfleet and workWave integration, etc.)"
             ]
         },
         {
