@@ -26,9 +26,9 @@
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded external developers for over ten customer organizations",
-                "Evolved the platform and product lines based on business priorities and insights, frequently releasing new features/enhancements (e.g., SSO & 2-Step Verification, scheduled CSV exports, no-code form designer and API tools, etc.)",
+                "Evolved the platform and product lines based on business priorities and insights, frequently releasing new features/enhancements (SSO & 2-Step Verification, scheduled CSV exports, no-code form designer and API tools, etc.)",
                 "Partnered with Engineering, Sales, Leadership, Professional Services, and others to maintain the roadmap, define KPIs, measure/communicate progress, and improve processes for scalability",
-                "Delivered and scrapped POCs/MVPs for new features and integrations (e.g., secure messaging with clients, retreiving clinical data, exporting claims to a payer, SMS/email notifications via Twilio, last-mile delivery tools via Onfleet, etc.)"
+                "Delivered and scrapped POCs/MVPs for new features and integrations (secure messaging with clients, SMS/email notifications via Twilio, exporting claims to a payer, last-mile delivery operations via Onfleet, etc.)"
             ]
         },
         {
@@ -94,7 +94,7 @@
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
             "Managing competing priioirities by understanding the objective and/or subjective ROI of each",
             "Facilitating cross-functional collaboration and rapid, iterative delivery of value",
-            "Partnering and communicating with Engineers (SQL proficient and basic understanding of software and SDLC concepts)", 
+            "Partnering and communicating with Engineers (SQL proficient and basic understanding of SDLC concepts)", 
             "Evaluating APIs & technical documentation (including experience with Health Information Exchange and Revenue Cycle Managment use cases following HL7 & X12 EDI standards)" 
         ],
         "toolsAndFrameworks": [
