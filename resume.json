@@ -26,8 +26,8 @@
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities and enabling the Sales team, leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded external developers for over ten customer organizations, iterating/improving the capabilities and processes with each experience",
-                "Evolved the platform and product lines based on business priorities and insights, frequently releasing new features/enhancements (SSO & 2-Step Verification, scheduled CSV exports, no-code form designer and API tools, etc.)",
-                "Partnered with Engineering, Sales, Leadership, Professional Services, and others to maintain the roadmap, define KPIs, measure/communicate progress, and improve processes for scalability",
+                "Evolved product lines based on business priorities and insights, frequently releasing new features/enhancements (SSO & 2-Step Verification, scheduled CSV exports, no-code form designer and API tools, etc.)",
+                "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, measure/communicate progress, and improve processes for scalability",
                 "Delivered and scrapped POCs/MVPs for new features and integrations (secure messaging with clients, SMS/email notifications via Twilio, last-mile delivery operations via Onfleet, etc.)",
                 "Implemented microservices for Health Information Exchange and Revenue Cycle Managment integration use cases (following HL7 and X12 EDI standards)"
             ]
@@ -109,8 +109,7 @@
         "fun": [
             "Outdoor activities (skiing, mountain biking, or hiking/camping with my dogs",
             "Music creation/consumption (electronic, guitar, piano)",
-            "Podcasts/audiobooks on anything related to science, technology, or health",
-            "Training advanced artificial intelligence models (leaving voice notes on Tesla FSD disengagements, 'vibe-coding' with Grok, granting Alexa access to my Roomba and my Washing machine, selling my location data for auto-insurance discounts, etc).)"
+            "Podcasts/audiobooks on anything related to science, technology, or health"
         ]
     },
     "certifications": [
