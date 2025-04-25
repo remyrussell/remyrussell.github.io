@@ -28,7 +28,8 @@
                 "Shipped a new RESTful API from 0 to 1 and onboarded external developers for over ten customer organizations",
                 "Evolved the platform and product lines based on business priorities and insights, frequently releasing new features/enhancements (SSO & 2-Step Verification, scheduled CSV exports, no-code form designer and API tools, etc.)",
                 "Partnered with Engineering, Sales, Leadership, Professional Services, and others to maintain the roadmap, define KPIs, measure/communicate progress, and improve processes for scalability",
-                "Delivered and scrapped POCs/MVPs for new features and integrations (secure messaging with clients, SMS/email notifications via Twilio, exporting claims to a payer, last-mile delivery operations via Onfleet, etc.)"
+                "Delivered and scrapped POCs/MVPs for new features and integrations (secure messaging with clients, SMS/email notifications via Twilio, last-mile delivery operations via Onfleet, etc.)",
+                "Enabled delivery of microservices for Health Information Exchange and Revenue Cycle Managment integration use cases following HL7 and X12 EDI standards",
             ]
         },
         {
@@ -95,8 +96,7 @@
             "Managing competing priorities and making data-driven decisions",
             "Facilitating cross-functional collaboration and rapid, iterative delivery of value",
             "Quickly learning and embracing new tools, processes, and methodologies",
-            "Partnering and communicating with Engineers (SQL proficient and basic understanding of SDLC concepts)", 
-            "Evaluating APIs & technical documentation (including experience with Health Information Exchange and Revenue Cycle Managment use cases following HL7 & X12 EDI standards)" 
+            "Partnering and communicating with Engineers (SQL proficient, basic understanding of SDLC concepts, experience evaluating APIs & technical documentation)"
         ],
         "toolsAndFrameworks": [
             "Insight collection/consolidation (MS Forms, Glean, Hubspot, ProductBoard, SQL)",
@@ -109,7 +109,8 @@
         "fun": [
             "Outdoor activities (skiing, mountain biking, or hiking/camping with my dogs",
             "Music creation/consumption (electronic, guitar, piano)",
-            "Podcasts/audiobooks on anything related to science, technology, or health"
+            "Podcasts/audiobooks on anything related to science, technology, or health",
+            "Training advanced artificial intelligence models (leaving voice notes on Tesla FSD disengagements, 'vibe-coding' with Grok, granting Alexa access to my Roomba and my Washing machine, selling my location data for auto-insurance discounts, etc).)"
         ]
     },
     "certifications": [
