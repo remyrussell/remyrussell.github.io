@@ -11,12 +11,12 @@
         "phone": null,
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
-    "summary": "An optimistic and technical product leader with three years of Product Management and seven years of Business Analysis experience evolving SaaS platforms for Health and Human Services Providers",
+    "summary": "An optimistic and technical product leader with three years of Product Management and seven years of Business Analysis experience evolving SaaS platforms for Health and Human Services Providers through rapid iteration and user-focused solutions.",
     "professionalExperience": [
         {
             "position": "Associate Product Manager, Engineering",
             "company": "CaseWorthy (formerly Eccovia)",
-            "logo": "/assets/images/logos/eccovia.svg",
+            "logo": "/assets/images/logos/caseworthy.svg",
             "location": "Salt Lake City, UT",
             "duration": {
                 "start": "2022-03-14",
