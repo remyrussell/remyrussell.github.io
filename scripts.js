@@ -128,10 +128,7 @@ function generateResumePDF(data) {
 
     yPosition = addText('Summary', 11.5, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
-        const summaryItems = data.summary.split('. ').filter(item => item.trim());
-        summaryItems.forEach(item => {
-            yPosition = addText(`- ${item.trim()}.`, 9, 'normal', margin, yPosition, contentWidth);
-        });
+        yPosition = addText(data.summary, 9, 'normal', margin, yPosition, contentWidth);
     }
     yPosition += 3; // Reduced section spacing
 
@@ -160,10 +157,19 @@ function generateResumePDF(data) {
     yPosition = addText('Education', 11.5, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
         yPosition = addText(data.education.degree, 10.5, 'bold', margin, yPosition, contentWidth);
-        yPosition = addText(data.education.institution, 9, 'normal', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.institution, 9, 'italic', margin, yPosition, contentWidth);
         if (data.education.coursework) {
             yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 9, 'normal', margin, yPosition, contentWidth);
         }
+    }
+    yPosition += 3; // Reduced section spacing
+
+    yPosition = addText('Certifications', 11.5, 'bold', margin, yPosition, contentWidth);
+    if (data.certifications) {
+        data.certifications.forEach(cert => {
+            const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
+            yPosition = addText(`- ${certText}`, 9, 'normal', margin, yPosition, contentWidth);
+        });
     }
     yPosition += 3; // Reduced section spacing
 
@@ -240,9 +246,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('role').innerText = '';
         document.getElementById('email').innerText = '';
         document.getElementById('phone').innerText = '';
-        document.getElementById('summaryList').innerHTML = '<li>Error: Unable to load summary</li>';
+        document.getElementById('summaryText').innerText = 'Error: Unable to load summary';
         document.getElementById('professionalExperience').innerHTML = '<h2>Professional Experience</h2><p>Error: Unable to load experience</p>';
         document.getElementById('education').innerHTML = '<h2>Education</h2><p>Error: Unable to load education</p>';
+        document.getElementById('certificationList').innerHTML = '<li>Error: Unable to load certifications</li>';
         document.getElementById('skillList').innerHTML = '<li>Error: Unable to load core skills</li>';
         document.getElementById('toolsAndFrameworks').innerHTML = '<li>Error: Unable to load tools</li>';
         document.getElementById('funSkills').innerHTML = '<li>Error: Unable to load interests</li>';
@@ -264,7 +271,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             container.insertBefore(locationNote, summarySection);
         }
 
-        document.getElementById('summaryList').innerHTML = data.summary?.split('. ').map(item => `<li>${item.trim()}</li>`).join('') || '<li>Summary Data Not Found</li>';
+        document.getElementById('summaryText').innerText = data.summary || 'Summary Data Not Found';
 
         const experienceContainer = document.getElementById('professionalExperience');
         experienceContainer.innerHTML = '<h2>Professional Experience</h2>';
@@ -363,6 +370,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
             educationDiv.appendChild(detailsDiv);
             educationContainer.appendChild(educationDiv);
+        }
+
+        const certificationContainer = document.getElementById('certifications');
+        certificationContainer.innerHTML = '<h2>Certifications</h2>';
+        if (data.certifications) {
+            document.getElementById('certificationList').innerHTML = data.certifications.map(cert => 
+                `<li>${cert.name}, ${cert.issuer} (${cert.date})</li>`
+            ).join('') || '<li>Certifications Not Found</li>';
         }
 
         document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
