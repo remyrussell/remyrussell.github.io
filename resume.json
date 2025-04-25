@@ -25,7 +25,7 @@
             "description": "Product Lead on the Platform and Integrations R&D team/pod for a configurable Case Management platform (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform and implementation capabilities, leading to acquisition",
-                "Shipped a new RESTful API from 0 to 1 and onboarded external developers for over ten customer organizations, iterating/improving the capabilities and processes with each experience",
+                "Shipped a new RESTful API from 0 to 1 and onboarded developers for over ten customer organizations",
                 "Evolved product lines and add-ons based on business priorities and insights, frequently releasing enhancements (SSO & 2-Step Verification, scheduled CSV exports, no-code form designer tools, etc.)",
                 "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, measure/communicate progress, and improve processes for scalability",
                 "Delivered and scrapped POCs/MVPs for new features and integrations (secure messaging with clients, SMS/email notifications via Twilio, last-mile delivery operations via Onfleet, etc.)",
@@ -85,10 +85,7 @@
             "Modeling & Simulation",
             "Statistical and decision analysis",
             "Lean management",
-            "Business development",
-            "Accounting",
-            "Human Factors and Systems Design",
-            "Technical Writing"
+            "Business development"
         ]
     },
     "skills": {
