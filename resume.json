@@ -29,7 +29,7 @@
                 "Evolved the platform and product lines based on business priorities and insights, frequently releasing new features/enhancements (SSO & 2-Step Verification, scheduled CSV exports, no-code form designer and API tools, etc.)",
                 "Partnered with Engineering, Sales, Leadership, Professional Services, and others to maintain the roadmap, define KPIs, measure/communicate progress, and improve processes for scalability",
                 "Delivered and scrapped POCs/MVPs for new features and integrations (secure messaging with clients, SMS/email notifications via Twilio, last-mile delivery operations via Onfleet, etc.)",
-                "Enabled delivery of microservices for Health Information Exchange and Revenue Cycle Managment integration use cases following HL7 and X12 EDI standards",
+                "Enabled delivery of microservices for Health Information Exchange and Revenue Cycle Managment integration use cases following HL7 and X12 EDI standards"
             ]
         },
         {
