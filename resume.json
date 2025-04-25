@@ -41,10 +41,10 @@
                 "start": "2019-04-01",
                 "end": "2022-03-13"
             },
-            "description": "Problem discovery, requirements gathering, and solutioning with customers to guide new implementations on the case management platform.",
+            "description": "Problem discovery, requirements gathering, and solutioning with customers to guide implementations on the case management platform.",
             "highlights": [
-                "Drove successful implementation for two of Eccovia's top ten largest customers by ARR, including complex data migrations and integrations",
-                "Took ownership of all integration contracts across new customers (over a dozen) and helped transition technical strategy towards agnostic services to support multiple customers/partners"
+                "Drove successful implementation for two of Eccovia's top ten largest customers by ARR, with complex data migrations and integrations",
+                "Took ownership of over a dozen integration contracts and helped transition technical strategy towards agnostic services to support multiple customers/partners"
             ]
         },
         {
