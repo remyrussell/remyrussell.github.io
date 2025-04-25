@@ -56,9 +56,9 @@
                 "start": "2017-08-01",
                 "end": "2019-04-01"
             },
-            "description": "System migration and gap analysis activities for implementation of a new Medicaid Management Information System for the Utah Department of Health",
+            "description": "System migration and gap analysis activities for implementation of a Medicaid Management Information System for the Utah Department of Health",
             "highlights": [
-                "Collaborated with the customer and internal team to produce detailed system design documents to guide development/testing of the Provider Enrollment Subsystem"
+                "Collaborated with customer and internal teams to produce detailed system design documents to guide development/testing of the Provider Enrollment Subsystem"
             ]
         },
         {
@@ -70,7 +70,7 @@
                 "start": "2015-06-01",
                 "end": "2017-08-01"
             },
-            "description": "Analyzed program mandates published by CMS and iterated the solution for the 'Electronic Medicaid Incentive Payment Program'",
+            "description": "Analyzed program mandates published by CMS and iterated the 'Electronic Medicaid Incentive Payment Program' solution",
             "highlights": null
         }
     ],
