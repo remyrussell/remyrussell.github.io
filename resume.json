@@ -22,7 +22,7 @@
                 "start": "2022-03-14",
                 "end": "2025-03-31"
             },
-            "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
+            "description": "Product Lead on the Platform and Integrations R&D team/pod for a configurable Case Management platform (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded external developers for over ten customer organizations",
@@ -57,7 +57,7 @@
             },
             "description": "System migration and gap analysis activities for implementation of a new Medicaid Management Information System for the Utah Department of Health",
             "highlights": [
-                "Collaborated with the State customer stakeholders and internal engineers to define and document comprehensive design details for the Provider Enrollment Subsystem to guide development and testing"
+                "Collaborated with the State customer and internal engineers to design and document the Provider Enrollment Subsystem to guide development and testing"
             ]
         },
         {
@@ -92,22 +92,23 @@
         "coreSkills": [
             "Problem/solution discovery, learning from users/buyers, and owning complex challenges",
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
-            "Facilitating cross-functional collaboration and rapid/iterative delivery of value",
+            "Managing competing priioirities by understanding the objective and/or subjective ROI of each",
+            "Facilitating cross-functional collaboration and rapid, iterative delivery of value",
             "Partnering and communicating with Engineers (SQL proficient and basic understanding of software and SDLC concepts)", 
-            "Evaluating APIs & technical documentation, including experience with Health Information Exchange and Revenue Cycle Managment use cases following HL7 & X12 EDI standards" 
+            "Evaluating APIs & technical documentation (including experience with Health Information Exchange and Revenue Cycle Managment use cases following HL7 & X12 EDI standards)" 
         ],
         "toolsAndFrameworks": [
             "Insight collection/consolidation (MS Forms, Glean, Hubspot, ProductBoard, SQL)",
             "Workshopping, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, AI tools)",
             "Mock-ups and low-fi prototyping for UX research (Figma, AI Tools)",
-            "GTM and release communication (ReleaseNotes.io and Site24X7 for in-app and subscriber notifications)",
-            "Training, Documentation, and collaborating (Confluence/Helpjuice for knowledge base, Stream or Loom for screen recording, Bookings",
+            "GTM and release communication (Jira, Azure Pipelines, ReleaseNotes.io for automated user/subscriber notifications)",
+            "No or low-code API Testing and workflow automation (Zapier, Microsoft Power Automate, Postman)",
             "Dual-track Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban workflows, sprint ceremonies, etc.)"
         ],
         "fun": [
-            "Outdoor activities (skiing, mountain biking, hiking, camping, overlanding)",
+            "Outdoor activities (skiing, mountain biking, or hiking/camping with my dogs",
             "Music creation/consumption (electronic, guitar, piano)",
-            "Podcasts/audiobooks on anything related to science and technology (yes, I use AI, own BTC, "
+            "Podcasts/audiobooks on anything related to science, technology, and health"
         ]
     },
     "certifications": [
