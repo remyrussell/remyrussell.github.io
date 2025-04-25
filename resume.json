@@ -26,7 +26,7 @@
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities and enabling the Sales team, leading to acquisition",
                 "Shipped a new RESTful API from 0 to 1 and onboarded external developers for over ten customer organizations, iterating/improving the capabilities and processes with each experience",
-                "Evolved product lines based on business priorities and insights, frequently releasing new features/enhancements (SSO & 2-Step Verification, scheduled CSV exports, no-code form designer and API tools, etc.)",
+                "Evolved product lines based on business priorities and insights, frequently releasing new features/enhancements (SSO & 2-Step Verification, scheduled CSV exports, no-code form designer tools, etc.)",
                 "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, measure/communicate progress, and improve processes for scalability",
                 "Delivered and scrapped POCs/MVPs for new features and integrations (secure messaging with clients, SMS/email notifications via Twilio, last-mile delivery operations via Onfleet, etc.)",
                 "Implemented microservices for Health Information Exchange and Revenue Cycle Managment integration use cases (following HL7 and X12 EDI standards)"
@@ -96,13 +96,13 @@
             "Managing competing priorities and making data-driven decisions",
             "Facilitating cross-functional collaboration and rapid, iterative delivery of value",
             "Quickly learning and embracing new tools, processes, and methodologies",
-            "Partnering and communicating with Engineers (SQL proficient, basic understanding of SDLC concepts, experience evaluating APIs & technical documentation)"
+            "Partnering and communicating with Engineers (SQL proficient, basic understanding of SDLC concepts, experience evaluating APIs)"
         ],
         "toolsAndFrameworks": [
-            "Insight collection/consolidation (MS Forms, Glean, Hubspot, ProductBoard, SQL)",
-            "Workshopping, Diagramming, & Brainstorming (Confluence Whiteboards, Lucidchart, AI tools)",
-            "Mock-ups and low-fi prototyping for UX research (Figma, AI Tools)",
-            "GTM and release communication (Jira, Azure Pipelines, ReleaseNotes.io for automated user/subscriber notifications)",
+            "Insight collection/consolidation (MS Forms, Jira, Hubspot, ProductBoard, SQL)",
+            "Workshopping, Diagramming, Brainstorming (Confluence Whiteboards, Lucidchart, AI tools)",
+            "Mock-ups and low-fi prototyping (Figma, AI Tools)",
+            "GTM and release communication (Jira, Azure Pipelines, ReleaseNotes.io for automated subscriber notifications)",
             "No or low-code API Testing and workflow automation (Zapier, Microsoft Power Automate, Postman)",
             "Dual-track Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban workflows, sprint ceremonies, etc.)"
         ],
