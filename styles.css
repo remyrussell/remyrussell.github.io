@@ -28,8 +28,8 @@ h2 {
     border-bottom: 1px solid #ccc;
 }
 
-/* Experience and Education items */
-.experience-item, .education-item {
+/* Experience, Education, and Certification items */
+.experience-item, .education-item, .certification-item {
     margin-top: 1.5rem;
 }
 
@@ -74,7 +74,7 @@ h2 {
 }
 
 /* Ensure bullets are left-aligned with standard indent */
-.experience-item ul, .education-item ul {
+.experience-item ul, .education-item ul, .certification-item ul {
     list-style-type: disc;
     padding-left: 1rem;
     margin-top: 0.5rem;
@@ -197,7 +197,8 @@ h2 {
     background-color: #c71585;
 }
 
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
+.theme-toggle-checkbox:che
+cked + .theme-toggle-label .theme-toggle-knob {
     transform: translateX(20px);
 }
 
