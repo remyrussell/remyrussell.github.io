@@ -327,9 +327,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                         if (experience.company !== previousCompany) {
                             const logoImg = document.createElement('img');
                             logoImg.className = 'logo-img';
+                            // Add a specific class for CaseWorthy logo
+                            if (experience.company.includes('CaseWorthy')) {
+                                logoImg.classList.add('caseworthy-logo');
+                            }
                             logoImg.src = experience.logo || '';
                             logoImg.alt = `${experience.company} logo`;
-                            logoImg.width = 150; // Increased to match CSS
+                            logoImg.width = 150;
                             logoImg.onerror = () => {
                                 console.warn(`Failed to load logo for ${experience.company} at ${experience.logo}`);
                                 logoImg.style.display = 'none';
@@ -403,7 +407,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     eduLogoImg.className = 'logo-img';
                     eduLogoImg.src = data.education.logo || '';
                     eduLogoImg.alt = "Education institution logo";
-                    eduLogoImg.width = 150; // Increased to match CSS
+                    eduLogoImg.width = 150;
                     eduLogoImg.onerror = () => {
                         console.warn(`Failed to load education logo at ${data.education.logo}`);
                         eduLogoImg.style.display = 'none';
