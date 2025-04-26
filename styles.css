@@ -49,7 +49,7 @@ h2 {
 
 /* Specific styling for CaseWorthy logo in dark theme */
 .theme-dark .caseworthy-logo {
-    filter: brightness(3) contrast(1.3); /* Significantly lighten the dark blue color */
+    filter: brightness(6) contrast(1.3); /* Significantly lighten the dark blue color */
 }
 
 .experience-item .header-content, .education-item .header-content {
