@@ -36,13 +36,15 @@ h2 {
 .experience-item img, .education-item img {
     width: 150px;
     max-width: 150px;
+    max-height: 100px; /* Added to cap vertical size and ensure consistency */
     margin: 0 auto 1rem auto;
     display: block;
-    filter: brightness(0.8) contrast(1.2); /* Adjusted to improve visibility, especially for light grey logos like Eccovia */
+    filter: brightness(0.8) contrast(1.2);
+    object-fit: contain; /* Ensures logos scale properly within constraints */
 }
 
 .theme-dark .experience-item img, .theme-dark .education-item img {
-    filter: brightness(1) contrast(1); /* Reset in dark theme to avoid over-darkening */
+    filter: brightness(1) contrast(1);
 }
 
 .experience-item .header-content, .education-item .header-content {
@@ -210,7 +212,7 @@ h2 {
     opacity: 1;
 }
 
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
+.theme-toggle-checkbox F:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
     opacity: 0;
 }
 
