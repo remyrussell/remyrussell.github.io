@@ -26,7 +26,7 @@
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform and implementation capabilities, leading to acquisition",
                 "Shipped a RESTful API from 0 to 1, onboarded developers for over ten customer organizations, and iterated its capabilities",
-                "Released frequent platform enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code form and integration design tools, etc.)",
+                "Released frequent platform enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, etc.)",
                 "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, communicate progress, and improve implementation scalability",
                 "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (secure messaging with clients, SMS/email notifications via Twilio, last-mile delivery operations via Onfleet, etc.)",
                 "Implemented Health Information Exchange and Revenue Cycle Managment integrations (HL7 & X12 EDI standards)"
@@ -97,12 +97,12 @@
             "Partnering and communicating with engineers (SQL proficient, basic understanding of SDLC concepts)"
         ],
         "toolsAndFrameworks": [
-            "Insight collection/consolidation (MS Forms, Jira, Hubspot, ProductBoard, SQL)",
-            "Workshopping, Diagramming, Brainstorming (Confluence Whiteboards, Lucidchart, AI tools)",
+            "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban workflows, sprint ceremonies, dashboards, etc.)",
+            "Insight collection/consolidation (Hubspot, ProductBoard, SQL)",
+            "Workshopping and Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
             "Mock-ups and low-fi prototyping (Figma, AI Tools)",
-            "GTM and release communication (Jira, Azure Pipelines, ReleaseNotes.io for automated notification)",
+            "GTM and release communication (Jira, Azure Pipelines, ReleaseNotes.io)",
             "No or low-code API Testing and workflow automation (Zapier, Microsoft Power Automate, Postman)",
-            "Dual-track Agile, Scrum (Jira Plans for roadmapping, discovery/delivery boards for backlog refinement, Kanban workflows, sprint ceremonies, etc.)"
         ],
         "fun": [
             "Outdoor activities (skiing, mountain biking, hiking, camping/overlanding)",
