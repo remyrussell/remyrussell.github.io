@@ -110,7 +110,6 @@
             "Podcasts/audiobooks related to science, technology, or health"
         ]
     },
-    // To remove Certifications entirely, delete this "certifications" array
     "certifications": [
         {
             "name": "HL7 Fundamentals",
