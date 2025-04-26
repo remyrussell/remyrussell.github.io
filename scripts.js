@@ -236,12 +236,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             response = await fetch('https://remyrussell.github.io/resume.json', { cache: 'no-store' });
         }
         if (!response.ok) {
-            throw new Error('Failed to fetch resume.json');
+            throw new Error(`Failed to fetch resume.json: ${response.status} ${response.statusText}`);
         }
         data = await response.json();
         console.log('Parsed data:', data);
     } catch (err) {
         console.error('Fetch error:', err.message);
+        const container = document.querySelector('.container');
+        if (container) {
+            container.innerHTML = `
+                <h1>Error Loading Resume</h1>
+                <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
+                <p>Error details: ${err.message}</p>
+            `;
+        }
         document.getElementById('name').innerText = 'Error: Unable to load resume data';
         document.getElementById('role').innerText = '';
         document.getElementById('email').innerText = '';
@@ -287,6 +295,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     logoImg.src = experience.logo || '';
                     logoImg.alt = `${experience.company} logo`;
                     logoImg.width = 100;
+                    logoImg.onerror = () => {
+                        console.warn(`Failed to load logo for ${experience.company} at ${experience.logo}`);
+                        logoImg.style.display = 'none'; // Hide the image if it fails to load
+                    };
                     experienceDiv.appendChild(logoImg);
                 }
                 previousCompany = experience.company;
@@ -346,6 +358,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             eduLogoImg.src = data.education.logo || '';
             eduLogoImg.alt = "Education institution logo";
             eduLogoImg.width = 100;
+            eduLogoImg.onerror = () => {
+                console.warn(`Failed to load education logo at ${data.education.logo}`);
+                eduLogoImg.style.display = 'none';
+            };
             educationDiv.appendChild(eduLogoImg);
 
             const headerContent = document.createElement('div');
