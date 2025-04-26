@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (toolsAndFrameworks) {
             toolsAndFrameworks.innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
         } else {
-            console.error('Tools and frameworks element not found in DOM');
+            console.error('Tools and frameworks elementz not found in DOM');
         }
 
         const funSkills = document.getElementById('funSkills');
