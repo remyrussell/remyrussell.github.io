@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (downloadPdfButton) {
             downloadPdfButton.addEventListener('click', () => generateResumePDF(data));
         } else {
-            console.error('Download PDF button not found in DOM');
+            console.error('OY! Download PDF button not found in DOM');
         }
     } catch (err) {
         console.error('Error in rendering:', err.message);
