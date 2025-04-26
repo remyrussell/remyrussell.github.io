@@ -162,16 +162,8 @@ function generateResumePDF(data) {
     }
     yPosition += 3;
 
-    yPosition = addText('Certifications', 11.5, 'bold', margin, yPosition, contentWidth);
-    if (data.certifications) {
-        data.certifications.forEach(cert => {
-            const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
-            yPosition = addText(`- ${certText}`, 9, 'normal', margin, yPosition, contentWidth);
-        });
-    }
-    yPosition += 3;
-
-    if (data.skills) {
+    // Two-column section for Skills and Certifications
+    if (data.skills || data.certifications) {
         const columnWidth = (contentWidth - 2) / 2;
         const leftColumnX = margin;
         const rightColumnX = margin + columnWidth + 2;
@@ -182,14 +174,15 @@ function generateResumePDF(data) {
         let leftY = yPosition;
         let rightY = yPosition;
 
-        if (data.skills.coreSkills) {
+        // Left column: Core Skills and Interests & Hobbies
+        if (data.skills?.coreSkills) {
             leftY = addText('Core Skills', 11.5, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.coreSkills.forEach(skill => {
                 leftY = addText(`- ${skill}`, 9, 'normal', leftColumnX, leftY, columnWidth);
             });
         }
 
-        if (data.skills.fun) {
+        if (data.skills?.fun) {
             leftY += 2;
             leftY = addText('Interests & Hobbies', 11.5, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.fun.forEach(fun => {
@@ -197,10 +190,21 @@ function generateResumePDF(data) {
             });
         }
 
-        if (data.skills.toolsAndFrameworks) {
+        // Right column: Tools & Frameworks and Certifications
+        if (data.skills?.toolsAndFrameworks) {
             rightY = addText('Tools & Frameworks', 11.5, 'bold', rightColumnX, rightY, columnWidth);
             data.skills.toolsAndFrameworks.forEach(tool => {
                 rightY = addText(`- ${tool}`, 9, 'normal', rightColumnX, rightY, columnWidth);
+            });
+        }
+
+        // To remove Certifications entirely from the PDF, comment out or delete this block
+        if (data.certifications) {
+            rightY += 2;
+            rightY = addText('Certifications', 11.5, 'bold', rightColumnX, rightY, columnWidth);
+            data.certifications.forEach(cert => {
+                const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
+                rightY = addText(`- ${certText}`, 9, 'normal', rightColumnX, rightY, columnWidth);
             });
         }
 
@@ -442,10 +446,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Education container not found in DOM');
         }
 
-        const certificationContainer = document.getElementById('certifications');
+        // To remove Certifications entirely from the website, comment out or delete this block
         const certificationList = document.getElementById('certificationList');
-        if (certificationContainer && certificationList) {
-            certificationContainer.innerHTML = '<h2>Certifications</h2>';
+        if (certificationList) {
             if (data.certifications) {
                 try {
                     certificationList.innerHTML = data.certifications.map(cert => 
@@ -459,7 +462,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 certificationList.innerHTML = '<li>No certifications data available.</li>';
             }
         } else {
-            console.error('Certifications container or list not found in DOM');
+            console.error('Certification list element not found in DOM');
         }
 
         const skillList = document.getElementById('skillList');
