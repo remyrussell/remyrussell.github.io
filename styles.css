@@ -36,15 +36,20 @@ h2 {
 .experience-item img, .education-item img {
     width: 150px;
     max-width: 150px;
-    max-height: 100px; /* Added to cap vertical size and ensure consistency */
+    max-height: 100px;
     margin: 0 auto 1rem auto;
     display: block;
     filter: brightness(0.8) contrast(1.2);
-    object-fit: contain; /* Ensures logos scale properly within constraints */
+    object-fit: contain;
 }
 
 .theme-dark .experience-item img, .theme-dark .education-item img {
     filter: brightness(1) contrast(1);
+}
+
+/* Specific styling for CaseWorthy logo in dark theme */
+.theme-dark .caseworthy-logo {
+    filter: brightness(1.5) contrast(1.2); /* Lighten the dark blue color */
 }
 
 .experience-item .header-content, .education-item .header-content {
@@ -212,7 +217,7 @@ h2 {
     opacity: 1;
 }
 
-.theme-toggle-checkbox F:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
     opacity: 0;
 }
 
