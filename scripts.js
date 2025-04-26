@@ -80,7 +80,7 @@ function attachThemeToggleEvent() {
 
 function generateResumePDF(data) {
     if (!data) {
-        alert('Error: Resume data not loaded. Please try again.');
+        alert('Error: Resume data not loaded cuz I vibecoded too hard');
         console.error('generateResumePDF: data is undefined');
         return;
     }
