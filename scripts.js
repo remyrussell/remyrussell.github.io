@@ -322,7 +322,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 detailsDiv.appendChild(descriptionPara);
 
                 const highlightsList = document.createElement('ul');
-                const combinedHighlights = [...(experience.highlights || []), ...(experience.achievements || [])];
+                const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
+                const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
+                const combinedHighlights = [...highlightsArray, ...achievementsArray];
                 highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
                 if (combinedHighlights.length > 0) {
                     detailsDiv.appendChild(highlightsList);
@@ -390,7 +392,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (err) {
         console.error('Error:', err.message);
-        document.getElementById('professionalExperience').innerHTML = `<p>Error loading experience: ${err.message}</p>`;
-        document.getElementById('education').innerHTML = `<p>Error loading education: ${err.message}</p>`;
+        const experienceElement = document.getElementById('professionalExperience');
+        if (experienceElement) {
+            experienceElement.innerHTML = `<p>Error loading experience: ${err.message}</p>`;
+        } else {
+            console.error('professionalExperience element not found in DOM');
+        }
+        const educationElement = document.getElementById('education');
+        if (educationElement) {
+            educationElement.innerHTML = `<p>Error loading education: ${err.message}</p>`;
+        } else {
+            console.error('education element not found in DOM');
+        }
     }
 });
