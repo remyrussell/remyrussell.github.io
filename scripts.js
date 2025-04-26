@@ -198,7 +198,6 @@ function generateResumePDF(data) {
             });
         }
 
-        // To remove Certifications entirely from the PDF, comment out or delete this block
         if (data.certifications) {
             rightY += 2;
             rightY = addText('Certifications', 11.5, 'bold', rightColumnX, rightY, columnWidth);
@@ -330,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             logoImg.className = 'logo-img';
                             logoImg.src = experience.logo || '';
                             logoImg.alt = `${experience.company} logo`;
-                            logoImg.width = 100;
+                            logoImg.width = 150; // Increased to match CSS
                             logoImg.onerror = () => {
                                 console.warn(`Failed to load logo for ${experience.company} at ${experience.logo}`);
                                 logoImg.style.display = 'none';
@@ -404,7 +403,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     eduLogoImg.className = 'logo-img';
                     eduLogoImg.src = data.education.logo || '';
                     eduLogoImg.alt = "Education institution logo";
-                    eduLogoImg.width = 100;
+                    eduLogoImg.width = 150; // Increased to match CSS
                     eduLogoImg.onerror = () => {
                         console.warn(`Failed to load education logo at ${data.education.logo}`);
                         eduLogoImg.style.display = 'none';
@@ -446,7 +445,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Education container not found in DOM');
         }
 
-        // To remove Certifications entirely from the website, comment out or delete this block
         const certificationList = document.getElementById('certificationList');
         if (certificationList) {
             if (data.certifications) {
@@ -490,7 +488,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (downloadPdfButton) {
             downloadPdfButton.addEventListener('click', () => generateResumePDF(data));
         } else {
-            console.error('OY! Download PDF button not found in DOM');
+            console.error('Download PDF button not found in DOM');
         }
     } catch (err) {
         console.error('Error in rendering:', err.message);
