@@ -21,7 +21,6 @@ function toggleDropdown() {
             console.error('Dropdown elements not found:', { toggle, menu });
             return;
         }
-        // Ensure initial state
         menu.style.display = 'none';
         toggle.addEventListener('click', (e) => {
             e.preventDefault();
@@ -49,7 +48,6 @@ function attachThemeToggleEvent() {
     const menuToggleButton = document.getElementById('menuToggleButton');
     const menu = document.getElementById('menu');
     if (menuToggleButton && menu) {
-        // Ensure initial state on mobile
         if (window.innerWidth < 768) {
             menu.classList.remove('active');
         }
@@ -59,7 +57,7 @@ function attachThemeToggleEvent() {
             console.log('Menu classList after toggle:', menu.classList);
         });
     } else {
-        console.error('Darn, menu elements not found:', { menuToggleButton, menu });
+        console.error('Menu elements not found:', { menuToggleButton, menu });
     }
     const backToTopButton = document.getElementById('backToTop');
     if (backToTopButton) {
@@ -107,7 +105,7 @@ function generateResumePDF(data) {
         doc.setFont('Helvetica', style);
         const lines = doc.splitTextToSize(text, maxWidth);
         doc.text(lines, x, y);
-        return y + (lines.length * size * 0.45); // Line spacing
+        return y + (lines.length * size * 0.45);
     }
 
     yPosition = addText(data.name || 'Remy Russell', 14, 'bold', margin, yPosition, contentWidth);
@@ -124,13 +122,13 @@ function generateResumePDF(data) {
         const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
         yPosition = addText(combinedText, 9.5, 'italic', margin, yPosition, contentWidth);
     }
-    yPosition += 3; // Reduced section spacing
+    yPosition += 3;
 
     yPosition = addText('Summary', 11.5, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         yPosition = addText(data.summary, 9, 'normal', margin, yPosition, contentWidth);
     }
-    yPosition += 3; // Reduced section spacing
+    yPosition += 3;
 
     yPosition = addText('Professional Experience', 11.5, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
@@ -142,17 +140,17 @@ function generateResumePDF(data) {
             yPosition = addText(`${duration} | ${exp.location}`, 9, 'italic', margin, yPosition, contentWidth);
             if (exp.description) {
                 yPosition = addText(exp.description, 9, 'normal', margin, yPosition, contentWidth);
-                yPosition += 1; // Add 1mm space before highlights
+                yPosition += 1;
             }
             if (exp.highlights) {
                 exp.highlights.forEach(highlight => {
                     yPosition = addText(`- ${highlight}`, 9, 'normal', margin, yPosition, contentWidth);
                 });
             }
-            yPosition += 2; // Job spacing
+            yPosition += 2;
         });
     }
-    yPosition += 3; // Reduced section spacing
+    yPosition += 3;
 
     yPosition = addText('Education', 11.5, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
@@ -162,7 +160,7 @@ function generateResumePDF(data) {
             yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 9, 'normal', margin, yPosition, contentWidth);
         }
     }
-    yPosition += 3; // Reduced section spacing
+    yPosition += 3;
 
     yPosition = addText('Certifications', 11.5, 'bold', margin, yPosition, contentWidth);
     if (data.certifications) {
@@ -171,9 +169,8 @@ function generateResumePDF(data) {
             yPosition = addText(`- ${certText}`, 9, 'normal', margin, yPosition, contentWidth);
         });
     }
-    yPosition += 3; // Reduced section spacing
+    yPosition += 3;
 
-    // Skills subsections in two columns
     if (data.skills) {
         const columnWidth = (contentWidth - 2) / 2;
         const leftColumnX = margin;
@@ -185,7 +182,6 @@ function generateResumePDF(data) {
         let leftY = yPosition;
         let rightY = yPosition;
 
-        // Left column: Core Skills and Interests & Hobbies (longer content)
         if (data.skills.coreSkills) {
             leftY = addText('Core Skills', 11.5, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.coreSkills.forEach(skill => {
@@ -201,7 +197,6 @@ function generateResumePDF(data) {
             });
         }
 
-        // Right column: Tools & Frameworks
         if (data.skills.toolsAndFrameworks) {
             rightY = addText('Tools & Frameworks', 11.5, 'bold', rightColumnX, rightY, columnWidth);
             data.skills.toolsAndFrameworks.forEach(tool => {
@@ -223,6 +218,20 @@ function generateResumePDF(data) {
     }
 }
 
+async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            if (response.ok) return response;
+            throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
+        } catch (err) {
+            if (i === retries - 1) throw err;
+            console.warn(`Fetch attempt ${i + 1} failed for ${url}. Retrying in ${delay}ms...`, err);
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     keepThemeSetting();
     attachThemeToggleEvent();
@@ -230,10 +239,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     let data;
     try {
         console.log('Fetching resume.json...');
-        let response = await fetch('/resume.json', { cache: 'no-store' });
+        let response = await fetchWithRetry('/resume.json', { cache: 'no-store' });
         if (!response.ok) {
             console.log('Relative path failed, trying absolute path...');
-            response = await fetch('https://remyrussell.github.io/resume.json', { cache: 'no-store' });
+            response = await fetchWithRetry('https://remyrussell.github.io/resume.json', { cache: 'no-store' });
         }
         if (!response.ok) {
             throw new Error(`Failed to fetch resume.json: ${response.status} ${response.statusText}`);
@@ -249,176 +258,242 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
                 <p>Error details: ${err.message}</p>
             `;
+        } else {
+            console.error('Container element not found in DOM');
         }
-        document.getElementById('name').innerText = 'Error: Unable to load resume data';
-        document.getElementById('role').innerText = '';
-        document.getElementById('email').innerText = '';
-        document.getElementById('phone').innerText = '';
-        document.getElementById('summaryText').innerText = 'Error: Unable to load summary';
-        document.getElementById('professionalExperience').innerHTML = '<h2>Professional Experience</h2><p>Error: Unable to load experience</p>';
-        document.getElementById('education').innerHTML = '<h2>Education</h2><p>Error: Unable to load education</p>';
-        document.getElementById('certificationList').innerHTML = '<li>Error: Unable to load certifications</li>';
-        document.getElementById('skillList').innerHTML = '<li>Error: Unable to load core skills</li>';
-        document.getElementById('toolsAndFrameworks').innerHTML = '<li>Error: Unable to load tools</li>';
-        document.getElementById('funSkills').innerHTML = '<li>Error: Unable to load interests</li>';
-        return; // Exit early since data is not available
+        return;
     }
 
     try {
-        document.getElementById('name').innerText = data.name || 'Name Not Found';
-        document.getElementById('role').innerText = data.role || 'Role Not Found';
-        document.getElementById('email').innerText = data.contact?.email || 'Email Not Found';
-        document.getElementById('phone').innerText = data.contact?.phone || '';
+        const nameElement = document.getElementById('name');
+        if (nameElement) {
+            nameElement.innerText = data.name || 'Name Not Found';
+        } else {
+            console.error('Name element not found in DOM');
+        }
+
+        const roleElement = document.getElementById('role');
+        if (roleElement) {
+            roleElement.innerText = data.role || 'Role Not Found';
+        } else {
+            console.error('Role element not found in DOM');
+        }
+
+        const emailElement = document.getElementById('email');
+        if (emailElement) {
+            emailElement.innerText = data.contact?.email || 'Email Not Found';
+        } else {
+            console.error('Email element not found in DOM');
+        }
+
+        const phoneElement = document.getElementById('phone');
+        if (phoneElement) {
+            phoneElement.innerText = data.contact?.phone || '';
+        } else {
+            console.error('Phone element not found in DOM');
+        }
 
         const container = document.querySelector('.container');
         const summarySection = document.getElementById('summary');
-        if (!document.querySelector('.location-note')) {
+        if (container && summarySection && !document.querySelector('.location-note')) {
             const locationNote = document.createElement('p');
             locationNote.className = 'location-note';
             locationNote.innerText = data.seeking || 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
             container.insertBefore(locationNote, summarySection);
+        } else {
+            console.error('Container or summary section not found for location note');
         }
 
-        document.getElementById('summaryText').innerText = data.summary || 'Summary Data Not Found';
+        const summaryTextElement = document.getElementById('summaryText');
+        if (summaryTextElement) {
+            summaryTextElement.innerText = data.summary || 'Summary Data Not Found';
+        } else {
+            console.error('Summary text element not found in DOM');
+        }
 
         const experienceContainer = document.getElementById('professionalExperience');
-        experienceContainer.innerHTML = '<h2>Professional Experience</h2>';
-        let previousCompany = null;
-        if (data.professionalExperience) {
-            data.professionalExperience.forEach((experience) => {
-                const experienceDiv = document.createElement('div');
-                experienceDiv.className = 'experience-item';
+        if (experienceContainer) {
+            experienceContainer.innerHTML = '<h2>Professional Experience</h2>';
+            let previousCompany = null;
+            if (data.professionalExperience) {
+                data.professionalExperience.forEach((experience, index) => {
+                    try {
+                        const experienceDiv = document.createElement('div');
+                        experienceDiv.className = 'experience-item';
 
-                if (experience.company !== previousCompany) {
-                    const logoImg = document.createElement('img');
-                    logoImg.className = 'logo-img';
-                    logoImg.src = experience.logo || '';
-                    logoImg.alt = `${experience.company} logo`;
-                    logoImg.width = 100;
-                    logoImg.onerror = () => {
-                        console.warn(`Failed to load logo for ${experience.company} at ${experience.logo}`);
-                        logoImg.style.display = 'none'; // Hide the image if it fails to load
-                    };
-                    experienceDiv.appendChild(logoImg);
-                }
-                previousCompany = experience.company;
+                        if (experience.company !== previousCompany) {
+                            const logoImg = document.createElement('img');
+                            logoImg.className = 'logo-img';
+                            logoImg.src = experience.logo || '';
+                            logoImg.alt = `${experience.company} logo`;
+                            logoImg.width = 100;
+                            logoImg.onerror = () => {
+                                console.warn(`Failed to load logo for ${experience.company} at ${experience.logo}`);
+                                logoImg.style.display = 'none';
+                            };
+                            experienceDiv.appendChild(logoImg);
+                        }
+                        previousCompany = experience.company;
 
-                const headerContent = document.createElement('div');
-                headerContent.className = 'header-content';
+                        const headerContent = document.createElement('div');
+                        headerContent.className = 'header-content';
 
-                const stickyHeader = document.createElement('div');
-                stickyHeader.className = 'sticky-header';
-                const positionHeader = document.createElement('h3');
-                positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
-                stickyHeader.appendChild(positionHeader);
-                headerContent.appendChild(stickyHeader);
+                        const stickyHeader = document.createElement('div');
+                        stickyHeader.className = 'sticky-header';
+                        const positionHeader = document.createElement('h3');
+                        positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
+                        stickyHeader.appendChild(positionHeader);
+                        headerContent.appendChild(stickyHeader);
 
-                const dateRange = document.createElement('span');
-                dateRange.className = 'date-range';
-                dateRange.innerText = `${formatDate(experience.duration.start)} through ${formatDate(experience.duration.end) || 'Present'}`;
-                headerContent.appendChild(dateRange);
+                        const dateRange = document.createElement('span');
+                        dateRange.className = 'date-range';
+                        dateRange.innerText = `${formatDate(experience.duration.start)} through ${formatDate(experience.duration.end) || 'Present'}`;
+                        headerContent.appendChild(dateRange);
 
-                const locationSpan = document.createElement('span');
-                locationSpan.className = 'location';
-                locationSpan.innerText = experience.location || '';
-                headerContent.appendChild(locationSpan);
+                        const locationSpan = document.createElement('span');
+                        locationSpan.className = 'location';
+                        locationSpan.innerText = experience.location || '';
+                        headerContent.appendChild(locationSpan);
 
-                experienceDiv.appendChild(headerContent);
+                        experienceDiv.appendChild(headerContent);
 
-                const detailsDiv = document.createElement('div');
-                detailsDiv.className = 'details';
+                        const detailsDiv = document.createElement('div');
+                        detailsDiv.className = 'details';
 
-                const descriptionPara = document.createElement('p');
-                descriptionPara.className = 'description';
-                descriptionPara.innerText = experience.description || 'Description Not Found';
-                detailsDiv.appendChild(descriptionPara);
+                        const descriptionPara = document.createElement('p');
+                        descriptionPara.className = 'description';
+                        descriptionPara.innerText = experience.description || 'Description Not Found';
+                        detailsDiv.appendChild(descriptionPara);
 
-                const highlightsList = document.createElement('ul');
-                const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
-                const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
-                const combinedHighlights = [...highlightsArray, ...achievementsArray];
-                highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
-                if (combinedHighlights.length > 0) {
-                    detailsDiv.appendChild(highlightsList);
-                }
+                        const highlightsList = document.createElement('ul');
+                        const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
+                        const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
+                        const combinedHighlights = [...highlightsArray, ...achievementsArray];
+                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
+                        if (combinedHighlights.length > 0) {
+                            detailsDiv.appendChild(highlightsList);
+                        }
 
-                experienceDiv.appendChild(detailsDiv);
-                experienceContainer.appendChild(experienceDiv);
-            });
+                        experienceDiv.appendChild(detailsDiv);
+                        experienceContainer.appendChild(experienceDiv);
+                    } catch (err) {
+                        console.error(`Error rendering experience item ${index}:`, err.message);
+                        experienceContainer.innerHTML += `<p>Error rendering experience item: ${err.message}</p>`;
+                    }
+                });
+            } else {
+                experienceContainer.innerHTML += '<p>No professional experience data available.</p>';
+            }
+        } else {
+            console.error('Professional experience container not found in DOM');
         }
 
         const educationContainer = document.getElementById('education');
-        educationContainer.innerHTML = '<h2>Education</h2>';
-        if (data.education) {
-            const educationDiv = document.createElement('div');
-            educationDiv.className = 'education-item';
+        if (educationContainer) {
+            educationContainer.innerHTML = '<h2>Education</h2>';
+            if (data.education) {
+                try {
+                    const educationDiv = document.createElement('div');
+                    educationDiv.className = 'education-item';
 
-            const eduLogoImg = document.createElement('img');
-            eduLogoImg.className = 'logo-img';
-            eduLogoImg.src = data.education.logo || '';
-            eduLogoImg.alt = "Education institution logo";
-            eduLogoImg.width = 100;
-            eduLogoImg.onerror = () => {
-                console.warn(`Failed to load education logo at ${data.education.logo}`);
-                eduLogoImg.style.display = 'none';
-            };
-            educationDiv.appendChild(eduLogoImg);
+                    const eduLogoImg = document.createElement('img');
+                    eduLogoImg.className = 'logo-img';
+                    eduLogoImg.src = data.education.logo || '';
+                    eduLogoImg.alt = "Education institution logo";
+                    eduLogoImg.width = 100;
+                    eduLogoImg.onerror = () => {
+                        console.warn(`Failed to load education logo at ${data.education.logo}`);
+                        eduLogoImg.style.display = 'none';
+                    };
+                    educationDiv.appendChild(eduLogoImg);
 
-            const headerContent = document.createElement('div');
-            headerContent.className = 'header-content';
+                    const headerContent = document.createElement('div');
+                    headerContent.className = 'header-content';
 
-            const stickyHeader = document.createElement('div');
-            stickyHeader.className = 'sticky-header';
-            const degreeHeader = document.createElement('h3');
-            degreeHeader.innerText = data.education.degree || 'Degree Not Found';
-            stickyHeader.appendChild(degreeHeader);
-            headerContent.appendChild(stickyHeader);
+                    const stickyHeader = document.createElement('div');
+                    stickyHeader.className = 'sticky-header';
+                    const degreeHeader = document.createElement('h3');
+                    degreeHeader.innerText = data.education.degree || 'Degree Not Found';
+                    stickyHeader.appendChild(degreeHeader);
+                    headerContent.appendChild(stickyHeader);
 
-            const eduDetailsSpan = document.createElement('span');
-            eduDetailsSpan.innerText = data.education.institution || 'Institution Not Found';
-            headerContent.appendChild(eduDetailsSpan);
+                    const eduDetailsSpan = document.createElement('span');
+                    eduDetailsSpan.innerText = data.education.institution || 'Institution Not Found';
+                    headerContent.appendChild(eduDetailsSpan);
 
-            educationDiv.appendChild(headerContent);
+                    educationDiv.appendChild(headerContent);
 
-            const detailsDiv = document.createElement('div');
-            detailsDiv.className = 'details';
-            detailsDiv.innerHTML = `
-                <p>${data.education.coursework?.join(', ') || ''}</p>
-                ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
-            `;
-            educationDiv.appendChild(detailsDiv);
-            educationContainer.appendChild(educationDiv);
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.className = 'details';
+                    detailsDiv.innerHTML = `
+                        <p>${data.education.coursework?.join(', ') || ''}</p>
+                        ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
+                    `;
+                    educationDiv.appendChild(detailsDiv);
+                    educationContainer.appendChild(educationDiv);
+                } catch (err) {
+                    console.error('Error rendering education:', err.message);
+                    educationContainer.innerHTML += `<p>Error rendering education: ${err.message}</p>`;
+                }
+            } else {
+                educationContainer.innerHTML += '<p>No education data available.</p>';
+            }
+        } else {
+            console.error('Education container not found in DOM');
         }
 
         const certificationContainer = document.getElementById('certifications');
-        certificationContainer.innerHTML = '<h2>Certifications</h2>';
-        if (data.certifications) {
-            document.getElementById('certificationList').innerHTML = data.certifications.map(cert => 
-                `<li>${cert.name}, ${cert.issuer} (${cert.date})</li>`
-            ).join('') || '<li>Certifications Not Found</li>';
+        const certificationList = document.getElementById('certificationList');
+        if (certificationContainer && certificationList) {
+            certificationContainer.innerHTML = '<h2>Certifications</h2>';
+            if (data.certifications) {
+                try {
+                    certificationList.innerHTML = data.certifications.map(cert => 
+                        `<li>${cert.name}, ${cert.issuer} (${cert.date})</li>`
+                    ).join('') || '<li>Certifications Not Found</li>';
+                } catch (err) {
+                    console.error('Error rendering certifications:', err.message);
+                    certificationList.innerHTML = `<li>Error rendering certifications: ${err.message}</li>`;
+                }
+            } else {
+                certificationList.innerHTML = '<li>No certifications data available.</li>';
+            }
+        } else {
+            console.error('Certifications container or list not found in DOM');
         }
 
-        document.getElementById('skillList').innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
-        document.getElementById('toolsAndFrameworks').innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
-        document.getElementById('funSkills').innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
+        const skillList = document.getElementById('skillList');
+        if (skillList) {
+            skillList.innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
+        } else {
+            console.error('Skill list element not found in DOM');
+        }
+
+        const toolsAndFrameworks = document.getElementById('toolsAndFrameworks');
+        if (toolsAndFrameworks) {
+            toolsAndFrameworks.innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
+        } else {
+            console.error('Tools and frameworks element not found in DOM');
+        }
+
+        const funSkills = document.getElementById('funSkills');
+        if (funSkills) {
+            funSkills.innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
+        } else {
+            console.error('Fun skills element not found in DOM');
+        }
 
         const downloadPdfButton = document.getElementById('downloadPdfButton');
         if (downloadPdfButton) {
             downloadPdfButton.addEventListener('click', () => generateResumePDF(data));
+        } else {
+            console.error('Download PDF button not found in DOM');
         }
     } catch (err) {
-        console.error('Error:', err.message);
-        const experienceElement = document.getElementById('professionalExperience');
-        if (experienceElement) {
-            experienceElement.innerHTML = `<p>Error loading experience: ${err.message}</p>`;
-        } else {
-            console.error('professionalExperience element not found in DOM');
-        }
-        const educationElement = document.getElementById('education');
-        if (educationElement) {
-            educationElement.innerHTML = `<p>Error loading education: ${err.message}</p>`;
-        } else {
-            console.error('education element not found in DOM');
+        console.error('Error in rendering:', err.message);
+        const container = document.querySelector('.container');
+        if (container) {
+            container.innerHTML += `<p>Unexpected error: ${err.message}</p>`;
         }
     }
 });
