@@ -16,7 +16,7 @@
         {
             "position": "Associate Product Manager, Engineering",
             "company": "CaseWorthy (formerly Eccovia)",
-            "logo": "/assets/images/logos/caseworthy.png",
+            "logo": "assets/images/logos/caseworthy.png",
             "location": "Salt Lake City, UT",
             "duration": {
                 "start": "2022-03-14",
@@ -34,7 +34,7 @@
         {
             "position": "Business Analyst, Solutions Delivery",
             "company": "Eccovia",
-            "logo": "/assets/images/logos/eccovia.svg",
+            "logo": "assets/images/logos/eccovia.svg",
             "location": "Salt Lake City, UT",
             "duration": {
                 "start": "2019-04-01",
@@ -49,7 +49,7 @@
         {
             "position": "Business Analyst II, UT MMIS Implementation Project",
             "company": "Client Network Services, Inc (CNSI)",
-            "logo": "/assets/images/logos/CNSI.png",
+            "logo": "assets/images/logos/CNSI.png",
             "location": "Salt Lake City, UT",
             "duration": {
                 "start": "2017-08-01",
@@ -63,7 +63,7 @@
         {
             "position": "Business Analyst, MI MMIS Implementation Project",
             "company": "CNSI",
-            "logo": "/assets/images/logos/CNSI.png",
+            "logo": "assets/images/logos/CNSI.png",
             "location": "Lansing, MI",
             "duration": {
                 "start": "2015-06-01",
@@ -76,7 +76,7 @@
     "education": {
         "degree": "BSE in Industrial & Operations Engineering, 2015",
         "institution": "University of Michigan, Ann Arbor",
-        "logo": "/assets/images/logos/umich-logo.png",
+        "logo": "assets/images/logos/umich-logo.png",
         "coursework": [
             "Relational database design",
             "Computer programming",
