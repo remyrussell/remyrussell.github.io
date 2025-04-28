@@ -327,9 +327,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         if (experience.company !== previousCompany) {
                             const logoImg = document.createElement('img');
                             logoImg.className = 'logo-img';
-                            // Add a specific class for CaseWorthy logo
+                            // Add specific classes for CaseWorthy and Eccovia logos
                             if (experience.company.includes('CaseWorthy')) {
                                 logoImg.classList.add('caseworthy-logo');
+                            } else if (experience.company.includes('Eccovia')) {
+                                logoImg.classList.add('eccovia-logo');
                             }
                             logoImg.src = experience.logo || '';
                             logoImg.alt = `${experience.company} logo`;
