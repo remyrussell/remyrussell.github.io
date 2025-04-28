@@ -40,18 +40,19 @@ h2 {
     margin: 0 auto 1rem auto;
     display: block;
     filter: brightness(0.8) contrast(1.2);
-    image-rendering: crisp-edges; /* Optimize rendering for sharpness */
-    -webkit-backface-visibility: hidden; /* Prevent rendering artifacts on mobile */
-    transform: translateZ(0); /* Force hardware acceleration for better rendering */
+    object-fit: contain; /* Restored to prevent stretching */
+    image-rendering: crisp-edges; /* Keep for general sharpness */
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .theme-dark .experience-item img, .theme-dark .education-item img {
     filter: brightness(1) contrast(1);
 }
 
-/* Remove specific filter for CaseWorthy since the new SVG is lighter */
+/* Remove CaseWorthy-specific filter since the new asset is lighter */
 .caseworthy-logo {
-    /* No filter needed unless further adjustments are required */
+    /* No specific styles needed unless further adjustments are required */
 }
 
 .experience-item .header-content, .education-item .header-content {
@@ -182,7 +183,7 @@ h2 {
     left: 2px;
     width: 27px;
     height: 27px;
-    background-color: #fff;
+    background-color: #fff    
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
