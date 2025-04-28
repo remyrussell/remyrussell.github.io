@@ -40,8 +40,8 @@ h2 {
     margin: 0 auto 1rem auto;
     display: block;
     filter: brightness(0.8) contrast(1.2);
-    object-fit: contain; /* Restored to prevent stretching */
-    image-rendering: crisp-edges; /* Keep for general sharpness */
+    object-fit: contain;
+    image-rendering: crisp-edges;
     -webkit-backface-visibility: hidden;
     transform: translateZ(0);
 }
@@ -50,9 +50,19 @@ h2 {
     filter: brightness(1) contrast(1);
 }
 
-/* Remove CaseWorthy-specific filter since the new asset is lighter */
+/* Specific styling for CaseWorthy logo */
 .caseworthy-logo {
     /* No specific styles needed unless further adjustments are required */
+}
+
+/* Specific styling for Eccovia logo in light theme */
+.eccovia-logo {
+    filter: brightness(0.4) contrast(1.5); /* Darken to a grey similar to #444 */
+}
+
+/* Ensure Eccovia logo in dark theme remains unchanged */
+.theme-dark .eccovia-logo {
+    filter: brightness(1) contrast(1);
 }
 
 .experience-item .header-content, .education-item .header-content {
@@ -183,7 +193,7 @@ h2 {
     left: 2px;
     width: 27px;
     height: 27px;
-    background-color: #fff    
+    background-color: #fff;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
