@@ -57,7 +57,7 @@ h2 {
 
 /* Specific styling for Eccovia logo in light theme */
 .eccovia-logo {
-    filter: brightness(0.4) contrast(1.5); /* Darken to a grey similar to #444 */
+    filter: brightness(0.2) contrast(1.8); /* Darken to a grey similar to #444 */
 }
 
 /* Ensure Eccovia logo in dark theme remains unchanged */
