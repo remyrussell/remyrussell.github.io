@@ -79,11 +79,10 @@
         "logo": "assets/images/logos/umich-logo.png",
         "coursework": [
             "Relational databases",
-            "Programming",
+            "Computer science",
             "Process improvement",
             "Modeling/Simulation",
-            "Lean management"
-        ]
+            ]
     },
     "skills": {
         "coreSkills": [
