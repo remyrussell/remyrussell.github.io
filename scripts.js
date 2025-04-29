@@ -118,29 +118,29 @@ function generateResumePDF(data) {
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
     if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
     if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 11, 'normal', margin, yPosition + 0.5, contentWidth);
+        yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
     }
     yPosition += 0.5;
     if (data.role || data.seeking) {
         const roleText = data.role || '';
         const seekingText = data.seeking || '';
         const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
-        yPosition = addText(combinedText, 11, 'italic', margin, yPosition, contentWidth);
+        yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth);
     }
     yPosition += 1.2;
 
     // Summary section
-    addHorizontalLine(yPosition, 2.8);
-    yPosition += 1.8;
+    addHorizontalLine(yPosition, 2);
+    yPosition += 1.5;
     yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
-        yPosition = addText(data.summary, 11, 'normal', margin, yPosition, contentWidth);
+        yPosition = addText(data.summary, 10.5, 'normal', margin, yPosition, contentWidth);
     }
     yPosition += 1.5;
 
     // Professional Experience section
-    addHorizontalLine(yPosition, 2.8);
-    yPosition += 1.8;
+    addHorizontalLine(yPosition, 2);
+    yPosition += 1.5;
     yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
     if (data.professionalExperience) {
@@ -148,14 +148,14 @@ function generateResumePDF(data) {
             const title = `${exp.position} at ${exp.company}`;
             yPosition = addText(title, 11.5, 'bold', margin, yPosition, contentWidth);
             const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-            yPosition = addText(`${duration} | ${exp.location}`, 11, 'italic', margin, yPosition, contentWidth);
+            yPosition = addText(`${duration} | ${exp.location}`, 10.5, 'italic', margin, yPosition, contentWidth);
             if (exp.description) {
-                yPosition = addText(exp.description, 11, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(exp.description, 10.5, 'normal', margin, yPosition, contentWidth);
                 yPosition += 0.3;
             }
             if (exp.highlights) {
                 exp.highlights.forEach(highlight => {
-                    yPosition = addText(`- ${highlight}`, 11, 'normal', margin, yPosition, contentWidth);
+                    yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
                 });
             }
             yPosition += 1;
@@ -164,21 +164,21 @@ function generateResumePDF(data) {
     yPosition += 1.2;
 
     // Education section
-    addHorizontalLine(yPosition, 2.8);
-    yPosition += 1.8;
+    addHorizontalLine(yPosition, 2);
+    yPosition += 1.5;
     yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
         yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
-        yPosition = addText(data.education.institution, 11, 'italic', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.institution, 10.5, 'italic', margin, yPosition, contentWidth);
         if (data.education.coursework) {
-            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 11, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 10.5, 'normal', margin, yPosition, contentWidth);
         }
     }
     yPosition += 2;
 
     // Skills and Certifications section
     addHorizontalLine(yPosition, 4); // Aligned with vertical line's top
-    yPosition += 1.8;
+    yPosition += 1.5;
     if (data.skills || data.certifications) {
         const columnWidth = (contentWidth - 2) / 2;
         const leftColumnX = margin;
@@ -191,7 +191,7 @@ function generateResumePDF(data) {
         if (data.skills?.coreSkills) {
             leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.coreSkills.forEach(skill => {
-                leftY = addText(`- ${skill}`, 11, 'normal', leftColumnX, leftY, columnWidth);
+                leftY = addText(`- ${skill}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
             });
         }
 
@@ -199,7 +199,7 @@ function generateResumePDF(data) {
             leftY += 0.8;
             leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.fun.forEach(fun => {
-                leftY = addText(`- ${fun}`, 11, 'normal', leftColumnX, leftY, columnWidth);
+                leftY = addText(`- ${fun}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
             });
         }
 
@@ -207,7 +207,7 @@ function generateResumePDF(data) {
         if (data.skills?.toolsAndFrameworks) {
             rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
             data.skills.toolsAndFrameworks.forEach(tool => {
-                rightY = addText(`- ${tool}`, 11, 'normal', rightColumnX, rightY, columnWidth);
+                rightY = addText(`- ${tool}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
             });
         }
 
@@ -216,7 +216,7 @@ function generateResumePDF(data) {
             rightY = addText('Certifications', 12.25, 'bold', rightColumnX, rightY, columnWidth);
             data.certifications.forEach(cert => {
                 const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
-                rightY = addText(`- ${certText}`, 11, 'normal', rightColumnX, rightY, columnWidth);
+                rightY = addText(`- ${certText}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
             });
         }
 
