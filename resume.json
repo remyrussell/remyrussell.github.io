@@ -11,7 +11,7 @@
         "phone": null,
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
-    "summary": "An optimistic and growth-oriented software enthusiast with three years of Product Management and seven years of Business Analysis experience evolving SaaS platforms for Health and Human Services Providers",
+    "summary": "An optimistic software enthusiast with three years of Product Management and seven years of Business Analysis experience evolving SaaS platforms for Health and Human Services Providers",
     "professionalExperience": [
         {
             "position": "Associate Product Manager, Engineering",
@@ -28,7 +28,7 @@
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for over ten customer organizations",
                 "Released enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, etc.)",
                 "Partnered cross-functionally to maintain the roadmap, define KPIs, and communicate progress",
-                "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/emails via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange, Revenue Cycle Management use cases)"
+                "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/emails via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange, Revenue Cycle Management, etc.)"
             ]
         },
         {
