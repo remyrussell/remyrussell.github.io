@@ -81,14 +81,14 @@
             "Relational databases",
             "Computer science",
             "Process improvement",
-            "Modeling/Simulation",
-            ]
+            "Modeling/Simulation"
+        ]
     },
     "skills": {
         "coreSkills": [
             "Owning discovery for complex problems, learning from users/buyers",
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
-            "Managing prioirities & decisions based on data",
+            "Managing priorities & decisions based on data",
             "Facilitating collaboration and rapid, iterative delivery",
             "Partnering with engineers (SQL proficient, understanding of SDLC, experience prompting LLMs)"
         ],
