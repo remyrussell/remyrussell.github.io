@@ -16,7 +16,7 @@ function toggleDropdown() {
     const dropdowns = document.querySelectorAll('.dropdown');
     dropdowns.forEach(dropdown => {
         const toggle = dropdown.querySelector('.dropdown-toggle');
-        const menu = document.querySelector('.dropdown-menu');
+        const menu = dropdown.querySelector('.dropdown-menu');
         if (!toggle || !menu) {
             console.error('Dropdown elements not found:', { toggle, menu });
             return;
@@ -108,6 +108,11 @@ function generateResumePDF(data) {
         return y + (lines.length * size * 0.45);
     }
 
+    function addHorizontalLine(y) {
+        doc.setLineWidth(0.2);
+        doc.line(margin, y, margin + contentWidth, y);
+    }
+
     yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
     let contactInfo = [];
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
@@ -124,12 +129,18 @@ function generateResumePDF(data) {
     }
     yPosition += 1.2;
 
+    // Summary section
+    addHorizontalLine(yPosition);
+    yPosition += 0.5;
     yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         yPosition = addText(data.summary, 11, 'normal', margin, yPosition, contentWidth);
     }
     yPosition += 1.5;
 
+    // Professional Experience section
+    addHorizontalLine(yPosition);
+    yPosition += 0.5;
     yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
     if (data.professionalExperience) {
@@ -152,6 +163,9 @@ function generateResumePDF(data) {
     }
     yPosition += 1.2;
 
+    // Education section
+    addHorizontalLine(yPosition);
+    yPosition += 0.5;
     yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
         yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
@@ -162,7 +176,9 @@ function generateResumePDF(data) {
     }
     yPosition += 2;
 
-    // Two-column section for Skills and Certifications
+    // Skills and Certifications section
+    addHorizontalLine(yPosition);
+    yPosition += 0.5;
     if (data.skills || data.certifications) {
         const columnWidth = (contentWidth - 2) / 2;
         const leftColumnX = margin;
