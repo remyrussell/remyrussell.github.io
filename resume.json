@@ -40,7 +40,7 @@
                 "start": "2019-04-01",
                 "end": "2022-03-13"
             },
-            "description": "Problem discovery, requirements gathering, and solution delivery leveraging the case management platform.",
+            "description": "Problem discovery, requirements gathering, and solution delivery leveraging the case management platform",
             "highlights": [
                 "Drove successful implementation for two of Eccovia's top ten largest customers by ARR, with complex data migrations and system designs",
                 "Delivered over a dozen integration contracts and helped transition technical strategy towards agnostic services supporting multiple customers/partners"
@@ -93,7 +93,7 @@
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
             "Making data-driven prioritization decisions",
             "Facilitating cross-functional collaboration and rapid, iterative delivery of value",
-            "Partnering with engineers (SQL proficient, basic understanding of SDLC, experience prompting LLMs)"
+            "Partnering with engineers (SQL proficient, understanding of SDLC, experience prompting LLMs)"
         ],
         "toolsAndFrameworks": [
             "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards)",
