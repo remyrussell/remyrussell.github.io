@@ -25,9 +25,9 @@
             "description": "Product Lead on the Platform and Integrations R&D team/pod for a configurable Case Management platform used by over 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, leading to acquisition",
-                "Shipped a RESTful API from 0 to 1, onboarded developers for over ten customer organizations",
+                "Shipped a RESTful API from 0 to 1 and onboarded developers for over ten customer organizations",
                 "Released frequent platform enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, etc.)",
-                "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, communicate progress, and improve implementation scalability",
+                "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, and communicate progress",
                 "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/email notifications via Twilio, last-mile delivery operations via Onfleet, Health Information Exchange and Revenue Cycle Management use cases, etc.)"
             ]
         },
@@ -93,8 +93,7 @@
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
             "Managing competing priorities and making data-driven decisions",
             "Facilitating cross-functional collaboration and rapid, iterative delivery of value",
-            "Learning and embracing new tools, processes, and methodologies",
-            "Partnering and communicating with engineers (SQL proficient, basic understanding of SDLC concepts)"
+            "Partnering and communicating with engineers (SQL proficient, basic understanding of SDLC concepts, experienced with AI tools)"
         ],
         "toolsAndFrameworks": [
             "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards, etc.)",
