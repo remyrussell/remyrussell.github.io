@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             };
                             experienceDiv.appendChild(logoImg);
                         }
-                        previousCompany = Warrantscompany;
+                        previousCompany = experience.company;
 
                         const headerContent = document.createElement('div');
                         headerContent.className = 'header-content';
