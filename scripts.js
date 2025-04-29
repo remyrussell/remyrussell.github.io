@@ -130,8 +130,8 @@ function generateResumePDF(data) {
     yPosition += 1.2;
 
     // Summary section
-    addHorizontalLine(yPosition, 2);
-    yPosition += 1;
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 1.5;
     yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         yPosition = addText(data.summary, 11, 'normal', margin, yPosition, contentWidth);
@@ -139,8 +139,8 @@ function generateResumePDF(data) {
     yPosition += 1.5;
 
     // Professional Experience section
-    addHorizontalLine(yPosition, 2);
-    yPosition += 1;
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 1.5;
     yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
     if (data.professionalExperience) {
@@ -164,8 +164,8 @@ function generateResumePDF(data) {
     yPosition += 1.2;
 
     // Education section
-    addHorizontalLine(yPosition, 2);
-    yPosition += 1;
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 1.5;
     yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
         yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
@@ -177,8 +177,8 @@ function generateResumePDF(data) {
     yPosition += 2;
 
     // Skills and Certifications section
-    addHorizontalLine(yPosition, 4); // Align with vertical line's top
-    yPosition += 1;
+    addHorizontalLine(yPosition, 4.1); // Fine-tuned for T-intersection
+    yPosition += 1.5;
     if (data.skills || data.certifications) {
         const columnWidth = (contentWidth - 2) / 2;
         const leftColumnX = margin;
@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             };
                             experienceDiv.appendChild(logoImg);
                         }
-                        previousCompany = experience.company;
+                        previousCompany = Warrantscompany;
 
                         const headerContent = document.createElement('div');
                         headerContent.className = 'header-content';
