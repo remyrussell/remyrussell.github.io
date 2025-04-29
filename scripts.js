@@ -95,7 +95,7 @@ function generateResumePDF(data) {
     const margin = 10;
     const pageWidth = 210;
     const contentWidth = pageWidth - 2 * margin;
-    let yPosition = margin;
+    let yPosition = margin + 2; // Increased top margin to 12mm
 
     doc.setFont('Helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
@@ -113,14 +113,14 @@ function generateResumePDF(data) {
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
     if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
     if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 1, contentWidth);
+        yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth); // Reduced gap
     }
-    yPosition += 1;
+    yPosition += 0.5; // Reduced gap to bring role/seeking closer
     if (data.role || data.seeking) {
         const roleText = data.role || '';
         const seekingText = data.seeking || '';
         const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
-        yPosition = addText(combinedText, 11.5, 'italic', margin, yPosition, contentWidth);
+        yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth); // Same size as body text
     }
     yPosition += 1.2;
 
@@ -166,10 +166,7 @@ function generateResumePDF(data) {
     if (data.skills || data.certifications) {
         const columnWidth = (contentWidth - 2) / 2;
         const leftColumnX = margin;
-        const rightColumnX = margin + columnWidth + 2;
-
-        doc.setLineWidth(0.2);
-        doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, yPosition + 58);
+        const rightColumnX = margin + columnWidth + 3; // Increased margin to right of vertical line
 
         let leftY = yPosition;
         let rightY = yPosition;
@@ -207,7 +204,12 @@ function generateResumePDF(data) {
             });
         }
 
-        yPosition = Math.max(leftY, rightY);
+        // Draw vertical line to bottom of tallest column
+        const maxY = Math.max(leftY, rightY);
+        doc.setLineWidth(0.2);
+        doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
+
+        yPosition = maxY;
     }
 
     const pdfOutput = doc.output('blob');
