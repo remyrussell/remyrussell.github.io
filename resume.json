@@ -78,13 +78,10 @@
         "institution": "University of Michigan, Ann Arbor",
         "logo": "assets/images/logos/umich-logo.png",
         "coursework": [
-            "Relational database design",
-            "Computer programming",
+            "Relational databases",
+            "Programming",
             "Process improvement",
-            "Modeling & Simulation",
-            "Statistical and decision analysis",
-            "Lean management",
-            "Business development"
+            "Modeling & Simulation"
         ]
     },
     "skills": {
