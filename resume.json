@@ -28,7 +28,7 @@
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for over ten customer organizations",
                 "Released frequent enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, new API endpoints)",
                 "Partnered with Engineering, Leadership, Sales, and others to maintain the roadmap, define KPIs, and align on progress and priorities",
-                "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/email notifications via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange, Revenue Cycle Management use cases)"
+                "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/emails via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange, Revenue Cycle Management use cases)"
             ]
         },
         {
@@ -81,7 +81,7 @@
             "Relational databases",
             "Programming",
             "Process improvement",
-            "Modeling & Simulation",
+            "Modeling/Simulation",
             "Lean management"
         ]
     },
