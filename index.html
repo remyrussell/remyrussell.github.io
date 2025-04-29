@@ -1,92 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remy Russell's Draft Resume</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="/scripts.js" defer></script>
-</head>
-
-<body>
-    <div class="container">
-        <header>
-            <h1 id="name"></h1>
-            <div class="contact">
-                <p id="phone"></p>
-                <p id="email"></p>
-            </div>
-            <p id="role"></p>
-            <button id="menuToggleButton" class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <nav id="menu" class="menu">
-                <ul>
-                    <li>
-                        <button id="downloadPdfButton" class="download-pdf menu-text">
-                            <i class="fas fa-print"></i> PDF
-                        </button>
-                    </li>
-                    <li>
-                        <div class="theme-toggle-wrapper">
-                            <input type="checkbox" id="themeToggleButton" class="theme-toggle-checkbox">
-                            <label for="themeToggleButton" class="theme-toggle-label">
-                                <span class="theme-toggle-track">
-                                    <span class="theme-toggle-knob">
-                                        <i class="fas fa-sun theme-toggle-icon"></i>
-                                        <i class="fas fa-moon theme-toggle-icon"></i>
-                                    </span>
-                                </span>
-                            </label>
-                        </div>
-                    </li>
-                    <li><a href="https://www.linkedin.com/in/remyrussell" target="_blank" class="menu-icon"><i class="fab fa-linkedin"></i></a></li>
-                    <li class="dropdown">
-                        <a href="#" class="menu-text dropdown-toggle">More</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/dogs.html" class="menu-text">Photos of my dogs</a></li>
-                            <li><a href="https://youtu.be/dQw4w9WgXcQ?si=A4PUEV5_YA3G-0Xj" class="menu-text">Watch my ChatGPT wrapper demo</a></li>
-                            <li><a href="/prank.html" target="_blank" class="menu-icon"><img src="/assets/images/logos/prank.svg" alt="prank" class="prank-logo"></a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
-        </header>
-
-        <section id="summary">
-            <h2>Summary</h2>
-            <p id="summaryText"></p>
-        </section>
-
-        <section id="professionalExperience">
-            <h2>Professional Experience</h2>
-        </section>
-
-        <section id="education">
-            <h2>Education</h2>
-        </section>
-
-        <!-- To remove Certifications entirely, delete this section -->
-        <section id="certifications">
-            <h2>Certifications</h2>
-            <ul id="certificationList"></ul>
-        </section>
-
-        <section id="skills">
-            <h2>Core Skills</h2>
-            <ul id="skillList"></ul>
-            <h2>Tools & Frameworks</h2>
-            <ul id="toolsAndFrameworks"></ul>
-            <h2>Interests & Hobbies</h2>
-            <ul id="funSkills"></ul>
-        </section>
-    </div>
-    <button id="backToTop" class="back-to-top" title="Back to Top">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93615d411baab039',t:'MTc0NTYyMTA1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-
-</html>
+{
+    "metadata": {
+        "version": "1.1",
+        "lastUpdated": "2025-04-24"
+    },
+    "name": "Remy Russell",
+    "role": "Product Manager",
+    "seeking": "Currently seeking remote or hybrid roles in the Salt Lake City area.",
+    "contact": {
+        "email": "remyrussell@pm.me",
+        "phone": null,
+        "linkedin": "https://www.linkedin.com/in/remyrussell"
+    },
+    "summary": "An optimistic and technical product leader with three years of Product Management and seven years of Business Analysis experience evolving SaaS platforms for Health and Human Services Providers",
+    "professionalExperience": [
+        {
+            "position": "Associate Product Manager, Engineering",
+            "company": "CaseWorthy (formerly Eccovia)",
+            "logo": "assets/images/logos/caseworthy.png",
+            "location": "Salt Lake City, UT",
+            "duration": {
+                "start": "2022-03-14",
+                "end": "2025-03-31"
+            },
+            "description": "Product Lead on the Platform and Integrations R&D team/pod for a configurable Case Management platform used by over 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health, etc.)",
+            "highlights": [
+                "Helped drive growth in ARR by over 50% to ~$15M by expanding platform and implementation capabilities, leading to acquisition",
+                "Shipped a RESTful API from 0 to 1, onboarded developers for over ten customer organizations",
+                "Released frequent platform enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, etc.)",
+                "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, communicate progress, and improve implementation scalability",
+                "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/email notifications via Twilio, last-mile delivery operations via Onfleet, Health Information Exchange and Revenue Cycle Management use cases, etc.)"
+            ]
+        },
+        {
+            "position": "Business Analyst, Solutions Delivery",
+            "company": "Eccovia",
+            "logo": "assets/images/logos/eccovia.svg",
+            "location": "Salt Lake City, UT",
+            "duration": {
+                "start": "2019-04-01",
+                "end": "2022-03-13"
+            },
+            "description": "Problem discovery, requirements gathering, and solutioning with customers to guide implementations on the case management platform.",
+            "highlights": [
+                "Drove successful implementation for two of Eccovia's top ten largest customers by ARR, with complex data migrations and system designs",
+                "Delivered over a dozen integration contracts and helped transition technical strategy towards agnostic services supporting multiple customers/partners"
+            ]
+        },
+        {
+            "position": "Business Analyst II, UT MMIS Implementation Project",
+            "company": "Client Network Services, Inc (CNSI)",
+            "logo": "assets/images/logos/CNSI.png",
+            "location": "Salt Lake City, UT",
+            "duration": {
+                "start": "2017-08-01",
+                "end": "2019-04-01"
+            },
+            "description": "System migration and gap analysis activities for implementation of a Medicaid Management Information System for the Utah Department of Health",
+            "highlights": [
+                "Collaborated with customer and internal teams to produce detailed system design documents to guide development/testing of the Provider Enrollment Subsystem"
+            ]
+        },
+        {
+            "position": "Business Analyst, MI MMIS Implementation Project",
+            "company": "CNSI",
+            "logo": "assets/images/logos/CNSI.png",
+            "location": "Lansing, MI",
+            "duration": {
+                "start": "2015-06-01",
+                "end": "2017-08-01"
+            },
+            "description": "Analyzed program mandates published by CMS and iterated the 'Electronic Medicaid Incentive Payment Program' solution",
+            "highlights": []
+        }
+    ],
+    "education": {
+        "degree": "BSE in Industrial & Operations Engineering, 2015",
+        "institution": "University of Michigan, Ann Arbor",
+        "logo": "assets/images/logos/umich-logo.png",
+        "coursework": [
+            "Relational database design",
+            "Computer programming",
+            "Process improvement",
+            "Modeling & Simulation",
+            "Statistical and decision analysis",
+            "Lean management",
+            "Business development"
+        ]
+    },
+    "skills": {
+        "coreSkills": [
+            "Problem/solution discovery, learning from users/buyers, and owning complex challenges",
+            "Stakeholder communication and ability to articulate technical details or high-level strategy",
+            "Managing competing priorities and making data-driven decisions",
+            "Facilitating cross-functional collaboration and rapid, iterative delivery of value",
+            "Partnering and communicating with engineers (SQL proficient, basic understanding of SDLC concepts)"
+        ],
+        "toolsAndFrameworks": [
+            "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards, etc.)",
+            "Insight collection/consolidation (Hubspot, ProductBoard, SQL)",
+            "Workshopping and Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
+            "Mock-ups and low-fi prototyping (Figma, AI Tools)",
+            "GTM and release communication (Jira, Azure Pipelines, ReleaseNotes.io)",
+            "No or low-code API Testing and workflow automation (Zapier, Microsoft Power Automate, Postman)"
+        ],
+        "fun": [
+            "Outdoor activities (skiing, mountain biking, hiking, camping/overlanding)",
+            "Music creation/consumption (electronic, guitar, piano)",
+            "Podcasts/audiobooks related to science, technology, or health"
+        ]
+    },
+    "certifications": [
+        {
+            "name": "HL7 Fundamentals",
+            "issuer": "HL7 International",
+            "date": "2020"
+        },
+        {
+            "name": "The Program in Entrepreneurship",
+            "issuer": "University of Michigan, Ann Arbor",
+            "date": "2015"
+        }
+    ]
+}
