@@ -27,7 +27,7 @@
                 "Enabled 50% growth in ARR to ~$15M by expanding our platform and team capabilities, leading to acquisition",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for over ten customer organizations",
                 "Released frequent enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, new API endpoints)",
-                "Partnered cross-functionally to maintain the roadmap, define KPIs, communicate progress, and discuss opportunities",
+                "Partnered cross-functionally to maintain the roadmap, define KPIs, and communicate progress",
                 "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/emails via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange, Revenue Cycle Management use cases)"
             ]
         },
@@ -87,9 +87,9 @@
     },
     "skills": {
         "coreSkills": [
-            "Owning discovery for complex problems and learning from users/buyers",
+            "Owning discovery for complex problems, learning from users/buyers",
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
-            "Managing prioirities and makinng data-driven decisions",
+            "Managing prioirities & decisions based on data",
             "Facilitating collaboration and rapid, iterative delivery",
             "Partnering with engineers (SQL proficient, understanding of SDLC, experience prompting LLMs)"
         ],
