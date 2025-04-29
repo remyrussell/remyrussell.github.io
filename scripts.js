@@ -105,7 +105,7 @@ function generateResumePDF(data) {
         doc.setFont('Helvetica', style);
         const lines = doc.splitTextToSize(text, maxWidth);
         doc.text(lines, x, y);
-        return y + (lines.length * size * 0.45); // Maintained line spacing
+        return y + (lines.length * size * 0.45);
     }
 
     yPosition = addText(data.name || 'Remy Russell', 15.5, 'bold', margin, yPosition, contentWidth);
@@ -128,7 +128,7 @@ function generateResumePDF(data) {
     if (data.summary) {
         yPosition = addText(data.summary, 9.75, 'normal', margin, yPosition, contentWidth);
     }
-    yPosition += 1.2;
+    yPosition += 1.5;
 
     yPosition = addText('Professional Experience', 11.75, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
@@ -147,7 +147,7 @@ function generateResumePDF(data) {
                     yPosition = addText(`- ${highlight}`, 9.75, 'normal', margin, yPosition, contentWidth);
                 });
             }
-            yPosition += 0.8;
+            yPosition += 1;
         });
     }
     yPosition += 1.2;
@@ -160,7 +160,7 @@ function generateResumePDF(data) {
             yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 9.75, 'normal', margin, yPosition, contentWidth);
         }
     }
-    yPosition += 1.2;
+    yPosition += 2; // Increased spacing before two-column section
 
     // Two-column section for Skills and Certifications
     if (data.skills || data.certifications) {
@@ -169,7 +169,7 @@ function generateResumePDF(data) {
         const rightColumnX = margin + columnWidth + 2;
 
         doc.setLineWidth(0.2);
-        doc.line(margin + columnWidth + 1, yPosition - 5, margin + columnWidth + 1, yPosition + 60); // Reduced height
+        doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, yPosition + 60); // Adjusted line start
 
         let leftY = yPosition;
         let rightY = yPosition;
