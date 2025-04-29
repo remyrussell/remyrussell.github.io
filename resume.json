@@ -26,8 +26,8 @@
             "highlights": [
                 "Helped drive growth in ARR by over 50% to ~$15M by expanding platform capabilities, leading to acquisition",
                 "Released frequent platform enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools)",
-                "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, and communicate progress",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for over ten customer organizations",
+                "Partnered with Engineering, Sales, Leadership, and others to maintain the roadmap, define KPIs, communicate progress, and align on strategies and tactics",
                 "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/email notifications via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange and Revenue Cycle Management use cases"
             ]
         },
@@ -91,12 +91,12 @@
         "coreSkills": [
             "Problem/solution discovery, learning from users/buyers, and owning complex challenges",
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
-            "Managing competing priorities and making data-driven decisions",
+            "Making data-driven prioritization decisions",
             "Facilitating cross-functional collaboration and rapid, iterative delivery of value",
-            "Partnering and communicating with engineers (SQL proficient, basic understanding of SDLC)"
+            "Partnering with engineers (SQL proficient, basic understanding of SDLC, experienced prompter of people and LLMs)"
         ],
         "toolsAndFrameworks": [
-            "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards, etc.)",
+            "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards)",
             "Insight consolidation (Hubspot, ProductBoard, SQL)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
             "Mock-ups and low-fi prototyping (Figma, AI Tools)",
