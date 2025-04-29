@@ -110,7 +110,7 @@ function generateResumePDF(data) {
 
     function addHorizontalLine(y) {
         doc.setLineWidth(0.2);
-        doc.line(margin, y, margin + contentWidth, y);
+        doc.line(margin, y - 1, margin + contentWidth, y - 1); // Draw line 1mm higher
     }
 
     yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
@@ -131,7 +131,7 @@ function generateResumePDF(data) {
 
     // Summary section
     addHorizontalLine(yPosition);
-    yPosition += 0.5;
+    yPosition += 1; // Increased gap for clearance
     yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         yPosition = addText(data.summary, 11, 'normal', margin, yPosition, contentWidth);
@@ -140,7 +140,7 @@ function generateResumePDF(data) {
 
     // Professional Experience section
     addHorizontalLine(yPosition);
-    yPosition += 0.5;
+    yPosition += 1; // Increased gap for clearance
     yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
     if (data.professionalExperience) {
@@ -165,7 +165,7 @@ function generateResumePDF(data) {
 
     // Education section
     addHorizontalLine(yPosition);
-    yPosition += 0.5;
+    yPosition += 1; // Increased gap for clearance
     yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
         yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
@@ -178,7 +178,7 @@ function generateResumePDF(data) {
 
     // Skills and Certifications section
     addHorizontalLine(yPosition);
-    yPosition += 0.5;
+    yPosition += 1; // Increased gap for clearance
     if (data.skills || data.certifications) {
         const columnWidth = (contentWidth - 2) / 2;
         const leftColumnX = margin;
