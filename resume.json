@@ -26,7 +26,7 @@
             "highlights": [
                 "Enabled 50% growth in ARR to ~$15M by expanding our platform and team capabilities, leading to acquisition",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for over ten customer organizations",
-                "Released frequent enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, new API endpoints)",
+                "Released enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools)",
                 "Partnered cross-functionally to maintain the roadmap, define KPIs, and communicate progress",
                 "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/emails via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange, Revenue Cycle Management use cases)"
             ]
