@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let data;
     try {
         console.log('Fetching resume.json...');
-        let response = await fetchWithRetry('resume.json', { cache: 'no-store' });
+        let response = await fetchWithRetry('/resume.json', { cache: 'no-store' });
         if (!response.ok) {
             throw new Error(`Failed to fetch resume.json: ${response.status} ${response.statusText}`);
         }
