@@ -16,7 +16,7 @@ function toggleDropdown() {
     const dropdowns = document.querySelectorAll('.dropdown');
     dropdowns.forEach(dropdown => {
         const toggle = dropdown.querySelector('.dropdown-toggle');
-        const menu = dropdown.querySelector('.dropdown-menu');
+        const menu = document.querySelector('.dropdown-menu');
         if (!toggle || !menu) {
             console.error('Dropdown elements not found:', { toggle, menu });
             return;
@@ -124,13 +124,13 @@ function generateResumePDF(data) {
     }
     yPosition += 1.2;
 
-    yPosition = addText('Summary', 12, 'bold', margin, yPosition, contentWidth);
+    yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.summary) {
         yPosition = addText(data.summary, 11, 'normal', margin, yPosition, contentWidth);
     }
     yPosition += 1.5;
 
-    yPosition = addText('Professional Experience', 12, 'bold', margin, yPosition, contentWidth);
+    yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
     if (data.professionalExperience) {
         data.professionalExperience.forEach(exp => {
@@ -152,7 +152,7 @@ function generateResumePDF(data) {
     }
     yPosition += 1.2;
 
-    yPosition = addText('Education', 12, 'bold', margin, yPosition, contentWidth);
+    yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
     if (data.education) {
         yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
         yPosition = addText(data.education.institution, 11, 'italic', margin, yPosition, contentWidth);
@@ -173,7 +173,7 @@ function generateResumePDF(data) {
 
         // Left column: Core Skills and Interests & Hobbies
         if (data.skills?.coreSkills) {
-            leftY = addText('Core Skills', 12, 'bold', leftColumnX, leftY, columnWidth);
+            leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.coreSkills.forEach(skill => {
                 leftY = addText(`- ${skill}`, 11, 'normal', leftColumnX, leftY, columnWidth);
             });
@@ -181,7 +181,7 @@ function generateResumePDF(data) {
 
         if (data.skills?.fun) {
             leftY += 0.8;
-            leftY = addText('Interests & Hobbies', 12, 'bold', leftColumnX, leftY, columnWidth);
+            leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.fun.forEach(fun => {
                 leftY = addText(`- ${fun}`, 11, 'normal', leftColumnX, leftY, columnWidth);
             });
@@ -189,7 +189,7 @@ function generateResumePDF(data) {
 
         // Right column: Tools & Frameworks and Certifications
         if (data.skills?.toolsAndFrameworks) {
-            rightY = addText('Tools & Frameworks', 12, 'bold', rightColumnX, rightY, columnWidth);
+            rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
             data.skills.toolsAndFrameworks.forEach(tool => {
                 rightY = addText(`- ${tool}`, 11, 'normal', rightColumnX, rightY, columnWidth);
             });
@@ -197,7 +197,7 @@ function generateResumePDF(data) {
 
         if (data.certifications) {
             rightY += 0.8;
-            rightY = addText('Certifications', 12, 'bold', rightColumnX, rightY, columnWidth);
+            rightY = addText('Certifications', 12.25, 'bold', rightColumnX, rightY, columnWidth);
             data.certifications.forEach(cert => {
                 const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
                 rightY = addText(`- ${certText}`, 11, 'normal', rightColumnX, rightY, columnWidth);
