@@ -95,7 +95,7 @@ function generateResumePDF(data) {
     const margin = 10;
     const pageWidth = 210;
     const contentWidth = pageWidth - 2 * margin;
-    let yPosition = margin + 2; // 12mm top margin
+    let yPosition = margin + 2;
 
     doc.setFont('Helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
@@ -129,7 +129,6 @@ function generateResumePDF(data) {
     }
     yPosition += 1.2;
 
-    // Summary section
     addHorizontalLine(yPosition, 2.5);
     yPosition += 2;
     yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
@@ -138,7 +137,6 @@ function generateResumePDF(data) {
     }
     yPosition += 1.5;
 
-    // Professional Experience section
     addHorizontalLine(yPosition, 2.5);
     yPosition += 2;
     yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
@@ -163,7 +161,6 @@ function generateResumePDF(data) {
     }
     yPosition += 1.2;
 
-    // Education section
     addHorizontalLine(yPosition, 2.5);
     yPosition += 2;
     yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
@@ -176,8 +173,7 @@ function generateResumePDF(data) {
     }
     yPosition += 2;
 
-    // Skills and Certifications section
-    addHorizontalLine(yPosition, 4); // Aligned with vertical line's top
+    addHorizontalLine(yPosition, 4);
     yPosition += 2;
     if (data.skills || data.certifications) {
         const columnWidth = (contentWidth - 2) / 2;
@@ -187,7 +183,6 @@ function generateResumePDF(data) {
         let leftY = yPosition;
         let rightY = yPosition;
 
-        // Left column: Core Skills and Interests & Hobbies
         if (data.skills?.coreSkills) {
             leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
             data.skills.coreSkills.forEach(skill => {
@@ -203,7 +198,6 @@ function generateResumePDF(data) {
             });
         }
 
-        // Right column: Tools & Frameworks and Certifications
         if (data.skills?.toolsAndFrameworks) {
             rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
             data.skills.toolsAndFrameworks.forEach(tool => {
@@ -220,7 +214,6 @@ function generateResumePDF(data) {
             });
         }
 
-        // Draw vertical line to bottom of tallest column
         const maxY = Math.max(leftY, rightY);
         doc.setLineWidth(0.2);
         doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
@@ -259,8 +252,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let data;
     try {
-        console.log('Fetching resume.json...');
-        let response = await fetchWithRetry('/resume.json', { cache: 'no-store' });
+        console.log('Fetching ./resume.json...');
+        let response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
         if (!response.ok) {
             throw new Error(`Failed to fetch resume.json: ${response.status} ${response.statusText}`);
         }
