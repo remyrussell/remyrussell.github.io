@@ -23,8 +23,9 @@ function toggleDropdown() {
         }
         toggle.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Dropdown toggle clicked, current display:', menu.classList.contains('active'));
+            console.log('Dropdown toggle clicked, current classList:', menu.classList);
             menu.classList.toggle('active');
+            console.log('Dropdown classList after toggle:', menu.classList);
         });
         document.addEventListener('click', (e) => {
             if (!dropdown.contains(e.target)) {
@@ -46,6 +47,7 @@ function attachThemeToggleEvent() {
     const menuToggleButton = document.getElementById('menuToggleButton');
     const menu = document.getElementById('menu');
     if (menuToggleButton && menu) {
+        // Ensure menu starts closed on mobile
         if (window.innerWidth < 768) {
             menu.classList.remove('active');
         }
@@ -54,6 +56,9 @@ function attachThemeToggleEvent() {
             menu.classList.toggle('active');
             console.log('Menu classList after toggle:', menu.classList);
         });
+        // Ensure menu button is in correct position
+        menuToggleButton.style.right = '2rem';
+        menuToggleButton.style.left = 'auto';
     } else {
         console.error('Menu elements not found:', { menuToggleButton, menu });
     }
@@ -253,7 +258,7 @@ function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
     const mouseY = lastMouseY / window.innerHeight;
     const scrollInfluence = scrollY / window.innerHeight;
-    const fractalFactor = Math.sin(scrollInfluence * Math.PI * 2) * 75; // Enhanced fractal variation
+    const fractalFactor = Math.sin(scrollInfluence * Math.PI * 2) * 60 + Math.cos(mouseX * Math.PI) * 40;
     const xOffset = (mouseX - 0.5) * 200 + (scrollInfluence - lastScrollY) * 50 + fractalFactor;
     const yOffset = (mouseY - 0.5) * 200 + (scrollInfluence - lastScrollY) * 50 + fractalFactor;
     document.body.style.backgroundPosition = `${xOffset}px ${yOffset}px, ${xOffset + 40}px ${yOffset + 40}px, ${xOffset - 40}px ${yOffset - 40}px, ${xOffset + 80}px ${yOffset + 80}px`;
