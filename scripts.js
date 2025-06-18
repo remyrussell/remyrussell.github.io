@@ -74,7 +74,9 @@ function attachThemeToggleEvent() {
             const viewportHeight = window.innerHeight;
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
             // Update dot positions based on scroll
-            updateBackgroundPosition(scrollPosition);
+            if (menu.classList.contains('active') || window.innerWidth < 768 || (window.innerWidth >= 768 && document.hasFocus())) {
+                updateBackgroundPosition(scrollPosition);
+            }
         });
     }
     toggleDropdown();
@@ -248,17 +250,17 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
     }
 }
 
-let lastMouseX = 0;
-let lastMouseY = 0;
+let lastMouseX = window.innerWidth / 2;
+let lastMouseY = window.innerHeight / 2;
 let lastScrollY = 0;
 
 function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
     const mouseY = lastMouseY / window.innerHeight;
     const scrollInfluence = scrollY / window.innerHeight;
-    const xOffset = (mouseX - 0.5) * 50 + (scrollInfluence - lastScrollY) * 10;
-    const yOffset = (mouseY - 0.5) * 50 + (scrollInfluence - lastScrollY) * 10;
-    document.body.style.backgroundPosition = `${xOffset}px ${yOffset}px`;
+    const xOffset = (mouseX - 0.5) * 100 + (scrollInfluence - lastScrollY) * 20;
+    const yOffset = (mouseY - 0.5) * 100 + (scrollInfluence - lastScrollY) * 20;
+    document.body.style.backgroundPosition = `${xOffset}px ${yOffset}px, ${xOffset + 50}px ${yOffset + 50}px, ${xOffset - 50}px ${yOffset - 50}px, ${xOffset + 100}px ${yOffset + 100}px`;
     lastScrollY = scrollInfluence;
 }
 
@@ -526,11 +528,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Mouse move effect for dynamic dots
+    // Mouse move effect for dynamic dots (desktop)
+    let isTouching = false;
     document.addEventListener('mousemove', (e) => {
-        lastMouseX = e.clientX;
-        lastMouseY = e.clientY;
-        const scrollY = window.scrollY || document.documentElement.scrollTop;
-        updateBackgroundPosition(scrollY);
+        if (window.innerWidth >= 768) { // Desktop
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            updateBackgroundPosition(scrollY);
+        }
     });
+
+    // Touch move effect for dynamic dots (mobile)
+    document.addEventListener('touchmove', (e) => {
+        if (window.innerWidth < 768) { // Mobile
+            lastMouseX = e.touches[0].clientX;
+            lastMouseY = e.touches[0].clientY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            updateBackgroundPosition(scrollY);
+        }
+    });
+
+    // Initial position
+    updateBackgroundPosition(0);
 });
