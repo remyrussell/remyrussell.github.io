@@ -1,486 +1,462 @@
-/* General styles */
-body {
-    font-family: Arial, sans-serif;
-    padding: 2rem;
-    color: #333;
-    background-color: #f0f0f0;
-    margin: 0;
-    transition: background-color 0.3s ease;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-}
-
-h1, h2, h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
-
-h2 {
-    margin-top: 2rem;
-    border-bottom: 1px solid #ccc;
-}
-
-/* Experience, Education, and Certification items */
-.experience-item, .education-item, .certification-item {
-    margin-top: 1.5rem;
-}
-
-.experience-item img, .education-item img {
-    width: 150px;
-    max-width: 150px;
-    max-height: 100px;
-    margin: 0 auto 1rem auto;
-    display: block;
-    filter: brightness(0.8) contrast(1.2);
-    object-fit: contain;
-    image-rendering: crisp-edges;
-    -webkit-backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.theme-dark .experience-item img, .theme-dark .education-item img {
-    filter: brightness(1) contrast(1);
-}
-
-/* Specific styling for CaseWorthy logo */
-.caseworthy-logo {
-    /* No specific styles needed unless further adjustments are required */
-}
-
-/* Specific styling for Eccovia logo in light theme */
-.eccovia-logo {
-    filter: grayscale(1) brightness(0.3) contrast(1.2); /* Force a darker grey similar to #444 */
-}
-
-/* Ensure Eccovia logo in dark theme remains unchanged */
-.theme-dark .eccovia-logo {
-    filter: brightness(1) contrast(1);
-}
-
-.experience-item .header-content, .education-item .header-content {
-    text-align: left;
-}
-
-.experience-item .sticky-header, .education-item .sticky-header {
-    padding: 0;
-    margin: 0;
-}
-
-.experience-item .sticky-header h3, .education-item .sticky-header h3 {
-    margin: 0;
-    font-size: 1.25em;
-}
-
-.experience-item .date-range, .education-item .date-range {
-    display: block;
-    font-size: 1em;
-    color: #666;
-    margin-top: 0.25rem;
-}
-
-.experience-item .location, .education-item .location {
-    display: block;
-    font-size: 1em;
-    color: #666;
-    margin-top: 0.25rem;
-}
-
-.experience-item .details, .education-item .details {
-    margin-left: 0;
-    text-align: left;
-}
-
-/* Ensure bullets are left-aligned with standard indent */
-.experience-item ul, .education-item ul, .certification-item ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
-    text-align: left;
-}
-
-/* Other content styling */
-.contact p {
-    margin: 0.5rem 0;
-}
-
-.contact p#phone:empty {
-    display: none;
-}
-
-.location-note {
-    font-style: italic;
-    color: #666;
-    margin: 0.5rem 0;
-}
-
-/* Dark mode styles */
-.theme-dark {
-    background-color: #333;
-    color: #f0f0f0;
-}
-
-.theme-dark .container {
-    background-color: #444;
-    color: #f0f0f0;
-}
-
-.theme-dark h2 {
-    border-color: #777;
-}
-
-.theme-dark .experience-item .sticky-header,
-.theme-dark .education-item .sticky-header {
-    background-color: #444;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.theme-dark .experience-item .date-range,
-.theme-dark .education-item .date-range {
-    color: #bbb;
-}
-
-.theme-dark .experience-item .location,
-.theme-dark .education-item .location {
-    color: #bbb;
-}
-
-.theme-dark .location-note {
-    color: #bbb;
-}
-
-.theme-dark button {
-    background-color: #f0f0f0;
-    color: #333;
-}
-
-/* Liquid Glass theme toggle switch */
-.theme-toggle-wrapper {
-    position: relative;
-    margin: 0.5rem 0;
-    display: none;
-}
-
-.theme-toggle-checkbox {
-    display: none;
-}
-
-.theme-toggle-label {
-    display: inline-block;
-    cursor: pointer;
-}
-
-.theme-toggle-track {
-    display: block;
-    width: 51px;
-    height: 31px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    position: relative;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.theme-dark .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.theme-toggle-knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 27px;
-    height: 27px;
-    background: linear-gradient(145deg, #ffffff, #d0d0d0);
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.5);
-    transition: transform 0.3s ease, background 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateZ(0);
-}
-
-.theme-dark .theme-toggle-knob {
-    background: linear-gradient(145deg, #cccccc, #999999);
-}
-
-.theme-toggle-knob:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.7);
-}
-
-.theme-toggle-icon {
-    font-size: 1rem;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.theme-toggle-icon.fa-sun {
-    color: #ff9500;
-    opacity: 0;
-    transform: scale(0.8);
-}
-
-.theme-toggle-icon.fa-moon {
-    color: #5856d6;
-    opacity: 1;
-    position: absolute;
-    transform: scale(1);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 0 15px rgba(255, 149, 0, 0.3);
-}
-
-.theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.25);
-    box-shadow: inset 0 0 15px rgba(88, 86, 214, 0.3);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
-    transform: translateX(20px);
-    background: linear-gradient(145deg, #ffffff, #d0d0d0);
-}
-
-.theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
-    background: linear-gradient(145deg, #cccccc, #999999);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-sun {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
-    opacity: 0;
-    transform: scale(0.8);
-}
-
-/* Hamburger menu styles */
-button.menu-toggle {
-    background-color: #333;
-    border: none;
-    padding: 0.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    position: fixed;
-    top: 2rem;
-    right: 2rem;
-    color: #f0f0f0;
-    font-size: 1.5rem;
-    display: block;
-    z-index: 1001;
-}
-
-.theme-dark button.menu-toggle {
-    background-color: #f0f0f0;
-    color: #333;
-}
-
-button.menu-toggle:hover {
-    background-color: #555;
-}
-
-.menu {
-    display: none;
-    position: fixed;
-    top: 4rem;
-    right: 2rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    padding: 1rem;
-    max-height: calc(100vh - 6rem);
-    overflow-y: visible;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.theme-dark .menu {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menu li {
-    margin: 0.5rem 0;
-    text-align: center;
-    position: relative;
-}
-
-.menu a, .menu button.download-pdf {
-    color: #c71585;
-    text-decoration: none;
-    font-size: 1rem;
-    display: block;
-    padding: 0.5rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-}
-
-.theme-dark .menu a, .theme-dark .menu button.download-pdf {
-    color: #c71585;
-}
-
-.menu a:hover, .menu button.download-pdf:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.menu-icon {
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    color: #c71585;
-}
-
-.menu-icon:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.prank-logo {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-    filter: brightness(0) invert(0.7);
-}
-
-.menu-text {
-    font-size: 1rem;
-    padding: 0.5rem;
-    color: #c71585;
-}
-
-.menu-text:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.menu.active {
-    display: block;
-}
-
-.menu.active .theme-toggle-wrapper {
-    display: block;
-}
-
-/* Nested dropdown menu */
-.dropdown {
-    position: relative;
-}
-
-.dropdown-toggle {
-    display: block;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: auto;
-    right: -50px;
-    width: max-content;
-    min-width: 250px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1002;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.theme-dark .dropdown-menu {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.dropdown-menu li {
-    margin: 0;
-}
-
-.dropdown-menu a {
-    padding: 0.5rem;
-    display: block;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    .menu {
-        right: 2rem;
+function formatDate(dateString) {
+    if (!dateString) return "Present";
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+function keepThemeSetting() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
+    const themeToggle = document.getElementById('themeToggleButton');
+    if (themeToggle) themeToggle.checked = savedTheme === 'dark';
+}
+
+function toggleDropdown() {
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        if (!toggle || !menu) {
+            console.error('Dropdown elements not found:', { toggle, menu });
+            return;
+        }
+        menu.style.display = 'none';
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Dropdown toggle clicked, current display:', menu.style.display);
+            const isVisible = menu.style.display === 'block';
+            menu.style.display = isVisible ? 'none' : 'block';
+        });
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+    });
+}
+
+function attachThemeToggleEvent() {
+    const themeToggle = document.getElementById('themeToggleButton');
+    if (themeToggle) {
+        themeToggle.addEventListener('change', () => {
+            const isDark = themeToggle.checked;
+            document.body.className = isDark ? 'theme-dark' : '';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
     }
-    .dropdown-menu {
-        right: 0;
-        min-width: 150px;
+    const menuToggleButton = document.getElementById('menuToggleButton');
+    const menu = document.getElementById('menu');
+    if (menuToggleButton && menu) {
+        if (window.innerWidth < 768) {
+            menu.classList.remove('active');
+        }
+        menuToggleButton.addEventListener('click', () => {
+            console.log('Menu toggle clicked, current classList:', menu.classList);
+            menu.classList.toggle('active');
+            console.log('Menu classList after toggle:', menu.classList);
+        });
+    } else {
+        console.error('Menu elements not found:', { menuToggleButton, menu });
+    }
+    const backToTopButton = document.getElementById('backToTop');
+    if (backToTopButton) {
+        backToTopButton.addEventListener('click', () => {
+            try {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                console.error('Scroll failed:', e);
+                window.scrollTo(0, 0);
+            }
+        });
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+            const viewportHeight = window.innerHeight;
+            backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
+        });
+    }
+    toggleDropdown();
+}
+
+function generateResumePDF(data) {
+    if (!data) {
+        alert('Error: Resume data not loaded. Please try again.');
+        console.error('generateResumePDF: data is undefined');
+        return;
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+    });
+
+    const margin = 10;
+    const pageWidth = 210;
+    const contentWidth = pageWidth - 2 * margin;
+    let yPosition = margin + 2;
+
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+
+    function addText(text, size, style, x, y, maxWidth) {
+        doc.setFontSize(size);
+        doc.setFont('Helvetica', style);
+        const lines = doc.splitTextToSize(text, maxWidth);
+        doc.text(lines, x, y);
+        return y + (lines.length * size * 0.45);
+    }
+
+    function addHorizontalLine(y, offset) {
+        doc.setLineWidth(0.2);
+        doc.line(margin, y - offset, margin + contentWidth, y - offset);
+    }
+
+    yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
+    let contactInfo = [];
+    if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
+    if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
+    if (contactInfo.length) {
+        yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
+    }
+    yPosition += 0.5;
+    if (data.role || data.seeking) {
+        const roleText = data.role || '';
+        const seekingText = data.seeking || '';
+        const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
+        yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth);
+    }
+    yPosition += 1.2;
+
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 2;
+    yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
+    if (data.summary) {
+        yPosition = addText(data.summary, 10.5, 'normal', margin, yPosition, contentWidth);
+    }
+    yPosition += 1.5;
+
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 2;
+    yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
+    let previousCompany = null;
+    if (data.professionalExperience) {
+        data.professionalExperience.forEach(exp => {
+            const title = `${exp.position} at ${exp.company}`;
+            yPosition = addText(title, 11.5, 'bold', margin, yPosition, contentWidth);
+            const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
+            yPosition = addText(`${duration} | ${exp.location}`, 10.5, 'italic', margin, yPosition, contentWidth);
+            if (exp.description) {
+                yPosition = addText(exp.description, 10.5, 'normal', margin, yPosition, contentWidth);
+                yPosition += 0.3;
+            }
+            if (exp.highlights) {
+                exp.highlights.forEach(highlight => {
+                    yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
+                });
+            }
+            yPosition += 1;
+        });
+    }
+    yPosition += 1.2;
+
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 2;
+    yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
+    if (data.education) {
+        yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.institution, 10.5, 'italic', margin, yPosition, contentWidth);
+        if (data.education.coursework) {
+            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 10.5, 'normal', margin, yPosition, contentWidth);
+        }
+    }
+    yPosition += 2;
+
+    addHorizontalLine(yPosition, 4);
+    yPosition += 2;
+    if (data.skills || data.certifications) {
+        const columnWidth = (contentWidth - 2) / 2;
+        const leftColumnX = margin;
+        const rightColumnX = margin + columnWidth + 3;
+
+        let leftY = yPosition;
+        let rightY = yPosition;
+
+        if (data.skills?.coreSkills) {
+            leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
+            data.skills.coreSkills.forEach(skill => {
+                leftY = addText(`- ${skill}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
+            });
+        }
+
+        if (data.skills?.fun) {
+            leftY += 0.8;
+            leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
+            data.skills.fun.forEach(fun => {
+                leftY = addText(`- ${fun}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
+            });
+        }
+
+        if (data.skills?.toolsAndFrameworks) {
+            rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
+            data.skills.toolsAndFrameworks.forEach(tool => {
+                rightY = addText(`- ${tool}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
+            });
+        }
+
+        if (data.certifications) {
+            rightY += 0.8;
+            rightY = addText('Certifications', 12.25, 'bold', rightColumnX, rightY, columnWidth);
+            data.certifications.forEach(cert => {
+                const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
+                rightY = addText(`- ${certText}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
+            });
+        }
+
+        const maxY = Math.max(leftY, rightY);
+        doc.setLineWidth(0.2);
+        doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
+
+        yPosition = maxY;
+    }
+
+    const pdfOutput = doc.output('blob');
+    const url = URL.createObjectURL(pdfOutput);
+    const newTab = window.open(url, '_blank');
+    if (newTab) {
+        newTab.document.title = 'Remy_Russell_Resume.pdf';
+    } else {
+        console.error('Failed to open new tab. Pop-up blocker may be enabled.');
+        alert('Unable to open PDF in new tab. Please allow pop-ups and try again.');
     }
 }
 
-/* General list styling */
-ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
+async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            if (response.ok) return response;
+            throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
+        } catch (err) {
+            if (i === retries - 1) throw err;
+            console.warn(`Fetch attempt ${i + 1} failed for ${url}. Retrying in ${delay}ms...`, err);
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
 }
 
-li {
-    margin-bottom: 0.5rem;
-}
+document.addEventListener('DOMContentLoaded', async () => {
+    keepThemeSetting();
+    attachThemeToggleEvent();
 
-/* Back to Top Button */
-.back-to-top {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background-color: #333;
-    color: #f0f0f0;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, opacity 0.3s ease;
-    z-index: 1000;
-    display: none;
-}
+    let data;
+    try {
+        console.log('Fetching ./resume.json...');
+        let response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch resume.json: ${response.status} ${response.statusText}`);
+        }
+        data = await response.json();
+        console.log('Parsed data:', data);
+    } catch (err) {
+        console.error('Fetch error:', err.message);
+        const container = document.querySelector('.container');
+        if (container) {
+            container.innerHTML = `
+                <h1>Error Loading Resume</h1>
+                <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
+                <p>Error details: ${err.message}</p>
+            `;
+        } else {
+            console.error('Container element not found in DOM');
+        }
+        return;
+    }
 
-.theme-dark .back-to-top {
-    background-color: #f0f0f0;
-    color: #333;
-}
+    try {
+        const nameElement = document.getElementById('name');
+        if (nameElement) {
+            nameElement.innerText = data.name || 'Name Not Found';
+        } else {
+            console.error('Name element not found in DOM');
+        }
 
-.back-to-top:hover {
-    background-color: #555;
-}
+        const roleElement = document.getElementById('role');
+        if (roleElement) {
+            roleElement.innerText = data.role || 'Role Not Found';
+        } else {
+            console.error('Role element not found in DOM');
+        }
 
-.theme-dark .back-to-top:hover {
-    background-color: #ccc;
-}
+        const emailElement = document.getElementById('email');
+        if (emailElement) {
+            emailElement.innerText = data.contact?.email || 'Email Not Found';
+        } else {
+            console.error('Email element not found in DOM');
+        }
 
-/* Download PDF Button */
-.download-pdf {
-    font-size: 1rem;
-    padding: 0.5rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+        const phoneElement = document.getElementById('phone');
+        if (phoneElement) {
+            phoneElement.innerText = data.contact?.phone || '';
+        } else {
+            console.error('Phone element not found in DOM');
+        }
+
+        const container = document.querySelector('.container');
+        const summarySection = document.getElementById('summary');
+        if (container && summarySection && !document.querySelector('.location-note')) {
+            const locationNote = document.createElement('p');
+            locationNote.className = 'location-note';
+            locationNote.innerText = data.seeking || 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
+            container.insertBefore(locationNote, summarySection);
+        } else {
+            console.error('Container or summary section not found for location note');
+        }
+
+        const summaryTextElement = document.getElementById('summaryText');
+        if (summaryTextElement) {
+            summaryTextElement.innerText = data.summary || 'Summary Data Not Found';
+        } else {
+            console.error('Summary text element not found in DOM');
+        }
+
+        const experienceContainer = document.getElementById('professionalExperience');
+        if (experienceContainer) {
+            experienceContainer.innerHTML = '<h2>Professional Experience</h2>';
+            let previousCompany = null;
+            if (data.professionalExperience) {
+                data.professionalExperience.forEach((experience, index) => {
+                    try {
+                        const experienceDiv = document.createElement('div');
+                        experienceDiv.className = 'experience-item';
+
+                        if (experience.company !== previousCompany) {
+                            const logoImg = document.createElement('img');
+                            logoImg.className = 'logo-img';
+                            if (experience.company.includes('CaseWorthy')) {
+                                logoImg.classList.add('caseworthy-logo');
+                            } else if (experience.company.includes('Eccovia')) {
+                                logoImg.classList.add('eccovia-logo');
+                            }
+                            logoImg.src = experience.logo || '';
+                            logoImg.alt = `${experience.company} logo`;
+                            logoImg.width = 150;
+                            logoImg.onerror = () => {
+                                console.warn(`Failed to load logo for ${experience.company} at ${experience.logo}`);
+                                logoImg.style.display = 'none';
+                            };
+                            experienceDiv.appendChild(logoImg);
+                        }
+                        previousCompany = experience.company;
+
+                        const headerContent = document.createElement('div');
+                        headerContent.className = 'header-content';
+
+                        const stickyHeader = document.createElement('div');
+                        stickyHeader.className = 'sticky-header';
+                        const positionHeader = document.createElement('h3');
+                        positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
+                        stickyHeader.appendChild(positionHeader);
+                        headerContent.appendChild(stickyHeader);
+
+                        const dateRange = document.createElement('span');
+                        dateRange.className = 'date-range';
+                        dateRange.innerText = `${formatDate(experience.duration.start)} through ${formatDate(experience.duration.end) || 'Present'}`;
+                        headerContent.appendChild(dateRange);
+
+                        const locationSpan = document.createElement('span');
+                        locationSpan.className = 'location';
+                        locationSpan.innerText = experience.location || '';
+                        headerContent.appendChild(locationSpan);
+
+                        experienceDiv.appendChild(headerContent);
+
+                        const detailsDiv = document.createElement('div');
+                        detailsDiv.className = 'details';
+
+                        const descriptionPara = document.createElement('p');
+                        descriptionPara.className = 'description';
+                        descriptionPara.innerText = experience.description || 'Description Not Found';
+                        detailsDiv.appendChild(descriptionPara);
+
+                        const highlightsList = document.createElement('ul');
+                        const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
+                        const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
+                        const combinedHighlights = [...highlightsArray, ...achievementsArray];
+                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
+                        if (combinedHighlights.length > 0) {
+                            detailsDiv.appendChild(highlightsList);
+                        }
+
+                        experienceDiv.appendChild(detailsDiv);
+                        experienceContainer.appendChild(experienceDiv);
+                    } catch (err) {
+                        console.error(`Error rendering experience item ${index}:`, err.message);
+                        experienceContainer.innerHTML += `<p>Error rendering experience item: ${err.message}</p>`;
+                    }
+                });
+            } else {
+                experienceContainer.innerHTML += '<p>No professional experience data available.</p>';
+            }
+        } else {
+            console.error('Professional experience container not found in DOM');
+        }
+
+        const educationContainer = document.getElementById('education');
+        if (educationContainer) {
+            educationContainer.innerHTML = '<h2>Education</h2>';
+            if (data.education) {
+                try {
+                    const educationDiv = document.createElement('div');
+                    educationDiv.className = 'education-item';
+
+                    const eduLogoImg = document.createElement('img');
+                    eduLogoImg.className = 'logo-img';
+                    eduLogoImg.src = data.education.logo || '';
+                    eduLogoImg.alt = "Education institution logo";
+                    eduLogoImg.width = 150;
+                    eduLogoImg.onerror = () => {
+                        console.warn(`Failed to load education logo at ${data.education.logo}`);
+                        eduLogoImg.style.display = 'none';
+                    };
+                    educationDiv.appendChild(eduLogoImg);
+
+                    const headerContent = document.createElement('div');
+                    headerContent.className = 'header-content';
+
+                    const stickyHeader = document.createElement('div');
+                    stickyHeader.className = 'sticky-header';
+                    const degreeHeader = document.createElement('h3');
+                    degreeHeader.innerText = data.education.degree || 'Degree Not Found';
+                    stickyHeader.appendChild(degreeHeader);
+                    headerContent.appendChild(stickyHeader);
+
+                    const eduDetailsSpan = document.createElement('span');
+                    eduDetailsSpan.innerText = data.education.institution || 'Institution Not Found';
+                    headerContent.appendChild(eduDetailsSpan);
+
+                    educationDiv.appendChild(headerContent);
+
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.className = 'details';
+                    detailsDiv.innerHTML = `
+                        <p>${data.education.coursework?.join(', ') || ''}</p>
+                        ${data.education.gpa ? `<p>GPA: ${data.education.gpa}</p>` : ''}
+                    `;
+                    educationDiv.appendChild(detailsDiv);
+                    educationContainer.appendChild(educationDiv);
+                } catch (err) {
+                    console.error('Error rendering education:', err.message);
+                    educationContainer.innerHTML += `<p>Error rendering education: ${err.message}</p>`;
+                }
+            } else {
+                educationContainer.innerHTML += '<p>No education data available.</p>';
+            }
+        } else {
+            console.error('Education container not found in DOM');
+        }
+    } catch (err) {
+        console.error('Error processing DOM updates:', err.message);
+    }
+});
