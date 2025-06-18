@@ -73,8 +73,8 @@ function attachThemeToggleEvent() {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
             const viewportHeight = window.innerHeight;
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
-            // Dynamic background effect on scroll
-            document.body.style.backgroundPosition = `${scrollPosition * 0.1}px ${scrollPosition * 0.1}px`;
+            // Update dot positions based on scroll
+            updateBackgroundPosition(scrollPosition);
         });
     }
     toggleDropdown();
@@ -246,6 +246,20 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
+}
+
+let lastMouseX = 0;
+let lastMouseY = 0;
+let lastScrollY = 0;
+
+function updateBackgroundPosition(scrollY) {
+    const mouseX = lastMouseX / window.innerWidth;
+    const mouseY = lastMouseY / window.innerHeight;
+    const scrollInfluence = scrollY / window.innerHeight;
+    const xOffset = (mouseX - 0.5) * 50 + (scrollInfluence - lastScrollY) * 10;
+    const yOffset = (mouseY - 0.5) * 50 + (scrollInfluence - lastScrollY) * 10;
+    document.body.style.backgroundPosition = `${xOffset}px ${yOffset}px`;
+    lastScrollY = scrollInfluence;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -514,8 +528,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Mouse move effect for dynamic dots
     document.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        document.body.style.backgroundPosition = `${x * 100}px ${y * 100}px`;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        const scrollY = window.scrollY || document.documentElement.scrollTop;
+        updateBackgroundPosition(scrollY);
     });
 });
