@@ -1,166 +1,272 @@
-/* General styles */
-body {
-    font-family: Arial, sans-serif;
-    padding: 2rem;
-    color: #333;
-    background-color: #f0f0f0;
+/* Reset default styles */
+* {
     margin: 0;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    overflow: hidden; /* Prevent scrolling issues with dot positioning */
-    position: relative; /* For dot layering */
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.theme-dark body {
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f0f0f0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.theme-dark {
+    background-color: #1a1a1a;
     color: #f0f0f0;
-    background-color: #333;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
-    background-color: #fff;
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
-    z-index: 1; /* Ensure container is above dots */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
 }
 
-.theme-dark .container {
-    background-color: #444;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+header {
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
-/* Dot pattern for dynamic background */
-.dot-pattern {
-    position: fixed;
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+header h2 {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.theme-dark header h2 {
+    color: #aaa;
+}
+
+.contact-info {
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+.contact-info a {
+    color: #0073e6;
+    text-decoration: none;
+}
+
+.theme-dark .contact-info a {
+    color: #00aaff;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
+
+.location-note {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    color: #666;
+}
+
+.theme-dark .location-note {
+    color: #aaa;
+}
+
+section {
+    margin-bottom: 2rem;
+}
+
+section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.5rem;
+}
+
+.theme-dark section h2 {
+    border-bottom: 2px solid #444;
+}
+
+.experience-item, .education-item {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.logo-img {
+    max-width: 150px;
+    margin-right: 1rem;
+    border-radius: 5px;
+}
+
+.caseworthy-logo {
+    /* Specific styles for CaseWorthy logo if needed */
+}
+
+.eccovia-logo {
+    /* Specific styles for Eccovia logo if needed */
+}
+
+.header-content {
+    flex: 1;
+}
+
+.sticky-header {
+    position: sticky;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Allow clicks to pass through to other elements */
-    z-index: 0; /* Behind other content */
+    background-color: #fff;
+    padding: 0.5rem 0;
+    z-index: 10;
+    border-bottom: 1px solid #ddd;
 }
 
-.dot {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+.theme-dark .sticky-header {
+    background-color: #2a2a2a;
+    border-bottom: 1px solid #444;
 }
 
-.theme-dark .dot {
-    background-color: rgba(255, 255, 255, 0.05);
+.sticky-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
 }
 
-/* Rest of your CSS remains unchanged... */
-
-/* Liquid Glass theme toggle switch */
-.theme-toggle-wrapper {
-    position: relative;
-    margin: 0.5rem 0;
-    display: none;
-}
-
-.theme-toggle-checkbox {
-    display: none;
-}
-
-.theme-toggle-label {
-    display: inline-block;
-    cursor: pointer;
-}
-
-.theme-toggle-track {
+.date-range, .location {
     display: block;
-    width: 51px;
-    height: 31px;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.2rem;
+}
+
+.theme-dark .date-range, .theme-dark .location {
+    color: #aaa;
+}
+
+.details {
+    margin-left: 151px; /* Adjust based on logo width */
+}
+
+.details p, .details ul {
+    margin-bottom: 0.5rem;
+}
+
+.details ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+}
+
+.skills, .certifications {
+    display: flex;
+    justify-content: space-between;
+}
+
+.skills-column, .certifications-column {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.skills-column:last-child, .certifications-column:last-child {
+    margin-right: 0;
+}
+
+button.pdf-button {
+    background-color: #0073e6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.theme-dark button.pdf-button {
+    background-color: #00aaff;
+}
+
+button.pdf-button:hover {
+    background-color: #005bb5;
+}
+
+.theme-dark button.pdf-button:hover {
+    background-color: #0088cc;
+}
+
+/* Back to Top Button */
+#backToTop {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #0073e6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+.theme-dark #backToTop {
+    background-color: #00aaff;
+}
+
+#backToTop:hover {
+    background-color: #005bb5;
+}
+
+.theme-dark #backToTop:hover {
+    background-color: #0088cc;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    z-index: 1001;
+}
+
+.theme-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.theme-toggle label {
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 5px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
-    position: relative;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.theme-dark .theme-toggle-track {
+.theme-dark .theme-toggle label {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.theme-toggle-knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 27px;
-    height: 27px;
-    background: linear-gradient(145deg, #ffffff, #d0d0d0);
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.5);
-    transition: transform 0.3s ease, background 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateZ(0);
-}
-
-.theme-dark .theme-toggle-knob {
-    background: linear-gradient(145deg, #cccccc, #999999);
-}
-
-.theme-toggle-knob:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.7);
-}
-
-.theme-toggle-icon {
-    font-size: 1rem;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.theme-toggle-icon.fa-sun {
-    color: #c71585;
-    opacity: 0;
-    transform: scale(0.8);
-}
-
-.theme-toggle-icon.fa-moon {
-    color: #5856d6;
-    opacity: 1;
-    position: absolute;
-    transform: scale(1);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
+.theme-toggle label:hover {
     background: rgba(255, 255, 255, 0.15);
     box-shadow: inset 0 0 15px rgba(199, 21, 133, 0.3);
 }
 
-.theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.25);
-    box-shadow: inset 0 0 15px rgba(88, 86, 214, 0.3);
+.theme-toggle label::before {
+    content: '🌙';
+    font-size: 1.5rem;
 }
 
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
-    transform: translateX(20px);
-    background: linear-gradient(145deg, #ffffff, #d0f0d0);
-}
-
-.theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
-    background: linear-gradient(145deg, #cccccc, #999999);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-sun {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
-    opacity: 0;
-    transform: scale(0.8);
+.theme-toggle input[type="checkbox"]:checked + label::before {
+    content: '☀️';
 }
 
 /* Hamburger menu styles */
@@ -207,7 +313,7 @@ button.menu-toggle .menu-icon {
     display: block;
     width: 24px;
     height: 2px;
-    background-color: #c71585;
+    background-color: #c71585; /* Pink color */
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -217,7 +323,7 @@ button.menu-toggle .menu-icon {
 .theme-dark button.menu-toggle::before,
 .theme-dark button.menu-toggle::after,
 .theme-dark button.menu-toggle .menu-icon {
-    background-color: #c71585;
+    background-color: #c71585; /* Ensure pink in dark mode too */
 }
 
 button.menu-toggle:hover::before,
@@ -226,286 +332,102 @@ button.menu-toggle:hover .menu-icon {
     background-color: #fff;
 }
 
-.menu {
-    display: none;
+button.menu-toggle::before {
+    top: 6px;
+}
+
+button.menu-toggle::after {
+    bottom: 6px;
+}
+
+button.menu-toggle .menu-icon {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Menu styles */
+#menu {
     position: fixed;
-    top: 4rem;
-    right: 2rem;
-    background: rgba(255, 255, 255, 0.1);
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    transition: right 0.3s ease;
     z-index: 1000;
-    padding: 1rem;
-    max-height: calc(100vh - 6rem);
-    overflow-y: visible;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.theme-dark .menu {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+.theme-dark #menu {
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.menu ul {
-    list-style: none;
+#menu.active {
+    right: 0;
+}
+
+#menu ul {
+    list-style-type: none;
     padding: 0;
-    margin: 0;
 }
 
-.menu li {
-    margin: 0.5rem 0;
-    text-align: center;
-    position: relative;
+#menu ul li {
+    margin-bottom: 1rem;
 }
 
-.menu a, .menu button.download-pdf {
-    color: #c71585;
+#menu ul li a {
+    color: #333;
     text-decoration: none;
-    font-size: 1rem;
-    display: block;
-    padding: 0.5rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.theme-dark .menu a, .theme-dark .menu button.download-pdf {
-    color: #c71585;
-}
-
-.menu a:hover, .menu button.download-pdf:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.menu-icon {
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    color: #c71585;
-    transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.menu-icon:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.prank-logo {
-    width: 24px;
-    height: 24px;
-    vertical-align: middle;
-    filter: brightness(0) invert(0.7);
-    transition: filter 0.3s ease;
-}
-
-.theme-dark .prank-logo {
-    filter: brightness(0) invert(0.3);
-}
-
-.menu-text {
-    font-size: 1rem;
-    padding: 0.5rem;
-    color: #c71585;
-    transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.menu-text:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-.menu.active {
-    display: block;
-}
-
-.menu.active .theme-toggle-wrapper {
-    display: block;
-}
-
-/* Nested dropdown menu */
-.dropdown {
-    position: relative;
-}
-
-.dropdown-toggle {
-    display: block;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: auto;
-    right: -50px;
-    width: max-content;
-    min-width: 250px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1002;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.theme-dark .dropdown-menu {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.dropdown-menu li {
-    margin: 0;
-}
-
-.dropdown-menu a {
-    padding: 0.5rem;
-    display: block;
-    text-align: center;
-    color: #c71585;
-    transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.theme-dark .dropdown-menu a {
-    color: #c71585;
-}
-
-.dropdown-menu a:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-@media (max-width: 768px) {
-    .menu {
-        right: 2rem;
-    }
-    .dropdown-menu {
-        right: 0;
-        min-width: 150px;
-    }
-}
-
-/* General list styling */
-ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
-    color: #333;
-    transition: color 0.3s ease;
-}
-
-.theme-dark ul {
-    color: #f0f0f0;
-}
-
-li {
-    margin-bottom: 0.5rem;
-}
-
-/* Back to Top Button */
-.back-to-top {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background-color: #333;
-    color: #f0f0f0;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
     font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    z-index: 1000;
-    display: none;
-}
-
-.theme-dark .back-to-top {
-    background-color: #f0f0f0;
-    color: #333;
-    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
-}
-
-.back-to-top:hover {
-    background-color: #555;
-}
-
-.theme-dark .back-to-top:hover {
-    background-color: #ccc;
-}
-
-/* Download PDF Button */
-.download-pdf {
-    font-size: 1rem;
-    padding: 0.5rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #c71585;
-    transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.theme-dark .download-pdf {
-    color: #c71585;
-}
-
-.download-pdf:hover {
-    color: #fff;
-    background-color: #c71585;
-}
-
-/* Additional elements that need dark theme support */
-h1, h2, h3, h4, h5, h6 {
-    color: #333;
     transition: color 0.3s ease;
 }
 
-.theme-dark h1, .theme-dark h2, .theme-dark h3, .theme-dark h4, .theme-dark h5, .theme-dark h6 {
+.theme-dark #menu ul li a {
     color: #f0f0f0;
 }
 
-p, span, a {
-    color: #333;
-    transition: color 0.3s ease;
+#menu ul li a:hover {
+    color: #0073e6;
 }
 
-.theme-dark p, .theme-dark span, .theme-dark a {
-    color: #f0f0f0;
+.theme-dark #menu ul li a:hover {
+    color: #00aaff;
 }
 
-a:hover {
-    color: #c71585;
-}
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
 
-.theme-dark a:hover {
-    color: #c71585;
-}
+    header h1 {
+        font-size: 2rem;
+    }
 
-/* Ensure all interactive elements have dark theme support */
-button, input, textarea {
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #ccc;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
+    header h2 {
+        font-size: 1rem;
+    }
 
-.theme-dark button, .theme-dark input, .theme-dark textarea {
-    background-color: #444;
-    color: #f0f0f0;
-    border: 1px solid #666;
-}
+    section h2 {
+        font-size: 1.2rem;
+    }
 
-button:hover, input:hover, textarea:hover {
-    background-color: #f0f0f0;
-}
+    .experience-item, .education-item {
+        flex-direction: column;
+    }
 
-.theme-dark button:hover, .theme-dark input:hover, .theme-dark textarea:hover {
-    background-color: #555;
+    .logo-img {
+        margin-bottom: 1rem;
+    }
+
+    .details {
+        margin-left: 0;
+    }
+
+    button.pdf-button {
+        margin-top: 0.5rem;
+    }
 }
