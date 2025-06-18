@@ -456,57 +456,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             console.error('Education container not found in DOM');
         }
-
-        const certificationList = document.getElementById('certificationList');
-        if (certificationList) {
-            if (data.certifications) {
-                try {
-                    certificationList.innerHTML = data.certifications.map(cert => 
-                        `<li>${cert.name}, ${cert.issuer} (${cert.date})</li>`
-                    ).join('') || '<li>Certifications Not Found</li>';
-                } catch (err) {
-                    console.error('Error rendering certifications:', err.message);
-                    certificationList.innerHTML = `<li>Error rendering certifications: ${err.message}</li>`;
-                }
-            } else {
-                certificationList.innerHTML = '<li>No certifications data available.</li>';
-            }
-        } else {
-            console.error('Certification list element not found in DOM');
-        }
-
-        const skillList = document.getElementById('skillList');
-        if (skillList) {
-            skillList.innerHTML = data.skills?.coreSkills?.map(skill => `<li>${skill}</li>`).join('') || '<li>Core Skills Not Found</li>';
-        } else {
-            console.error('Skill list element not found in DOM');
-        }
-
-        const toolsAndFrameworks = document.getElementById('toolsAndFrameworks');
-        if (toolsAndFrameworks) {
-            toolsAndFrameworks.innerHTML = data.skills?.toolsAndFrameworks?.map(tool => `<li>${tool}</li>`).join('') || '<li>Tools Not Found</li>';
-        } else {
-            console.error('Tools and frameworks element not found in DOM');
-        }
-
-        const funSkills = document.getElementById('funSkills');
-        if (funSkills) {
-            funSkills.innerHTML = data.skills?.fun?.map(funItem => `<li>${funItem}</li>`).join('') || '<li>Interests Not Found</li>';
-        } else {
-            console.error('Fun skills element not found in DOM');
-        }
-
-        const downloadPdfButton = document.getElementById('downloadPdfButton');
-        if (downloadPdfButton) {
-            downloadPdfButton.addEventListener('click', () => generateResumePDF(data));
-        } else {
-            console.error('Download PDF button not found in DOM');
-        }
     } catch (err) {
-        console.error('Error in rendering:', err.message);
-        const container = document.querySelector('.container');
-        if (container) {
-            container.innerHTML += `<p>Unexpected error: ${err.message}</p>`;
-        }
+        console.error('Error processing DOM updates:', err.message);
     }
 });
