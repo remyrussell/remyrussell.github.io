@@ -21,16 +21,14 @@ function toggleDropdown() {
             console.error('Dropdown elements not found:', { toggle, menu });
             return;
         }
-        menu.style.display = 'none';
         toggle.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Dropdown toggle clicked, current display:', menu.style.display);
-            const isVisible = menu.style.display === 'block';
-            menu.style.display = isVisible ? 'none' : 'block';
+            console.log('Dropdown toggle clicked, current display:', menu.classList.contains('active'));
+            menu.classList.toggle('active');
         });
         document.addEventListener('click', (e) => {
             if (!dropdown.contains(e.target)) {
-                menu.style.display = 'none';
+                menu.classList.remove('active');
             }
         });
     });
@@ -255,10 +253,10 @@ function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
     const mouseY = lastMouseY / window.innerHeight;
     const scrollInfluence = scrollY / window.innerHeight;
-    const fractalFactor = Math.sin(scrollInfluence * Math.PI) * 50; // Adds fractal-like variation
-    const xOffset = (mouseX - 0.5) * 150 + (scrollInfluence - lastScrollY) * 30 + fractalFactor;
-    const yOffset = (mouseY - 0.5) * 150 + (scrollInfluence - lastScrollY) * 30 + fractalFactor;
-    document.body.style.backgroundPosition = `${xOffset}px ${yOffset}px, ${xOffset + 50}px ${yOffset + 50}px, ${xOffset - 50}px ${yOffset - 50}px, ${xOffset + 100}px ${yOffset + 100}px`;
+    const fractalFactor = Math.sin(scrollInfluence * Math.PI * 2) * 75; // Enhanced fractal variation
+    const xOffset = (mouseX - 0.5) * 200 + (scrollInfluence - lastScrollY) * 50 + fractalFactor;
+    const yOffset = (mouseY - 0.5) * 200 + (scrollInfluence - lastScrollY) * 50 + fractalFactor;
+    document.body.style.backgroundPosition = `${xOffset}px ${yOffset}px, ${xOffset + 40}px ${yOffset + 40}px, ${xOffset - 40}px ${yOffset - 40}px, ${xOffset + 80}px ${yOffset + 80}px`;
     lastScrollY = scrollInfluence;
 }
 
