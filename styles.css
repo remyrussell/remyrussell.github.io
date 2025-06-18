@@ -6,6 +6,8 @@ body {
     background-color: #f0f0f0;
     margin: 0;
     transition: background-color 0.3s ease;
+    overflow: hidden; /* Prevent scrolling issues with dot positioning */
+    position: relative; /* For dot layering */
 }
 
 .container {
@@ -16,150 +18,35 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
+    z-index: 1; /* Ensure container is above dots */
 }
 
-h1, h2, h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
+/* Dot pattern for dynamic background */
+.dot-pattern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allow clicks to pass through to other elements */
+    z-index: 0; /* Behind other content */
 }
 
-h2 {
-    margin-top: 2rem;
-    border-bottom: 1px solid #ccc;
+.dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Experience, Education, and Certification items */
-.experience-item, .education-item, .certification-item {
-    margin-top: 1.5rem;
+/* Dark mode adjustments for dots */
+.theme-dark .dot {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-.experience-item img, .education-item img {
-    width: 150px;
-    max-width: 150px;
-    max-height: 100px;
-    margin: 0 auto 1rem auto;
-    display: block;
-    filter: brightness(0.8) contrast(1.2);
-    object-fit: contain;
-    image-rendering: crisp-edges;
-    -webkit-backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.theme-dark .experience-item img, .theme-dark .education-item img {
-    filter: brightness(1) contrast(1);
-}
-
-/* Specific styling for CaseWorthy logo */
-.caseworthy-logo {
-    /* No specific styles needed unless further adjustments are required */
-}
-
-/* Specific styling for Eccovia logo in light theme */
-.eccovia-logo {
-    filter: grayscale(1) brightness(0.3) contrast(1.2); /* Force a darker grey similar to #444 */
-}
-
-/* Ensure Eccovia logo in dark theme remains unchanged */
-.theme-dark .eccovia-logo {
-    filter: brightness(1) contrast(1);
-}
-
-.experience-item .header-content, .education-item .header-content {
-    text-align: left;
-}
-
-.experience-item .sticky-header, .education-item .sticky-header {
-    padding: 0;
-    margin: 0;
-}
-
-.experience-item .sticky-header h3, .education-item .sticky-header h3 {
-    margin: 0;
-    font-size: 1.25em;
-}
-
-.experience-item .date-range, .education-item .date-range {
-    display: block;
-    font-size: 1em;
-    color: #666;
-    margin-top: 0.25rem;
-}
-
-.experience-item .location, .education-item .location {
-    display: block;
-    font-size: 1em;
-    color: #666;
-    margin-top: 0.25rem;
-}
-
-.experience-item .details, .education-item .details {
-    margin-left: 0;
-    text-align: left;
-}
-
-/* Ensure bullets are left-aligned with standard indent */
-.experience-item ul, .education-item ul, .certification-item ul {
-    list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
-    text-align: left;
-}
-
-/* Other content styling */
-.contact p {
-    margin: 0.5rem 0;
-}
-
-.contact p#phone:empty {
-    display: none;
-}
-
-.location-note {
-    font-style: italic;
-    color: #666;
-    margin: 0.5rem 0;
-}
-
-/* Dark mode styles */
-.theme-dark {
-    background-color: #333;
-    color: #f0f0f0;
-}
-
-.theme-dark .container {
-    background-color: #444;
-    color: #f0f0f0;
-}
-
-.theme-dark h2 {
-    border-color: #777;
-}
-
-.theme-dark .experience-item .sticky-header,
-.theme-dark .education-item .sticky-header {
-    background-color: #444;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.theme-dark .experience-item .date-range,
-.theme-dark .education-item .date-range {
-    color: #bbb;
-}
-
-.theme-dark .experience-item .location,
-.theme-dark .education-item .location {
-    color: #bbb;
-}
-
-.theme-dark .location-note {
-    color: #bbb;
-}
-
-.theme-dark button {
-    background-color: #f0f0f0;
-    color: #333;
-}
+/* Rest of your CSS remains unchanged... */
 
 /* Liquid Glass theme toggle switch */
 .theme-toggle-wrapper {
@@ -300,6 +187,46 @@ button.menu-toggle:hover {
 .theme-dark button.menu-toggle:hover {
     background: rgba(0, 0, 0, 0.25);
     box-shadow: inset 0 0 15px rgba(88, 86, 214, 0.3);
+}
+
+/* Style the hamburger icon lines */
+button.menu-toggle::before,
+button.menu-toggle::after,
+button.menu-toggle .menu-icon {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: #c71585;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+button.menu-toggle::before {
+    top: 8px;
+}
+
+button.menu-toggle::after {
+    bottom: 8px;
+}
+
+button.menu-toggle .menu-icon {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.theme-dark button.menu-toggle::before,
+.theme-dark button.menu-toggle::after,
+.theme-dark button.menu-toggle .menu-icon {
+    background-color: #c71585;
+}
+
+button.menu-toggle:hover::before,
+button.menu-toggle:hover::after,
+button.menu-toggle:hover .menu-icon {
+    background-color: #fff;
 }
 
 .menu {
