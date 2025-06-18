@@ -73,6 +73,8 @@ function attachThemeToggleEvent() {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
             const viewportHeight = window.innerHeight;
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
+            // Dynamic background effect on scroll
+            document.body.style.backgroundPosition = `${scrollPosition * 0.1}px ${scrollPosition * 0.1}px`;
         });
     }
     toggleDropdown();
@@ -509,4 +511,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             container.innerHTML += `<p>Unexpected error: ${err.message}</p>`;
         }
     }
+
+    // Mouse move effect for dynamic dots
+    document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        document.body.style.backgroundPosition = `${x * 100}px ${y * 100}px`;
+    });
 });
