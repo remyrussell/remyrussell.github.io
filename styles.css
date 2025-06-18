@@ -12,6 +12,8 @@ body {
     background-color: #f0f0f0;
     transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     position: relative;
 }
 
@@ -26,6 +28,8 @@ body {
     padding: 2rem;
     position: relative;
     z-index: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 header {
@@ -399,8 +403,16 @@ button.menu-toggle .menu-icon {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .container {
         padding: 1rem;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     header h1 {
