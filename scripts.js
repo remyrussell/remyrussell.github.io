@@ -457,6 +457,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Education container not found in DOM');
         }
     } catch (err) {
-        console.error('Error processing DOM updates:', err.message);
+        console.error('Error processing DOM update:', err.message);
     }
 });
