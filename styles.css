@@ -1,276 +1,269 @@
-/* Reset default styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* General styles */
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    line-height: 1.6;
+    font-family: Arial, sans-serif;
+    padding: 2rem;
     color: #333;
     background-color: #f0f0f0;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-}
-
-.theme-dark {
-    background-color: #1a1a1a;
-    color: #f0f0f0;
+    margin: 0;
+    transition: background-color 0.3s ease;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
+    background-color: #fff;
     padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
-    z-index: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 2rem;
+h1, h2, h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 
-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+h2 {
+    margin-top: 2rem;
+    border-bottom: 1px solid #ccc;
 }
 
-header h2 {
-    font-size: 1.2rem;
+/* Experience, Education, and Certification items */
+.experience-item, .education-item, .certification-item {
+    margin-top: 1.5rem;
+}
+
+.experience-item img, .education-item img {
+    width: 150px;
+    max-width: 150px;
+    max-height: 100px;
+    margin: 0 auto 1rem auto;
+    display: block;
+    filter: brightness(0.8) contrast(1.2);
+    object-fit: contain;
+    image-rendering: crisp-edges;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.theme-dark .experience-item img, .theme-dark .education-item img {
+    filter: brightness(1) contrast(1);
+}
+
+/* Specific styling for CaseWorthy logo */
+.caseworthy-logo {
+    /* No specific styles needed unless further adjustments are required */
+}
+
+/* Specific styling for Eccovia logo in light theme */
+.eccovia-logo {
+    filter: grayscale(1) brightness(0.3) contrast(1.2); /* Force a darker grey similar to #444 */
+}
+
+/* Ensure Eccovia logo in dark theme remains unchanged */
+.theme-dark .eccovia-logo {
+    filter: brightness(1) contrast(1);
+}
+
+.experience-item .header-content, .education-item .header-content {
+    text-align: left;
+}
+
+.experience-item .sticky-header, .education-item .sticky-header {
+    padding: 0;
+    margin: 0;
+}
+
+.experience-item .sticky-header h3, .education-item .sticky-header h3 {
+    margin: 0;
+    font-size: 1.25em;
+}
+
+.experience-item .date-range, .education-item .date-range {
+    display: block;
+    font-size: 1em;
     color: #666;
+    margin-top: 0.25rem;
 }
 
-.theme-dark header h2 {
-    color: #aaa;
+.experience-item .location, .education-item .location {
+    display: block;
+    font-size: 1em;
+    color: #666;
+    margin-top: 0.25rem;
 }
 
-.contact-info {
-    margin-top: 1rem;
-    font-size: 1rem;
+.experience-item .details, .education-item .details {
+    margin-left: 0;
+    text-align: left;
 }
 
-.contact-info a {
-    color: #0073e6;
-    text-decoration: none;
+/* Ensure bullets are left-aligned with standard indent */
+.experience-item ul, .education-item ul, .certification-item ul {
+    list-style-type: disc;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+    text-align: left;
 }
 
-.theme-dark .contact-info a {
-    color: #00aaff;
+/* Other content styling */
+.contact p {
+    margin: 0.5rem 0;
 }
 
-.contact-info a:hover {
-    text-decoration: underline;
+.contact p#phone:empty {
+    display: none;
 }
 
 .location-note {
-    text-align: center;
-    margin-bottom: 1.5rem;
     font-style: italic;
     color: #666;
+    margin: 0.5rem 0;
+}
+
+/* Dark mode styles */
+.theme-dark {
+    background-color: #333;
+    color: #f0f0f0;
+}
+
+.theme-dark .container {
+    background-color: #444;
+    color: #f0f0f0;
+}
+
+.theme-dark h2 {
+    border-color: #777;
+}
+
+.theme-dark .experience-item .sticky-header,
+.theme-dark .education-item .sticky-header {
+    background-color: #444;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .experience-item .date-range,
+.theme-dark .education-item .date-range {
+    color: #bbb;
+}
+
+.theme-dark .experience-item .location,
+.theme-dark .education-item .location {
+    color: #bbb;
 }
 
 .theme-dark .location-note {
-    color: #aaa;
+    color: #bbb;
 }
 
-section {
-    margin-bottom: 2rem;
+.theme-dark button {
+    background-color: #f0f0f0;
+    color: #333;
 }
 
-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 0.5rem;
-}
-
-.theme-dark section h2 {
-    border-bottom: 2px solid #444;
-}
-
-.experience-item, .education-item {
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: flex-start;
-}
-
-.logo-img {
-    max-width: 150px;
-    margin-right: 1rem;
-    border-radius: 5px;
-}
-
-.caseworthy-logo {
-    /* Specific styles for CaseWorthy logo if needed */
-}
-
-.eccovia-logo {
-    /* Specific styles for Eccovia logo if needed */
-}
-
-.header-content {
-    flex: 1;
-}
-
-.sticky-header {
-    position: sticky;
-    top: 0;
-    background-color: #fff;
-    padding: 0.5rem 0;
-    z-index: 10;
-    border-bottom: 1px solid #ddd;
-}
-
-.theme-dark .sticky-header {
-    background-color: #2a2a2a;
-    border-bottom: 1px solid #444;
-}
-
-.sticky-header h3 {
-    margin: 0;
-    font-size: 1.2rem;
-}
-
-.date-range, .location {
-    display: block;
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 0.2rem;
-}
-
-.theme-dark .date-range, .theme-dark .location {
-    color: #aaa;
-}
-
-.details {
-    margin-left: 151px; /* Adjust based on logo width */
-}
-
-.details p, .details ul {
-    margin-bottom: 0.5rem;
-}
-
-.details ul {
-    list-style-type: disc;
-    margin-left: 1.5rem;
-}
-
-.skills, .certifications {
-    display: flex;
-    justify-content: space-between;
-}
-
-.skills-column, .certifications-column {
-    flex: 1;
-    margin-right: 1rem;
-}
-
-.skills-column:last-child, .certifications-column:last-child {
-    margin-right: 0;
-}
-
-button.pdf-button {
-    background-color: #0073e6;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-    margin-top: 1rem;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.theme-dark button.pdf-button {
-    background-color: #00aaff;
-}
-
-button.pdf-button:hover {
-    background-color: #005bb5;
-}
-
-.theme-dark button.pdf-button:hover {
-    background-color: #0088cc;
-}
-
-/* Back to Top Button */
-#backToTop {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #0073e6;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    display: none;
-    z-index: 1000;
-    transition: background-color 0.3s ease;
-}
-
-.theme-dark #backToTop {
-    background-color: #00aaff;
-}
-
-#backToTop:hover {
-    background-color: #005bb5;
-}
-
-.theme-dark #backToTop:hover {
-    background-color: #0088cc;
-}
-
-/* Theme Toggle */
-.theme-toggle {
-    position: fixed;
-    top: 2rem;
-    left: 2rem;
-    z-index: 1001;
-}
-
-.theme-toggle input[type="checkbox"] {
+/* Liquid Glass theme toggle switch */
+.theme-toggle-wrapper {
+    position: relative;
+    margin: 0.5rem 0;
     display: none;
 }
 
-.theme-toggle label {
+.theme-toggle-checkbox {
+    display: none;
+}
+
+.theme-toggle-label {
+    display: inline-block;
     cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 5px;
+}
+
+.theme-toggle-track {
+    display: block;
+    width: 51px;
+    height: 31px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
+    border-radius: 15px;
+    position: relative;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.theme-dark .theme-toggle label {
+.theme-dark .theme-toggle-track {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.theme-toggle label:hover {
+.theme-toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    background: linear-gradient(145deg, #ffffff, #d0d0d0);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s ease, background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(0);
+}
+
+.theme-dark .theme-toggle-knob {
+    background: linear-gradient(145deg, #cccccc, #999999);
+}
+
+.theme-toggle-knob:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.7);
+}
+
+.theme-toggle-icon {
+    font-size: 1rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.theme-toggle-icon.fa-sun {
+    color: #c71585;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.theme-toggle-icon.fa-moon {
+    color: #5856d6;
+    opacity: 1;
+    position: absolute;
+    transform: scale(1);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
     background: rgba(255, 255, 255, 0.15);
     box-shadow: inset 0 0 15px rgba(199, 21, 133, 0.3);
 }
 
-.theme-toggle label::before {
-    content: '🌙';
-    font-size: 1.5rem;
+.theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0 0 15px rgba(88, 86, 214, 0.3);
 }
 
-.theme-toggle input[type="checkbox"]:checked + label::before {
-    content: '☀️';
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
+    transform: translateX(20px);
+    background: linear-gradient(145deg, #ffffff, #d0d0d0);
+}
+
+.theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
+    background: linear-gradient(145deg, #cccccc, #999999);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-sun {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
+    opacity: 0;
+    transform: scale(0.8);
 }
 
 /* Hamburger menu styles */
@@ -309,137 +302,196 @@ button.menu-toggle:hover {
     box-shadow: inset 0 0 15px rgba(88, 86, 214, 0.3);
 }
 
-/* Style the hamburger icon lines */
-button.menu-toggle::before,
-button.menu-toggle::after,
-button.menu-toggle .menu-icon {
-    content: '';
-    display: block;
-    width: 24px;
-    height: 2px;
-    background-color: #c71585; /* Pink color */
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.theme-dark button.menu-toggle::before,
-.theme-dark button.menu-toggle::after,
-.theme-dark button.menu-toggle .menu-icon {
-    background-color: #c71585; /* Ensure pink in dark mode too */
-}
-
-button.menu-toggle:hover::before,
-button.menu-toggle:hover::after,
-button.menu-toggle:hover .menu-icon {
-    background-color: #fff;
-}
-
-button.menu-toggle::before {
-    top: 6px;
-}
-
-button.menu-toggle::after {
-    bottom: 6px;
-}
-
-button.menu-toggle .menu-icon {
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-/* Menu styles */
-#menu {
+.menu {
+    display: none;
     position: fixed;
-    top: 0;
-    right: -250px;
-    width: 250px;
-    height: 100vh;
-    background: rgba(255, 255, 255, 0.9);
+    top: 4rem;
+    right: 2rem;
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    padding: 2rem;
-    transition: right 0.3s ease;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: visible;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.theme-dark #menu {
-    background: rgba(0, 0, 0, 0.9);
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+.theme-dark .menu {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-#menu.active {
-    right: 0;
-}
-
-#menu ul {
-    list-style-type: none;
+.menu ul {
+    list-style: none;
     padding: 0;
+    margin: 0;
 }
 
-#menu ul li {
-    margin-bottom: 1rem;
+.menu li {
+    margin: 0.5rem 0;
+    text-align: center;
+    position: relative;
 }
 
-#menu ul li a {
-    color: #333;
+.menu a, .menu button.download-pdf {
+    color: #c71585;
     text-decoration: none;
-    font-size: 1.2rem;
-    transition: color 0.3s ease;
+    font-size: 1rem;
+    display: block;
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
 }
 
-.theme-dark #menu ul li a {
-    color: #f0f0f0;
+.theme-dark .menu a, .theme-dark .menu button.download-pdf {
+    color: #c71585;
 }
 
-#menu ul li a:hover {
-    color: #0073e6;
+.menu a:hover, .menu button.download-pdf:hover {
+    color: #fff;
+    background-color: #c71585;
 }
 
-.theme-dark #menu ul li a:hover {
-    color: #00aaff;
+.menu-icon {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    color: #c71585;
 }
 
-/* Responsive Design */
+.menu-icon:hover {
+    color: #fff;
+    background-color: #c71585;
+}
+
+.prank-logo {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    filter: brightness(0) invert(0.7);
+}
+
+.menu-text {
+    font-size: 1rem;
+    padding: 0.5rem;
+    color: #c71585;
+}
+
+.menu-text:hover {
+    color: #fff;
+    background-color: #c71585;
+}
+
+.menu.active {
+    display: block;
+}
+
+.menu.active .theme-toggle-wrapper {
+    display: block;
+}
+
+/* Nested dropdown menu */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    display: block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: auto;
+    right: -50px;
+    width: max-content;
+    min-width: 250px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1002;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-dark .dropdown-menu {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dropdown-menu li {
+    margin: 0;
+}
+
+.dropdown-menu a {
+    padding: 0.5rem;
+    display: block;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
-    body {
-        overflow-x: hidden;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+    .menu {
+        right: 2rem;
     }
+    .dropdown-menu {
+        right: 0;
+        min-width: 150px;
+    }
+}
 
-    .container {
-        padding: 1rem;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+/* General list styling */
+ul {
+    list-style-type: disc;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+}
 
-    header h1 {
-        font-size: 2rem;
-    }
+li {
+    margin-bottom: 0.5rem;
+}
 
-    header h2 {
-        font-size: 1rem;
-    }
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: #333;
+    color: #f0f0f0;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    z-index: 1000;
+    display: none;
+}
 
-    section h2 {
-        font-size: 1.2rem;
-    }
+.theme-dark .back-to-top {
+    background-color: #f0f0f0;
+    color: #333;
+}
 
-    .experience-item, .education-item {
-        flex-direction: column;
-    }
+.back-to-top:hover {
+    background-color: #555;
+}
 
-    .logo-img {
-        margin-bottom: 1rem;
-    }
+.theme-dark .back-to-top:hover {
+    background-color: #ccc;
+}
 
-    .details {
-        margin-left: 0;
-    }
-
-    button.pdf-button {
-        margin-top: 0.5rem;
-    }
+/* Download PDF Button */
+.download-pdf {
+    font-size: 1rem;
+    padding: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
