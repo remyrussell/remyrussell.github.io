@@ -5,9 +5,14 @@ body {
     color: #333;
     background-color: #f0f0f0;
     margin: 0;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
     overflow: hidden; /* Prevent scrolling issues with dot positioning */
     position: relative; /* For dot layering */
+}
+
+.theme-dark body {
+    color: #f0f0f0;
+    background-color: #333;
 }
 
 .container {
@@ -19,6 +24,12 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
     z-index: 1; /* Ensure container is above dots */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-dark .container {
+    background-color: #444;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Dot pattern for dynamic background */
@@ -41,7 +52,6 @@ body {
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Dark mode adjustments for dots */
 .theme-dark .dot {
     background-color: rgba(255, 255, 255, 0.05);
 }
@@ -136,7 +146,7 @@ body {
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
     transform: translateX(20px);
-    background: linear-gradient(145deg, #ffffff, #d0d0d0);
+    background: linear-gradient(145deg, #ffffff, #d0f0d0);
 }
 
 .theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
@@ -204,19 +214,6 @@ button.menu-toggle .menu-icon {
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-button.menu-toggle::before {
-    top: 8px;
-}
-
-button.menu-toggle::after {
-    bottom: 8px;
-}
-
-button.menu-toggle .menu-icon {
-    top: 50%;
-    transform: translateY(-50%);
-}
-
 .theme-dark button.menu-toggle::before,
 .theme-dark button.menu-toggle::after,
 .theme-dark button.menu-toggle .menu-icon {
@@ -243,11 +240,13 @@ button.menu-toggle:hover .menu-icon {
     max-height: calc(100vh - 6rem);
     overflow-y: visible;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .theme-dark .menu {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .menu ul {
@@ -273,6 +272,7 @@ button.menu-toggle:hover .menu-icon {
     cursor: pointer;
     width: 100%;
     text-align: center;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .theme-dark .menu a, .theme-dark .menu button.download-pdf {
@@ -288,6 +288,7 @@ button.menu-toggle:hover .menu-icon {
     font-size: 1.5rem;
     padding: 0.5rem;
     color: #c71585;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .menu-icon:hover {
@@ -300,12 +301,18 @@ button.menu-toggle:hover .menu-icon {
     height: 24px;
     vertical-align: middle;
     filter: brightness(0) invert(0.7);
+    transition: filter 0.3s ease;
+}
+
+.theme-dark .prank-logo {
+    filter: brightness(0) invert(0.3);
 }
 
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
     color: #c71585;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .menu-text:hover {
@@ -344,11 +351,13 @@ button.menu-toggle:hover .menu-icon {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1002;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .theme-dark .dropdown-menu {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .dropdown-menu li {
@@ -359,6 +368,17 @@ button.menu-toggle:hover .menu-icon {
     padding: 0.5rem;
     display: block;
     text-align: center;
+    color: #c71585;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.theme-dark .dropdown-menu a {
+    color: #c71585;
+}
+
+.dropdown-menu a:hover {
+    color: #fff;
+    background-color: #c71585;
 }
 
 @media (max-width: 768px) {
@@ -376,6 +396,12 @@ ul {
     list-style-type: disc;
     padding-left: 1rem;
     margin-top: 0.5rem;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.theme-dark ul {
+    color: #f0f0f0;
 }
 
 li {
@@ -396,7 +422,7 @@ li {
     font-size: 1.2rem;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, opacity 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     z-index: 1000;
     display: none;
 }
@@ -404,6 +430,7 @@ li {
 .theme-dark .back-to-top {
     background-color: #f0f0f0;
     color: #333;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
 }
 
 .back-to-top:hover {
@@ -421,4 +448,64 @@ li {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    color: #c71585;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.theme-dark .download-pdf {
+    color: #c71585;
+}
+
+.download-pdf:hover {
+    color: #fff;
+    background-color: #c71585;
+}
+
+/* Additional elements that need dark theme support */
+h1, h2, h3, h4, h5, h6 {
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.theme-dark h1, .theme-dark h2, .theme-dark h3, .theme-dark h4, .theme-dark h5, .theme-dark h6 {
+    color: #f0f0f0;
+}
+
+p, span, a {
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.theme-dark p, .theme-dark span, .theme-dark a {
+    color: #f0f0f0;
+}
+
+a:hover {
+    color: #c71585;
+}
+
+.theme-dark a:hover {
+    color: #c71585;
+}
+
+/* Ensure all interactive elements have dark theme support */
+button, input, textarea {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.theme-dark button, .theme-dark input, .theme-dark textarea {
+    background-color: #444;
+    color: #f0f0f0;
+    border: 1px solid #666;
+}
+
+button:hover, input:hover, textarea:hover {
+    background-color: #f0f0f0;
+}
+
+.theme-dark button:hover, .theme-dark input:hover, .theme-dark textarea:hover {
+    background-color: #555;
 }
