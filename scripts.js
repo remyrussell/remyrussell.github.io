@@ -56,9 +56,15 @@ function attachThemeToggleEvent() {
             menu.classList.toggle('active');
             console.log('Menu classList after toggle:', menu.classList);
         });
-        // Ensure menu button is in correct position
+        // Force correct positioning
+        menuToggleButton.style.position = 'fixed';
+        menuToggleButton.style.top = '2rem';
         menuToggleButton.style.right = '2rem';
-        menuToggleButton.style.left = 'auto';
+        menuToggleButton.style.left = 'unset';
+        menu.style.position = 'fixed';
+        menu.style.top = '4rem';
+        menu.style.right = '2rem';
+        menu.style.left = 'unset';
     } else {
         console.error('Menu elements not found:', { menuToggleButton, menu });
     }
