@@ -73,10 +73,7 @@ function attachThemeToggleEvent() {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
             const viewportHeight = window.innerHeight;
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
-            // Update dot positions based on scroll
-            if (menu.classList.contains('active') || window.innerWidth < 768 || (window.innerWidth >= 768 && document.hasFocus())) {
-                updateBackgroundPosition(scrollPosition);
-            }
+            updateBackgroundPosition(scrollPosition);
         });
     }
     toggleDropdown();
@@ -258,8 +255,9 @@ function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
     const mouseY = lastMouseY / window.innerHeight;
     const scrollInfluence = scrollY / window.innerHeight;
-    const xOffset = (mouseX - 0.5) * 100 + (scrollInfluence - lastScrollY) * 20;
-    const yOffset = (mouseY - 0.5) * 100 + (scrollInfluence - lastScrollY) * 20;
+    const fractalFactor = Math.sin(scrollInfluence * Math.PI) * 50; // Adds fractal-like variation
+    const xOffset = (mouseX - 0.5) * 150 + (scrollInfluence - lastScrollY) * 30 + fractalFactor;
+    const yOffset = (mouseY - 0.5) * 150 + (scrollInfluence - lastScrollY) * 30 + fractalFactor;
     document.body.style.backgroundPosition = `${xOffset}px ${yOffset}px, ${xOffset + 50}px ${yOffset + 50}px, ${xOffset - 50}px ${yOffset - 50}px, ${xOffset + 100}px ${yOffset + 100}px`;
     lastScrollY = scrollInfluence;
 }
@@ -529,7 +527,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Mouse move effect for dynamic dots (desktop)
-    let isTouching = false;
     document.addEventListener('mousemove', (e) => {
         if (window.innerWidth >= 768) { // Desktop
             lastMouseX = e.clientX;
