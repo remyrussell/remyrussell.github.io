@@ -17,11 +17,13 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 20% 20%, rgba(255, 105, 180, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 105, 180, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 30% 70%, rgba(255, 105, 180, 0.05) 0%, transparent 50%);
-    background-size: 150px 150px;
-    background-position: 0 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 105, 180, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(255, 105, 180, 0.03) 0%, transparent 30%),
+        radial-gradient(circle at 30% 70%, rgba(255, 105, 180, 0.04) 0%, transparent 35%, rgba(255, 105, 180, 0.02) 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 105, 180, 0.02) 0%, transparent 60%);
+    background-size: 200px 200px, 250px 250px, 180px 180px, 300px 300px;
+    background-position: 0 0, 50px 50px, -50px -50px, 100px 100px;
     pointer-events: none;
     z-index: -1;
 }
@@ -358,8 +360,12 @@ button.menu-toggle:hover span {
     z-index: 1000;
     padding: 1rem;
     max-height: calc(100vh - 6rem);
-    overflow-y: visible;
+    overflow-y: auto;
     transition: opacity 0.3s ease;
+}
+
+.menu.active {
+    display: block;
 }
 
 .theme-dark .menu {
@@ -429,10 +435,6 @@ button.menu-toggle:hover span {
 .menu-text:hover {
     color: #fff;
     background-color: rgba(199, 21, 133, 0.2);
-}
-
-.menu.active {
-    display: block;
 }
 
 .menu.active .theme-toggle-wrapper {
