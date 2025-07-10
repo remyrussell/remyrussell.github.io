@@ -3,86 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remy Russell's Resume</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="./styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="./scripts.js" defer></script>
+    <title>Photos of My Dogs</title>
+    <link rel="stylesheet" href="/general_styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="dogs-page">
+    <button id="menuToggleButton" class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <nav id="menu" class="menu">
+        <ul>
+            <li><a href="/index.html" class="menu-text">Home</a></li>
+            <li><a href="/photos_of_my_dogs_page.html" class="menu-text">Dog Photos</a></li>
+            <li class="dropdown">
+                <a href="#" class="menu-text dropdown-toggle">More</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#gallery" class="menu-text">Gallery</a></li>
+                    <li><a href="#contact" class="menu-text">Contact</a></li>
+                </ul>
+            </li>
+            <li class="theme-toggle-wrapper">
+                <input type="checkbox" id="themeToggleButton" class="theme-toggle-checkbox">
+                <label for="themeToggleButton" class="theme-toggle-label">
+                    <span class="theme-toggle-track">
+                        <span class="theme-toggle-knob">
+                            <i class="theme-toggle-icon fa fa-sun"></i>
+                            <i class="theme-toggle-icon fa fa-moon"></i>
+                        </span>
+                    </span>
+                </label>
+            </li>
+        </ul>
+    </nav>
     <div class="container">
         <header>
-            <h1 id="name"></h1>
-            <div class="contact">
-                <p id="phone"></p>
-                <p id="email"></p>
-            </div>
-            <p id="role"></p>
-            <button id="menuToggleButton" class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <nav id="menu" class="menu">
-                <ul>
-                    <li>
-                        <button id="downloadPdfButton" class="download-pdf menu-text">
-                            <i class="fas fa-print"></i> PDF
-                        </button>
-                    </li>
-                    <li>
-                        <div class="theme-toggle-wrapper">
-                            <input type="checkbox" id="themeToggleButton" class="theme-toggle-checkbox">
-                            <label for="themeToggleButton" class="theme-toggle-label">
-                                <span class="theme-toggle-track">
-                                    <span class="theme-toggle-knob">
-                                        <i class="fas fa-sun theme-toggle-icon"></i>
-                                        <i class="fas fa-moon theme-toggle-icon"></i>
-                                    </span>
-                                </span>
-                            </label>
-                        </div>
-                    </li>
-                    <li><a href="https://www.linkedin.com/in/remyrussell" target="_blank" class="menu-icon"><i class="fab fa-linkedin"></i></a></li>
-                    <li class="dropdown">
-                        <a href="#" class="menu-text dropdown-toggle">More</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="./dogs.html" class="menu-text">Photos of my dogs</a></li>
-                            <li><a href="https://youtu.be/dQw4w9WgXcQ?si=A4PUEV5_YA3G-0Xj" class="menu-text">Watch my ChatGPT wrapper demo</a></li>
-                            <li><a href="./prank.html" target="_blank" class="menu-icon"><img src="./assets/images/logos/prank.svg" alt="prank" class="prank-logo"></a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </nav>
+            <h1>Photos of My Dogs</h1>
+            <a href="/index.html" class="back-link">Back to Resume</a>
         </header>
-
-        <section id="summary">
-            <h2>Summary</h2>
-            <p id="summaryText"></p>
-        </section>
-
-        <section id="professionalExperience">
-            <h2>Professional Experience</h2>
-        </section>
-
-        <section id="education">
-            <h2>Education</h2>
-        </section>
-
-        <section id="certifications">
-            <h2>Certifications</h2>
-            <ul id="certificationList"></ul>
-        </section>
-
-        <section id="skills">
-            <h2>Core Skills</h2>
-            <ul id="skillList"></ul>
-            <h2>Tools & Frameworks</h2>
-            <ul id="toolsAndFrameworks"></ul>
-            <h2>Interests & Hobbies</h2>
-            <ul id="funSkills"></ul>
+        <section class="gallery" id="gallery">
+            <img src="/assets/images/dogs/dog1.jpeg" alt="Dog 1" class="dog-photo">
+            <img src="/assets/images/dogs/dog2.jpeg" alt="Dog 2" class="dog-photo">
+            <img src="/assets/images/dogs/dog3.jpeg" alt="Dog 3" class="dog-photo">
+            <img src="/assets/images/dogs/dog4.jpeg" alt="Dog 4" class="dog-photo">
+            <img src="/assets/images/dogs/dog5.jpeg" alt="Dog 5" class="dog-photo">
+            <img src="/assets/images/dogs/dog6.jpeg" alt="Dog 6" class="dog-photo">
+            <img src="/assets/images/dogs/dog7.jpeg" alt="Dog 7" class="dog-photo">
+            <img src="/assets/images/dogs/dog8.jpeg" alt="Dog 8" class="dog-photo">
         </section>
     </div>
     <button id="backToTop" class="back-to-top" title="Back to Top">
         <i class="fas fa-arrow-up"></i>
     </button>
+    <script src="/scripts (16).js"></script>
 </body>
 </html>
