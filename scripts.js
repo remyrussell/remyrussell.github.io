@@ -40,7 +40,7 @@ function toggleDropdown() {
             console.log('Dropdown classList after toggle:', menu.classList);
         });
         menu.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent menu closure when clicking sub-menu
+            e.stopPropagation(); // Prevent menu closurez when clicking sub-menu
         });
         document.addEventListener('click', (e) => {
             if (!dropdown.contains(e.target)) {
