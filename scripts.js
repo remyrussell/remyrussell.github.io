@@ -15,7 +15,7 @@ function keepThemeSetting() {
     if (themeToggle) {
         themeToggle.checked = savedTheme === 'dark';
     } else {
-        console.error('Theme toggle button not found in DO0M');
+        console.error('Theme toggle button not found in DOM');
     }
 }
 
@@ -78,7 +78,7 @@ function attachThemeToggleEvent() {
             console.log('Menu classList after toggle:', menu.classList);
         });
         menu.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent menu closures when clicking inside
+            e.stopPropagation(); // Prevent menu closure when clicking inside
         });
         document.addEventListener('click', (e) => {
             if (!menu.contains(e.target) && !menuToggleButton.contains(e.target)) {
