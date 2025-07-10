@@ -15,7 +15,7 @@ function keepThemeSetting() {
     if (themeToggle) {
         themeToggle.checked = savedTheme === 'dark';
     } else {
-        console.error('Theme toggle button not found in DOM');
+        console.error('Theme toggle button not found in DO0M');
     }
 }
 
