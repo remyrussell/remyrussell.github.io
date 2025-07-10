@@ -23,9 +23,13 @@ function toggleDropdown() {
         }
         toggle.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             console.log('Dropdown toggle clicked, current classList:', menu.classList);
             menu.classList.toggle('active');
             console.log('Dropdown classList after toggle:', menu.classList);
+        });
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent menu closure when clicking sub-menu
         });
         document.addEventListener('click', (e) => {
             if (!dropdown.contains(e.target)) {
@@ -51,20 +55,20 @@ function attachThemeToggleEvent() {
         if (window.innerWidth < 768) {
             menu.classList.remove('active');
         }
-        menuToggleButton.addEventListener('click', () => {
+        menuToggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
             console.log('Menu toggle clicked, current classList:', menu.classList);
             menu.classList.toggle('active');
             console.log('Menu classList after toggle:', menu.classList);
         });
-        // Force correct positioning
-        menuToggleButton.style.position = 'fixed';
-        menuToggleButton.style.top = '2rem';
-        menuToggleButton.style.right = '2rem';
-        menuToggleButton.style.left = 'unset';
-        menu.style.position = 'fixed';
-        menu.style.top = '4rem';
-        menu.style.right = '2rem';
-        menu.style.left = 'unset';
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent menu closure when clicking inside
+        });
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && !menuToggleButton.contains(e.target)) {
+                menu.classList.remove('active');
+            }
+        });
     } else {
         console.error('Menu elements not found:', { menuToggleButton, menu });
     }
@@ -264,10 +268,15 @@ function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
     const mouseY = lastMouseY / window.innerHeight;
     const scrollInfluence = scrollY / window.innerHeight;
-    const fractalFactor = Math.sin(scrollInfluence * Math.PI * 2) * 60 + Math.cos(mouseX * Math.PI) * 40;
-    const xOffset = (mouseX - 0.5) * 200 + (scrollInfluence - lastScrollY) * 50 + fractalFactor;
-    const yOffset = (mouseY - 0.5) * 200 + (scrollInfluence - lastScrollY) * 50 + fractalFactor;
-    document.body.style.backgroundPosition = `${xOffset}px ${yOffset}px, ${xOffset + 40}px ${yOffset + 40}px, ${xOffset - 40}px ${yOffset - 40}px, ${xOffset + 80}px ${yOffset + 80}px`;
+    const fractalFactor = Math.sin(scrollInfluence * Math.PI * 2) * 50 + Math.cos(mouseX * Math.PI) * 30;
+    const xOffset = (mouseX - 0.5) * 150 + (scrollInfluence - lastScrollY) * 40 + fractalFactor;
+    const yOffset = (mouseY - 0.5) * 150 + (scrollInfluence - lastScrollY) * 40 + fractalFactor;
+    document.body.style.backgroundPosition = `
+        ${xOffset}px ${yOffset}px,
+        ${xOffset + 30}px ${yOffset + 30}px,
+        ${xOffset - 30}px ${yOffset - 30}px,
+        ${xOffset + 60}px ${yOffset + 60}px
+    `;
     lastScrollY = scrollInfluence;
 }
 
@@ -535,9 +544,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Mouse move effect for dynamic dots (desktop)
+    // Mouse move effect for dynamic background
     document.addEventListener('mousemove', (e) => {
-        if (window.innerWidth >= 768) { // Desktop
+        if (window.innerWidth >= 768) {
             lastMouseX = e.clientX;
             lastMouseY = e.clientY;
             const scrollY = window.scrollY || document.documentElement.scrollTop;
@@ -545,9 +554,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Touch move effect for dynamic dots (mobile)
+    // Touch move effect for dynamic background
     document.addEventListener('touchmove', (e) => {
-        if (window.innerWidth < 768) { // Mobile
+        if (window.innerWidth < 768) {
             lastMouseX = e.touches[0].clientX;
             lastMouseY = e.touches[0].clientY;
             const scrollY = window.scrollY || document.documentElement.scrollTop;
