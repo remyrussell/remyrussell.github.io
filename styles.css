@@ -1,6 +1,6 @@
-/* General styles for both pages .*/
+/* General styles for both pages */
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     padding: 2rem;
     color: #333;
     background-color: #f0f0f0;
@@ -75,6 +75,17 @@ h1, h2, h3 {
 h2 {
     margin-top: 2rem;
     border-bottom: 1px solid #ccc;
+}
+
+/* Error message for JSON loading issues */
+.error-message {
+    color: #c71585;
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid #c71585;
+    border-radius: 8px;
+    margin: 1rem auto;
+    max-width: 800px;
 }
 
 /* Experience, Education, and Certification items */
