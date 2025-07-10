@@ -69,6 +69,13 @@ function attachThemeToggleEvent() {
                 menu.classList.remove('active');
             }
         });
+        // Ensure menu remains visible during scroll
+        window.addEventListener('scroll', () => {
+            menuToggleButton.style.display = 'flex';
+            if (menu.classList.contains('active')) {
+                menu.style.display = 'block';
+            }
+        });
     } else {
         console.error('Menu elements not found:', { menuToggleButton, menu });
     }
