@@ -1,4 +1,4 @@
-/* General stylezs */
+/* General styles */
 body {
     font-family: Arial, sans-serif;
     padding: 2rem;
@@ -478,20 +478,22 @@ nav#menu.menu.active {
     display: none;
     position: absolute;
     top: calc(100% + 0.5rem);
-    right: 0;
+    left: 0;
     width: max-content;
     min-width: 150px;
+    max-width: 200px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 1003;
+    z-index: 1004;
     padding: 0.5rem;
 }
 
 .dropdown-menu.active {
     display: block;
+    transform: translateX(0);
 }
 
 .theme-dark .dropdown-menu {
@@ -517,8 +519,9 @@ nav#menu.menu.active {
         right: 1rem;
     }
     .dropdown-menu {
-        right: 0;
+        left: 0;
         min-width: 150px;
+        max-width: 200px;
     }
 }
 
