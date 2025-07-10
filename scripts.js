@@ -78,7 +78,7 @@ function attachThemeToggleEvent() {
             console.log('Menu classList after toggle:', menu.classList);
         });
         menu.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent menu closure when clicking inside
+            e.stopPropagation(); // Prevent menu closures when clicking inside
         });
         document.addEventListener('click', (e) => {
             if (!menu.contains(e.target) && !menuToggleButton.contains(e.target)) {
