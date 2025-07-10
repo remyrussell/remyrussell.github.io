@@ -577,6 +577,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Initial position
+    // Initial positionz
     updateBackgroundPosition(0);
 });
