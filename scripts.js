@@ -12,11 +12,19 @@ function keepThemeSetting() {
         document.body.className = savedTheme === 'dark' ? 'theme-dark dogs-page' : 'dogs-page';
     }
     const themeToggle = document.getElementById('themeToggleButton');
-    if (themeToggle) themeToggle.checked = savedTheme === 'dark';
+    if (themeToggle) {
+        themeToggle.checked = savedTheme === 'dark';
+    } else {
+        console.error('Theme toggle button not found in DOM');
+    }
 }
 
 function toggleDropdown() {
     const dropdowns = document.querySelectorAll('.dropdown');
+    if (dropdowns.length === 0) {
+        console.error('No dropdown elements found in DOM');
+        return;
+    }
     dropdowns.forEach(dropdown => {
         const toggle = dropdown.querySelector('.dropdown-toggle');
         const menu = dropdown.querySelector('.dropdown-menu');
@@ -53,6 +61,8 @@ function attachThemeToggleEvent() {
             }
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
+    } else {
+        console.error('Theme toggle button not found in DOM');
     }
     const menuToggleButton = document.getElementById('menuToggleButton');
     const menu = document.getElementById('menu');
@@ -101,6 +111,8 @@ function attachThemeToggleEvent() {
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
             updateBackgroundPosition(scrollPosition);
         });
+    } else {
+        console.error('Back to top button not found in DOM');
     }
     toggleDropdown();
 }
@@ -262,12 +274,19 @@ function generateResumePDF(data) {
 async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
     for (let i = 0; i < retries; i++) {
         try {
+            console.log(`Fetching ${url}, attempt ${i + 1}`);
             const response = await fetch(url, options);
-            if (response.ok) return response;
+            if (response.ok) {
+                console.log(`Successfully fetched ${url}`);
+                return response;
+            }
             throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
         } catch (err) {
-            if (i === retries - 1) throw err;
-            console.warn(`Fetch attempt ${i + 1} failed for ${url}. Retrying in ${delay}ms...`, err);
+            console.warn(`Fetch attempt ${i + 1} failed for ${url}: ${err.message}`);
+            if (i === retries - 1) {
+                console.error(`All fetch attempts failed for ${url}: ${err.message}`);
+                throw err;
+            }
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
@@ -294,26 +313,32 @@ function updateBackgroundPosition(scrollY) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOMContentLoaded event fired');
     keepThemeSetting();
     attachThemeToggleEvent();
 
+    // Skip JSON loading for dogs page
+    if (document.body.classList.contains('dogs-page')) {
+        console.log('Dogs page detected, skipping resume.json fetch');
+        return;
+    }
+
     let data;
     try {
-        console.log('Fetching ./resume.json...');
-        let response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
-        if (!response.ok) {
-            throw new Error(`Failed to fetch resume.json: ${response.status} ${response.statusText}`);
-        }
+        const response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
         data = await response.json();
-        console.log('Parsed data:', data);
+        console.log('Parsed resume.json data:', data);
     } catch (err) {
-        console.error('Fetch error:', err.message);
+        console.error('Failed to load resume.json:', err.message);
+        alert('Error: Unable to load resume data. Please check your connection and try again.');
         const container = document.querySelector('.container');
         if (container) {
             container.innerHTML = `
-                <h1>Error Loading Resume</h1>
-                <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
-                <p>Error details: ${err.message}</p>
+                <div class="error-message">
+                    <h1>Error Loading Resume</h1>
+                    <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
+                    <p>Error details: ${err.message}</p>
+                </div>
             `;
         } else {
             console.error('Container element not found in DOM');
@@ -553,7 +578,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error in rendering:', err.message);
         const container = document.querySelector('.container');
         if (container) {
-            container.innerHTML += `<p>Unexpected error: ${err.message}</p>`;
+            container.innerHTML += `<p class="error-message">Unexpected error: ${err.message}</p>`;
         }
     }
 
