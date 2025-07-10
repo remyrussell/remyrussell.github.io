@@ -8,6 +8,9 @@ function formatDate(dateString) {
 function keepThemeSetting() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
+    if (document.body.classList.contains('dogs-page')) {
+        document.body.className = savedTheme === 'dark' ? 'theme-dark dogs-page' : 'dogs-page';
+    }
     const themeToggle = document.getElementById('themeToggleButton');
     if (themeToggle) themeToggle.checked = savedTheme === 'dark';
 }
@@ -45,6 +48,9 @@ function attachThemeToggleEvent() {
         themeToggle.addEventListener('change', () => {
             const isDark = themeToggle.checked;
             document.body.className = isDark ? 'theme-dark' : '';
+            if (document.body.classList.contains('dogs-page')) {
+                document.body.className = isDark ? 'theme-dark dogs-page' : 'dogs-page';
+            }
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
     }
