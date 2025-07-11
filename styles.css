@@ -16,7 +16,7 @@ body.dogs-page {
     padding: 2rem 0 !important; /* No side padding for full-width */
 }
 
-/* Dynamic neural network background */
+/* Fluid background effect */
 body::before {
     content: '';
     position: fixed;
@@ -25,22 +25,24 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        linear-gradient(45deg, rgba(255, 105, 180, 0.3) 0%, transparent 50%),
-        linear-gradient(-45deg, rgba(100, 149, 237, 0.25) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(255, 105, 180, 0.2) 0%, transparent 20%),
-        linear-gradient(135deg, rgba(147, 112, 219, 0.2) 0%, transparent 60%);
-    background-size: 200% 200%, 150% 150%, 100px 100px, 180% 180%;
-    animation: neuralFlow 15s linear infinite;
+        radial-gradient(circle at 30% 30%, rgba(255, 105, 180, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(100, 149, 237, 0.35) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(147, 112, 219, 0.3) 0%, transparent 60%);
+    background-size: 200% 200%, 200% 200%, 200% 200%;
+    animation: fluidFlow 20s ease-in-out infinite;
     pointer-events: none;
     z-index: -1;
 }
 
-@keyframes neuralFlow {
+@keyframes fluidFlow {
     0% {
-        background-position: 0% 0%, 0% 0%, 0 0, 0% 0%;
+        background-position: 0% 0%, 100% 100%, 50% 50%;
+    }
+    50% {
+        background-position: 100% 100%, 0% 0%, 75% 25%;
     }
     100% {
-        background-position: 200% 200%, 150% 150%, 100px 100px, 180% 180%;
+        background-position: 0% 0%, 100% 100%, 50% 50%;
     }
 }
 
@@ -619,7 +621,8 @@ body.dogs-page .gallery {
 }
 
 body.dogs-page .dog-photo {
-    width: 100vw; /* Full viewport width */
+    max-width: 100%;
+    max-width: 800px;
     height: auto;
     margin: 0 auto;
     display: block;
