@@ -309,11 +309,11 @@ function createParticleSystem() {
         particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 0.7 + 0.3, // Smaller particles
+            radius: Math.random() * 1 + 0.5, // Larger particles
             angle: Math.random() * Math.PI * 2,
-            orbitRadiusX: Math.random() * 80 + 20, // Elliptical X radius
-            orbitRadiusY: Math.random() * 40 + 10, // Elliptical Y radius
-            baseSpeed: Math.random() * 0.006 + 0.002 // Base speed
+            orbitRadiusX: Math.random() * 80 + 20,
+            orbitRadiusY: Math.random() * 40 + 10,
+            baseSpeed: Math.random() * 0.003 + 0.001 // Slower speed
         });
     }
 
@@ -343,17 +343,17 @@ function createParticleSystem() {
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = 200;
+            const maxDistance = 300;
             let speed = particle.baseSpeed;
             let gravityInfluence = 1 / (Math.pow(distance, 2) + 50);
 
             // Adjust speed and influence based on distance
             if (distance < 50) {
                 gravityInfluence = 1; // Strong attraction near cursor
-                speed = particle.baseSpeed * 5; // Dynamic movement
-            } else if (distance > 200) {
-                speed = particle.baseSpeed * 0.1; // Nearly stagnant far away
-                gravityInfluence *= 0.05;
+                speed = particle.baseSpeed * 3; // Reduced dynamic movement
+            } else if (distance > 300) {
+                speed = particle.baseSpeed * 0.05; // Nearly still far away
+                gravityInfluence *= 0.02;
             }
 
             // Update angle
@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 });
             } else {
-                experienceContainer.innerHTML += '<p>No professional experience data available.</p>';
+                experienceContainer.innerHTML += `<p>No professional experience data available.</p>`;
             }
         } else {
             console.error('Professional experience container not found in DOM');
@@ -679,6 +679,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Initial positionz
+    // Initial position
     updateBackgroundPosition(0);
 });
