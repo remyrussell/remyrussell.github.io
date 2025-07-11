@@ -699,4 +699,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initial position
     updateBackgroundPosition(0);
-});
+})
