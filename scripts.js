@@ -40,7 +40,7 @@ function toggleDropdown() {
             console.log('Dropdown classList after toggle:', menu.classList);
         });
         menu.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent menu closurez when clicking sub-menus
+            e.stopPropagation(); // Prevent menu closure when clicking sub-menus
         });
         document.addEventListener('click', (e) => {
             if (!dropdown.contains(e.target)) {
@@ -300,14 +300,16 @@ function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
     const mouseY = lastMouseY / window.innerHeight;
     const scrollInfluence = scrollY / window.innerHeight;
-    const fractalFactor = Math.sin(scrollInfluence * Math.PI * 2) * 50 + Math.cos(mouseX * Math.PI) * 30;
-    const xOffset = (mouseX - 0.5) * 150 + (scrollInfluence - lastScrollY) * 40 + fractalFactor;
-    const yOffset = (mouseY - 0.5) * 150 + (scrollInfluence - lastScrollY) * 40 + fractalFactor;
+    const time = Date.now() / 1000; // For continuous animation
+    const waveX = Math.sin(time + mouseX * Math.PI * 2) * 50;
+    const waveY = Math.cos(time + mouseY * Math.PI * 2) * 50;
+    const scrollOffset = scrollInfluence * 100;
+    const xOffset = (mouseX - 0.5) * 200 + waveX + scrollOffset;
+    const yOffset = (mouseY - 0.5) * 200 + waveY + scrollOffset;
     document.body.style.backgroundPosition = `
         ${xOffset}px ${yOffset}px,
-        ${xOffset + 30}px ${yOffset + 30}px,
-        ${xOffset - 30}px ${yOffset - 30}px,
-        ${xOffset + 60}px ${yOffset + 60}px
+        ${xOffset + 50}px ${yOffset + 50}px,
+        ${xOffset - 50}px ${yOffset - 50}px
     `;
     lastScrollY = scrollInfluence;
 }
