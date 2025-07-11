@@ -284,7 +284,7 @@ function updateBackgroundPosition(scrollY) {
 
 // Particle system
 const particles = [];
-const numParticles = 20;
+const numParticles = 50;
 
 function createParticleSystem() {
     const canvas = document.createElement('canvas');
@@ -307,9 +307,9 @@ function createParticleSystem() {
             y: Math.random() * canvas.height,
             radius: Math.random() * 3 + 2,
             angle: Math.random() * Math.PI * 2,
-            orbitRadius: Math.random() * 30 + 20, // Reduced orbit radius for tighter orbits
-            speed: Math.random() * 0.05 + 0.03, // Slightly faster for responsiveness
-            fractalDepth: Math.floor(Math.random() * 3) + 1
+            orbitRadius: Math.random() * 100 + 50, // Larger orbit radius
+            speed: Math.random() * 0.02 + 0.01, // Slower speed
+            fractalDepth: Math.floor(Math.random() * 2) + 1 // Reduced fractal complexity
         });
     }
 
@@ -321,18 +321,25 @@ function createParticleSystem() {
             // Update angle for orbital motion
             particle.angle += particle.speed;
 
-            // Calculate fractal-like offset
+            // Calculate distance from cursor for ripple effect
+            const dx = particle.x - lastMouseX;
+            const dy = particle.y - lastMouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const maxDistance = 300; // Maximum distance for ripple effect
+            const rippleDelay = Math.min(distance / maxDistance, 1) * 0.5; // Delay based on distance
+
+            // Calculate fractal-like offset with reduced intensity
             let fractalX = 0;
             let fractalY = 0;
             for (let i = 0; i < particle.fractalDepth; i++) {
                 const scale = Math.pow(0.5, i);
-                fractalX += Math.sin(particle.angle * scale + time) * particle.orbitRadius * scale;
-                fractalY += Math.cos(particle.angle * scale + time) * particle.orbitRadius * scale;
+                fractalX += Math.sin(particle.angle * scale + time - rippleDelay) * particle.orbitRadius * scale * 0.5;
+                fractalY += Math.cos(particle.angle * scale + time - rippleDelay) * particle.orbitRadius * scale * 0.5;
             }
 
-            // Position particles around cursor with stronger cursor influence
-            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadius * 1.5 + fractalX;
-            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadius * 1.5 + fractalY;
+            // Position particles around cursor with ripple effect
+            particle.x = lastMouseX + Math.sin(particle.angle - rippleDelay) * particle.orbitRadius + fractalX;
+            particle.y = lastMouseY + Math.cos(particle.angle - rippleDelay) * particle.orbitRadius + fractalY;
 
             // Draw particle
             ctx.beginPath();
@@ -352,6 +359,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     keepThemeSetting();
     attachThemeToggleEvent();
     createParticleSystem();
+
+    // Disable Dog Photos link on dogs page
+    if (document.body.classList.contains('dogs-page')) {
+        const dogPhotosLink = document.querySelector('a[href="/dogs.html"]');
+        if (dogPhotosLink) {
+            dogPhotosLink.classList.add('disabled');
+            dogPhotosLink.addEventListener('click', (e) => e.preventDefault());
+        }
+    }
 
     // Skip JSON loading for dogs page
     if (document.body.classList.contains('dogs-page')) {
