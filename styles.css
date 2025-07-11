@@ -13,7 +13,7 @@ body {
 
 /* Dogs page specific styles */
 body.dogs-page {
-    padding: 2rem 0 !important; /* No side padding for full-widthh */
+    padding: 2rem 0 !important; /* No side padding for full-width */
 }
 
 /* Fluid background effect */
@@ -36,9 +36,9 @@ body::before {
 
 .theme-dark body::before {
     background: 
-        radial-gradient(circle at 30% 30%, rgba(50, 0, 100, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(30, 30, 30, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(75, 0, 130, 0.1) 0%, transparent 60%);
+        radial-gradient(circle at 30% 30%, rgba(40, 0, 80, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(20, 20, 20, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(40, 0, 80, 0.08) 0%, transparent 60%);
 }
 
 @keyframes fluidFlow {
@@ -66,7 +66,7 @@ body::before {
     }
 }
 
-/* Particle canvass */
+/* Particle canvas */
 #particleCanvas {
     position: fixed;
     top: 0;
@@ -611,6 +611,40 @@ li {
     gap: 0.5rem;
 }
 
+/* Back Button for Dogs Page */
+body.dogs-page .back-button {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid #c71585;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    color: #c71585;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+
+body.dogs-page.theme-dark .back-button {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #c71585;
+    color: #c71585;
+}
+
+body.dogs-page .back-button:hover {
+    background: rgba(199, 21, 133, 0.2);
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+body.dogs-page.theme-dark .back-button:hover {
+    background: rgba(155, 13, 99, 0.3);
+}
+
 /* Gallery styling for dogs page */
 body.dogs-page .gallery {
     display: flex;
@@ -622,9 +656,8 @@ body.dogs-page .gallery {
 }
 
 body.dogs-page .dog-photo {
-    max-width: 100%;
     width: 100%;
-    max-width: 600px; /* Reduced max-width */
+    max-width: calc(100vw - 4rem); /* Scale to viewport width minus padding */
     height: auto;
     margin: 0 auto;
     display: block;
@@ -632,35 +665,9 @@ body.dogs-page .dog-photo {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     box-sizing: border-box;
-    object-fit: contain; /* Ensure proportional scaling */
+    object-fit: contain;
 }
 
 body.dogs-page .dog-photo:hover {
     transform: scale(1.02);
-}
-
-/* Back link for dogs page */
-body.dogs-page .back-link {
-    display: inline-block;
-    margin-top: 1rem;
-    color: #c71585;
-    text-decoration: none;
-    font-size: 1rem;
-    padding: 0.5rem;
-    transition: color 0.3s ease, background 0.3s ease, opacity 0.3s ease;
-}
-
-body.dogs-page .back-link:hover {
-    color: #fff;
-    background-color: rgba(199, 21, 133, 0.2);
-    opacity: 0.9;
-}
-
-body.dogs-page.theme-dark .back-link {
-    color: #c71585;
-}
-
-body.dogs-page.theme-dark .back-link:hover {
-    color: #fff;
-    background-color: rgba(155, 13, 99, 0.3);
 }
