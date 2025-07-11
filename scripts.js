@@ -288,46 +288,33 @@ function updateBackgroundPosition(scrollY) {
 
 // Particle system
 const particles = [];
-const numParticles = 3000;
+const numParticles = 1000;
 
 function createParticleSystem() {
     const canvas = document.createElement('canvas');
     canvas.id = 'particleCanvas';
     document.body.appendChild(canvas);
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth * 1.5; // Larger canvas for background coverage
-    canvas.height = window.innerHeight * 1.5;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     // Resize canvas on window resize
     window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth * 1.5;
-        canvas.height = window.innerHeight * 1.5;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     });
-
-    // Simple quadtree-like spatial partitioningz
-    const gridSize = 100;
-    const grid = {};
-
-    function addToGrid(particle) {
-        const gridX = Math.floor(particle.x / gridSize);
-        const gridY = Math.floor(particle.y / gridSize);
-        const key = `${gridX},${gridY}`;
-        if (!grid[key]) grid[key] = [];
-        grid[key].push(particle);
-    }
 
     // Initialize particles
     for (let i = 0; i < numParticles; i++) {
-        const particle = {
+        particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 1 + 0.5, // Smaller particles
+            radius: Math.random() * 0.7 + 0.3, // Smaller particles
             angle: Math.random() * Math.PI * 2,
-            baseSpeed: Math.random() * 0.006 + 0.002, // Base speed for distant particles
-            orbitRadius: Math.random() * 200 + 100
-        };
-        particles.push(particle);
-        addToGrid(particle);
+            orbitRadiusX: Math.random() * 80 + 20, // Elliptical X radius
+            orbitRadiusY: Math.random() * 40 + 10, // Elliptical Y radius
+            baseSpeed: Math.random() * 0.006 + 0.002 // Base speed
+        });
     }
 
     let lastFrameTime = Date.now();
@@ -344,44 +331,37 @@ function createParticleSystem() {
         }
 
         // Skip rendering if FPS is too low
-        if (fps < 30 && frameCount % 2 === 0) {
+        if (fps < 40 && frameCount % 3 === 0) {
             requestAnimationFrame(animateParticles);
             return;
         }
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const time = currentTime / 1000;
-
-        // Clear grid
-        Object.keys(grid).forEach(key => delete grid[key]);
 
         particles.forEach(particle => {
             // Calculate distance from cursor
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = 800;
+            const maxDistance = 200;
             let speed = particle.baseSpeed;
-            let gravityInfluence = 1 / (Math.pow(distance, 2) + 100);
+            let gravityInfluence = 1 / (Math.pow(distance, 2) + 50);
 
             // Adjust speed and influence based on distance
-            if (distance < 100) {
+            if (distance < 50) {
                 gravityInfluence = 1; // Strong attraction near cursor
                 speed = particle.baseSpeed * 5; // Dynamic movement
-            } else if (distance > 300) {
+            } else if (distance > 200) {
                 speed = particle.baseSpeed * 0.1; // Nearly stagnant far away
-                gravityInfluence *= 0.1;
+                gravityInfluence *= 0.05;
             }
 
             // Update angle
             particle.angle += speed;
 
-            // Update position
-            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadius * gravityInfluence;
-            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadius * gravityInfluence;
-
-            // Re-add to grid
-            addToGrid(particle);
+            // Update position with elliptical orbits
+            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
+            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
 
             // Draw particle
             ctx.beginPath();
@@ -400,7 +380,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOMContentLoaded event fired');
     keepThemeSetting();
     attachThemeToggleEvent();
-    createParticleSystem();
+
+    // Delay particle system to prioritize menu
+    setTimeout(createParticleSystem, 500);
 
     // Disable Dog Photos link on dogs page
     if (document.body.classList.contains('dogs-page')) {
@@ -699,4 +681,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initial position
     updateBackgroundPosition(0);
-})
+});
