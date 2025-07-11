@@ -284,7 +284,7 @@ function updateBackgroundPosition(scrollY) {
 
 // Particle system
 const particles = [];
-const numParticles = 500;
+const numParticles = 2000;
 
 function createParticleSystem() {
     const canvas = document.createElement('canvas');
@@ -305,47 +305,54 @@ function createParticleSystem() {
         particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 3 + 2,
+            radius: Math.random() * 2 + 1, // Smaller particles for performance
             angle: Math.random() * Math.PI * 2,
             orbitRadius: Math.random() * 200 + 100, // Larger orbit radius
-            speed: Math.random() * 0.01 + 0.005, // Slower speed
-            fractalDepth: Math.floor(Math.random() * 2) + 1 // Reduced fractal complexity
+            speed: Math.random() * 0.006 + 0.002 // Slower speed
         });
     }
 
+    let lastFrameTime = Date.now();
+    let frameCount = 0;
+    let fps = 60;
+
     function animateParticles() {
+        const currentTime = Date.now();
+        frameCount++;
+        if (currentTime - lastFrameTime >= 1000) {
+            fps = frameCount;
+            frameCount = 0;
+            lastFrameTime = currentTime;
+        }
+
+        // Skip rendering if FPS is too low
+        if (fps < 30 && frameCount % 2 === 0) {
+            requestAnimationFrame(animateParticles);
+            return;
+        }
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const time = Date.now() / 1000;
+        const time = currentTime / 1000;
 
         particles.forEach(particle => {
             // Update angle for orbital motion
             particle.angle += particle.speed;
 
-            // Calculate distance from cursor for ripple effect
+            // Calculate distance from cursor for gravity effect
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = 500; // Increased max distance for ripple effect
-            const gravityInfluence = 1 / (Math.pow(distance, 2) + 100); // Inverse square law for cursor gravity
-            const rippleDelay = Math.min(distance / maxDistance, 1) * 0.5;
+            const maxDistance = 800; // Increased max distance
+            const gravityInfluence = distance < 100 ? 1 : 1 / (Math.pow(distance, 2) + 100); // Stronger influence for close particles
 
-            // Calculate fractal-like offset with reduced intensity
-            let fractalX = 0;
-            let fractalY = 0;
-            for (let i = 0; i < particle.fractalDepth; i++) {
-                const scale = Math.pow(0.5, i);
-                fractalX += Math.sin(particle.angle * scale + time - rippleDelay) * particle.orbitRadius * scale * 0.5 * gravityInfluence;
-                fractalY += Math.cos(particle.angle * scale + time - rippleDelay) * particle.orbitRadius * scale * 0.5 * gravityInfluence;
-            }
-
-            // Position particles around cursor with gravity-based influence
-            particle.x = lastMouseX + Math.sin(particle.angle - rippleDelay) * particle.orbitRadius * gravityInfluence + fractalX;
-            particle.y = lastMouseY + Math.cos(particle.angle - rippleDelay) * particle.orbitRadius * gravityInfluence + fractalY;
+            // Calculate position with gravity-based influence
+            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadius * gravityInfluence;
+            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadius * gravityInfluence;
 
             // Draw particle
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(106, 90, 205, 0.7)'; // Match dark purple theme
+            ctx.fillStyle = 'rgba(75, 0, 130, 0.5)';
             ctx.fill();
         });
 
