@@ -11,6 +11,12 @@ body {
     direction: ltr; /* Ensure left-to-right layout */
 }
 
+/* Ensure images don't exceed container */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 /* Dogs page specific styles */
 body.dogs-page {
     padding: 2rem 0 !important; /* No side padding for full-width */
@@ -653,11 +659,14 @@ body.dogs-page .gallery {
     align-items: center;
     margin-top: 2rem;
     z-index: 0; /* Ensure gallery doesn't overlap menu */
+    width: 100%;
+    max-width: 100%;
 }
 
 body.dogs-page .dog-photo {
     width: 100%;
     max-width: calc(100vw - 4rem); /* Scale to viewport width minus padding */
+    min-width: 0;
     height: auto;
     margin: 0 auto;
     display: block;
