@@ -304,7 +304,7 @@ function createParticleSystem() {
         canvas.height = window.innerHeight * 1.5;
     });
 
-    // Simple quadtree-like spatial partitioning
+    // Simple quadtree-like spatial partitioningz
     const gridSize = 100;
     const grid = {};
 
