@@ -66,7 +66,7 @@ body::before {
     }
 }
 
-/* Particle canvas */
+/* Particle canvass */
 #particleCanvas {
     position: fixed;
     top: 0;
