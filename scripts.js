@@ -29,6 +29,7 @@ function attachThemeToggleEvent() {
                 document.body.className = isDark ? 'theme-dark dogs-page' : 'dogs-page';
             }
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            console.log('Theme toggled to:', isDark ? 'dark' : 'light');
         });
     } else {
         console.error('Theme toggle button not found in DOM');
@@ -48,10 +49,12 @@ function attachThemeToggleEvent() {
         });
         menu.addEventListener('click', (e) => {
             e.stopPropagation(); // Prevent menu closure when clicking inside
+            console.log('Menu clicked, preventing closure');
         });
         document.addEventListener('click', (e) => {
             if (!menu.contains(e.target) && !menuToggleButton.contains(e.target)) {
                 menu.classList.remove('active');
+                console.log('Clicked outside menu, closing:', menu.classList);
             }
         });
         // Ensure menu remains visible during scroll
@@ -60,6 +63,7 @@ function attachThemeToggleEvent() {
             if (menu.classList.contains('active')) {
                 menu.style.display = 'block';
             }
+            console.log('Scroll event, menu visibility:', menu.style.display);
         });
     } else {
         console.error('Menu elements not found:', { menuToggleButton, menu });
@@ -284,32 +288,46 @@ function updateBackgroundPosition(scrollY) {
 
 // Particle system
 const particles = [];
-const numParticles = 2000;
+const numParticles = 3000;
 
 function createParticleSystem() {
     const canvas = document.createElement('canvas');
     canvas.id = 'particleCanvas';
     document.body.appendChild(canvas);
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth * 1.5; // Larger canvas for background coverage
+    canvas.height = window.innerHeight * 1.5;
 
     // Resize canvas on window resize
     window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth * 1.5;
+        canvas.height = window.innerHeight * 1.5;
     });
+
+    // Simple quadtree-like spatial partitioning
+    const gridSize = 100;
+    const grid = {};
+
+    function addToGrid(particle) {
+        const gridX = Math.floor(particle.x / gridSize);
+        const gridY = Math.floor(particle.y / gridSize);
+        const key = `${gridX},${gridY}`;
+        if (!grid[key]) grid[key] = [];
+        grid[key].push(particle);
+    }
 
     // Initialize particles
     for (let i = 0; i < numParticles; i++) {
-        particles.push({
+        const particle = {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 2 + 1, // Smaller particles for performance
+            radius: Math.random() * 1 + 0.5, // Smaller particles
             angle: Math.random() * Math.PI * 2,
-            orbitRadius: Math.random() * 200 + 100, // Larger orbit radius
-            speed: Math.random() * 0.006 + 0.002 // Slower speed
-        });
+            baseSpeed: Math.random() * 0.006 + 0.002, // Base speed for distant particles
+            orbitRadius: Math.random() * 200 + 100
+        };
+        particles.push(particle);
+        addToGrid(particle);
     }
 
     let lastFrameTime = Date.now();
@@ -334,25 +352,41 @@ function createParticleSystem() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const time = currentTime / 1000;
 
-        particles.forEach(particle => {
-            // Update angle for orbital motion
-            particle.angle += particle.speed;
+        // Clear grid
+        Object.keys(grid).forEach(key => delete grid[key]);
 
-            // Calculate distance from cursor for gravity effect
+        particles.forEach(particle => {
+            // Calculate distance from cursor
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = 800; // Increased max distance
-            const gravityInfluence = distance < 100 ? 1 : 1 / (Math.pow(distance, 2) + 100); // Stronger influence for close particles
+            const maxDistance = 800;
+            let speed = particle.baseSpeed;
+            let gravityInfluence = 1 / (Math.pow(distance, 2) + 100);
 
-            // Calculate position with gravity-based influence
+            // Adjust speed and influence based on distance
+            if (distance < 100) {
+                gravityInfluence = 1; // Strong attraction near cursor
+                speed = particle.baseSpeed * 5; // Dynamic movement
+            } else if (distance > 300) {
+                speed = particle.baseSpeed * 0.1; // Nearly stagnant far away
+                gravityInfluence *= 0.1;
+            }
+
+            // Update angle
+            particle.angle += speed;
+
+            // Update position
             particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadius * gravityInfluence;
             particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadius * gravityInfluence;
+
+            // Re-add to grid
+            addToGrid(particle);
 
             // Draw particle
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(75, 0, 130, 0.5)';
+            ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
             ctx.fill();
         });
 
@@ -374,6 +408,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (dogPhotosLink) {
             dogPhotosLink.classList.add('disabled');
             dogPhotosLink.addEventListener('click', (e) => e.preventDefault());
+            console.log('Dog Photos link disabled on dogs page');
         }
     }
 
