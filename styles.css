@@ -29,16 +29,16 @@ body::before {
         radial-gradient(circle at 70% 70%, rgba(100, 149, 237, 0.35) 0%, transparent 50%),
         radial-gradient(circle at 50% 50%, rgba(147, 112, 219, 0.3) 0%, transparent 60%);
     background-size: 200% 200%, 200% 200%, 200% 200%;
-    animation: fluidFlow 20s ease-in-out infinite;
+    animation: fluidFlow 30s ease-in-out infinite;
     pointer-events: none;
     z-index: -1;
 }
 
 .theme-dark body::before {
     background: 
-        radial-gradient(circle at 30% 30%, rgba(75, 0, 130, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(50, 50, 50, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(106, 90, 205, 0.15) 0%, transparent 60%);
+        radial-gradient(circle at 30% 30%, rgba(50, 0, 100, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(30, 30, 30, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(75, 0, 130, 0.1) 0%, transparent 60%);
 }
 
 @keyframes fluidFlow {
@@ -113,10 +113,10 @@ h2 {
 
 /* Error message for JSON loading issues */
 .error-message {
-    color: #6A5ACD;
+    color: #c71585;
     text-align: center;
     padding: 1rem;
-    border: 1px solid #6A5ACD;
+    border: 1px solid #c71585;
     border-radius: 8px;
     margin: 1rem auto;
     max-width: 800px;
@@ -326,17 +326,17 @@ body.dogs-page.theme-dark .container {
 .theme-toggle-icon {
     font-size: 1rem;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    color: #6A5ACD;
+    color: #c71585;
 }
 
 .theme-toggle-icon.fa-sun {
-    color: #6A5ACD;
+    color: #c71585;
     opacity: 0;
     transform: scale(0.8);
 }
 
 .theme-toggle-icon.fa-moon {
-    color: #6A5ACD;
+    color: #c71585;
     opacity: 1;
     position: absolute;
     transform: scale(1);
@@ -344,12 +344,12 @@ body.dogs-page.theme-dark .container {
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
     background: rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 0 15px rgba(106, 90, 205, 0.3);
+    box-shadow: inset 0 0 15px rgba(199, 21, 133, 0.3);
 }
 
 .theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
     background: rgba(0, 0, 0, 0.3);
-    box-shadow: inset 0 0 15px rgba(106, 90, 205, 0.2);
+    box-shadow: inset 0 0 15px rgba(155, 13, 99, 0.2);
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
@@ -415,7 +415,7 @@ button#menuToggleButton.menu-toggle:hover {
 button#menuToggleButton.menu-toggle span {
     position: relative;
     height: 2px;
-    background-color: #6A5ACD;
+    background-color: #c71585;
     transition: all 0.3s ease;
     width: 24px;
     margin: 3px 0;
@@ -476,7 +476,7 @@ nav#menu.menu.active {
 }
 
 .menu a, .menu button.download-pdf {
-    color: #6A5ACD;
+    color: #c71585;
     text-decoration: none;
     font-size: 1rem;
     display: block;
@@ -490,17 +490,17 @@ nav#menu.menu.active {
 }
 
 .theme-dark .menu a, .theme-dark .menu button.download-pdf {
-    color: #6A5ACD;
+    color: #c71585;
 }
 
 .menu a:hover, .menu button.download-pdf:hover {
     color: #fff;
-    background-color: rgba(106, 90, 205, 0.2);
+    background-color: rgba(199, 21, 133, 0.2);
     opacity: 0.9;
 }
 
 .theme-dark .menu a:hover, .theme-dark .menu button.download-pdf:hover {
-    background-color: rgba(147, 112, 219, 0.3);
+    background-color: rgba(155, 13, 99, 0.3);
 }
 
 .menu a.disabled {
@@ -525,31 +525,31 @@ nav#menu.menu.active {
 .menu-icon {
     font-size: 1.5rem;
     padding: 0.5rem;
-    color: #6A5ACD;
+    color: #c71585;
 }
 
 .menu-icon:hover {
     color: #fff;
-    background-color: rgba(106, 90, 205, 0.2);
+    background-color: rgba(199, 21, 133, 0.2);
 }
 
 .theme-dark .menu-icon:hover {
-    background-color: rgba(147, 112, 219, 0.3);
+    background-color: rgba(155, 13, 99, 0.3);
 }
 
 .menu-text {
     font-size: 1rem;
     padding: 0.5rem;
-    color: #6A5ACD;
+    color: #c71585;
 }
 
 .menu-text:hover {
     color: #fff;
-    background-color: rgba(106, 90, 205, 0.2);
+    background-color: rgba(199, 21, 133, 0.2);
 }
 
 .theme-dark .menu-text:hover {
-    background-color: rgba(147, 112, 219, 0.3);
+    background-color: rgba(155, 13, 99, 0.3);
 }
 
 .menu.active .theme-toggle-wrapper {
@@ -643,7 +643,7 @@ body.dogs-page .dog-photo:hover {
 body.dogs-page .back-link {
     display: inline-block;
     margin-top: 1rem;
-    color: #6A5ACD;
+    color: #c71585;
     text-decoration: none;
     font-size: 1rem;
     padding: 0.5rem;
@@ -652,15 +652,15 @@ body.dogs-page .back-link {
 
 body.dogs-page .back-link:hover {
     color: #fff;
-    background-color: rgba(106, 90, 205, 0.2);
+    background-color: rgba(199, 21, 133, 0.2);
     opacity: 0.9;
 }
 
 body.dogs-page.theme-dark .back-link {
-    color: #6A5ACD;
+    color: #c71585;
 }
 
 body.dogs-page.theme-dark .back-link:hover {
     color: #fff;
-    background-color: rgba(147, 112, 219, 0.3);
+    background-color: rgba(155, 13, 99, 0.3);
 }
