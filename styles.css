@@ -44,8 +44,8 @@ body::before {
 
 .theme-dark body::before {
     background: 
-        radial-gradient(circle at 30% 30%, rgba(155, 13, 99, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(60, 0, 120, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 30% 30%, rgba(199, 21, 133, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(106, 90, 205, 0.03) 0%, transparent 50%),
         radial-gradient(circle at 50% 50%, rgba(25, 25, 25, 0.03) 0%, transparent 60%);
 }
 
@@ -61,7 +61,7 @@ body::before {
     }
 }
 
-/* Liquid glass animation for headers */
+/* Liquid glass animation for headers and menu */
 @keyframes liquidGlassFlow {
     0% {
         background-position: 0% 50%;
@@ -134,10 +134,10 @@ h3 {
 
 /* Error message for JSON loading issues */
 .error-message {
-    color: #d81b60;
+    color: #c71585;
     text-align: center;
     padding: 1.5rem;
-    border: 1px solid #d81b60;
+    border: 1px solid #c71585;
     border-radius: 8px;
     margin: 1.5rem auto;
     max-width: 800px;
@@ -146,7 +146,7 @@ h3 {
 
 .theme-dark .error-message {
     background-color: rgba(50, 50, 50, 0.9);
-    color: #ff80ab;
+    color: #c71585;
 }
 
 /* Experience, Education, and Certification items */
@@ -193,6 +193,21 @@ h3 {
 .experience-item .sticky-header, .education-item .sticky-header {
     padding: 0.75rem;
     margin: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(200, 200, 200, 0.1));
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    animation: liquidGlassFlow 10s ease-in-out infinite;
+    border-radius: 8px;
+}
+
+.theme-dark .experience-item .sticky-header,
+.theme-dark .education-item .sticky-header {
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.15), rgba(50, 50, 50, 0.15));
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    animation: liquidGlassFlow 10s ease-in-out infinite;
+    border-radius: 8px;
+    padding: 0.75rem;
 }
 
 .experience-item .sticky-header h3, .education-item .sticky-header h3 {
@@ -228,17 +243,6 @@ h3 {
     padding-left: 1.5rem;
     margin-top: 0.75rem;
     font-size: 1rem;
-}
-
-/* Liquid glass effect for sticky headers in dark theme */
-.theme-dark .experience-item .sticky-header,
-.theme-dark .education-item .sticky-header {
-    background: linear-gradient(90deg, rgba(106, 90, 205, 0.25), rgba(50, 50, 50, 0.25));
-    backdrop-filter: blur(10px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    animation: liquidGlassFlow 12s ease-in-out infinite;
-    border-radius: 6px;
-    padding: 0.75rem;
 }
 
 /* Other content styling */
@@ -318,18 +322,18 @@ body.dogs-page.theme-dark .container {
     display: block;
     width: 56px;
     height: 32px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
     border-radius: 16px;
     position: relative;
     transition: background 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.25);
 }
 
 .theme-dark .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .theme-toggle-knob {
@@ -359,30 +363,30 @@ body.dogs-page.theme-dark .container {
 .theme-toggle-icon {
     font-size: 1.1rem;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    color: #d81b60;
+    color: #c71585;
 }
 
 .theme-toggle-icon.fa-sun {
-    color: #d81b60;
+    color: #c71585;
     opacity: 0;
     transform: scale(0.8);
 }
 
 .theme-toggle-icon.fa-moon {
-    color: #d81b60;
+    color: #c71585;
     opacity: 1;
     position: absolute;
     transform: scale(1);
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: inset 0 0 16px rgba(199, 21, 133, 0.25);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 16px rgba(199, 21, 133, 0.2);
 }
 
 .theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.4);
-    box-shadow: inset 0 0 16px rgba(155, 13, 99, 0.2);
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0 0 16px rgba(199, 21, 133, 0.15);
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
@@ -407,8 +411,8 @@ body.dogs-page.theme-dark .container {
 /* Hamburger menu styles */
 button#menuToggleButton.menu-toggle {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 0;
     border-radius: 10px;
     cursor: pointer;
@@ -425,30 +429,30 @@ button#menuToggleButton.menu-toggle {
     transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
     width: 44px;
     height: 44px;
-    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
 }
 
 .theme-dark button#menuToggleButton.menu-toggle {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     color: #e0e0e0;
 }
 
 button#menuToggleButton.menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
     transform: scale(1.1);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
     opacity: 0.95;
 }
 
 .theme-dark button#menuToggleButton.menu-toggle:hover {
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 button#menuToggleButton.menu-toggle span {
     position: relative;
     height: 2.5px;
-    background-color: #d81b60;
+    background-color: #c71585;
     transition: all 0.3s ease;
     width: 28px;
     margin: 3.5px 0;
@@ -470,11 +474,11 @@ nav#menu.menu {
     position: fixed;
     top: 4rem;
     right: 1.5rem;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(200, 200, 200, 0.1));
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 10px;
-    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
     z-index: 1000;
     padding: 1.25rem;
     max-height: calc(100vh - 5rem);
@@ -492,8 +496,8 @@ nav#menu.menu.active {
 }
 
 .theme-dark nav#menu.menu {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.15), rgba(50, 50, 50, 0.15));
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .menu ul {
@@ -509,7 +513,7 @@ nav#menu.menu.active {
 }
 
 .menu a, .menu button.download-pdf {
-    color: #d81b60;
+    color: #c71585;
     text-decoration: none;
     font-size: 1.1rem;
     display: block;
@@ -523,18 +527,18 @@ nav#menu.menu.active {
 }
 
 .theme-dark .menu a, .theme-dark .menu button.download-pdf {
-    color: #ff80ab;
+    color: #c71585;
 }
 
 .menu a:hover, .menu button.download-pdf:hover {
     color: #ffffff;
-    background-color: rgba(199, 21, 133, 0.25);
+    background-color: rgba(199, 21, 133, 0.3);
     opacity: 0.95;
     transform: translateY(-2px);
 }
 
 .theme-dark .menu a:hover, .theme-dark .menu button.download-pdf:hover {
-    background-color: rgba(155, 13, 99, 0.3);
+    background-color: rgba(199, 21, 133, 0.3);
 }
 
 .menu a.disabled {
@@ -560,39 +564,39 @@ nav#menu.menu.active {
 .menu-icon {
     font-size: 1.6rem;
     padding: 0.75rem;
-    color: #d81b60;
+    color: #c71585;
 }
 
 .theme-dark .menu-icon {
-    color: #ff80ab;
+    color: #c71585;
 }
 
 .menu-icon:hover {
     color: #ffffff;
-    background-color: rgba(199, 21, 133, 0.25);
+    background-color: rgba(199, 21, 133, 0.3);
 }
 
 .theme-dark .menu-icon:hover {
-    background-color: rgba(155, 13, 99, 0.3);
+    background-color: rgba(199, 21, 133, 0.3);
 }
 
 .menu-text {
     font-size: 1.1rem;
     padding: 0.75rem;
-    color: #d81b60;
+    color: #c71585;
 }
 
 .theme-dark .menu-text {
-    color: #ff80ab;
+    color: #c71585;
 }
 
 .menu-text:hover {
     color: #ffffff;
-    background-color: rgba(199, 21, 133, 0.25);
+    background-color: rgba(199, 21, 133, 0.3);
 }
 
 .theme-dark .menu-text:hover {
-    background-color: rgba(155, 13, 99, 0.3);
+    background-color: rgba(199, 21, 133, 0.3);
 }
 
 .menu.active .theme-toggle-wrapper {
@@ -615,34 +619,34 @@ li {
     position: fixed;
     bottom: 2.5rem;
     right: 2.5rem;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(200, 200, 200, 0.1));
+    backdrop-filter: blur(15px);
     color: #e0e0e0;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     width: 44px;
     height: 44px;
     font-size: 1.3rem;
     cursor: pointer;
-    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
     transition: background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
     z-index: 1000;
     display: none;
 }
 
 .theme-dark .back-to-top {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.15), rgba(50, 50, 50, 0.15));
+    border: 1px solid rgba(255, 255, 255, 0.4);
     color: #e0e0e0;
 }
 
 .back-to-top:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(200, 200, 200, 0.2));
     transform: scale(1.1);
 }
 
 .theme-dark .back-to-top:hover {
-    background: rgba(0, 0, 0, 0.45);
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.25), rgba(50, 50, 50, 0.25));
 }
 
 /* Download PDF Button */
@@ -657,35 +661,35 @@ li {
 /* Back Button for Dogs Page */
 body.dogs-page .back-button {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    border: 1px solid #d81b60;
+    backdrop-filter: blur(15px);
+    border: 1px solid #c71585;
     border-radius: 8px;
     padding: 0.75rem 1.25rem;
     margin-top: 1.5rem;
-    color: #d81b60;
+    color: #c71585;
     font-size: 1.1rem;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
     transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 body.dogs-page.theme-dark .back-button {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid #ff80ab;
-    color: #ff80ab;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #c71585;
+    color: #c71585;
 }
 
 body.dogs-page .back-button:hover {
-    background: rgba(199, 21, 133, 0.25);
+    background: rgba(199, 21, 133, 0.3);
     transform: scale(1.05);
     opacity: 0.95;
 }
 
 body.dogs-page.theme-dark .back-button:hover {
-    background: rgba(155, 13, 99, 0.3);
+    background: rgba(199, 21, 133, 0.3);
 }
 
 /* Gallery styling for dogs page */
