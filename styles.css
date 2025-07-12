@@ -1,14 +1,16 @@
 /* General styles for both pages */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&display=fallback');
+
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 2rem;
-    color: #333;
-    background-color: #f0f0f0;
+    font-family: 'Inter', 'Roboto', system-ui, -apple-system, sans-serif;
+    padding: 2.5rem;
+    color: #2d2d2d;
+    background-color: #f5f5f5;
     margin: 0;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
     position: relative;
-    direction: ltr; /* Ensure left-to-right layout */
+    direction: ltr;
 }
 
 /* Ensure images don't exceed container */
@@ -19,7 +21,7 @@ img {
 
 /* Dogs page specific styles */
 body.dogs-page {
-    padding: 2rem 0 !important; /* No side padding for full-width */
+    padding: 2.5rem 0;
 }
 
 /* Fluid background effect */
@@ -31,9 +33,9 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 30% 30%, rgba(199, 21, 133, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(106, 90, 205, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(60, 60, 60, 0.25) 0%, transparent 60%);
+        radial-gradient(circle at 30% 30%, rgba(199, 21, 133, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(106, 90, 205, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(60, 60, 60, 0.2) 0%, transparent 60%);
     background-size: 200% 200%, 200% 200%, 200% 200%;
     animation: fluidFlow 30s ease-in-out infinite;
     pointer-events: none;
@@ -42,9 +44,9 @@ body::before {
 
 .theme-dark body::before {
     background: 
-        radial-gradient(circle at 30% 30%, rgba(155, 13, 99, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(60, 0, 120, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(25, 25, 25, 0.05) 0%, transparent 60%);
+        radial-gradient(circle at 30% 30%, rgba(155, 13, 99, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(60, 0, 120, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(25, 25, 25, 0.03) 0%, transparent 60%);
 }
 
 @keyframes fluidFlow {
@@ -81,6 +83,7 @@ body::before {
     height: 100%;
     pointer-events: none;
     z-index: -1;
+    opacity: 0.7;
 }
 
 /* Reset potential overrides */
@@ -89,57 +92,75 @@ body::before {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.25);
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     position: relative;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
 }
 
 body.dogs-page .container {
-    max-width: 100% !important; /* Full-width for dogs page */
-    background-color: #fff;
+    max-width: 100%;
+    background-color: #ffffff;
     border-radius: 0;
     box-shadow: none;
-    padding: 2rem 2rem; /* Increased padding for mobile */
+    padding: 3rem 2.5rem;
 }
 
 h1, h2, h3 {
     margin-top: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.25rem;
+    line-height: 1.2;
 }
 
 h2 {
-    margin-top: 2rem;
-    border-bottom: 1px solid #ccc;
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    border-bottom: 1px solid #d0d0d0;
+    padding-bottom: 0.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
 }
 
 /* Error message for JSON loading issues */
 .error-message {
-    color: #c71585;
+    color: #d81b60;
     text-align: center;
-    padding: 1rem;
-    border: 1px solid #c71585;
+    padding: 1.5rem;
+    border: 1px solid #d81b60;
     border-radius: 8px;
-    margin: 1rem auto;
+    margin: 1.5rem auto;
     max-width: 800px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.theme-dark .error-message {
+    background-color: rgba(50, 50, 50, 0.9);
+    color: #ff80ab;
 }
 
 /* Experience, Education, and Certification items */
 .experience-item, .education-item, .certification-item {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
 }
 
 .experience-item img, .education-item img {
     width: 150px;
     max-width: 150px;
     max-height: 100px;
-    margin: 0 auto 1rem auto;
+    margin: 0 auto 1.5rem auto;
     display: block;
-    filter: brightness(0.8) contrast(1.2);
+    filter: brightness(0.85) contrast(1.15);
     object-fit: contain;
     image-rendering: crisp-edges;
     -webkit-backface-visibility: hidden;
@@ -157,7 +178,7 @@ h2 {
 
 /* Specific styling for Eccovia logo in light theme */
 .eccovia-logo {
-    filter: grayscale(1) brightness(0.3) contrast(1.2);
+    filter: grayscale(1) brightness(0.4) contrast(1.2);
 }
 
 /* Ensure Eccovia logo in dark theme remains unchanged */
@@ -170,56 +191,61 @@ h2 {
 }
 
 .experience-item .sticky-header, .education-item .sticky-header {
-    padding: 0;
+    padding: 0.75rem;
     margin: 0;
 }
 
 .experience-item .sticky-header h3, .education-item .sticky-header h3 {
     margin: 0;
-    font-size: 1.25em;
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
 .experience-item .date-range, .education-item .date-range {
     display: block;
-    font-size: 1em;
-    color: #666;
-    margin-top: 0.25rem;
+    font-size: 1rem;
+    color: #555;
+    margin-top: 0.5rem;
 }
 
 .experience-item .location, .education-item .location {
     display: block;
-    font-size: 1em;
-    color: #666;
+    font-size: 1rem;
+    color: #555;
     margin-top: 0.25rem;
 }
 
 .experience-item .details, .education-item .details {
     margin-left: 0;
     text-align: left;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
 /* Ensure bullets are left-aligned with standard indent */
 .experience-item ul, .education-item ul, .certification-item ul {
     list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
-    text-align: left;
+    padding-left: 1.5rem;
+    margin-top: 0.75rem;
+    font-size: 1rem;
 }
 
 /* Liquid glass effect for sticky headers in dark theme */
 .theme-dark .experience-item .sticky-header,
 .theme-dark .education-item .sticky-header {
-    background: linear-gradient(90deg, rgba(106, 90, 205, 0.3), rgba(50, 50, 50, 0.3));
-    backdrop-filter: blur(8px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    animation: liquidGlassFlow 10s ease-in-out infinite;
-    border-radius: 4px;
-    padding: 0.5rem;
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.25), rgba(50, 50, 50, 0.25));
+    backdrop-filter: blur(10px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    animation: liquidGlassFlow 12s ease-in-out infinite;
+    border-radius: 6px;
+    padding: 0.75rem;
 }
 
 /* Other content styling */
 .contact p {
-    margin: 0.5rem 0;
+    margin: 0.75rem 0;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 .contact p#phone:empty {
@@ -228,53 +254,54 @@ h2 {
 
 .location-note {
     font-style: italic;
-    color: #666;
-    margin: 0.5rem 0;
+    color: #555;
+    margin: 0.75rem 0;
+    font-size: 1rem;
 }
 
 /* Dark mode styles */
 .theme-dark {
-    background-color: #1a1a1a;
-    color: #f0f0f0;
+    background-color: #121212;
+    color: #e0e0e0;
 }
 
 .theme-dark .container {
-    background-color: rgba(42, 42, 42, 0.2);
-    color: #f0f0f0;
+    background-color: rgba(40, 40, 40, 0.3);
+    color: #e0e0e0;
 }
 
 body.dogs-page.theme-dark .container {
-    background-color: #2a2a2a;
-    color: #f0f0f0;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
 }
 
 .theme-dark h2 {
-    border-color: #555;
+    border-color: #666;
 }
 
 .theme-dark .experience-item .date-range,
 .theme-dark .education-item .date-range {
-    color: #bbb;
+    color: #aaa;
 }
 
 .theme-dark .experience-item .location,
 .theme-dark .education-item .location {
-    color: #bbb;
+    color: #aaa;
 }
 
 .theme-dark .location-note {
-    color: #bbb;
+    color: #aaa;
 }
 
 .theme-dark button {
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: #e0e0e0;
+    color: #2d2d2d;
 }
 
 /* Liquid Glass theme toggle switch */
 .theme-toggle-wrapper {
     position: relative;
-    margin: 0.5rem 0;
+    margin: 0.75rem 0;
     display: none;
 }
 
@@ -289,31 +316,31 @@ body.dogs-page.theme-dark .container {
 
 .theme-toggle-track {
     display: block;
-    width: 51px;
-    height: 31px;
-    background: rgba(255, 255, 255, 0.1);
+    width: 56px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
+    border-radius: 16px;
     position: relative;
     transition: background 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2);
 }
 
 .theme-dark .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .theme-toggle-knob {
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 27px;
-    height: 27px;
-    background: linear-gradient(145deg, #ffffff, #d0d0d0);
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(145deg, #ffffff, #d5d5d5);
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 0 6px rgba(255, 255, 255, 0.5);
     transition: transform 0.3s ease, background 0.3s ease;
     display: flex;
     align-items: center;
@@ -322,49 +349,49 @@ body.dogs-page.theme-dark .container {
 }
 
 .theme-dark .theme-toggle-knob {
-    background: linear-gradient(145deg, #cccccc, #999999);
+    background: linear-gradient(145deg, #d0d0d0, #a0a0a0);
 }
 
 .theme-toggle-knob:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.7);
 }
 
 .theme-toggle-icon {
-    font-size: 1rem;
+    font-size: 1.1rem;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    color: #c71585;
+    color: #d81b60;
 }
 
 .theme-toggle-icon.fa-sun {
-    color: #c71585;
+    color: #d81b60;
     opacity: 0;
     transform: scale(0.8);
 }
 
 .theme-toggle-icon.fa-moon {
-    color: #c71585;
+    color: #d81b60;
     opacity: 1;
     position: absolute;
     transform: scale(1);
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 0 15px rgba(199, 21, 133, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 16px rgba(199, 21, 133, 0.25);
 }
 
 .theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.3);
-    box-shadow: inset 0 0 15px rgba(155, 13, 99, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 16px rgba(155, 13, 99, 0.2);
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
-    transform: translateX(20px);
-    background: linear-gradient(145deg, #ffffff, #d0d0d0);
+    transform: translateX(24px);
+    background: linear-gradient(145deg, #ffffff, #d5d5d5);
 }
 
 .theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
-    background: linear-gradient(145deg, #cccccc, #999999);
+    background: linear-gradient(145deg, #d0d0d0, #a0a0a0);
 }
 
 .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-sun {
@@ -377,54 +404,54 @@ body.dogs-page.theme-dark .container {
     transform: scale(0.8);
 }
 
-/* Hamburger menu styles with enhanced liquid glass effect */
+/* Hamburger menu styles */
 button#menuToggleButton.menu-toggle {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     padding: 0;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     position: fixed;
-    top: 1rem;
-    right: 1rem;
-    color: #f0f0f0;
-    font-size: 1rem;
+    top: 1.5rem;
+    right: 1.5rem;
+    color: #e0e0e0;
+    font-size: 1.1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 1001;
     transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-    width: 40px;
-    height: 40px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    width: 44px;
+    height: 44px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
 }
 
 .theme-dark button#menuToggleButton.menu-toggle {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #f0f0f0;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #e0e0e0;
 }
 
 button#menuToggleButton.menu-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    opacity: 0.9;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    opacity: 0.95;
 }
 
 .theme-dark button#menuToggleButton.menu-toggle:hover {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.45);
 }
 
 button#menuToggleButton.menu-toggle span {
     position: relative;
-    height: 2px;
-    background-color: #c71585;
+    height: 2.5px;
+    background-color: #d81b60;
     transition: all 0.3s ease;
-    width: 24px;
-    margin: 3px 0;
+    width: 28px;
+    margin: 3.5px 0;
 }
 
 button#menuToggleButton.menu-toggle span:nth-child(1),
@@ -436,26 +463,26 @@ button#menuToggleButton.menu-toggle span:nth-child(3) {
 }
 
 button#menuToggleButton.menu-toggle:hover span {
-    transform: scaleX(1.2);
+    transform: scaleX(1.15);
 }
 
 nav#menu.menu {
     position: fixed;
-    top: 3rem;
-    right: 1rem;
-    background: rgba(255, 255, 255, 0.1);
+    top: 4rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    padding: 1rem;
-    max-height: calc(100vh - 4rem);
+    padding: 1.25rem;
+    max-height: calc(100vh - 5rem);
     overflow-y: auto;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    transform: translateY(-10px);
+    transform: translateY(-12px);
     opacity: 0;
-    min-width: 150px;
+    min-width: 180px;
 }
 
 nav#menu.menu.active {
@@ -465,8 +492,8 @@ nav#menu.menu.active {
 }
 
 .theme-dark nav#menu.menu {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .menu ul {
@@ -476,33 +503,34 @@ nav#menu.menu.active {
 }
 
 .menu li {
-    margin: 0.5rem 0;
+    margin: 0.75rem 0;
     text-align: center;
     position: relative;
 }
 
 .menu a, .menu button.download-pdf {
-    color: #c71585;
+    color: #d81b60;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 1.1rem;
     display: block;
-    padding: 0.5rem;
+    padding: 0.75rem;
     background: none;
     border: none;
     cursor: pointer;
     width: 100%;
     text-align: center;
-    transition: color 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+    transition: color 0.3s ease, background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
 .theme-dark .menu a, .theme-dark .menu button.download-pdf {
-    color: #c71585;
+    color: #ff80ab;
 }
 
 .menu a:hover, .menu button.download-pdf:hover {
-    color: #fff;
-    background-color: rgba(199, 21, 133, 0.2);
-    opacity: 0.9;
+    color: #ffffff;
+    background-color: rgba(199, 21, 133, 0.25);
+    opacity: 0.95;
+    transform: translateY(-2px);
 }
 
 .theme-dark .menu a:hover, .theme-dark .menu button.download-pdf:hover {
@@ -510,33 +538,38 @@ nav#menu.menu.active {
 }
 
 .menu a.disabled {
-    color: #666;
+    color: #777;
     cursor: not-allowed;
     opacity: 0.5;
 }
 
 .theme-dark .menu a.disabled {
-    color: #888;
+    color: #999;
 }
 
 .menu a.disabled:hover {
     background: none;
-    color: #666;
+    color: #777;
+    transform: none;
 }
 
 .theme-dark .menu a.disabled:hover {
-    color: #888;
+    color: #999;
 }
 
 .menu-icon {
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    color: #c71585;
+    font-size: 1.6rem;
+    padding: 0.75rem;
+    color: #d81b60;
+}
+
+.theme-dark .menu-icon {
+    color: #ff80ab;
 }
 
 .menu-icon:hover {
-    color: #fff;
-    background-color: rgba(199, 21, 133, 0.2);
+    color: #ffffff;
+    background-color: rgba(199, 21, 133, 0.25);
 }
 
 .theme-dark .menu-icon:hover {
@@ -544,14 +577,18 @@ nav#menu.menu.active {
 }
 
 .menu-text {
-    font-size: 1rem;
-    padding: 0.5rem;
-    color: #c71585;
+    font-size: 1.1rem;
+    padding: 0.75rem;
+    color: #d81b60;
+}
+
+.theme-dark .menu-text {
+    color: #ff80ab;
 }
 
 .menu-text:hover {
-    color: #fff;
-    background-color: rgba(199, 21, 133, 0.2);
+    color: #ffffff;
+    background-color: rgba(199, 21, 133, 0.25);
 }
 
 .theme-dark .menu-text:hover {
@@ -565,53 +602,53 @@ nav#menu.menu.active {
 /* General list styling */
 ul {
     list-style-type: disc;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+    margin-top: 0.75rem;
 }
 
 li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
 /* Back to Top Button */
 .back-to-top {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: rgba(255, 255, 255, 0.1);
+    bottom: 2.5rem;
+    right: 2.5rem;
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
-    color: #f0f0f0;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
     transition: background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
     z-index: 1000;
     display: none;
 }
 
 .theme-dark .back-to-top {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #f0f0f0;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #e0e0e0;
 }
 
 .back-to-top:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     transform: scale(1.1);
 }
 
 .theme-dark .back-to-top:hover {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.45);
 }
 
 /* Download PDF Button */
 .download-pdf {
-    font-size: 1rem;
-    padding: 0.5rem;
+    font-size: 1.1rem;
+    padding: 0.75rem;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -619,32 +656,32 @@ li {
 
 /* Back Button for Dogs Page */
 body.dogs-page .back-button {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
-    border: 1px solid #c71585;
+    border: 1px solid #d81b60;
     border-radius: 8px;
-    padding: 0.5rem 1rem;
-    margin-top: 1rem;
-    color: #c71585;
-    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+    margin-top: 1.5rem;
+    color: #d81b60;
+    font-size: 1.1rem;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
     transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 body.dogs-page.theme-dark .back-button {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #c71585;
-    color: #c71585;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid #ff80ab;
+    color: #ff80ab;
 }
 
 body.dogs-page .back-button:hover {
-    background: rgba(199, 21, 133, 0.2);
+    background: rgba(199, 21, 133, 0.25);
     transform: scale(1.05);
-    opacity: 0.9;
+    opacity: 0.95;
 }
 
 body.dogs-page.theme-dark .back-button:hover {
@@ -655,28 +692,59 @@ body.dogs-page.theme-dark .back-button:hover {
 body.dogs-page .gallery {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
     align-items: center;
-    margin-top: 2rem;
-    z-index: 0; /* Ensure gallery doesn't overlap menu */
+    margin-top: 2.5rem;
+    z-index: 0;
     width: 100%;
     max-width: 100%;
 }
 
 body.dogs-page .dog-photo {
     width: 100%;
-    max-width: calc(100vw - 4rem); /* Scale to viewport width minus padding */
+    max-width: calc(100vw - 5rem);
     min-width: 0;
     height: auto;
     margin: 0 auto;
     display: block;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
     object-fit: contain;
 }
 
 body.dogs-page .dog-photo:hover {
-    transform: scale(1.02);
+    transform: scale(1.03);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        padding: 1.5rem;
+    }
+
+    .container {
+        padding: 2rem 1.5rem;
+    }
+
+    body.dogs-page .container {
+        padding: 2rem 1.5rem;
+    }
+
+    nav#menu.menu {
+        min-width: 160px;
+        top: 3.5rem;
+        right: 1rem;
+    }
+
+    button#menuToggleButton.menu-toggle {
+        top: 1rem;
+        right: 1rem;
+    }
+
+    body.dogs-page .dog-photo {
+        max-width: calc(100vw - 3rem);
+    }
 }
