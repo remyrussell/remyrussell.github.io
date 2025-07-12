@@ -57,7 +57,7 @@ function attachThemeToggleEvent() {
                 console.log('Clicked outside menu, closing:', menu.classList);
             }
         });
-        // Ensure menu remains visible during scroll
+        // Ensure menu remains visibley during scroll
         window.addEventListener('scroll', () => {
             menuToggleButton.style.display = 'flex';
             if (menu.classList.contains('active')) {
