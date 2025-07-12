@@ -29,7 +29,7 @@ function attachThemeToggleEvent() {
                 document.body.className = isDark ? 'theme-dark dogs-page' : 'dogs-page';
             }
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            console.log('Theme toggled to:', isDark ? 'dark' : 'light');
+            console.log('Theme toggled to:', isDark ? 'light' : 'dark');
         });
     } else {
         console.error('Theme toggle button not found in DOM');
@@ -298,13 +298,13 @@ function createParticleSystem() {
     canvas.id = 'particleCanvas';
     document.body.appendChild(canvas);
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth * 2;
-    canvas.height = window.innerHeight * 2;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     // Resize canvas on window resize
     window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth * 2;
-        canvas.height = window.innerHeight * 2;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     });
 
     // Initialize particles
@@ -312,12 +312,12 @@ function createParticleSystem() {
         particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 1 + 0.5, // Larger particles
+            radius: Math.random() * 1 + 0.5,
             angle: Math.random() * Math.PI * 2,
-            orbitRadiusX: Math.random() * 350 + 50, // Wider orbits
-            orbitRadiusY: Math.random() * 175 + 25,
-            baseSpeed: Math.random() * 0.0015 + 0.0005, // Slower speed
-            velocityX: 0, // For elastic effect
+            orbitRadiusX: Math.random() * 500 + 100, // Wider orbits
+            orbitRadiusY: Math.random() * 250 + 50,
+            baseSpeed: Math.random() * 0.0015 + 0.0005,
+            velocityX: 0,
             velocityY: 0
         });
     }
@@ -348,17 +348,17 @@ function createParticleSystem() {
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = 600;
+            const maxDistance = 800;
             let speed = particle.baseSpeed;
             let gravityInfluence = 1 / (Math.pow(distance, 2) + 50);
 
             // Adjust speed and influence based on distance
-            if (distance < 50) {
+            if (distance < 100) {
                 gravityInfluence = 1; // Strong attraction near cursor
                 speed = particle.baseSpeed * 2; // Subtle dynamic movement
-            } else if (distance > 600) {
-                speed = particle.baseSpeed * 0.02; // Nearly still far away
-                gravityInfluence *= 0.02;
+            } else if (distance > 800) {
+                speed = particle.baseSpeed * 0.01; // Nearly still far away
+                gravityInfluence *= 0.01;
             }
 
             // Update angle
@@ -375,8 +375,8 @@ function createParticleSystem() {
             particle.velocityY = (particle.velocityY + elasticForceY) * damping;
 
             // Update position
-            particle.x += particle.velocityX;
-            particle.y += particle.velocityY;
+            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence + particle.velocityX;
+            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence + particle.velocityY;
 
             // Draw particle
             ctx.beginPath();
@@ -564,7 +564,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 experienceContainer.innerHTML += `<p>No professional experience data available.</p>`;
             }
         } else {
-            console.error('Professional experience container not lest found in DOM');
+            console.error('Professional experience container not found in DOM');
         }
 
         const educationContainer = document.getElementById('education');
