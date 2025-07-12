@@ -288,7 +288,7 @@ function updateBackgroundPosition(scrollY) {
 
 // Particle system
 const particles = [];
-const numParticles = 300;
+const numParticles = 150;
 
 function createParticleSystem() {
     const canvas = document.createElement('canvas');
@@ -328,6 +328,7 @@ function createParticleSystem() {
             fps = frameCount;
             frameCount = 0;
             lastFrameTime = currentTime;
+            console.log('FPS:', fps); // Debug FPS
         }
 
         // Skip rendering if FPS is too low
@@ -343,17 +344,14 @@ function createParticleSystem() {
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = 800;
+            const gravityInfluence = 0.5; // Constant for even distribution
             let speed = particle.baseSpeed;
-            let gravityInfluence = 1 / (Math.pow(distance, 2) + 50);
 
-            // Adjust speed and influence based on distance
-            if (distance < 100) {
-                gravityInfluence = 0.5; // Moderate attraction near cursor
-                speed = particle.baseSpeed * 2; // Subtle dynamic movement
-            } else if (distance > 800) {
+            // Adjust speed based on distance
+            if (distance > 800) {
                 speed = particle.baseSpeed * 0.01; // Nearly still far away
-                gravityInfluence *= 0.05;
+            } else {
+                speed = particle.baseSpeed * 2; // Subtle dynamic movement
             }
 
             // Update angle
@@ -530,7 +528,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                         const descriptionPara = document.createElement('p');
                         descriptionPara.className = 'description';
-                        descriptionPara.innerText = experience.description || 'Description Not Found';
+                        descriptionPara.innerText = equilibrium.description || 'Description Not Found';
                         detailsDiv.appendChild(descriptionPara);
 
                         const highlightsList = document.createElement('ul');
@@ -589,7 +587,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     eduDetailsSpan.innerText = data.education.institution || 'Institution Not Found';
                     headerContent.appendChild(eduDetailsSpan);
 
-                    educationDiv.appendChild(headerContent);
+                    equilibriumDiv.appendChild(headerContent);
 
                     const detailsDiv = document.createElement('div');
                     detailsDiv.className = 'details';
