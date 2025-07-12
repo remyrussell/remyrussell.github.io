@@ -37,7 +37,6 @@ function attachThemeToggleEvent() {
     const menuToggleButton = document.getElementById('menuToggleButton');
     const menu = document.getElementById('menu');
     if (menuToggleButton && menu) {
-        // Ensure menu starts closed on mobile
         if (window.innerWidth < 768) {
             menu.classList.remove('active');
         }
@@ -48,7 +47,7 @@ function attachThemeToggleEvent() {
             console.log('Menu classList after toggle:', menu.classList);
         });
         menu.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent menu closure when clicking inside
+            e.stopPropagation();
             console.log('Menu clicked, preventing closure');
         });
         document.addEventListener('click', (e) => {
@@ -57,7 +56,6 @@ function attachThemeToggleEvent() {
                 console.log('Clicked outside menu, closing:', menu.classList);
             }
         });
-        // Ensure menu remains visible during scroll
         window.addEventListener('scroll', () => {
             menuToggleButton.style.display = 'flex';
             if (menu.classList.contains('active')) {
@@ -272,7 +270,7 @@ function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
     const mouseY = lastMouseY / window.innerHeight;
     const scrollInfluence = scrollY / window.innerHeight;
-    const time = Date.now() / 1000; // For continuous animation
+    const time = Date.now() / 1000;
     const waveX = Math.sin(time + mouseX * Math.PI * 2) * 50;
     const waveY = Math.cos(time + mouseY * Math.PI * 2) * 50;
     const scrollOffset = scrollInfluence * 100;
@@ -286,7 +284,6 @@ function updateBackgroundPosition(scrollY) {
     lastScrollY = scrollInfluence;
 }
 
-// Particle system
 const particles = [];
 const numParticles = 150;
 
@@ -298,20 +295,18 @@ function createParticleSystem() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Resize canvas on window resize
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     });
 
-    // Initialize particles
     for (let i = 0; i < numParticles; i++) {
         particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 1 + 1, // Larger particles (1–2px)
+            radius: Math.random() * 1 + 1,
             angle: Math.random() * Math.PI * 2,
-            orbitRadiusX: Math.random() * 500 + 100, // Wider orbits
+            orbitRadiusX: Math.random() * 500 + 100,
             orbitRadiusY: Math.random() * 250 + 50,
             baseSpeed: Math.random() * 0.0015 + 0.0005
         });
@@ -328,10 +323,9 @@ function createParticleSystem() {
             fps = frameCount;
             frameCount = 0;
             lastFrameTime = currentTime;
-            console.log('FPS:', fps); // Debug FPS
+            console.log('FPS:', fps);
         }
 
-        // Skip rendering if FPS is too low
         if (fps < 60 && frameCount % 3 === 0) {
             requestAnimationFrame(animateParticles);
             return;
@@ -340,32 +334,26 @@ function createParticleSystem() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         particles.forEach(particle => {
-            // Calculate distance from cursor
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const gravityInfluence = 0.5; // Constant for even distribution
+            const gravityInfluence = 0.5;
             let speed = particle.baseSpeed;
 
-            // Adjust speed based on distance
             if (distance > 800) {
-                speed = particle.baseSpeed * 0.01; // Nearly still far away
+                speed = particle.baseSpeed * 0.01;
             } else {
-                speed = particle.baseSpeed * 2; // Subtle dynamic movement
+                speed = particle.baseSpeed * 2;
             }
 
-            // Update angle
             particle.angle += speed;
 
-            // Update position
             particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
             particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
 
-            // Boundary check
             particle.x = Math.max(0, Math.min(particle.x, canvas.width));
             particle.y = Math.max(0, Math.min(particle.y, canvas.height));
 
-            // Draw particle
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
@@ -383,10 +371,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     keepThemeSetting();
     attachThemeToggleEvent();
 
-    // Delay particle system to prioritize menu
     setTimeout(createParticleSystem, 500);
 
-    // Disable Dog Photos link on dogs page
     if (document.body.classList.contains('dogs-page')) {
         const dogPhotosLink = document.querySelector('a[href="/dogs.html"]');
         if (dogPhotosLink) {
@@ -394,10 +380,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             dogPhotosLink.addEventListener('click', (e) => e.preventDefault());
             console.log('Dog Photos link disabled on dogs page');
         }
-    }
-
-    // Skip JSON loading for dogs page
-    if (document.body.classList.contains('dogs-page')) {
         console.log('Dogs page detected, skipping resume.json fetch');
         return;
     }
@@ -528,7 +510,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                         const descriptionPara = document.createElement('p');
                         descriptionPara.className = 'description';
-                        descriptionPara.innerText = equilibrium.description || 'Description Not Found';
+                        descriptionPara.innerText = experience.description || 'Description Not Found';
                         detailsDiv.appendChild(descriptionPara);
 
                         const highlightsList = document.createElement('ul');
@@ -587,7 +569,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     eduDetailsSpan.innerText = data.education.institution || 'Institution Not Found';
                     headerContent.appendChild(eduDetailsSpan);
 
-                    equilibriumDiv.appendChild(headerContent);
+                    educationDiv.appendChild(headerContent);
 
                     const detailsDiv = document.createElement('div');
                     detailsDiv.className = 'details';
@@ -661,7 +643,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Mouse move effect for dynamic background and particles
     document.addEventListener('mousemove', (e) => {
         if (window.innerWidth >= 768) {
             lastMouseX = e.clientX;
@@ -671,7 +652,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Touch move effect for dynamic background and particles
     document.addEventListener('touchmove', (e) => {
         if (window.innerWidth < 768) {
             lastMouseX = e.touches[0].clientX;
@@ -681,6 +661,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Initial position
     updateBackgroundPosition(0);
 });
