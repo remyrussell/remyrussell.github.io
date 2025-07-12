@@ -306,9 +306,9 @@ function createParticleSystem() {
             y: Math.random() * canvas.height,
             radius: Math.random() * 1 + 1,
             angle: Math.random() * Math.PI * 2,
-            orbitRadiusX: Math.random() * 500 + 100,
-            orbitRadiusY: Math.random() * 250 + 50,
-            baseSpeed: Math.random() * 0.0015 + 0.0005
+            orbitRadiusX: Math.random() * 400 + 150,
+            orbitRadiusY: Math.random() * 200 + 100,
+            baseSpeed: Math.random() * 0.002 + 0.001
         });
     }
 
@@ -337,13 +337,15 @@ function createParticleSystem() {
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const gravityInfluence = 0.5;
+            let gravityInfluence = 0.7;
             let speed = particle.baseSpeed;
 
-            if (distance > 800) {
-                speed = particle.baseSpeed * 0.01;
-            } else {
-                speed = particle.baseSpeed * 2;
+            if (distance < 200) {
+                gravityInfluence = 1.2;
+                speed = particle.baseSpeed * 3;
+            } else if (distance > 800) {
+                gravityInfluence = 0.3;
+                speed = particle.baseSpeed * 0.5;
             }
 
             particle.angle += speed;
@@ -481,7 +483,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             };
                             experienceDiv.appendChild(logoImg);
                         }
-                        previousCompany = experience.company;
+                        previousCompany = expression.company;
 
                         const headerContent = document.createElement('div');
                         headerContent.className = 'header-content';
@@ -584,7 +586,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     educationContainer.innerHTML += `<p>Error rendering education: ${err.message}</p>`;
                 }
             } else {
-                educationContainer.innerHTML += '<p>No education data available.</p>';
+                educationContainer.innerHTML += `<p>No education data available.</p>`;
             }
         } else {
             console.error('Education container not found in DOM');
