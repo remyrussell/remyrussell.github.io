@@ -151,21 +151,75 @@ function generateResumePDF(data) {
     yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
     let previousCompany = null;
     if (data.professionalExperience) {
-        data.professionalExperience.forEach(exp => {
-            const title = `${exp.position} at ${exp.company}`;
-            yPosition = addText(title, 11.5, 'bold', margin, yPosition, contentWidth);
-            const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-            yPosition = addText(`${duration} | ${exp.location}`, 10.5, 'italic', margin, yPosition, contentWidth);
-            if (exp.description) {
-                yPosition = addText(exp.description, 10.5, 'normal', margin, yPosition, contentWidth);
-                yPosition += 0.3;
+        data.professionalExperience.forEach((experience, index) => {
+            try {
+                const experienceDiv = document.createElement('div');
+                experienceDiv.className = 'experience-item';
+
+                if (experience.company !== previousCompany) {
+                    const logoImg = document.createElement('img');
+                    logoImg.className = 'logo-img';
+                    if (experience.company.includes('CaseWorthy')) {
+                        logoImg.classList.add('caseworthy-logo');
+                    } else if (experience.company.includes('Eccovia')) {
+                        logoImg.classList.add('eccovia-logo');
+                    }
+                    logoImg.src = experience.logo || '';
+                    logoImg.alt = `${experience.company} logo`;
+                    logoImg.width = 150;
+                    logoImg.onerror = () => {
+                        console.warn(`Failed to load logo for ${experience.company} at ${experience.logo}`);
+                        logoImg.style.display = 'none';
+                    };
+                    experienceDiv.appendChild(logoImg);
+                }
+                previousCompany = experience.company;
+
+                const headerContent = document.createElement('div');
+                headerContent.className = 'header-content';
+
+                const stickyHeader = document.createElement('div');
+                stickyHeader.className = 'sticky-header';
+                const positionHeader = document.createElement('h3');
+                positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
+                stickyHeader.appendChild(positionHeader);
+                headerContent.appendChild(stickyHeader);
+
+                const dateRange = document.createElement('span');
+                dateRange.className = 'date-range';
+                dateRange.innerText = `${formatDate(experience.duration.start)} through ${formatDate(experience.duration.end) || 'Present'}`;
+                headerContent.appendChild(dateRange);
+
+                const locationSpan = document.createElement('span');
+                locationSpan.className = 'location';
+                locationSpan.innerText = experience.location || '';
+                headerContent.appendChild(locationSpan);
+
+                experienceDiv.appendChild(headerContent);
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'details';
+
+                const descriptionPara = document.createElement('p');
+                descriptionPara.className = 'description';
+                descriptionPara.innerText = experience.description || 'Description Not Found';
+                detailsDiv.appendChild(descriptionPara);
+
+                const highlightsList = document.createElement('ul');
+                const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
+                const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
+                const combinedHighlights = [...highlightsArray, ...achievementsArray];
+                highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
+                if (combinedHighlights.length > 0) {
+                    detailsDiv.appendChild(highlightsList);
+                }
+
+                experienceDiv.appendChild(detailsDiv);
+                experienceContainer.appendChild(experienceDiv);
+            } catch (err) {
+                console.error(`Error rendering experience item ${index}:`, err.message);
+                experienceContainer.innerHTML += `<p>Error rendering experience item: ${err.message}</p>`;
             }
-            if (exp.highlights) {
-                exp.highlights.forEach(highlight => {
-                    yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
-                });
-            }
-            yPosition += 1;
         });
     }
     yPosition += 1.2;
@@ -483,7 +537,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             };
                             experienceDiv.appendChild(logoImg);
                         }
-                        previousCompany = expression.company;
+                        previousCompany = experience.company;
 
                         const headerContent = document.createElement('div');
                         headerContent.className = 'header-content';
