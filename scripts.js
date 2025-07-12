@@ -57,7 +57,7 @@ function attachThemeToggleEvent() {
                 console.log('Clicked outside menu, closing:', menu.classList);
             }
         });
-        // Ensure menu remains visibley during scroll
+        // Ensure menu remains visible during scroll
         window.addEventListener('scroll', () => {
             menuToggleButton.style.display = 'flex';
             if (menu.classList.contains('active')) {
@@ -288,7 +288,7 @@ function updateBackgroundPosition(scrollY) {
 
 // Particle system
 const particles = [];
-const numParticles = 500;
+const numParticles = 300;
 
 function createParticleSystem() {
     const canvas = document.createElement('canvas');
@@ -331,7 +331,7 @@ function createParticleSystem() {
         }
 
         // Skip rendering if FPS is too low
-        if (fps < 50 && frameCount % 3 === 0) {
+        if (fps < 60 && frameCount % 3 === 0) {
             requestAnimationFrame(animateParticles);
             return;
         }
@@ -346,17 +346,14 @@ function createParticleSystem() {
             const maxDistance = 800;
             let speed = particle.baseSpeed;
             let gravityInfluence = 1 / (Math.pow(distance, 2) + 50);
-            let opacity = 0.5;
 
-            // Adjust speed, influence, and opacity based on distance
+            // Adjust speed and influence based on distance
             if (distance < 100) {
                 gravityInfluence = 0.5; // Moderate attraction near cursor
                 speed = particle.baseSpeed * 2; // Subtle dynamic movement
-                opacity = 0.5; // Full opacity near cursor
             } else if (distance > 800) {
                 speed = particle.baseSpeed * 0.01; // Nearly still far away
                 gravityInfluence *= 0.05;
-                opacity = 0.2; // Faded opacity for distant particles
             }
 
             // Update angle
@@ -366,10 +363,14 @@ function createParticleSystem() {
             particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
             particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
 
+            // Boundary check
+            particle.x = Math.max(0, Math.min(particle.x, canvas.width));
+            particle.y = Math.max(0, Math.min(particle.y, canvas.height));
+
             // Draw particle
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(199, 21, 133, ${opacity})`;
+            ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
             ctx.fill();
         });
 
