@@ -29,7 +29,7 @@ function attachThemeToggleEvent() {
                 document.body.className = isDark ? 'theme-dark dogs-page' : 'dogs-page';
             }
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            console.log('Theme toggled to:', isDark ? 'light' : 'dark');
+            console.log('Theme toggled to:', isDark ? 'dark' : 'light');
         });
     } else {
         console.error('Theme toggle button not found in DOM');
@@ -267,9 +267,6 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
 let lastMouseX = window.innerWidth / 2;
 let lastMouseY = window.innerHeight / 2;
 let lastScrollY = 0;
-let mouseVelocityX = 0;
-let mouseVelocityY = 0;
-let lastMouseTime = Date.now();
 
 function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
@@ -291,7 +288,7 @@ function updateBackgroundPosition(scrollY) {
 
 // Particle system
 const particles = [];
-const numParticles = 1000;
+const numParticles = 500;
 
 function createParticleSystem() {
     const canvas = document.createElement('canvas');
@@ -312,13 +309,11 @@ function createParticleSystem() {
         particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            radius: Math.random() * 1 + 0.5,
+            radius: Math.random() * 1 + 1, // Larger particles (1–2px)
             angle: Math.random() * Math.PI * 2,
             orbitRadiusX: Math.random() * 500 + 100, // Wider orbits
             orbitRadiusY: Math.random() * 250 + 50,
-            baseSpeed: Math.random() * 0.0015 + 0.0005,
-            velocityX: 0,
-            velocityY: 0
+            baseSpeed: Math.random() * 0.0015 + 0.0005
         });
     }
 
@@ -336,7 +331,7 @@ function createParticleSystem() {
         }
 
         // Skip rendering if FPS is too low
-        if (fps < 40 && frameCount % 3 === 0) {
+        if (fps < 50 && frameCount % 3 === 0) {
             requestAnimationFrame(animateParticles);
             return;
         }
@@ -351,37 +346,30 @@ function createParticleSystem() {
             const maxDistance = 800;
             let speed = particle.baseSpeed;
             let gravityInfluence = 1 / (Math.pow(distance, 2) + 50);
+            let opacity = 0.5;
 
-            // Adjust speed and influence based on distance
+            // Adjust speed, influence, and opacity based on distance
             if (distance < 100) {
-                gravityInfluence = 1; // Strong attraction near cursor
+                gravityInfluence = 0.5; // Moderate attraction near cursor
                 speed = particle.baseSpeed * 2; // Subtle dynamic movement
+                opacity = 0.5; // Full opacity near cursor
             } else if (distance > 800) {
                 speed = particle.baseSpeed * 0.01; // Nearly still far away
-                gravityInfluence *= 0.01;
+                gravityInfluence *= 0.05;
+                opacity = 0.2; // Faded opacity for distant particles
             }
 
             // Update angle
             particle.angle += speed;
 
-            // Elastic effect based on mouse velocity
-            const springConstant = 0.05;
-            const damping = 0.9;
-            const targetX = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
-            const targetY = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
-            const elasticForceX = (targetX - particle.x) * springConstant + mouseVelocityX * 0.1;
-            const elasticForceY = (targetY - particle.y) * springConstant + mouseVelocityY * 0.1;
-            particle.velocityX = (particle.velocityX + elasticForceX) * damping;
-            particle.velocityY = (particle.velocityY + elasticForceY) * damping;
-
             // Update position
-            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence + particle.velocityX;
-            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence + particle.velocityY;
+            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
+            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
 
             // Draw particle
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
+            ctx.fillStyle = `rgba(199, 21, 133, ${opacity})`;
             ctx.fill();
         });
 
@@ -677,15 +665,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Mouse move effect for dynamic background and particles
     document.addEventListener('mousemove', (e) => {
         if (window.innerWidth >= 768) {
-            const currentTime = Date.now();
-            const deltaTime = (currentTime - lastMouseTime) / 1000; // Time in seconds
-            if (deltaTime > 0) {
-                mouseVelocityX = (e.clientX - lastMouseX) / deltaTime;
-                mouseVelocityY = (e.clientY - lastMouseY) / deltaTime;
-            }
             lastMouseX = e.clientX;
             lastMouseY = e.clientY;
-            lastMouseTime = currentTime;
             const scrollY = window.scrollY || document.documentElement.scrollTop;
             updateBackgroundPosition(scrollY);
         }
@@ -694,15 +675,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Touch move effect for dynamic background and particles
     document.addEventListener('touchmove', (e) => {
         if (window.innerWidth < 768) {
-            const currentTime = Date.now();
-            const deltaTime = (currentTime - lastMouseTime) / 1000; // Time in seconds
-            if (deltaTime > 0) {
-                mouseVelocityX = (e.touches[0].clientX - lastMouseX) / deltaTime;
-                mouseVelocityY = (e.touches[0].clientY - lastMouseY) / deltaTime;
-            }
             lastMouseX = e.touches[0].clientX;
             lastMouseY = e.touches[0].clientY;
-            lastMouseTime = currentTime;
             const scrollY = window.scrollY || document.documentElement.scrollTop;
             updateBackgroundPosition(scrollY);
         }
