@@ -267,6 +267,9 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
 let lastMouseX = window.innerWidth / 2;
 let lastMouseY = window.innerHeight / 2;
 let lastScrollY = 0;
+let mouseVelocityX = 0;
+let mouseVelocityY = 0;
+let lastMouseTime = Date.now();
 
 function updateBackgroundPosition(scrollY) {
     const mouseX = lastMouseX / window.innerWidth;
@@ -295,13 +298,13 @@ function createParticleSystem() {
     canvas.id = 'particleCanvas';
     document.body.appendChild(canvas);
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth * 2;
+    canvas.height = window.innerHeight * 2;
 
     // Resize canvas on window resize
     window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth * 2;
+        canvas.height = window.innerHeight * 2;
     });
 
     // Initialize particles
@@ -311,9 +314,11 @@ function createParticleSystem() {
             y: Math.random() * canvas.height,
             radius: Math.random() * 1 + 0.5, // Larger particles
             angle: Math.random() * Math.PI * 2,
-            orbitRadiusX: Math.random() * 80 + 20,
-            orbitRadiusY: Math.random() * 40 + 10,
-            baseSpeed: Math.random() * 0.003 + 0.001 // Slower speed
+            orbitRadiusX: Math.random() * 350 + 50, // Wider orbits
+            orbitRadiusY: Math.random() * 175 + 25,
+            baseSpeed: Math.random() * 0.0015 + 0.0005, // Slower speed
+            velocityX: 0, // For elastic effect
+            velocityY: 0
         });
     }
 
@@ -343,25 +348,35 @@ function createParticleSystem() {
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const maxDistance = 300;
+            const maxDistance = 600;
             let speed = particle.baseSpeed;
             let gravityInfluence = 1 / (Math.pow(distance, 2) + 50);
 
             // Adjust speed and influence based on distance
             if (distance < 50) {
                 gravityInfluence = 1; // Strong attraction near cursor
-                speed = particle.baseSpeed * 3; // Reduced dynamic movement
-            } else if (distance > 300) {
-                speed = particle.baseSpeed * 0.05; // Nearly still far away
+                speed = particle.baseSpeed * 2; // Subtle dynamic movement
+            } else if (distance > 600) {
+                speed = particle.baseSpeed * 0.02; // Nearly still far away
                 gravityInfluence *= 0.02;
             }
 
             // Update angle
             particle.angle += speed;
 
-            // Update position with elliptical orbits
-            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
-            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
+            // Elastic effect based on mouse velocity
+            const springConstant = 0.05;
+            const damping = 0.9;
+            const targetX = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
+            const targetY = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
+            const elasticForceX = (targetX - particle.x) * springConstant + mouseVelocityX * 0.1;
+            const elasticForceY = (targetY - particle.y) * springConstant + mouseVelocityY * 0.1;
+            particle.velocityX = (particle.velocityX + elasticForceX) * damping;
+            particle.velocityY = (particle.velocityY + elasticForceY) * damping;
+
+            // Update position
+            particle.x += particle.velocityX;
+            particle.y += particle.velocityY;
 
             // Draw particle
             ctx.beginPath();
@@ -549,7 +564,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 experienceContainer.innerHTML += `<p>No professional experience data available.</p>`;
             }
         } else {
-            console.error('Professional experience container not found in DOM');
+            console.error('Professional experience container not lest found in DOM');
         }
 
         const educationContainer = document.getElementById('education');
@@ -662,8 +677,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Mouse move effect for dynamic background and particles
     document.addEventListener('mousemove', (e) => {
         if (window.innerWidth >= 768) {
+            const currentTime = Date.now();
+            const deltaTime = (currentTime - lastMouseTime) / 1000; // Time in seconds
+            if (deltaTime > 0) {
+                mouseVelocityX = (e.clientX - lastMouseX) / deltaTime;
+                mouseVelocityY = (e.clientY - lastMouseY) / deltaTime;
+            }
             lastMouseX = e.clientX;
             lastMouseY = e.clientY;
+            lastMouseTime = currentTime;
             const scrollY = window.scrollY || document.documentElement.scrollTop;
             updateBackgroundPosition(scrollY);
         }
@@ -672,8 +694,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Touch move effect for dynamic background and particles
     document.addEventListener('touchmove', (e) => {
         if (window.innerWidth < 768) {
+            const currentTime = Date.now();
+            const deltaTime = (currentTime - lastMouseTime) / 1000; // Time in seconds
+            if (deltaTime > 0) {
+                mouseVelocityX = (e.touches[0].clientX - lastMouseX) / deltaTime;
+                mouseVelocityY = (e.touches[0].clientY - lastMouseY) / deltaTime;
+            }
             lastMouseX = e.touches[0].clientX;
             lastMouseY = e.touches[0].clientY;
+            lastMouseTime = currentTime;
             const scrollY = window.scrollY || document.documentElement.scrollTop;
             updateBackgroundPosition(scrollY);
         }
