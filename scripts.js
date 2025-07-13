@@ -93,205 +93,168 @@ function generateResumePDF(data) {
         console.error('generateResumePDF: data is undefined');
         return;
     }
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        compress: true
-    });
-
-    const margin = 10;
-    const pageWidth = 210;
-    const contentWidth = pageWidth - 2 * margin;
-    let yPosition = margin + 2;
-
-    doc.setFont('Helvetica', 'normal');
-    doc.setTextColor(0, 0, 0);
-
-    function addText(text, size, style, x, y, maxWidth) {
-        doc.setFontSize(size);
-        doc.setFont('Helvetica', style);
-        const lines = doc.splitTextToSize(text, maxWidth);
-        doc.text(lines, x, y);
-        return y + (lines.length * size * 0.45);
-    }
-
-    function addHorizontalLine(y, offset) {
-        doc.setLineWidth(0.2);
-        doc.line(margin, y - offset, margin + contentWidth, y - offset);
-    }
-
-    yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
-    let contactInfo = [];
-    if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
-    if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
-    if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
-    }
-    yPosition += 0.5;
-    if (data.role || data.seeking) {
-        const roleText = data.role || '';
-        const seekingText = data.seeking || '';
-        const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
-        yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth);
-    }
-    yPosition += 1.2;
-
-    addHorizontalLine(yPosition, 2.5);
-    yPosition += 2;
-    yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
-    if (data.summary) {
-        yPosition = addText(data.summary, 10.5, 'normal', margin, yPosition, contentWidth);
-    }
-    yPosition += 1.5;
-
-    addHorizontalLine(yPosition, 2.5);
-    yPosition += 2;
-    yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
-    let previousCompany = null;
-    if (data.professionalExperience) {
-        data.professionalExperience.forEach((experience, index) => {
-            try {
-                const experienceDiv = document.createElement('div');
-                experienceDiv.className = 'experience-item';
-
-                if (experience.company !== previousCompany) {
-                    const logoImg = document.createElement('img');
-                    logoImg.className = 'logo-img';
-                    if (experience.company.includes('CaseWorthy')) {
-                        logoImg.classList.add('caseworthy-logo');
-                    } else if (experience.company.includes('Eccovia')) {
-                        logoImg.classList.add('eccovia-logo');
-                    }
-                    logoImg.src = experience.logo || '';
-                    logoImg.alt = `${experience.company} logo`;
-                    logoImg.width = 150;
-                    logoImg.onerror = () => {
-                        console.warn(`Failed to load logo for ${experience.company} at ${experience.logo}`);
-                        logoImg.style.display = 'none';
-                    };
-                    experienceDiv.appendChild(logoImg);
-                }
-                previousCompany = experience.company;
-
-                const headerContent = document.createElement('div');
-                headerContent.className = 'header-content';
-
-                const stickyHeader = document.createElement('div');
-                stickyHeader.className = 'sticky-header';
-                const positionHeader = document.createElement('h3');
-                positionHeader.innerText = `${experience.position} at ${experience.company || 'Company Not Found'}`;
-                stickyHeader.appendChild(positionHeader);
-                headerContent.appendChild(stickyHeader);
-
-                const dateRange = document.createElement('span');
-                dateRange.className = 'date-range';
-                dateRange.innerText = `${formatDate(experience.duration.start)} through ${formatDate(experience.duration.end) || 'Present'}`;
-                headerContent.appendChild(dateRange);
-
-                const locationSpan = document.createElement('span');
-                locationSpan.className = 'location';
-                locationSpan.innerText = experience.location || '';
-                headerContent.appendChild(locationSpan);
-
-                experienceDiv.appendChild(headerContent);
-
-                const detailsDiv = document.createElement('div');
-                detailsDiv.className = 'details';
-
-                const descriptionPara = document.createElement('p');
-                descriptionPara.className = 'description';
-                descriptionPara.innerText = experience.description || 'Description Not Found';
-                detailsDiv.appendChild(descriptionPara);
-
-                const highlightsList = document.createElement('ul');
-                const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
-                const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
-                const combinedHighlights = [...highlightsArray, ...achievementsArray];
-                highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
-                if (combinedHighlights.length > 0) {
-                    detailsDiv.appendChild(highlightsList);
-                }
-
-                experienceDiv.appendChild(detailsDiv);
-                experienceContainer.appendChild(experienceDiv);
-            } catch (err) {
-                console.error(`Error rendering experience item ${index}:`, err.message);
-                experienceContainer.innerHTML += `<p>Error rendering experience item: ${err.message}</p>`;
-            }
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
         });
-    }
-    yPosition += 1.2;
 
-    addHorizontalLine(yPosition, 2.5);
-    yPosition += 2;
-    yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
-    if (data.education) {
-        yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
-        yPosition = addText(data.education.institution, 10.5, 'italic', margin, yPosition, contentWidth);
-        if (data.education.coursework) {
-            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 10.5, 'normal', margin, yPosition, contentWidth);
+        const margin = 10;
+        const pageWidth = 210;
+        const contentWidth = pageWidth - 2 * margin;
+        let yPosition = margin + 2;
+
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+
+        function addText(text, size, style, x, y, maxWidth) {
+            doc.setFontSize(size);
+            doc.setFont('Helvetica', style);
+            const lines = doc.splitTextToSize(text, maxWidth);
+            doc.text(lines, x, y);
+            return y + (lines.length * size * 0.45);
         }
-    }
-    yPosition += 2;
 
-    addHorizontalLine(yPosition, 4);
-    yPosition += 2;
-    if (data.skills || data.certifications) {
-        const columnWidth = (contentWidth - 2) / 2;
-        const leftColumnX = margin;
-        const rightColumnX = margin + columnWidth + 3;
+        function addHorizontalLine(y, offset) {
+            doc.setLineWidth(0.2);
+            doc.line(margin, y - offset, margin + contentWidth, y - offset);
+        }
 
-        let leftY = yPosition;
-        let rightY = yPosition;
+        yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
+        let contactInfo = [];
+        if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
+        if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
+        if (contactInfo.length) {
+            yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
+        }
+        yPosition += 0.5;
+        if (data.role || data.seeking) {
+            const roleText = data.role || '';
+            const seekingText = data.seeking || '';
+            const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
+            yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth);
+        }
+        yPosition += 1.2;
 
-        if (data.skills?.coreSkills) {
-            leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
-            data.skills.coreSkills.forEach(skill => {
-                leftY = addText(`- ${skill}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
+        addHorizontalLine(yPosition, 2.5);
+        yPosition += 2;
+        yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
+        if (data.summary) {
+            yPosition = addText(data.summary, 10.5, 'normal', margin, yPosition, contentWidth);
+        }
+        yPosition += 1.5;
+
+        addHorizontalLine(yPosition, 2.5);
+        yPosition += 2;
+        yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
+        if (data.professionalExperience) {
+            data.professionalExperience.forEach(exp => {
+                const title = `${exp.position} at ${exp.company}`;
+                yPosition = addText(title, 11.5, 'bold', margin, yPosition, contentWidth);
+                const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
+                yPosition = addText(`${duration} | ${exp.location}`, 10.5, 'italic', margin, yPosition, contentWidth);
+                if (exp.description) {
+                    yPosition = addText(exp.description, 10.5, 'normal', margin, yPosition, contentWidth);
+                    yPosition += 0.3;
+                }
+                if (exp.highlights) {
+                    exp.highlights.forEach(highlight => {
+                        yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
+                    });
+                }
+                yPosition += 1;
             });
         }
+        yPosition += 1.2;
 
-        if (data.skills?.fun) {
-            leftY += 0.8;
-            leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
-            data.skills.fun.forEach(fun => {
-                leftY = addText(`- ${fun}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
-            });
+        addHorizontalLine(yPosition, 2.5);
+        yPosition += 2;
+        yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
+        if (data.education) {
+            yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
+            yPosition = addText(data.education.institution, 10.5, 'italic', margin, yPosition, contentWidth);
+            if (data.education.coursework) {
+                yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 10.5, 'normal', margin, yPosition, contentWidth);
+            }
+        }
+        yPosition += 2;
+
+        addHorizontalLine(yPosition, 4);
+        yPosition += 2;
+        if (data.skills || data.certifications) {
+            const columnWidth = (contentWidth - 2) / 2;
+            const leftColumnX = margin;
+            const rightColumnX = margin + columnWidth + 3;
+
+            let leftY = yPosition;
+            let rightY = yPosition;
+
+            if (data.skills?.coreSkills) {
+                leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
+                data.skills.coreSkills.forEach(skill => {
+                    leftY = addText(`- ${skill}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
+                });
+            }
+
+            if (data.skills?.fun) {
+                leftY += 0.8;
+                leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
+                data.skills.fun.forEach(fun => {
+                    leftY = addText(`- ${fun}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
+                });
+            }
+
+            if (data.skills?.toolsAndFrameworks) {
+                rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
+                data.skills.toolsAndFrameworks.forEach(tool => {
+                    rightY = addText(`- ${tool}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
+                });
+            }
+
+            if (data.certifications) {
+                rightY += 0.8;
+                rightY = addText('Certifications', 12.25, 'bold', rightColumnX, rightY, columnWidth);
+                data.certifications.forEach(cert => {
+                    const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
+                    rightY = addText(`- ${certText}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
+                });
+            }
+
+            const maxY = Math.max(leftY, rightY);
+            doc.setLineWidth(0.2);
+            doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
+
+            yPosition = maxY;
         }
 
-        if (data.skills?.toolsAndFrameworks) {
-            rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
-            data.skills.toolsAndFrameworks.forEach(tool => {
-                rightY = addText(`- ${tool}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
-            });
+        const pdfOutput = doc.output('blob');
+        const url = URL.createObjectURL(pdfOutput);
+        const fileName = 'Remy_Russell_Resume.pdf';
+
+        // Try to open in a new tab
+        const newTab = window.open(url, '_blank');
+        if (!newTab) {
+            console.warn('Failed to open new tab. Pop-up blocker may be enabled.');
+            // Fallback: Create a download link
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            alert('Unable to open PDF in new tab. The PDF is being downloaded instead. Please check your pop-up blocker settings if you prefer to view it in a new tab.');
+        } else {
+            newTab.document.title = fileName;
         }
-
-        if (data.certifications) {
-            rightY += 0.8;
-            rightY = addText('Certifications', 12.25, 'bold', rightColumnX, rightY, columnWidth);
-            data.certifications.forEach(cert => {
-                const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
-                rightY = addText(`- ${certText}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
-            });
-        }
-
-        const maxY = Math.max(leftY, rightY);
-        doc.setLineWidth(0.2);
-        doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
-
-        yPosition = maxY;
-    }
-
-    const pdfOutput = doc.output('blob');
-    const url = URL.createObjectURL(pdfOutput);
-    const newTab = window.open(url, '_blank');
-    if (newTab) {
-        newTab.document.title = 'Remy_Russell_Resume.pdf';
-    } else {
-        console.error('Failed to open new tab. Pop-up blocker may be enabled.');
-        alert('Unable to open PDF in new tab. Please allow pop-ups and try again.');
+        // Clean up the URL object
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    } catch (err) {
+        console.error('Error generating PDF:', err.message);
+        alert('Error generating PDF: ' + err.message + '. Please try again.');
     }
 }
 
