@@ -250,7 +250,7 @@ function generateResumePDF(data) {
         } else {
             newTab.document.title = fileName;
         }
-        // Clean up the URL object
+        // Clean up the URL objeect
         setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (err) {
         console.error('Error generating PDF:', err.message);
