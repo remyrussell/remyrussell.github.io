@@ -89,16 +89,15 @@
         "coreSkills": [
             "Owning discovery for complex problems, learning from users/buyers",
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
-            "Managing priorities & decisions based on data",
-            "Facilitating collaboration and rapid, iterative delivery",
-            "Partnering with engineers (SQL proficient, understanding of SDLC, experience prompting LLMs)"
+            "Managing priorities & decisions with data and leveraging the software stack to demonstrate reasoning",
+            "Facilitating collaboration, hypothesis testing, and rapid, iterative delivery"
         ],
         "toolsAndFrameworks": [
             "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards)",
             "Insight consolidation, Research (Hubspot, ProductBoard, SQL, AI tools)",
             "Discovery, Workshopping & Diagramming (Whiteboards, Figjam, Lucidchart)",
             "Mock-ups and low-fi prototyping (Figma, AI Tools)",
-            "API evaluation/testing, workflow automation (Postman, Zapier, Microsoft Power Automate, AI Tools)"
+            "API evaluation/testing, workflow automation (Postman, Zapier, Microsoft Power Automate)"
         ],
         "fun": [
             "Outdoor activities (skiing, biking, hiking, camping)",
