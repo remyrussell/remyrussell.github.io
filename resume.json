@@ -11,7 +11,7 @@
         "phone": null,
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
-    "summary": "An optimistic software enthusiast with three years of Product Management and seven years of Business Analysis experience evolving platforms for Health and Human Services Providers",
+    "summary": "An optimistic technology enthusiast with three years of Product Management and seven years of Business Analysis experience evolving SaaS platforms for Health and Human Services Providers. Comfortable analyzing APIs, leveraging AI tools, and partnering with engineers and end users to drive impactful outcomes.",
     "professionalExperience": [
         {
             "position": "Associate Product Manager, Engineering",
@@ -24,10 +24,11 @@
             },
             "description": "Product Lead on the Platform and Integrations R&D team/pod for a configurable Case Management platform used by over 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health)",
             "highlights": [
-                "Enabled 50% growth in ARR to ~$15M by expanding our platform and team capabilities, leading to acquisition",
-                "Shipped a RESTful API from 0 to 1 and onboarded developers for over ten customer organizations",
-                "Released enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, etc.)",
-                "Partnered cross-functionally to maintain the roadmap, define KPIs, and communicate progress",
+                "Enabled 50% growth in ARR to ~$15M by expanding our platform, interoperability, and team capabilities, leading to acquisition",
+                "Helped six organizations optimize dispatch and delivery operations to facilitate thousands of meal deliveries each day",
+                "Shipped a RESTful API from 0 to 1 and onboarded developers for over ten customer organizations to enable custom integrations",
+                "Released enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, etc)",
+                "Partnered cross-functionally to define and iterate the roadmap, establish/monitor KPIs, and communicate progress",
                 "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/emails via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange, Revenue Cycle Management, etc.)"
             ]
         },
@@ -42,7 +43,7 @@
             },
             "description": "Problem discovery, requirements gathering, and solution delivery leveraging the case management platform",
             "highlights": [
-                "Drove successful implementation for two of Eccovia's top ten largest customers by ARR, with complex data migrations and system designs",
+                "Drove successful implementation for two of Eccovia's top ten largest customers by ARR, with complex data migration, system design, and reporting needs",
                 "Delivered over a dozen integration contracts and helped transition technical strategy towards agnostic services supporting multiple customers/partners"
             ]
         },
@@ -94,10 +95,10 @@
         ],
         "toolsAndFrameworks": [
             "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards)",
-            "Insight consolidation (Hubspot, ProductBoard, SQL)",
-            "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
+            "Insight consolidation, Research (Hubspot, ProductBoard, SQL, AI tools)",
+            "Discovery, Workshopping & Diagramming (Whiteboards, Figjam, Lucidchart)",
             "Mock-ups and low-fi prototyping (Figma, AI Tools)",
-            "API evaluation/testing, workflow automation (Postman, Zapier, Microsoft Power Automate)"
+            "API evaluation/testing, workflow automation (Postman, Zapier, Microsoft Power Automate, AI Tools)"
         ],
         "fun": [
             "Outdoor activities (skiing, biking, hiking, camping)",
