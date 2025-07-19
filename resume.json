@@ -93,7 +93,7 @@
         ],
         "toolsAndFrameworks": [
             "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards)",
-            "Insight consolidation (Hubspot, ProductBoard, SQL, AI tools)",
+            "Insight consolidation (Hubspot, ProductBoard, SQL)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
             "Mock-ups, low-fi prototyping (Figma, AI Tools)",
             "API evaluation/testing, workflow automation (Postman, Zapier, Microsoft Power Automate)"
