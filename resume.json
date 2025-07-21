@@ -33,8 +33,8 @@
         },
         {
             "position": "Business Analyst, Solutions Delivery",
-            "company": "Eccovia",
-            "logo": "assets/images/logos/eccovia.svg",
+            "company": "CaseWorthy (formerly Eccovia)",
+            "logo": "assets/images/logos/caseworthy.png",
             "location": "Salt Lake City, UT",
             "duration": {
                 "start": "2019-04-01",
@@ -48,8 +48,8 @@
         },
         {
             "position": "Business Analyst II, UT MMIS Implementation Project",
-            "company": "Client Network Services, Inc (CNSI)",
-            "logo": "assets/images/logos/CNSI.png",
+            "company": "Acentra Health (formerly Client Network Services, Inc)",
+            "logo": "assets/images/logos/Acentra.png",
             "location": "Salt Lake City, UT",
             "duration": {
                 "start": "2017-08-01",
@@ -62,8 +62,8 @@
         },
         {
             "position": "Business Analyst, MI MMIS Implementation Project",
-            "company": "CNSI",
-            "logo": "assets/images/logos/CNSI.png",
+            "company": "Acentra Health (formerly Client Network Services, Inc)",
+            "logo": "assets/images/logos/Acentra.png",
             "location": "Lansing, MI",
             "duration": {
                 "start": "2015-06-01",
