@@ -33,7 +33,7 @@
         },
         {
             "position": "Business Analyst, Solutions Delivery",
-            "company": null,
+            "company": "CaseWorthy",
             "logo": "assets/images/logos/caseworthy.png",
             "location": "Salt Lake City, UT",
             "duration": {
@@ -62,7 +62,7 @@
         },
         {
             "position": "Business Analyst, MI MMIS Implementation Project",
-            "company": null,
+            "company":  "Acentra Health",
             "logo": "assets/images/logos/Acentra.png",
             "location": "Lansing, MI",
             "duration": {
