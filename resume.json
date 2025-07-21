@@ -33,7 +33,7 @@
         },
         {
             "position": "Business Analyst, Solutions Delivery",
-            "company": "CaseWorthy (formerly Eccovia)",
+            "company": null,
             "logo": "assets/images/logos/caseworthy.png",
             "location": "Salt Lake City, UT",
             "duration": {
@@ -62,7 +62,7 @@
         },
         {
             "position": "Business Analyst, MI MMIS Implementation Project",
-            "company": "Acentra Health (formerly Client Network Services, Inc)",
+            "company": null,
             "logo": "assets/images/logos/Acentra.png",
             "location": "Lansing, MI",
             "duration": {
