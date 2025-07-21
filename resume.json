@@ -12,7 +12,7 @@
         "linkedin": "https://www.linkedin.com/in/remyrussell"
     },
     "summary": "An optimistic technology enthusiast with ten years of experience evolving SaaS platforms for Health and Human Services Providers. Comfortable analyzing APIs, applying AI tools, and partnering with engineers to drive impactful outcomes.",
-    "professionalExperience":
+    "professionalExperience":[
         {
             "position": "Associate Product Manager, Engineering",
             "company": "CaseWorthy (formerly Eccovia)",
