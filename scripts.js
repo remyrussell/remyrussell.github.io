@@ -124,13 +124,32 @@ function generateResumePDF(data) {
         }
 
         yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
-        let contactInfo = [];
-        if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
-        if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
-        if (data.contact?.website) contactInfo.push(`Website: ${data.contact.website}`);
-        if (contactInfo.length) {
-            yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
+
+        // Contact items for clickable links
+        let contactItems = [];
+        if (data.contact?.email) contactItems.push({label: 'Email: ', value: data.contact.email, url: `mailto:${data.contact.email}`});
+        if (data.contact?.linkedin) contactItems.push({label: 'LinkedIn: ', value: data.contact.linkedin, url: data.contact.linkedin});
+        if (data.contact?.website) contactItems.push({label: 'Website: ', value: data.contact.website, url: data.contact.website});
+
+        if (contactItems.length > 0) {
+            yPosition += 0.5;
+            doc.setFontSize(10.5);
+            doc.setFont('Helvetica', 'normal');
+            let contactX = margin;
+            for (let i = 0; i < contactItems.length; i++) {
+                const item = contactItems[i];
+                doc.text(item.label, contactX, yPosition);
+                contactX += doc.getTextWidth(item.label);
+                doc.textWithLink(item.value, contactX, yPosition, { url: item.url });
+                contactX += doc.getTextWidth(item.value);
+                if (i < contactItems.length - 1) {
+                    doc.text(' | ', contactX, yPosition);
+                    contactX += doc.getTextWidth(' | ');
+                }
+            }
+            yPosition += 10.5 * 0.45 + 0.5;  // Adjust for line height
         }
+
         yPosition += 0.5;
         if (data.role || data.seeking) {
             const roleText = data.role || '';
@@ -251,7 +270,7 @@ function generateResumePDF(data) {
         } else {
             newTab.document.title = fileName;
         }
-        // Clean up the URL objeect
+        // Clean up the URL object
         setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (err) {
         console.error('Error generating PDF:', err.message);
@@ -268,21 +287,23 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
                 console.log(`Successfully fetched ${url}`);
                 return response;
             }
-            console.warn(`Failed to fetch ${url}, status: ${response.status}`);
         } catch (err) {
-            console.error(`Error fetching ${url}:`, err.message);
+            console.error(`Fetch attempt ${i + 1} failed:`, err.message);
+            if (i < retries - 1) {
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
         }
-        await new Promise(resolve => setTimeout(resolve, delay));
     }
     throw new Error(`Failed to fetch ${url} after ${retries} attempts`);
 }
 
+// Function to linkify URLs in text
 function linkify(text) {
-    const urlRegex = /(\b(https?|ftp|file|http):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|])/g;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
 }
 
-function renderData(data) {
+function renderResumeData(data) {
     try {
         const nameElement = document.getElementById('name');
         if (nameElement) {
@@ -293,45 +314,36 @@ function renderData(data) {
 
         const roleElement = document.getElementById('role');
         if (roleElement) {
-            roleElement.innerText = `${data.role || 'Role Not Found'} | ${data.seeking || 'Seeking Not Found'}`;
+            roleElement.innerText = data.role || '';
         } else {
             console.error('Role element not found in DOM');
         }
 
-        const contactContainer = document.getElementById('contact');
-        if (contactContainer) {
-            const emailPara = document.getElementById('email');
-            if (emailPara) emailPara.style.display = data.contact?.email ? 'block' : 'none';
-            const emailText = document.getElementById('emailText');
-            if (emailText) {
-                emailText.innerHTML = data.contact?.email ? `<a href="mailto:${data.contact.email}">${data.contact.email}</a>` : 'Email Not Found';
-            }
-
-            const phonePara = document.getElementById('phone');
-            if (phonePara) phonePara.style.display = data.contact?.phone ? 'block' : 'none';
-            const phoneText = document.getElementById('phoneText');
-            if (phoneText) phoneText.innerText = data.contact?.phone || '';
-
-            const linkedinPara = document.getElementById('linkedin');
-            if (linkedinPara) linkedinPara.style.display = data.contact?.linkedin ? 'block' : 'none';
-            const linkedinText = document.getElementById('linkedinText');
-            if (linkedinText) {
-                linkedinText.innerHTML = data.contact?.linkedin ? `<a href="${data.contact.linkedin}" target="_blank">${data.contact.linkedin}</a>` : 'LinkedIn Not Found';
-            }
-
-            const websitePara = document.getElementById('website');
-            if (websitePara) websitePara.style.display = data.contact?.website ? 'block' : 'none';
-            const websiteText = document.getElementById('websiteText');
-            if (websiteText) {
-                websiteText.innerHTML = data.contact?.website ? `<a href="${data.contact.website}" target="_blank">${data.contact.website}</a>` : 'Website Not Found';
-            }
+        // Render contact info with clickable links
+        const emailElement = document.getElementById('email');
+        if (emailElement) {
+            emailElement.innerHTML = data.contact?.email ? `Email: <a href="mailto:${data.contact.email}">${data.contact.email}</a>` : '';
         } else {
-            console.error('Contact container not found in DOM');
+            console.error('Email element not found in DOM');
+        }
+
+        const linkedinElement = document.getElementById('linkedin');
+        if (linkedinElement) {
+            linkedinElement.innerHTML = data.contact?.linkedin ? `LinkedIn: <a href="${data.contact.linkedin}" target="_blank">${data.contact.linkedin}</a>` : '';
+        } else {
+            console.error('LinkedIn element not found in DOM');
+        }
+
+        const websiteElement = document.getElementById('website');
+        if (websiteElement) {
+            websiteElement.innerHTML = data.contact?.website ? `Website: <a href="${data.contact.website}" target="_blank">${data.contact.website}</a>` : '';
+        } else {
+            console.error('Website element not found in DOM');
         }
 
         const container = document.querySelector('.container');
-        const summarySection = document.getElementById('summary');
-        if (container && !document.querySelector('.location-note')) {
+        const summarySection = document.querySelector('#summary');
+        if (container && summarySection) {
             const locationNote = document.createElement('p');
             locationNote.className = 'location-note';
             locationNote.innerText = data.seeking || 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
@@ -342,7 +354,7 @@ function renderData(data) {
 
         const summaryTextElement = document.getElementById('summaryText');
         if (summaryTextElement) {
-            summaryTextElement.innerText = data.summary || 'Summary Data Not Found';
+            summaryTextElement.innerHTML = linkify(data.summary || 'Summary Data Not Found');
         } else {
             console.error('Summary text element not found in DOM');
         }
@@ -555,32 +567,4 @@ function renderData(data) {
     });
 
     updateBackgroundPosition(0);
-}
-
-let lastMouseX = window.innerWidth / 2;
-let lastMouseY = window.innerHeight / 2;
-
-function updateBackgroundPosition(scrollY) {
-    const body = document.body;
-    const xPercent = (lastMouseX / window.innerWidth) * 100;
-    const yPercent = ((lastMouseY + scrollY) / (window.innerHeight + scrollY)) * 100;
-    body.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    keepThemeSetting();
-    attachThemeToggleEvent();
-
-    try {
-        const response = await fetchWithRetry('resume.json', { method: 'GET' });
-        const data = await response.json();
-        console.log('Resume data loaded:', data);
-        renderData(data);
-    } catch (err) {
-        console.error('Failed to load resume data:', err.message);
-        const container = document.querySelector('.container');
-        if (container) {
-            container.innerHTML = `<p class="error-message">Failed to load resume data: ${err.message}. Please try refreshing the page.</p>`;
-        }
-    }
 });
