@@ -6,84 +6,66 @@
     <title>Remy Russell - Resume</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="scripts.js" defer></script>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <h1 id="name">Remy Russell</h1>
-            <p id="role">Role</p>
-            <div id="contact" class="contact">
-                <p id="email">Email: <span id="emailText"></span></p>
-                <p id="phone">Phone: <span id="phoneText"></span></p>
-                <p id="linkedin">LinkedIn: <span id="linkedinText"></span></p>
-                <p id="website">Website: <span id="websiteText"></span></p>
-            </div>
+    <canvas id="particleCanvas"></canvas>
+    <button id="menuToggleButton" class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <nav id="menu" class="menu">
+        <ul>
+            <li>
+                <button id="downloadPdfButton" class="download-pdf">
+                    <span class="menu-icon">↓</span> PDF
+                </button>
+            </li>
+            <li>
+                <a href="dogs.html">Dog Photos</a>
+            </li>
+        </ul>
+        <div class="theme-toggle-wrapper">
+            <input type="checkbox" id="themeToggleButton" class="theme-toggle-checkbox">
+            <label for="themeToggleButton" class="theme-toggle-label">
+                <span class="theme-toggle-track"></span>
+                <span class="theme-toggle-thumb"></span>
+            </label>
         </div>
-        <button id="menuToggleButton" class="menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <nav id="menu" class="menu">
-            <ul>
-                <li>
-                    <button id="downloadPdfButton" class="download-pdf">
-                        <span class="menu-icon">📄</span>
-                        <span class="menu-text">Download PDF</span>
-                    </button>
-                </li>
-                <li>
-                    <a href="dogs.html">
-                        <span class="menu-icon">🐶</span>
-                        <span class="menu-text">Dog Photos</span>
-                    </a>
-                </li>
-                <li class="theme-toggle-wrapper">
-                    <input type="checkbox" id="themeToggleButton" class="theme-toggle-checkbox">
-                    <label for="themeToggleButton" class="theme-toggle-label">
-                        <span class="theme-toggle-track">
-                            <span class="theme-toggle-handle"></span>
-                        </span>
-                    </label>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="container">
-        <section id="summary">
+    </nav>
+    <div class="container">
+        <h1 id="name">Loading...</h1>
+        <p id="role">Loading...</p>
+        <div class="contact">
+            <p id="email">Loading...</p>
+            <p id="linkedin">Loading...</p>
+            <p id="website">Loading...</p>
+        </div>
+        <div id="summary">
             <h2>Summary</h2>
-            <p id="summaryText">Summary Text</p>
-        </section>
-
-        <section id="professionalExperience">
+            <p id="summaryText">Loading...</p>
+        </div>
+        <div id="professionalExperience">
             <h2>Professional Experience</h2>
-        </section>
-
-        <section id="education">
+        </div>
+        <div id="education">
             <h2>Education</h2>
-        </section>
-
-        <section id="certifications">
+        </div>
+        <div id="certifications">
             <h2>Certifications</h2>
             <ul id="certificationList"></ul>
-        </section>
-
-        <section id="skills">
+        </div>
+        <div id="skills">
             <h2>Core Skills</h2>
             <ul id="skillList"></ul>
-
             <h2>Tools & Frameworks</h2>
             <ul id="toolsAndFrameworks"></ul>
-
             <h2>Interests & Hobbies</h2>
             <ul id="funSkills"></ul>
-        </section>
-    </main>
-
+        </div>
+    </div>
     <button id="backToTop" class="back-to-top">↑</button>
-    <canvas id="particleCanvas"></canvas>
+    <script src="scripts.js"></script>
 </body>
 </html><!DOCTYPE html>
 <html lang="en">
@@ -93,83 +75,65 @@
     <title>Remy Russell - Resume</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="scripts.js" defer></script>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <h1 id="name">Remy Russell</h1>
-            <p id="role">Role</p>
-            <div id="contact" class="contact">
-                <p id="email">Email: <span id="emailText"></span></p>
-                <p id="phone">Phone: <span id="phoneText"></span></p>
-                <p id="linkedin">LinkedIn: <span id="linkedinText"></span></p>
-                <p id="website">Website: <span id="websiteText"></span></p>
-            </div>
+    <canvas id="particleCanvas"></canvas>
+    <button id="menuToggleButton" class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <nav id="menu" class="menu">
+        <ul>
+            <li>
+                <button id="downloadPdfButton" class="download-pdf">
+                    <span class="menu-icon">↓</span> PDF
+                </button>
+            </li>
+            <li>
+                <a href="dogs.html">Dog Photos</a>
+            </li>
+        </ul>
+        <div class="theme-toggle-wrapper">
+            <input type="checkbox" id="themeToggleButton" class="theme-toggle-checkbox">
+            <label for="themeToggleButton" class="theme-toggle-label">
+                <span class="theme-toggle-track"></span>
+                <span class="theme-toggle-thumb"></span>
+            </label>
         </div>
-        <button id="menuToggleButton" class="menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <nav id="menu" class="menu">
-            <ul>
-                <li>
-                    <button id="downloadPdfButton" class="download-pdf">
-                        <span class="menu-icon">📄</span>
-                        <span class="menu-text">Download PDF</span>
-                    </button>
-                </li>
-                <li>
-                    <a href="dogs.html">
-                        <span class="menu-icon">🐶</span>
-                        <span class="menu-text">Dog Photos</span>
-                    </a>
-                </li>
-                <li class="theme-toggle-wrapper">
-                    <input type="checkbox" id="themeToggleButton" class="theme-toggle-checkbox">
-                    <label for="themeToggleButton" class="theme-toggle-label">
-                        <span class="theme-toggle-track">
-                            <span class="theme-toggle-handle"></span>
-                        </span>
-                    </label>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="container">
-        <section id="summary">
+    </nav>
+    <div class="container">
+        <h1 id="name">Loading...</h1>
+        <p id="role">Loading...</p>
+        <div class="contact">
+            <p id="email">Loading...</p>
+            <p id="linkedin">Loading...</p>
+            <p id="website">Loading...</p>
+        </div>
+        <div id="summary">
             <h2>Summary</h2>
-            <p id="summaryText">Summary Text</p>
-        </section>
-
-        <section id="professionalExperience">
+            <p id="summaryText">Loading...</p>
+        </div>
+        <div id="professionalExperience">
             <h2>Professional Experience</h2>
-        </section>
-
-        <section id="education">
+        </div>
+        <div id="education">
             <h2>Education</h2>
-        </section>
-
-        <section id="certifications">
+        </div>
+        <div id="certifications">
             <h2>Certifications</h2>
             <ul id="certificationList"></ul>
-        </section>
-
-        <section id="skills">
+        </div>
+        <div id="skills">
             <h2>Core Skills</h2>
             <ul id="skillList"></ul>
-
             <h2>Tools & Frameworks</h2>
             <ul id="toolsAndFrameworks"></ul>
-
             <h2>Interests & Hobbies</h2>
             <ul id="funSkills"></ul>
-        </section>
-    </main>
-
+        </div>
+    </div>
     <button id="backToTop" class="back-to-top">↑</button>
-    <canvas id="particleCanvas"></canvas>
+    <script src="scripts.js"></script>
 </body>
 </html>
