@@ -147,7 +147,7 @@ function generateResumePDF(data) {
                     contactX += doc.getTextWidth(' | ');
                 }
             }
-            yPosition += 10.5 * 0.45 + 0.5;  // Adjust for line height
+            yPosition += 10.5 * 0.45 + 0.5;
         }
 
         yPosition += 0.5;
@@ -343,7 +343,7 @@ function renderResumeData(data) {
 
         const container = document.querySelector('.container');
         const summarySection = document.querySelector('#summary');
-        if (container && summarySection) {
+        if (container && summarySection && !document.querySelector('.location-note')) {
             const locationNote = document.createElement('p');
             locationNote.className = 'location-note';
             locationNote.innerText = data.seeking || 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
@@ -546,6 +546,81 @@ function renderResumeData(data) {
         if (container) {
             container.innerHTML += `<p class="error-message">Unexpected error: ${err.message}</p>`;
         }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    keepThemeSetting();
+    attachThemeToggleEvent();
+
+    try {
+        const response = await fetchWithRetry('resume.json');
+        const data = await response.json();
+        renderResumeData(data);
+    } catch (err) {
+        console.error('Error loading resume data:', err);
+        const container = document.querySelector('.container');
+        if (container) {
+            container.innerHTML += `<p class="error-message">Failed to load resume data. Please try refreshing the page.</p>`;
+        }
+    }
+
+    // Particle system for canvas
+    const canvas = document.getElementById('particleCanvas');
+    if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        function createParticle() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const vx = (Math.random() - 0.5) * 2;
+            const vy = (Math.random() - 0.5) * 2;
+            const radius = Math.random() * 2 + 1;
+            let color = 'rgba(199, 21, 133, 0.5)';
+            if (document.body.classList.contains('theme-dark')) {
+                color = 'rgba(106, 90, 205, 0.3)';
+            }
+            particles.push({x, y, vx, vy, radius, color});
+        }
+
+        for (let i = 0; i < 50; i++) {
+            createParticle();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx = -p.vx;
+                if (p.y < 0 || p.y > canvas.height) p.vy = -p.vy;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    }
+
+    // Background position update for parallax effect
+    let lastMouseX = window.innerWidth / 2;
+    let lastMouseY = window.innerHeight / 2;
+
+    function updateBackgroundPosition(scrollY) {
+        const xShift = (lastMouseX / window.innerWidth) * 10 - 5;
+        const yShift = ((lastMouseY + scrollY) / window.innerHeight) * 10 - 5;
+        document.body.style.backgroundPosition = `${50 + xShift}% ${50 + yShift}%`;
     }
 
     document.addEventListener('mousemove', (e) => {
