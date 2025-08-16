@@ -263,6 +263,25 @@ h3 {
     font-size: 1rem;
 }
 
+/* Link styles */
+a {
+    color: #c71585;
+    text-decoration: none;
+    transition: text-decoration 0.3s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.theme-dark a {
+    color: #c71585;
+}
+
+.theme-dark a:hover {
+    text-decoration: underline;
+}
+
 /* Dark mode styles */
 .theme-dark {
     background-color: #121212;
@@ -326,99 +345,741 @@ body.dogs-page.theme-dark .container {
     backdrop-filter: blur(18px);
     border-radius: 16px;
     position: relative;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.25);
+    transition: background 0.3s ease;
 }
 
-.theme-dark .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.theme-toggle-knob {
+.theme-toggle-handle {
     position: absolute;
     top: 2px;
     left: 2px;
     width: 28px;
     height: 28px;
-    background: linear-gradient(145deg, #ffffff, #d5d5d5);
+    background: linear-gradient(90deg, rgba(199, 21, 133, 0.3), rgba(106, 90, 205, 0.3));
     border-radius: 50%;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 0 6px rgba(255, 255, 255, 0.5);
-    transition: transform 0.3s ease, background 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateZ(0);
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.theme-dark .theme-toggle-knob {
-    background: linear-gradient(145deg, #d0d0d0, #a0a0a0);
-}
-
-.theme-toggle-knob:hover {
-    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.7);
-}
-
-.theme-toggle-icon {
-    font-size: 1.1rem;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    color: #c71585;
-}
-
-.theme-toggle-icon.fa-sun {
-    color: #c71585;
-    opacity: 0;
-    transform: scale(0.8);
-}
-
-.theme-toggle-icon.fa-moon {
-    color: #c71585;
-    opacity: 1;
-    position: absolute;
-    transform: scale(1);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: inset 0 0 16px rgba(199, 21, 133, 0.2);
-}
-
-.theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
-    background: rgba(0, 0, 0, 0.2);
-    box-shadow: inset 0 0 16px rgba(199, 21, 133, 0.15);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-handle {
     transform: translateX(24px);
-    background: linear-gradient(145deg, #ffffff, #d5d5d5);
 }
 
-.theme-dark .theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-knob {
-    background: linear-gradient(145deg, #d0d0d0, #a0a0a0);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-sun {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-icon.fa-moon {
-    opacity: 0;
-    transform: scale(0.8);
-}
-
-/* Hamburger menu styles */
+/* Menu toggle button */
 button#menuToggleButton.menu-toggle {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 0;
-    border-radius: 10px;
-    cursor: pointer;
     position: fixed;
     top: 1.5rem;
     right: 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: #e0e0e0;
+    font-size: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+    width: 44px;
+    height: 44px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+}
+
+.theme-dark button#menuToggleButton.menu-toggle {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #e0e0e0;
+}
+
+button#menuToggleButton.menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.1);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    opacity: 0.95;
+}
+
+.theme-dark button#menuToggleButton.menu-toggle:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+button#menuToggleButton.menu-toggle span {
+    position: relative;
+    height: 2.5px;
+    background-color: #c71585;
+    transition: all 0.3s ease;
+    width: 28px;
+    margin: 3.5px 0;
+}
+
+button#menuToggleButton.menu-toggle span:nth-child(1),
+button#menuToggleButton.menu-toggle span:nth-child(2),
+button#menuToggleButton.menu-toggle span:nth-child(3) {
+    top: unset;
+    bottom: unset;
+    transform: none;
+}
+
+button#menuToggleButton.menu-toggle:hover span {
+    transform: scaleX(1.15);
+}
+
+nav#menu.menu {
+    position: fixed;
+    top: 4rem;
+    right: 1.5rem;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(180, 180, 180, 0.08));
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+    padding: 1.25rem;
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(-12px);
+    opacity: 0;
+    min-width: 180px;
+}
+
+nav#menu.menu.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.theme-dark nav#menu.menu {
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.1), rgba(40, 40, 40, 0.1));
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    margin: 0.75rem 0;
+    text-align: center;
+    position: relative;
+}
+
+.menu a, .menu button.download-pdf {
+    color: #c71585;
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: block;
+    padding: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    transition: color 0.3s ease, background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.theme-dark .menu a, .theme-dark .menu button.download-pdf {
+    color: #c71585;
+}
+
+.menu a:hover, .menu button.download-pdf:hover {
+    color: #ffffff;
+    background-color: rgba(199, 21, 133, 0.3);
+    opacity: 0.95;
+    transform: translateY(-2px);
+}
+
+.theme-dark .menu a:hover, .theme-dark .menu button.download-pdf:hover {
+    background-color: rgba(199, 21, 133, 0.3);
+}
+
+.menu a.disabled {
+    color: #777;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.theme-dark .menu a.disabled {
+    color: #999;
+}
+
+.menu a.disabled:hover {
+    background: none;
+    color: #777;
+    transform: none;
+}
+
+.theme-dark .menu a.disabled:hover {
+    color: #999;
+}
+
+.menu-icon {
+    font-size: 1.6rem;
+    padding: 0.75rem;
+    color: #c71585;
+}
+
+.theme-dark .menu-icon {
+    color: #c71585;
+}
+
+.menu-icon:hover {
+    color: #ffffff;
+    background-color: rgba(199, 21, 133, 0.3);
+}
+
+.theme-dark .menu-icon:hover {
+    background-color: rgba(199, 21, 133, 0.3);
+}
+
+.menu-text {
+    font-size: 1.1rem;
+    padding: 0.75rem;
+    color: #c71585;
+}
+
+.theme-dark .menu-text {
+    color: #c71585;
+}
+
+.menu-text:hover {
+    color: #ffffff;
+    background-color: rgba(199, 21, 133, 0.3);
+}
+
+.theme-dark .menu-text:hover {
+    background-color: rgba(199, 21, 133, 0.3);
+}
+
+.menu.active .theme-toggle-wrapper {
+    display: block;
+}
+
+/* General list styling */
+ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 0.75rem;
+}
+
+li {
+    margin-bottom: 0.75rem;
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(180, 180, 180, 0.08));
+    backdrop-filter: blur(18px);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+    transition: background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+    display: none;
+}
+
+.theme-dark .back-to-top {
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.1), rgba(40, 40, 40, 0.1));
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #e0e0e0;
+}
+
+.back-to-top:hover {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.15), rgba(180, 180, 180, 0.15));
+    transform: scale(1.1);
+}
+
+.theme-dark .back-to-top:hover {
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.2), rgba(40, 40, 40, 0.2));
+}
+
+/* Download PDF Button */
+.download-pdf {
+    font-size: 1.1rem;
+    padding: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Back Button for Dogs Page */
+body.dogs-page .back-button {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    border: 1px solid #c71585;
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    margin-top: 1.5rem;
+    color: #c71585;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+    transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+
+body.dogs-page.theme-dark .back-button {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid #c71585;
+    color: #c71585;
+}
+
+body.dogs-page .back-button:hover {
+    background: rgba(199, 21, 133, 0.3);
+    transform: scale(1.05);
+    opacity: 0.95;
+}
+
+body.dogs-page.theme-dark .back-button:hover {
+    background: rgba(199, 21, 133, 0.3);
+}
+
+/* Gallery styling for dogs page */
+body.dogs-page .gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 2.5rem;
+    z-index: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+body.dogs-page .dog-photo {
+    width: 100%;
+    max-width: calc(100vw - 5rem);
+    min-width: 0;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    object-fit: contain;
+}
+
+body.dogs-page .dog-photo:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        padding: 1.5rem;
+    }
+
+    .container {
+        padding: 2rem 1.5rem;
+    }
+
+    body.dogs-page .container {
+        padding: 2rem 1.5rem;
+    }
+
+    nav#menu.menu {
+        min-width: 160px;
+        top: 3.5rem;
+        right: 1rem;
+    }
+
+    button#menuToggleButton.menu-toggle {
+        top: 1rem;
+        right: 1rem;
+    }
+
+    body.dogs-page .dog-photo {
+        max-width: calc(100vw - 3rem);
+    }
+}/* General styles for both pages */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto:wght@300;400;700&display=fallback');
+
+body {
+    font-family: 'Inter', 'Roboto', system-ui, -apple-system, sans-serif;
+    padding: 2.5rem;
+    color: #2d2d2d;
+    background-color: #f5f5f5;
+    margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+    position: relative;
+    direction: ltr;
+}
+
+/* Ensure images don't exceed container */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Dogs page specific styles */
+body.dogs-page {
+    padding: 2.5rem 0;
+}
+
+/* Fluid background effect */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(199, 21, 133, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(106, 90, 205, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(60, 60, 60, 0.2) 0%, transparent 60%);
+    background-size: 200% 200%, 200% 200%, 200% 200%;
+    animation: fluidFlow 30s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.theme-dark body::before {
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(199, 21, 133, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(106, 90, 205, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(25, 25, 25, 0.03) 0%, transparent 60%);
+}
+
+@keyframes fluidFlow {
+    0% {
+        background-position: 0% 0%, 100% 100%, 50% 50%;
+    }
+    50% {
+        background-position: 100% 100%, 0% 0%, 75% 25%;
+    }
+    100% {
+        background-position: 0% 0%, 100% 100%, 50% 50%;
+    }
+}
+
+/* Liquid glass animation for headers and menu */
+@keyframes liquidGlassFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Particle canvas */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.7;
+}
+
+/* Reset potential overrides */
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.25);
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    backdrop-filter: blur(8px);
+}
+
+body.dogs-page .container {
+    max-width: 100%;
+    background-color: #ffffff;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 3rem 2.5rem;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    border-bottom: 1px solid #d0d0d0;
+    padding-bottom: 0.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+/* Error message for JSON loading issues */
+.error-message {
+    color: #c71585;
+    text-align: center;
+    padding: 1.5rem;
+    border: 1px solid #c71585;
+    border-radius: 8px;
+    margin: 1.5rem auto;
+    max-width: 800px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.theme-dark .error-message {
+    background-color: rgba(50, 50, 50, 0.9);
+    color: #c71585;
+}
+
+/* Experience, Education, and Certification items */
+.experience-item, .education-item, .certification-item {
+    margin-top: 2rem;
+}
+
+.experience-item img, .education-item img {
+    width: 150px;
+    max-width: 150px;
+    max-height: 100px;
+    margin: 0 auto 1.5rem auto;
+    display: block;
+    filter: brightness(0.85) contrast(1.15);
+    object-fit: contain;
+    image-rendering: crisp-edges;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.theme-dark .experience-item img, .education-item img {
+    filter: brightness(1) contrast(1);
+}
+
+/* Specific styling for CaseWorthy logo */
+.caseworthy-logo {
+    /* No specific styles needed */
+}
+
+/* Specific styling for Eccovia logo in light theme */
+.eccovia-logo {
+    filter: grayscale(1) brightness(0.4) contrast(1.2);
+}
+
+/* Ensure Eccovia logo in dark theme remains unchanged */
+.theme-dark .eccovia-logo {
+    filter: brightness(1) contrast(1);
+}
+
+.experience-item .header-content, .education-item .header-content {
+    text-align: left;
+}
+
+.experience-item .sticky-header, .education-item .sticky-header {
+    padding: 0.75rem;
+    margin: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(180, 180, 180, 0.08));
+    backdrop-filter: blur(18px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: liquidGlassFlow 8s ease-in-out infinite;
+    border-radius: 8px;
+}
+
+.theme-dark .experience-item .sticky-header,
+.theme-dark .education-item .sticky-header {
+    background: linear-gradient(90deg, rgba(106, 90, 205, 0.1), rgba(40, 40, 40, 0.1));
+    backdrop-filter: blur(18px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    animation: liquidGlassFlow 8s ease-in-out infinite;
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.experience-item .sticky-header h3, .education-item .sticky-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.experience-item .date-range, .education-item .date-range {
+    display: block;
+    font-size: 1rem;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+.experience-item .location, .education-item .location {
+    display: block;
+    font-size: 1rem;
+    color: #555;
+    margin-top: 0.25rem;
+}
+
+.experience-item .details, .education-item .details {
+    margin-left: 0;
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Ensure bullets are left-aligned with standard indent */
+.experience-item ul, .education-item ul, .certification-item ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 0.75rem;
+    font-size: 1rem;
+}
+
+/* Other content styling */
+.contact p {
+    margin: 0.75rem 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.contact p#phone:empty {
+    display: none;
+}
+
+.location-note {
+    font-style: italic;
+    color: #555;
+    margin: 0.75rem 0;
+    font-size: 1rem;
+}
+
+/* Link styles */
+a {
+    color: #c71585;
+    text-decoration: none;
+    transition: text-decoration 0.3s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.theme-dark a {
+    color: #c71585;
+}
+
+.theme-dark a:hover {
+    text-decoration: underline;
+}
+
+/* Dark mode styles */
+.theme-dark {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.theme-dark .container {
+    background-color: rgba(40, 40, 40, 0.3);
+    color: #e0e0e0;
+}
+
+body.dogs-page.theme-dark .container {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+.theme-dark h2 {
+    border-color: #666;
+}
+
+.theme-dark .experience-item .date-range,
+.theme-dark .education-item .date-range {
+    color: #aaa;
+}
+
+.theme-dark .experience-item .location,
+.theme-dark .education-item .location {
+    color: #aaa;
+}
+
+.theme-dark .location-note {
+    color: #aaa;
+}
+
+.theme-dark button {
+    background-color: #e0e0e0;
+    color: #2d2d2d;
+}
+
+/* Liquid Glass theme toggle switch */
+.theme-toggle-wrapper {
+    position: relative;
+    margin: 0.75rem 0;
+    display: none;
+}
+
+.theme-toggle-checkbox {
+    display: none;
+}
+
+.theme-toggle-label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.theme-toggle-track {
+    display: block;
+    width: 56px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    border-radius: 16px;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle-handle {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(90deg, rgba(199, 21, 133, 0.3), rgba(106, 90, 205, 0.3));
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-handle {
+    transform: translateX(24px);
+}
+
+/* Menu toggle button */
+button#menuToggleButton.menu-toggle {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
     color: #e0e0e0;
     font-size: 1.1rem;
     display: flex;
