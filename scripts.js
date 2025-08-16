@@ -253,11 +253,9 @@ function generateResumePDF(data) {
         const url = URL.createObjectURL(pdfOutput);
         const fileName = 'Remy_Russell_Resume.pdf';
 
-        // Try to open in a new tab
         const newTab = window.open(url, '_blank');
         if (!newTab) {
             console.warn('Failed to open new tab. Pop-up blocker may be enabled.');
-            // Fallback: Create a download link
             const link = document.createElement('a');
             link.href = url;
             link.download = fileName;
@@ -269,7 +267,6 @@ function generateResumePDF(data) {
         } else {
             newTab.document.title = fileName;
         }
-        // Clean up the URL object
         setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (err) {
         console.error('Error generating PDF:', err.message);
@@ -296,10 +293,18 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
     throw new Error(`Failed to fetch ${url} after ${retries} attempts`);
 }
 
-// Function to linkify URLs in text
 function linkify(text) {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+}
+
+let lastMouseX = window.innerWidth / 2;
+let lastMouseY = window.innerHeight / 2;
+
+function updateBackgroundPosition(scrollY) {
+    const xShift = (lastMouseX / window.innerWidth) * 10 - 5;
+    const yShift = ((lastMouseY + scrollY) / window.innerHeight) * 10 - 5;
+    document.body.style.backgroundPosition = `${50 + xShift}% ${50 + yShift}%`;
 }
 
 function renderResumeData(data) {
@@ -524,26 +529,6 @@ function renderResumeData(data) {
             container.innerHTML += `<p class="error-message">Unexpected error: ${err.message}</p>`;
         }
     }
-
-    document.addEventListener('mousemove', (e) => {
-        if (window.innerWidth >= 768) {
-            lastMouseX = e.clientX;
-            lastMouseY = e.clientY;
-            const scrollY = window.scrollY || document.documentElement.scrollTop;
-            updateBackgroundPosition(scrollY);
-        }
-    });
-
-    document.addEventListener('touchmove', (e) => {
-        if (window.innerWidth < 768) {
-            lastMouseX = e.touches[0].clientX;
-            lastMouseY = e.touches[0].clientY;
-            const scrollY = window.scrollY || document.documentElement.scrollTop;
-            updateBackgroundPosition(scrollY);
-        }
-    });
-
-    updateBackgroundPosition(0);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -562,7 +547,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Basic particle system (original might have been similar; adjust if needed)
     const canvas = document.getElementById('particleCanvas');
     if (canvas) {
         canvas.width = window.innerWidth;
@@ -571,20 +555,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         let particles = [];
         function createParticle() {
-            const x = Math.random() * canvas.width;
-            const y = Math.random() * canvas.height;
-            const vx = (Math.random() - 0.5) * 2;
-            const vy = (Math.random() - 0.5) * 2;
-            const radius = Math.random() * 2 + 1;
-            let color = 'rgba(199, 21, 133, 0.5)';
-            if (document.body.classList.contains('theme-dark')) {
-                color = 'rgba(106, 90, 205, 0.3)';
-            }
-            particles.push({x, y, vx, vy, radius, color});
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                radius: Math.random() * 2 + 1,
+                color: document.body.classList.contains('theme-dark') ? 'rgba(106, 90, 205, 0.3)' : 'rgba(199, 21, 133, 0.5)'
+            };
         }
 
         for (let i = 0; i < 50; i++) {
-            createParticle();
+            particles.push(createParticle());
         }
 
         function animate() {
@@ -607,16 +589,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push(createParticle());
+            }
         });
     }
 
-    // Background position update
-    let lastMouseX = window.innerWidth / 2;
-    let lastMouseY = window.innerHeight / 2;
+    document.addEventListener('mousemove', (e) => {
+        if (window.innerWidth >= 768) {
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            updateBackgroundPosition(scrollY);
+        }
+    });
 
-    function updateBackgroundPosition(scrollY) {
-        const xShift = (lastMouseX / window.innerWidth) * 10 - 5;
-        const yShift = ((lastMouseY + scrollY) / window.innerHeight) * 10 - 5;
-        document.body.style.backgroundPosition = `${50 + xShift}% ${50 + yShift}%`;
-    }
+    document.addEventListener('touchmove', (e) => {
+        if (window.innerWidth < 768) {
+            lastMouseX = e.touches[0].clientX;
+            lastMouseY = e.touches[0].clientY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            updateBackgroundPosition(scrollY);
+        }
+    });
+
+    updateBackgroundPosition(0);
 });
