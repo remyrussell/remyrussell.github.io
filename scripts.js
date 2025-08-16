@@ -125,7 +125,6 @@ function generateResumePDF(data) {
 
         yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
 
-        // Contact items for clickable links
         let contactItems = [];
         if (data.contact?.email) contactItems.push({label: 'Email: ', value: data.contact.email, url: `mailto:${data.contact.email}`});
         if (data.contact?.linkedin) contactItems.push({label: 'LinkedIn: ', value: data.contact.linkedin, url: data.contact.linkedin});
@@ -317,28 +316,6 @@ function renderResumeData(data) {
             roleElement.innerText = data.role || '';
         } else {
             console.error('Role element not found in DOM');
-        }
-
-        // Render contact info with clickable links
-        const emailElement = document.getElementById('email');
-        if (emailElement) {
-            emailElement.innerHTML = data.contact?.email ? `Email: <a href="mailto:${data.contact.email}">${data.contact.email}</a>` : '';
-        } else {
-            console.error('Email element not found in DOM');
-        }
-
-        const linkedinElement = document.getElementById('linkedin');
-        if (linkedinElement) {
-            linkedinElement.innerHTML = data.contact?.linkedin ? `LinkedIn: <a href="${data.contact.linkedin}" target="_blank">${data.contact.linkedin}</a>` : '';
-        } else {
-            console.error('LinkedIn element not found in DOM');
-        }
-
-        const websiteElement = document.getElementById('website');
-        if (websiteElement) {
-            websiteElement.innerHTML = data.contact?.website ? `Website: <a href="${data.contact.website}" target="_blank">${data.contact.website}</a>` : '';
-        } else {
-            console.error('Website element not found in DOM');
         }
 
         const container = document.querySelector('.container');
@@ -547,6 +524,26 @@ function renderResumeData(data) {
             container.innerHTML += `<p class="error-message">Unexpected error: ${err.message}</p>`;
         }
     }
+
+    document.addEventListener('mousemove', (e) => {
+        if (window.innerWidth >= 768) {
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            updateBackgroundPosition(scrollY);
+        }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (window.innerWidth < 768) {
+            lastMouseX = e.touches[0].clientX;
+            lastMouseY = e.touches[0].clientY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            updateBackgroundPosition(scrollY);
+        }
+    });
+
+    updateBackgroundPosition(0);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -565,7 +562,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Particle system for canvas
+    // Basic particle system (original might have been similar; adjust if needed)
     const canvas = document.getElementById('particleCanvas');
     if (canvas) {
         canvas.width = window.innerWidth;
@@ -613,7 +610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Background position update for parallax effect
+    // Background position update
     let lastMouseX = window.innerWidth / 2;
     let lastMouseY = window.innerHeight / 2;
 
@@ -622,24 +619,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         const yShift = ((lastMouseY + scrollY) / window.innerHeight) * 10 - 5;
         document.body.style.backgroundPosition = `${50 + xShift}% ${50 + yShift}%`;
     }
-
-    document.addEventListener('mousemove', (e) => {
-        if (window.innerWidth >= 768) {
-            lastMouseX = e.clientX;
-            lastMouseY = e.clientY;
-            const scrollY = window.scrollY || document.documentElement.scrollTop;
-            updateBackgroundPosition(scrollY);
-        }
-    });
-
-    document.addEventListener('touchmove', (e) => {
-        if (window.innerWidth < 768) {
-            lastMouseX = e.touches[0].clientX;
-            lastMouseY = e.touches[0].clientY;
-            const scrollY = window.scrollY || document.documentElement.scrollTop;
-            updateBackgroundPosition(scrollY);
-        }
-    });
-
-    updateBackgroundPosition(0);
 });
