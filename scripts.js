@@ -127,6 +127,7 @@ function generateResumePDF(data) {
         let contactInfo = [];
         if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
         if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
+        if (data.contact?.website) contactInfo.push(`Website: ${data.contact.website}`);
         if (contactInfo.length) {
             yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
         }
@@ -267,197 +268,70 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
                 console.log(`Successfully fetched ${url}`);
                 return response;
             }
-            throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
+            console.warn(`Failed to fetch ${url}, status: ${response.status}`);
         } catch (err) {
-            console.warn(`Fetch attempt ${i + 1} failed for ${url}: ${err.message}`);
-            if (i === retries - 1) {
-                console.error(`All fetch attempts failed for ${url}: ${err.message}`);
-                throw err;
-            }
-            await new Promise(resolve => setTimeout(resolve, delay));
+            console.error(`Error fetching ${url}:`, err.message);
         }
+        await new Promise(resolve => setTimeout(resolve, delay));
     }
+    throw new Error(`Failed to fetch ${url} after ${retries} attempts`);
 }
 
-let lastMouseX = window.innerWidth / 2;
-let lastMouseY = window.innerHeight / 2;
-let lastScrollY = 0;
-
-function updateBackgroundPosition(scrollY) {
-    const mouseX = lastMouseX / window.innerWidth;
-    const mouseY = lastMouseY / window.innerHeight;
-    const scrollInfluence = scrollY / window.innerHeight;
-    const time = Date.now() / 1000;
-    const waveX = Math.sin(time + mouseX * Math.PI * 2) * 50;
-    const waveY = Math.cos(time + mouseY * Math.PI * 2) * 50;
-    const scrollOffset = scrollInfluence * 100;
-    const xOffset = (mouseX - 0.5) * 200 + waveX + scrollOffset;
-    const yOffset = (mouseY - 0.5) * 200 + waveY + scrollOffset;
-    document.body.style.backgroundPosition = `
-        ${xOffset}px ${yOffset}px,
-        ${xOffset + 50}px ${yOffset + 50}px,
-        ${xOffset - 50}px ${yOffset - 50}px
-    `;
-    lastScrollY = scrollInfluence;
+function linkify(text) {
+    const urlRegex = /(\b(https?|ftp|file|http):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|])/g;
+    return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
 }
 
-const particles = [];
-const numParticles = 150;
-
-function createParticleSystem() {
-    const canvas = document.createElement('canvas');
-    canvas.id = 'particleCanvas';
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    });
-
-    for (let i = 0; i < numParticles; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: Math.random() * 1 + 1,
-            angle: Math.random() * Math.PI * 2,
-            orbitRadiusX: Math.random() * 400 + 150,
-            orbitRadiusY: Math.random() * 200 + 100,
-            baseSpeed: Math.random() * 0.002 + 0.001
-        });
-    }
-
-    let lastFrameTime = Date.now();
-    let frameCount = 0;
-    let fps = 60;
-
-    function animateParticles() {
-        const currentTime = Date.now();
-        frameCount++;
-        if (currentTime - lastFrameTime >= 1000) {
-            fps = frameCount;
-            frameCount = 0;
-            lastFrameTime = currentTime;
-            console.log('FPS:', fps);
-        }
-
-        if (fps < 60 && frameCount % 3 === 0) {
-            requestAnimationFrame(animateParticles);
-            return;
-        }
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        particles.forEach(particle => {
-            const dx = particle.x - lastMouseX;
-            const dy = particle.y - lastMouseY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            let gravityInfluence = 0.7;
-            let speed = particle.baseSpeed;
-
-            if (distance < 200) {
-                gravityInfluence = 1.2;
-                speed = particle.baseSpeed * 3;
-            } else if (distance > 800) {
-                gravityInfluence = 0.3;
-                speed = particle.baseSpeed * 0.5;
-            }
-
-            particle.angle += speed;
-
-            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
-            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
-
-            particle.x = Math.max(0, Math.min(particle.x, canvas.width));
-            particle.y = Math.max(0, Math.min(particle.y, canvas.height));
-
-            ctx.beginPath();
-            ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
-            ctx.fill();
-        });
-
-        requestAnimationFrame(animateParticles);
-    }
-
-    animateParticles();
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log('DOMContentLoaded event fired');
-    keepThemeSetting();
-    attachThemeToggleEvent();
-
-    setTimeout(createParticleSystem, 500);
-
-    if (document.body.classList.contains('dogs-page')) {
-        const dogPhotosLink = document.querySelector('a[href="/dogs.html"]');
-        if (dogPhotosLink) {
-            dogPhotosLink.classList.add('disabled');
-            dogPhotosLink.addEventListener('click', (e) => e.preventDefault());
-            console.log('Dog Photos link disabled on dogs page');
-        }
-        console.log('Dogs page detected, skipping resume.json fetch');
-        return;
-    }
-
-    let data;
-    try {
-        const response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
-        data = await response.json();
-        console.log('Parsed resume.json data:', data);
-    } catch (err) {
-        console.error('Failed to load resume.json:', err.message);
-        alert('Error: Unable to load resume data. Please check your connection and try again.');
-        const container = document.querySelector('.container');
-        if (container) {
-            container.innerHTML = `
-                <div class="error-message">
-                    <h1>Error Loading Resume</h1>
-                    <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
-                    <p>Error details: ${err.message}</p>
-                </div>
-            `;
-        } else {
-            console.error('Container element not found in DOM');
-        }
-        return;
-    }
-
+function renderData(data) {
     try {
         const nameElement = document.getElementById('name');
         if (nameElement) {
-            nameElement.innerText = data.name || 'Name Not Found';
+            nameElement.innerText = data.name || 'Remy Russell';
         } else {
             console.error('Name element not found in DOM');
         }
 
         const roleElement = document.getElementById('role');
         if (roleElement) {
-            roleElement.innerText = data.role || 'Role Not Found';
+            roleElement.innerText = `${data.role || 'Role Not Found'} | ${data.seeking || 'Seeking Not Found'}`;
         } else {
             console.error('Role element not found in DOM');
         }
 
-        const emailElement = document.getElementById('email');
-        if (emailElement) {
-            emailElement.innerText = data.contact?.email || 'Email Not Found';
-        } else {
-            console.error('Email element not found in DOM');
-        }
+        const contactContainer = document.getElementById('contact');
+        if (contactContainer) {
+            const emailPara = document.getElementById('email');
+            if (emailPara) emailPara.style.display = data.contact?.email ? 'block' : 'none';
+            const emailText = document.getElementById('emailText');
+            if (emailText) {
+                emailText.innerHTML = data.contact?.email ? `<a href="mailto:${data.contact.email}">${data.contact.email}</a>` : 'Email Not Found';
+            }
 
-        const phoneElement = document.getElementById('phone');
-        if (phoneElement) {
-            phoneElement.innerText = data.contact?.phone || '';
+            const phonePara = document.getElementById('phone');
+            if (phonePara) phonePara.style.display = data.contact?.phone ? 'block' : 'none';
+            const phoneText = document.getElementById('phoneText');
+            if (phoneText) phoneText.innerText = data.contact?.phone || '';
+
+            const linkedinPara = document.getElementById('linkedin');
+            if (linkedinPara) linkedinPara.style.display = data.contact?.linkedin ? 'block' : 'none';
+            const linkedinText = document.getElementById('linkedinText');
+            if (linkedinText) {
+                linkedinText.innerHTML = data.contact?.linkedin ? `<a href="${data.contact.linkedin}" target="_blank">${data.contact.linkedin}</a>` : 'LinkedIn Not Found';
+            }
+
+            const websitePara = document.getElementById('website');
+            if (websitePara) websitePara.style.display = data.contact?.website ? 'block' : 'none';
+            const websiteText = document.getElementById('websiteText');
+            if (websiteText) {
+                websiteText.innerHTML = data.contact?.website ? `<a href="${data.contact.website}" target="_blank">${data.contact.website}</a>` : 'Website Not Found';
+            }
         } else {
-            console.error('Phone element not found in DOM');
+            console.error('Contact container not found in DOM');
         }
 
         const container = document.querySelector('.container');
         const summarySection = document.getElementById('summary');
-        if (container && summarySection && !document.querySelector('.location-note')) {
+        if (container && !document.querySelector('.location-note')) {
             const locationNote = document.createElement('p');
             locationNote.className = 'location-note';
             locationNote.innerText = data.seeking || 'Currently seeking remote or hybrid roles in the Salt Lake City area.';
@@ -529,14 +403,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                         const descriptionPara = document.createElement('p');
                         descriptionPara.className = 'description';
-                        descriptionPara.innerText = experience.description || 'Description Not Found';
+                        descriptionPara.innerHTML = linkify(experience.description || 'Description Not Found');
                         detailsDiv.appendChild(descriptionPara);
 
                         const highlightsList = document.createElement('ul');
                         const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
                         const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
                         const combinedHighlights = [...highlightsArray, ...achievementsArray];
-                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
+                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${linkify(item)}</li>`).join('') : '';
                         if (combinedHighlights.length > 0) {
                             detailsDiv.appendChild(highlightsList);
                         }
@@ -681,4 +555,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     updateBackgroundPosition(0);
+}
+
+let lastMouseX = window.innerWidth / 2;
+let lastMouseY = window.innerHeight / 2;
+
+function updateBackgroundPosition(scrollY) {
+    const body = document.body;
+    const xPercent = (lastMouseX / window.innerWidth) * 100;
+    const yPercent = ((lastMouseY + scrollY) / (window.innerHeight + scrollY)) * 100;
+    body.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    keepThemeSetting();
+    attachThemeToggleEvent();
+
+    try {
+        const response = await fetchWithRetry('resume.json', { method: 'GET' });
+        const data = await response.json();
+        console.log('Resume data loaded:', data);
+        renderData(data);
+    } catch (err) {
+        console.error('Failed to load resume data:', err.message);
+        const container = document.querySelector('.container');
+        if (container) {
+            container.innerHTML = `<p class="error-message">Failed to load resume data: ${err.message}. Please try refreshing the page.</p>`;
+        }
+    }
 });
