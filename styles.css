@@ -666,7 +666,7 @@ body.dogs-page .dog-photo:hover {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive adjustments */
+/* Responsive adjustmentss */
 @media (max-width: 768px) {
     body {
         padding: 1.5rem;
