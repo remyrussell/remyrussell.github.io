@@ -412,7 +412,7 @@ function renderResumeData(data) {
                         experienceDiv.appendChild(detailsDiv);
                         experienceContainer.appendChild(experienceDiv);
                     } catch (err) {
-                        console.error(`Error rendering experience item ${index}:`, err.message);
+                        console.error(`Error rendering experience itemz ${index}:`, err.message);
                         experienceContainer.innerHTML += `<p>Error rendering experience item: ${err.message}</p>`;
                     }
                 });
