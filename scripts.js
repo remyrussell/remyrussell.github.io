@@ -298,15 +298,6 @@ function linkify(text) {
     return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
 }
 
-let lastMouseX = window.innerWidth / 2;
-let lastMouseY = window.innerHeight / 2;
-
-function updateBackgroundPosition(scrollY) {
-    const xShift = (lastMouseX / window.innerWidth) * 10 - 5;
-    const yShift = ((lastMouseY + scrollY) / window.innerHeight) * 10 - 5;
-    document.body.style.backgroundPosition = `${50 + xShift}% ${50 + yShift}%`;
-}
-
 function renderResumeData(data) {
     try {
         const nameElement = document.getElementById('name');
@@ -412,7 +403,7 @@ function renderResumeData(data) {
                         experienceDiv.appendChild(detailsDiv);
                         experienceContainer.appendChild(experienceDiv);
                     } catch (err) {
-                        console.error(`Error rendering experience itemz ${index}:`, err.message);
+                        console.error(`Error rendering experience item ${index}:`, err.message);
                         experienceContainer.innerHTML += `<p>Error rendering experience item: ${err.message}</p>`;
                     }
                 });
@@ -529,6 +520,35 @@ function renderResumeData(data) {
             container.innerHTML += `<p class="error-message">Unexpected error: ${err.message}</p>`;
         }
     }
+
+    document.addEventListener('mousemove', (e) => {
+        if (window.innerWidth >= 768) {
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            updateBackgroundPosition(scrollY);
+        }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (window.innerWidth < 768) {
+            lastMouseX = e.touches[0].clientX;
+            lastMouseY = e.touches[0].clientY;
+            const scrollY = window.scrollY || document.documentElement.scrollTop;
+            updateBackgroundPosition(scrollY);
+        }
+    });
+
+    updateBackgroundPosition(0);
+}
+
+let lastMouseX = window.innerWidth / 2;
+let lastMouseY = window.innerHeight / 2;
+
+function updateBackgroundPosition(scrollY) {
+    const xShift = (lastMouseX / window.innerWidth) * 10 - 5;
+    const yShift = ((lastMouseY + scrollY) / window.innerHeight) * 10 - 5;
+    document.body.style.backgroundPosition = `${50 + xShift}% ${50 + yShift}%`;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -595,24 +615,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
-
-    document.addEventListener('mousemove', (e) => {
-        if (window.innerWidth >= 768) {
-            lastMouseX = e.clientX;
-            lastMouseY = e.clientY;
-            const scrollY = window.scrollY || document.documentElement.scrollTop;
-            updateBackgroundPosition(scrollY);
-        }
-    });
-
-    document.addEventListener('touchmove', (e) => {
-        if (window.innerWidth < 768) {
-            lastMouseX = e.touches[0].clientX;
-            lastMouseY = e.touches[0].clientY;
-            const scrollY = window.scrollY || document.documentElement.scrollTop;
-            updateBackgroundPosition(scrollY);
-        }
-    });
-
-    updateBackgroundPosition(0);
 });
