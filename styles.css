@@ -256,7 +256,160 @@ h3 {
     display: none;
 }
 
-.loca...(truncated 4938 characters)...n.menu-toggle:hover span {
+.location-note {
+    font-style: italic;
+    color: #555;
+    margin: 0.75rem 0;
+    font-size: 1rem;
+}
+
+/* Dark mode styles */
+.theme-dark {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.theme-dark .container {
+    background-color: rgba(40, 40, 40, 0.3);
+    color: #e0e0e0;
+}
+
+body.dogs-page.theme-dark .container {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+.theme-dark h2 {
+    border-color: #666;
+}
+
+.theme-dark .experience-item .date-range,
+.theme-dark .education-item .date-range {
+    color: #aaa;
+}
+
+.theme-dark .experience-item .location,
+.theme-dark .education-item .location {
+    color: #aaa;
+}
+
+.theme-dark .location-note {
+    color: #aaa;
+}
+
+.theme-dark button {
+    background-color: #e0e0e0;
+    color: #2d2d2d;
+}
+
+/* Liquid Glass theme toggle switch */
+.theme-toggle-wrapper {
+    position: relative;
+    margin: 0.75rem 0;
+    display: none;
+}
+
+.theme-toggle-checkbox {
+    display: none;
+}
+
+.theme-toggle-label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.theme-toggle-track {
+    display: block;
+    width: 56px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    border-radius: 16px;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.theme-toggle-thumb {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(90deg, rgba(199, 21, 133, 0.6), rgba(106, 90, 205, 0.6));
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-track {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label .theme-toggle-thumb {
+    transform: translateX(24px);
+}
+
+.menu.active .theme-toggle-wrapper {
+    display: block;
+}
+
+/* Menu toggle button */
+button#menuToggleButton.menu-toggle {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: #e0e0e0;
+    font-size: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+    width: 44px;
+    height: 44px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+}
+
+.theme-dark button#menuToggleButton.menu-toggle {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #e0e0e0;
+}
+
+button#menuToggleButton.menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.1);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    opacity: 0.95;
+}
+
+.theme-dark button#menuToggleButton.menu-toggle:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+button#menuToggleButton.menu-toggle span {
+    position: relative;
+    height: 2.5px;
+    background-color: #c71585;
+    transition: all 0.3s ease;
+    width: 28px;
+    margin: 3.5px 0;
+}
+
+button#menuToggleButton.menu-toggle span:nth-child(1),
+button#menuToggleButton.menu-toggle span:nth-child(2),
+button#menuToggleButton.menu-toggle span:nth-child(3) {
+    top: unset;
+    bottom: unset;
+    transform: none;
+}
+
+button#menuToggleButton.menu-toggle:hover span {
     transform: scaleX(1.15);
 }
 
