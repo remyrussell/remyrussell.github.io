@@ -124,31 +124,12 @@ function generateResumePDF(data) {
         }
 
         yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
-
-        let contactItems = [];
-        if (data.contact?.email) contactItems.push({label: 'Email: ', value: data.contact.email, url: `mailto:${data.contact.email}`});
-        if (data.contact?.linkedin) contactItems.push({label: 'LinkedIn: ', value: data.contact.linkedin, url: data.contact.linkedin});
-        if (data.contact?.website) contactItems.push({label: 'Website: ', value: data.contact.website, url: data.contact.website});
-
-        if (contactItems.length > 0) {
-            yPosition += 0.5;
-            doc.setFontSize(10.5);
-            doc.setFont('Helvetica', 'normal');
-            let contactX = margin;
-            for (let i = 0; i < contactItems.length; i++) {
-                const item = contactItems[i];
-                doc.text(item.label, contactX, yPosition);
-                contactX += doc.getTextWidth(item.label);
-                doc.textWithLink(item.value, contactX, yPosition, { url: item.url });
-                contactX += doc.getTextWidth(item.value);
-                if (i < contactItems.length - 1) {
-                    doc.text(' | ', contactX, yPosition);
-                    contactX += doc.getTextWidth(' | ');
-                }
-            }
-            yPosition += 10.5 * 0.45 + 0.5;
+        let contactInfo = [];
+        if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
+        if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
+        if (contactInfo.length) {
+            yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
         }
-
         yPosition += 0.5;
         if (data.role || data.seeking) {
             const roleText = data.role || '';
@@ -253,9 +234,11 @@ function generateResumePDF(data) {
         const url = URL.createObjectURL(pdfOutput);
         const fileName = 'Remy_Russell_Resume.pdf';
 
+        // Try to open in a new tab
         const newTab = window.open(url, '_blank');
         if (!newTab) {
             console.warn('Failed to open new tab. Pop-up blocker may be enabled.');
+            // Fallback: Create a download link
             const link = document.createElement('a');
             link.href = url;
             link.download = fileName;
@@ -267,6 +250,7 @@ function generateResumePDF(data) {
         } else {
             newTab.document.title = fileName;
         }
+        // Clean up the URL objeect
         setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (err) {
         console.error('Error generating PDF:', err.message);
@@ -283,39 +267,196 @@ async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
                 console.log(`Successfully fetched ${url}`);
                 return response;
             }
+            throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
         } catch (err) {
-            console.error(`Fetch attempt ${i + 1} failed:`, err.message);
-            if (i < retries - 1) {
-                await new Promise(resolve => setTimeout(resolve, delay));
+            console.warn(`Fetch attempt ${i + 1} failed for ${url}: ${err.message}`);
+            if (i === retries - 1) {
+                console.error(`All fetch attempts failed for ${url}: ${err.message}`);
+                throw err;
             }
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
-    throw new Error(`Failed to fetch ${url} after ${retries} attempts`);
 }
 
-function linkify(text) {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+let lastMouseX = window.innerWidth / 2;
+let lastMouseY = window.innerHeight / 2;
+let lastScrollY = 0;
+
+function updateBackgroundPosition(scrollY) {
+    const mouseX = lastMouseX / window.innerWidth;
+    const mouseY = lastMouseY / window.innerHeight;
+    const scrollInfluence = scrollY / window.innerHeight;
+    const time = Date.now() / 1000;
+    const waveX = Math.sin(time + mouseX * Math.PI * 2) * 50;
+    const waveY = Math.cos(time + mouseY * Math.PI * 2) * 50;
+    const scrollOffset = scrollInfluence * 100;
+    const xOffset = (mouseX - 0.5) * 200 + waveX + scrollOffset;
+    const yOffset = (mouseY - 0.5) * 200 + waveY + scrollOffset;
+    document.body.style.backgroundPosition = `
+        ${xOffset}px ${yOffset}px,
+        ${xOffset + 50}px ${yOffset + 50}px,
+        ${xOffset - 50}px ${yOffset - 50}px
+    `;
+    lastScrollY = scrollInfluence;
 }
 
-function renderResumeData(data) {
+const particles = [];
+const numParticles = 150;
+
+function createParticleSystem() {
+    const canvas = document.createElement('canvas');
+    canvas.id = 'particleCanvas';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    for (let i = 0; i < numParticles; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 1 + 1,
+            angle: Math.random() * Math.PI * 2,
+            orbitRadiusX: Math.random() * 400 + 150,
+            orbitRadiusY: Math.random() * 200 + 100,
+            baseSpeed: Math.random() * 0.002 + 0.001
+        });
+    }
+
+    let lastFrameTime = Date.now();
+    let frameCount = 0;
+    let fps = 60;
+
+    function animateParticles() {
+        const currentTime = Date.now();
+        frameCount++;
+        if (currentTime - lastFrameTime >= 1000) {
+            fps = frameCount;
+            frameCount = 0;
+            lastFrameTime = currentTime;
+            console.log('FPS:', fps);
+        }
+
+        if (fps < 60 && frameCount % 3 === 0) {
+            requestAnimationFrame(animateParticles);
+            return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(particle => {
+            const dx = particle.x - lastMouseX;
+            const dy = particle.y - lastMouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            let gravityInfluence = 0.7;
+            let speed = particle.baseSpeed;
+
+            if (distance < 200) {
+                gravityInfluence = 1.2;
+                speed = particle.baseSpeed * 3;
+            } else if (distance > 800) {
+                gravityInfluence = 0.3;
+                speed = particle.baseSpeed * 0.5;
+            }
+
+            particle.angle += speed;
+
+            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
+            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
+
+            particle.x = Math.max(0, Math.min(particle.x, canvas.width));
+            particle.y = Math.max(0, Math.min(particle.y, canvas.height));
+
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
+            ctx.fill();
+        });
+
+        requestAnimationFrame(animateParticles);
+    }
+
+    animateParticles();
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOMContentLoaded event fired');
+    keepThemeSetting();
+    attachThemeToggleEvent();
+
+    setTimeout(createParticleSystem, 500);
+
+    if (document.body.classList.contains('dogs-page')) {
+        const dogPhotosLink = document.querySelector('a[href="/dogs.html"]');
+        if (dogPhotosLink) {
+            dogPhotosLink.classList.add('disabled');
+            dogPhotosLink.addEventListener('click', (e) => e.preventDefault());
+            console.log('Dog Photos link disabled on dogs page');
+        }
+        console.log('Dogs page detected, skipping resume.json fetch');
+        return;
+    }
+
+    let data;
+    try {
+        const response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
+        data = await response.json();
+        console.log('Parsed resume.json data:', data);
+    } catch (err) {
+        console.error('Failed to load resume.json:', err.message);
+        alert('Error: Unable to load resume data. Please check your connection and try again.');
+        const container = document.querySelector('.container');
+        if (container) {
+            container.innerHTML = `
+                <div class="error-message">
+                    <h1>Error Loading Resume</h1>
+                    <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
+                    <p>Error details: ${err.message}</p>
+                </div>
+            `;
+        } else {
+            console.error('Container element not found in DOM');
+        }
+        return;
+    }
+
     try {
         const nameElement = document.getElementById('name');
         if (nameElement) {
-            nameElement.innerText = data.name || 'Remy Russell';
+            nameElement.innerText = data.name || 'Name Not Found';
         } else {
             console.error('Name element not found in DOM');
         }
 
         const roleElement = document.getElementById('role');
         if (roleElement) {
-            roleElement.innerText = data.role || '';
+            roleElement.innerText = data.role || 'Role Not Found';
         } else {
             console.error('Role element not found in DOM');
         }
 
+        const emailElement = document.getElementById('email');
+        if (emailElement) {
+            emailElement.innerText = data.contact?.email || 'Email Not Found';
+        } else {
+            console.error('Email element not found in DOM');
+        }
+
+        const phoneElement = document.getElementById('phone');
+        if (phoneElement) {
+            phoneElement.innerText = data.contact?.phone || '';
+        } else {
+            console.error('Phone element not found in DOM');
+        }
+
         const container = document.querySelector('.container');
-        const summarySection = document.querySelector('#summary');
+        const summarySection = document.getElementById('summary');
         if (container && summarySection && !document.querySelector('.location-note')) {
             const locationNote = document.createElement('p');
             locationNote.className = 'location-note';
@@ -327,7 +468,7 @@ function renderResumeData(data) {
 
         const summaryTextElement = document.getElementById('summaryText');
         if (summaryTextElement) {
-            summaryTextElement.innerHTML = linkify(data.summary || 'Summary Data Not Found');
+            summaryTextElement.innerText = data.summary || 'Summary Data Not Found';
         } else {
             console.error('Summary text element not found in DOM');
         }
@@ -388,14 +529,14 @@ function renderResumeData(data) {
 
                         const descriptionPara = document.createElement('p');
                         descriptionPara.className = 'description';
-                        descriptionPara.innerHTML = linkify(experience.description || 'Description Not Found');
+                        descriptionPara.innerText = experience.description || 'Description Not Found';
                         detailsDiv.appendChild(descriptionPara);
 
                         const highlightsList = document.createElement('ul');
                         const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
                         const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
                         const combinedHighlights = [...highlightsArray, ...achievementsArray];
-                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${linkify(item)}</li>`).join('') : '';
+                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
                         if (combinedHighlights.length > 0) {
                             detailsDiv.appendChild(highlightsList);
                         }
@@ -540,91 +681,4 @@ function renderResumeData(data) {
     });
 
     updateBackgroundPosition(0);
-}
-
-let lastMouseX = window.innerWidth / 2;
-let lastMouseY = window.innerHeight / 2;
-
-function updateBackgroundPosition(scrollY) {
-    const xShift = (lastMouseX / window.innerWidth) * 10 - 5;
-    const yShift = ((lastMouseY + scrollY) / window.innerHeight) * 10 - 5;
-    document.body.style.backgroundPosition = `${50 + xShift}% ${50 + yShift}%`;
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    keepThemeSetting();
-    attachThemeToggleEvent();
-
-    try {
-        const response = await fetchWithRetry('resume.json');
-        const data = await response.json();
-        renderResumeData(data);
-    } catch (err) {
-        console.error('Error loading resume data:', err);
-        const container = document.querySelector('.container');
-        if (container) {
-            container.innerHTML += `<p class="error-message">Failed to load resume data. Please try refreshing the page.</p>`;
-        }
-    }
-
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particlesArray = [];
-    const numberOfParticles = 50;
-
-    class Particle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 5 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-        }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
-            if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-            if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-        }
-        draw() {
-            ctx.fillStyle = document.body.classList.contains('theme-dark') ? 'rgba(106, 90, 205, 0.5)' : 'rgba(199, 21, 133, 0.5)';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
-
-    function init() {
-        for (let i = 0; i < numberOfParticles; i++) {
-            particlesArray.push(new Particle());
-        }
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-            particlesArray[i].draw();
-            if (particlesArray[i].size <= 0.2) {
-                particlesArray.splice(i, 1);
-                i--;
-                particlesArray.push(new Particle());
-            }
-        }
-        requestAnimationFrame(animate);
-    }
-
-    init();
-    animate();
-
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        particlesArray.length = 0;
-        init();
-    });
 });
