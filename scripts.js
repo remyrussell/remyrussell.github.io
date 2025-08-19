@@ -618,7 +618,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ).join('') || '<li>Certifications Not Found</li>';
                 } catch (err) {
                     console.error('Error rendering certifications:', err.message);
-                    certificationList.innerHTML = `<li>Error rendering certifications: ${err.message}</li>`;
+                    certificationList.innerHTML = `<li>Error rendering certification: ${err.message}</li>`;
                 }
             } else {
                 certificationList.innerHTML = '<li>No certifications data available.</li>';
