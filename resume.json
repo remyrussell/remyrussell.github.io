@@ -1,7 +1,7 @@
 {
     "metadata": {
         "version": "1.1",
-        "lastUpdated": "2025-07-21"
+        "lastUpdated": "2025-10-23"
     },
     "name": "Remy Russell",
     "role": "Product Manager, Business Analyst",
@@ -16,20 +16,20 @@
     "professionalExperience":[
         {
             "position": "Associate Product Manager, Engineering",
-            "company": "CaseWorthy (formerly Eccovia)",
+            "company": "CaseWorthy",
             "logo": "assets/images/logos/caseworthy.png",
             "location": "Salt Lake City, UT",
             "duration": {
                 "start": "2022-03-14",
-                "end": "2025-03-31"
+                "end": "2025-03-27"
             },
             "description": "Product Lead on the Platform and Integrations R&D team/pod for a configurable Case Management platform used by over 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health)",
             "highlights": [
                 "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and team capabilities",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for 10 customer organizations to enable custom integrations (https://apidoc.eccovia.com)",
                 "Helped 6 organizations optimize delivery operations to enable thousands of daily meal deliveries",
-                "Released enhancements based on business priorities and insights (SSO & 2-Step Verification, scheduled CSV exports, no-code integration design tools, etc)",
-                "Delivered and scrapped POCs/MVPs for new growth initiatives and integrations (SMS/emails via Twilio, last-mile delivery tools via Onfleet, Health Information Exchange, Revenue Cycle Management, etc.)"
+                "Aligned stakeholders and delivered features based on business priorities and insights (SSO & 2-Step Verification, SMS/emails via Twilio, scheduled CSV exports, etc)",
+                "Led initiatives for standardized clinical data integrations (HL7 and X12) so that users could access clinical history, perform Medicaid Eligibility Checks, etc."
             ]
         },
         {
@@ -49,7 +49,7 @@
         },
         {
             "position": "Business Analyst II, UT MMIS Implementation Project",
-            "company": "Acentra Health (formerly Client Network Services, Inc)",
+            "company": "Acentra Health",
             "logo": "assets/images/logos/Acentra.png",
             "location": "Salt Lake City, UT",
             "duration": {
@@ -81,7 +81,7 @@
         "coursework": [
             "Computer science",
             "process improvement",
-            "relational databases",
+            "data analysis",
             "modeling/simulation, etc."
         ]
     },
@@ -89,12 +89,12 @@
         "coreSkills": [
             "Problem discovery, learning from users/buyers",
             "Stakeholder communication and ability to articulate technical details or high-level strategy",
-            "Managing priorities & decisions with data",
+            "Managing priorities & decisions with objective data and subjective variables",
             "Facilitating collaboration, hypothesis testing, and rapid, iterative delivery"
         ],
         "toolsAndFrameworks": [
-            "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, dashboards)",
-            "Insight consolidation (Hubspot, ProductBoard, SQL)",
+            "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, KPI dashboards)",
+            "Insight consolidation, prioritization (Hubspot, ProductBoard, SQL)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
             "Mock-ups, low-fi prototyping (Figma, AI Tools)",
             "API evaluation/testing, workflow automation (Postman, Zapier, Microsoft Power Automate)"
