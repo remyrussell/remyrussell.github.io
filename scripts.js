@@ -126,6 +126,8 @@ function generateResumePDF(data) {
         yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
         let contactInfo = [];
         if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
+        if (data.contact?.phone) contactInfo.push(`Phone: ${data.contact.phone}`);
+        if (data.contact?.website) contactInfo.push(`Website: ${data.contact.website}`);
         if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
         if (contactInfo.length) {
             yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
@@ -351,35 +353,7 @@ function createParticleSystem() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         particles.forEach(particle => {
-            const dx = particle.x - lastMouseX;
-            const dy = particle.y - lastMouseY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            let gravityInfluence = 0.7;
-            let speed = particle.baseSpeed;
-
-            if (distance < 200) {
-                gravityInfluence = 1.2;
-                speed = particle.baseSpeed * 3;
-            } else if (distance > 800) {
-                gravityInfluence = 0.3;
-                speed = particle.baseSpeed * 0.5;
-            }
-
-            particle.angle += speed;
-
-            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
-            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
-
-            particle.x = Math.max(0, Math.min(particle.x, canvas.width));
-            particle.y = Math.max(0, Math.min(particle.y, canvas.height));
-
-            ctx.beginPath();
-            ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
-            ctx.fill();
-        });
-
-        requestAnimationFrame(animateParticles);
+            const dx = particle.x - ...(truncated 1079 characters)...   requestAnimationFrame(animateParticles);
     }
 
     animateParticles();
