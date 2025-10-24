@@ -26,7 +26,7 @@
             "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health)",
             "highlights": [
                 "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and team capabilities",
-                "Shipped a RESTful API from 0 to 1 and onboarded developers for 10 organizations (https://apidoc.eccovia.com)",
+                "Shipped a RESTful API from 0 to 1 and onboarded developers from 10 organizations to support custom integrations (https://apidoc.eccovia.com)",
                 "Developed standardized clinical data integrations (HL7, X12) for users to view clinical history, check Medicaid eligibility, and export claims",
                 "Managed MVP testing & controlled releases for platform enhancements (SSO & 2-Step Verification, SMS/email notifications, low-code design tools, etc)",
                 "Solved process painpoints for 6 organizations with a strategic integration partner, enabling thousands of daily meal deliveries with modern features for drivers and dispatchers"   
