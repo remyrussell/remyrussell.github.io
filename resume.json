@@ -12,7 +12,7 @@
         "linkedin": "https://www.linkedin.com/in/remyrussell",
         "website": "https://remyrussell.com"
     },
-    "summary": "An optimistic tech enthusiast with 10 years of experience advancing SaaS platforms for Health and Human Services providers. Committed to a collaborative software development process, leveraging the best tools and tactics for productivity, transparency, and impactful outcomes.",
+    "summary": "An optimistic tech enthusiast with 10 years of experience advancing SaaS platforms for Health and Human Services providers. Committed to highly collaborative software development and leveraging the best tools and tactics to deliver impactful solutions.",
     "professionalExperience":[
         {
             "position": "Associate Product Manager, Engineering",
@@ -27,9 +27,9 @@
             "highlights": [
                 "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and team capabilities",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for 10 customer organizations to enable custom integrations (https://apidoc.eccovia.com)",
-                "Optimized delivery operations for 6 organizations with a strategic integration micrroservice, enabling thousands of daily meal deliveries",
-                "Aligned stakeholders and delivered features based on business priorities and insights (SSO & 2-Step Verification, SMS/email automations via Twilio, scheduled CSV exports, etc)",
-                "Led initiatives for standardized clinical data integrations (HL7, X12) so that users could access clinical history, perform Medicaid eligibility Checks, and export claims"
+                "Optimized delivery operations for 6 organizations by developing a strategic integration microservice, enabling thousands of daily meal deliveries with modern features for dispatchers and drivers",
+                "Aligned stakeholders and delivered features based on business priorities and insights (SSO & 2-Step Verification, SMS/email automations via Twilio, scheduled CSV exports, low-code integration design tools, etc)",
+                "Led initiatives for standardized clinical data integrations (HL7, X12) for users to view clinical history, perform Medicaid eligibility Checks, and export claims"
             ]
         },
         {
