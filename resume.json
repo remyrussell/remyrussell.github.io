@@ -12,7 +12,7 @@
         "linkedin": "https://www.linkedin.com/in/remyrussell",
         "website": "https://remyrussell.com"
     },
-    "summary": "An optimistic tech enthusiast with 10 years of experience advancing SaaS platforms for Health and Human Services providers. Highly collaborative, technically fluent, and a great partner for stakeholders and engineers.",
+    "summary": "An optimistic tech enthusiast with 10 years of experience advancing SaaS platforms for Health and Human Services providers. Highly collaborative, technically fluent, and eager to drive impactful solutions",
     "professionalExperience":[
         {
             "position": "Associate Product Manager, Engineering",
@@ -27,8 +27,8 @@
             "highlights": [
                 "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and team capabilities",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for 10 customer organizations to enable custom integrations (https://apidoc.eccovia.com)",
-                "Optimized delivery operations for 6 organizations with an integration microservice enabling thousands of daily meal deliveries with modern features for dispatchers and drivers",
-                "Delivered prioritized platform enhancements to solve user/customer painpoints (SSO & 2-Step Verification, SMS/email alerts via Twilio, scheduled CSV exports, low-code design tools, etc)",
+                "Optimized operations for 6 organizations with a strategic integration enabling thousands of daily meal deliveries with modern features for dispatchers and drivers",
+                "Managed early access testing and controlled releases for platform enhancements (SSO & 2-Step Verification, SMS/email notifications, scheduled CSV exports, low-code design tools, etc)",
                 "Led initiatives for standardized clinical data integrations (HL7, X12) for users to view clinical history, perform Medicaid eligibility Checks, and export claims"
             ]
         },
@@ -88,13 +88,13 @@
     "skills": {
         "coreSkills": [
             "Problem discovery, learning from users and buyers",
-            "Stakeholder communication, ability to articulate technical details or high-level strategy",
-            "Managing priorities & decisions with transparency, leveraging data and insights",
-            "Facilitating collaboration, hypothesis testing, and rapid/iterative delivery",
-            "Defining user journeys, epics, stories, acceptance criteria"
+            "Stakeholder communication, articulating technical details or high-level strategy",
+            "Managing priorities & decisions with data, insights, & empathy",
+            "Facilitating collaboration, hypothesis testing, & rapid/iterative delivery",
+            "Defining epics, stories, acceptance criteria, etc."
         ],
         "toolsAndFrameworks": [
-            "Agile, Scrum (Jira for roadmaps, backlogs, Kanban boards, sprint ceremonies, dashboards)",
+            "Agile, Scrum (Jira plans/roadmaps, backlogs, boards, sprints, dashboards)",
             "Insight consolidation, prioritization (Hubspot, ProductBoard, SQL)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
             "Mock-ups, low-fi prototyping, solution discovery (Figma, AI Tools)",
