@@ -23,12 +23,12 @@
                 "start": "2022-03-14",
                 "end": "2025-03-27"
             },
-            "description": "Product Lead on the Platform and Integrations R&D team/pod for a configurable Case Management platform used by over 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health)",
+            "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health)",
             "highlights": [
                 "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and team capabilities",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for 10 customer organizations to enable custom integrations (https://apidoc.eccovia.com)",
-                "Optimized delivery operations for 6 organizations with a strategic integration microservice, enabling thousands of daily meal deliveries with modern features for dispatchers and drivers",
-                "Aligned stakeholders and delivered features based on business priorities and insights (SSO & 2-Step Verification, SMS/email via Twilio, scheduled CSV exports, low-code integration design tools, etc)",
+                "Optimized delivery operations for 6 organizations with an integration microservice enabling thousands of daily meal deliveries with modern features for dispatchers and drivers",
+                "Delivered prioritized platform enhancements to solve user/customer painpoints (SSO & 2-Step Verification, SMS/email alerts via Twilio, scheduled CSV exports, low-code design tools, etc)",
                 "Led initiatives for standardized clinical data integrations (HL7, X12) for users to view clinical history, perform Medicaid eligibility Checks, and export claims"
             ]
         },
@@ -91,7 +91,7 @@
             "Stakeholder communication, ability to articulate technical details or high-level strategy",
             "Managing priorities & decisions with transparency, leveraging data and insights",
             "Facilitating collaboration, hypothesis testing, and rapid/iterative delivery",
-            "Defining user journeys, epics, stories, acceptance criteria, etc. for efficient solution delivery"
+            "Defining user journeys, epics, stories, acceptance criteria"
         ],
         "toolsAndFrameworks": [
             "Agile, Scrum (Jira for roadmaps, backlogs, Kanban boards, sprint ceremonies, dashboards)",
