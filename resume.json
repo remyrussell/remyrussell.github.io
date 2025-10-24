@@ -12,7 +12,7 @@
         "linkedin": "https://www.linkedin.com/in/remyrussell",
         "website": "https://remyrussell.com"
     },
-    "summary": "An optimistic tech enthusiast with 10 years of experience advancing SaaS platforms for Health and Human Services providers. Highly collaborative, technically fluent, and eager to drive impactful solutions",
+    "summary": "An optimistic tech enthusiast with 10 years of experience advancing SaaS platforms for Health and Human Services providers. Highly collaborative, technically fluent, and eager to drive impactful solutions.",
     "professionalExperience":[
         {
             "position": "Associate Product Manager, Engineering",
@@ -28,7 +28,7 @@
                 "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and team capabilities",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for 10 customer organizations (https://apidoc.eccovia.com)",
                 "Enabled thousands of daily meal deliveries for 6 organizations by developing an integration microservice with a strategic partner",
-                "Managed early access testing & controlled releases for platform enhancements (SSO & 2-Step Verification, SMS/email notifications, low-code integration design tools, etc)",
+                "Managed MVP testing & controlled releases for platform enhancements (SSO & 2-Step Verification, SMS/email notifications, low-code integration design tools, etc)",
                 "Led initiatives for standardized clinical data integrations (HL7, X12) for users to view clinical history, perform Medicaid eligibility Checks, export claims"
             ]
         },
