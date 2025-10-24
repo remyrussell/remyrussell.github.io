@@ -87,6 +87,10 @@ function attachThemeToggleEvent() {
     }
 }
 
+function linkify(text) {
+    return text.replace(/(https?:\/\/[^\s\)]+)/g, '<a href="$1" target="_blank">$1</a>');
+}
+
 function generateResumePDF(data) {
     if (!data) {
         alert('Error: Resume data not loaded. Please try again.');
@@ -124,15 +128,39 @@ function generateResumePDF(data) {
         }
 
         yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
-        let contactInfo = [];
+
+        let currentX = margin;
+        let currentY = yPosition + 0.5;
+        doc.setFontSize(10.5);
+        doc.setFont('Helvetica', 'normal');
+        const contactInfo = [];
         if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
         if (data.contact?.phone) contactInfo.push(`Phone: ${data.contact.phone}`);
         if (data.contact?.website) contactInfo.push(`Website: ${data.contact.website}`);
         if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
-        if (contactInfo.length) {
-            yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
-        }
-        yPosition += 0.5;
+        contactInfo.forEach((item, index) => {
+            if (index > 0) {
+                doc.text(' | ', currentX, currentY);
+                currentX += doc.getTextWidth(' | ');
+            }
+            const parts = item.split(': ');
+            if (parts.length === 2) {
+                doc.text(parts[0] + ': ', currentX, currentY);
+                currentX += doc.getTextWidth(parts[0] + ': ');
+                const value = parts[1];
+                if (value.startsWith('https://') || value.startsWith('http://')) {
+                    doc.textWithLink(value, currentX, currentY, {url: value});
+                } else {
+                    doc.text(value, currentX, currentY);
+                }
+                currentX += doc.getTextWidth(value);
+            } else {
+                doc.text(item, currentX, currentY);
+                currentX += doc.getTextWidth(item);
+            }
+        });
+        yPosition = currentY + 10.5 * 0.45 + 0.5;
+
         if (data.role || data.seeking) {
             const roleText = data.role || '';
             const seekingText = data.seeking || '';
@@ -164,7 +192,27 @@ function generateResumePDF(data) {
                 }
                 if (exp.highlights) {
                     exp.highlights.forEach(highlight => {
-                        yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
+                        if (highlight.includes('https://apidoc.eccovia.com')) {
+                            const url = 'https://apidoc.eccovia.com';
+                            const before = highlight.replace(/\(\s*https:\/\/apidoc.eccovia.com\s*\)/, '(');
+                            const after = ')';
+                            doc.setFontSize(10.5);
+                            doc.setFont('Helvetica', 'normal');
+                            const beforeText = '- ' + before;
+                            const lines = doc.splitTextToSize(beforeText, contentWidth);
+                            doc.text(lines, margin, yPosition);
+                            const lineHeight = 10.5 * 0.45;
+                            const lastLine = lines[lines.length - 1];
+                            const lastLineWidth = doc.getTextWidth(lastLine);
+                            const linkX = margin + lastLineWidth;
+                            const linkY = yPosition + (lines.length - 1) * lineHeight;
+                            doc.textWithLink(url, linkX, linkY, {url: url});
+                            const afterX = linkX + doc.getTextWidth(url);
+                            doc.text(after, afterX, linkY);
+                            yPosition = yPosition + lines.length * lineHeight;
+                        } else {
+                            yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
+                        }
                     });
                 }
                 yPosition += 1;
@@ -228,7 +276,6 @@ function generateResumePDF(data) {
             const maxY = Math.max(leftY, rightY);
             doc.setLineWidth(0.2);
             doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
-
             yPosition = maxY;
         }
 
@@ -252,7 +299,7 @@ function generateResumePDF(data) {
         } else {
             newTab.document.title = fileName;
         }
-        // Clean up the URL objeect
+        // Clean up the URL object
         setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (err) {
         console.error('Error generating PDF:', err.message);
@@ -554,7 +601,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
                         const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
                         const combinedHighlights = [...highlightsArray, ...achievementsArray];
-                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
+                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${linkify(item)}</li>`).join('') : '';
                         if (combinedHighlights.length > 0) {
                             detailsDiv.appendChild(highlightsList);
                         }
