@@ -12,7 +12,7 @@
         "linkedin": "https://www.linkedin.com/in/remyrussell",
         "website": "https://remyrussell.com"
     },
-    "summary": "An optimistic tech enthusiast with 10 years of experience evolving SaaS platforms for Health and Human Services Providers. Comfortable analyzing APIs, applying AI tools, and partnering with engineers to drive impactful outcomes.",
+    "summary": "An optimistic tech enthusiast with 10 years of experience advancing SaaS platforms for Health and Human Services providers. Committed to a highly collaborative software development process leveraging the best tools and tactics for productivityy, transparency, and impactful outcomes.",
     "professionalExperience":[
         {
             "position": "Associate Product Manager, Engineering",
@@ -27,9 +27,9 @@
             "highlights": [
                 "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and team capabilities",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers for 10 customer organizations to enable custom integrations (https://apidoc.eccovia.com)",
-                "Helped 6 organizations optimize delivery operations to enable thousands of daily meal deliveries",
-                "Aligned stakeholders and delivered features based on business priorities and insights (SSO & 2-Step Verification, SMS/emails via Twilio, scheduled CSV exports, etc)",
-                "Led initiatives for standardized clinical data integrations (HL7 and X12) so that users could access clinical history, perform Medicaid Eligibility Checks, etc."
+                "Optimized delivery operations for 6 organizations with a strategic integration micrroservice, enabling thousands of daily meal deliveries",
+                "Aligned stakeholders and delivered features based on business priorities and insights (SSO & 2-Step Verification, SMS/email automations via Twilio, scheduled CSV exports, etc)",
+                "Led initiatives for standardized clinical data integrations (HL7, X12) so that users could access clinical history, perform Medicaid eligibility Checks, and export claims"
             ]
         },
         {
@@ -87,13 +87,14 @@
     },
     "skills": {
         "coreSkills": [
-            "Problem discovery, learning from users/buyers",
-            "Stakeholder communication and ability to articulate technical details or high-level strategy",
+            "Problem discovery, learning from users and buyers",
+            "Stakeholder communication and ability to articulate technical details or high-level strategy based on audience",
             "Managing priorities & decisions with objective data and subjective variables",
-            "Facilitating collaboration, hypothesis testing, and rapid, iterative delivery"
+            "Facilitating collaboration, hypothesis testing, and rapid/iterative delivery",
+            "Defining user journeys, epics, stories, acceptance criteria, etc. for efficient solution delivery",
         ],
         "toolsAndFrameworks": [
-            "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban, sprint ceremonies, KPI dashboards)",
+            "Agile, Scrum (Jira for roadmapping, backlog refinement, Kanban boards, sprint ceremonies, KPI dashboards)",
             "Insight consolidation, prioritization (Hubspot, ProductBoard, SQL)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
             "Mock-ups, low-fi prototyping (Figma, AI Tools)",
