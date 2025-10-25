@@ -119,7 +119,7 @@ function generateResumePDF(data) {
             doc.setFont('Helvetica', style);
             const lines = doc.splitTextToSize(text, maxWidth);
             doc.text(lines, x, y);
-            return y + (lines.length * size * 0.4);
+            return y + (lines.length * size * 0.425);
         }
 
         function addHorizontalLine(y, offset) {
@@ -134,32 +134,23 @@ function generateResumePDF(data) {
         doc.setFontSize(11.25);
         doc.setFont('Helvetica', 'normal');
         const contactInfo = [];
-        if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
-        if (data.contact?.phone) contactInfo.push(`Phone: ${data.contact.phone}`);
-        if (data.contact?.website) contactInfo.push(`Website: ${data.contact.website}`);
-        if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
+        if (data.contact?.email) contactInfo.push(`${data.contact.email}`);
+        if (data.contact?.phone) contactInfo.push(`${data.contact.phone}`);
+        if (data.contact?.website) contactInfo.push(`${data.contact.website}`);
+        if (data.contact?.linkedin) contactInfo.push(`${data.contact.linkedin}`);
         contactInfo.forEach((item, index) => {
             if (index > 0) {
                 doc.text(' | ', currentX, currentY);
                 currentX += doc.getTextWidth(' | ');
             }
-            const parts = item.split(': ');
-            if (parts.length === 2) {
-                doc.text(parts[0] + ': ', currentX, currentY);
-                currentX += doc.getTextWidth(parts[0] + ': ');
-                const value = parts[1];
-                if (value.startsWith('https://') || value.startsWith('http://')) {
-                    doc.textWithLink(value, currentX, currentY, {url: value});
-                } else {
-                    doc.text(value, currentX, currentY);
-                }
-                currentX += doc.getTextWidth(value);
+            if (item.startsWith('https://') || item.startsWith('http://')) {
+                doc.textWithLink(item, currentX, currentY, {url: item});
             } else {
                 doc.text(item, currentX, currentY);
-                currentX += doc.getTextWidth(item);
             }
+            currentX += doc.getTextWidth(item);
         });
-        yPosition = currentY + 11.25 * 0.4 + 0.5;
+        yPosition = currentY + 11.25 * 0.425 + 0.5;
 
         if (data.role || data.seeking) {
             const roleText = data.role || '';
@@ -188,7 +179,7 @@ function generateResumePDF(data) {
                 yPosition = addText(`${duration} | ${exp.location}`, 11.25, 'italic', margin, yPosition, contentWidth);
                 if (exp.description) {
                     yPosition = addText(exp.description, 11.25, 'normal', margin, yPosition, contentWidth);
-                    yPosition += 0.2;
+                    yPosition += 0.25;
                 }
                 if (exp.highlights) {
                     exp.highlights.forEach(highlight => {
@@ -201,7 +192,7 @@ function generateResumePDF(data) {
                             const beforeText = '- ' + before;
                             const lines = doc.splitTextToSize(beforeText, contentWidth);
                             doc.text(lines, margin, yPosition);
-                            const lineHeight = 11.25 * 0.4;
+                            const lineHeight = 11.25 * 0.425;
                             const lastLine = lines[lines.length - 1];
                             const lastLineWidth = doc.getTextWidth(lastLine);
                             const linkX = margin + lastLineWidth;
@@ -250,7 +241,7 @@ function generateResumePDF(data) {
             }
 
             if (data.skills?.fun) {
-                leftY += 0.6;
+                leftY += 0.7;
                 leftY = addText('Interests & Hobbies', 13, 'bold', leftColumnX, leftY, columnWidth);
                 data.skills.fun.forEach(fun => {
                     leftY = addText(`- ${fun}`, 11.25, 'normal', leftColumnX, leftY, columnWidth);
@@ -265,7 +256,7 @@ function generateResumePDF(data) {
             }
 
             if (data.certifications) {
-                rightY += 0.6;
+                rightY += 0.7;
                 rightY = addText('Certifications', 13, 'bold', rightColumnX, rightY, columnWidth);
                 data.certifications.forEach(cert => {
                     const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
