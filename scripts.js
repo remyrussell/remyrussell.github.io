@@ -119,7 +119,7 @@ function generateResumePDF(data) {
             doc.setFont('Helvetica', style);
             const lines = doc.splitTextToSize(text, maxWidth);
             doc.text(lines, x, y);
-            return y + (lines.length * size * 0.425);
+            return y + (lines.length * size * 0.4);
         }
 
         function addHorizontalLine(y, offset) {
@@ -159,7 +159,7 @@ function generateResumePDF(data) {
                 currentX += doc.getTextWidth(item);
             }
         });
-        yPosition = currentY + 11.25 * 0.425 + 0.5;
+        yPosition = currentY + 11.25 * 0.4 + 0.5;
 
         if (data.role || data.seeking) {
             const roleText = data.role || '';
@@ -188,7 +188,7 @@ function generateResumePDF(data) {
                 yPosition = addText(`${duration} | ${exp.location}`, 11.25, 'italic', margin, yPosition, contentWidth);
                 if (exp.description) {
                     yPosition = addText(exp.description, 11.25, 'normal', margin, yPosition, contentWidth);
-                    yPosition += 0.25;
+                    yPosition += 0.2;
                 }
                 if (exp.highlights) {
                     exp.highlights.forEach(highlight => {
@@ -201,7 +201,7 @@ function generateResumePDF(data) {
                             const beforeText = '- ' + before;
                             const lines = doc.splitTextToSize(beforeText, contentWidth);
                             doc.text(lines, margin, yPosition);
-                            const lineHeight = 11.25 * 0.425;
+                            const lineHeight = 11.25 * 0.4;
                             const lastLine = lines[lines.length - 1];
                             const lastLineWidth = doc.getTextWidth(lastLine);
                             const linkX = margin + lastLineWidth;
@@ -215,7 +215,7 @@ function generateResumePDF(data) {
                         }
                     });
                 }
-                yPosition += 0.9;
+                yPosition += 0.8;
             });
         }
         yPosition += 1;
@@ -250,7 +250,7 @@ function generateResumePDF(data) {
             }
 
             if (data.skills?.fun) {
-                leftY += 0.7;
+                leftY += 0.6;
                 leftY = addText('Interests & Hobbies', 13, 'bold', leftColumnX, leftY, columnWidth);
                 data.skills.fun.forEach(fun => {
                     leftY = addText(`- ${fun}`, 11.25, 'normal', leftColumnX, leftY, columnWidth);
@@ -265,7 +265,7 @@ function generateResumePDF(data) {
             }
 
             if (data.certifications) {
-                rightY += 0.7;
+                rightY += 0.6;
                 rightY = addText('Certifications', 13, 'bold', rightColumnX, rightY, columnWidth);
                 data.certifications.forEach(cert => {
                     const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
