@@ -119,7 +119,7 @@ function generateResumePDF(data) {
             doc.setFont('Helvetica', style);
             const lines = doc.splitTextToSize(text, maxWidth);
             doc.text(lines, x, y);
-            return y + (lines.length * size * 0.45);
+            return y + (lines.length * size * 0.4);
         }
 
         function addHorizontalLine(y, offset) {
@@ -159,7 +159,7 @@ function generateResumePDF(data) {
                 currentX += doc.getTextWidth(item);
             }
         });
-        yPosition = currentY + 11 * 0.45 + 0.5;
+        yPosition = currentY + 11 * 0.4 + 0.5;
 
         if (data.role || data.seeking) {
             const roleText = data.role || '';
@@ -201,7 +201,7 @@ function generateResumePDF(data) {
                             const beforeText = '- ' + before;
                             const lines = doc.splitTextToSize(beforeText, contentWidth);
                             doc.text(lines, margin, yPosition);
-                            const lineHeight = 11 * 0.45;
+                            const lineHeight = 11 * 0.4;
                             const lastLine = lines[lines.length - 1];
                             const lastLineWidth = doc.getTextWidth(lastLine);
                             const linkX = margin + lastLineWidth;
