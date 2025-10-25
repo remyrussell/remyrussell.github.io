@@ -119,7 +119,7 @@ function generateResumePDF(data) {
             doc.setFont('Helvetica', style);
             const lines = doc.splitTextToSize(text, maxWidth);
             doc.text(lines, x, y);
-            return y + (lines.length * size * 0.45);
+            return y + (lines.length * size * 0.425);
         }
 
         function addHorizontalLine(y, offset) {
@@ -131,7 +131,7 @@ function generateResumePDF(data) {
 
         let currentX = margin;
         let currentY = yPosition + 0.5;
-        doc.setFontSize(11.5);
+        doc.setFontSize(11.25);
         doc.setFont('Helvetica', 'normal');
         const contactInfo = [];
         if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
@@ -159,13 +159,13 @@ function generateResumePDF(data) {
                 currentX += doc.getTextWidth(item);
             }
         });
-        yPosition = currentY + 11.5 * 0.45 + 0.5;
+        yPosition = currentY + 11.25 * 0.425 + 0.5;
 
         if (data.role || data.seeking) {
             const roleText = data.role || '';
             const seekingText = data.seeking || '';
             const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
-            yPosition = addText(combinedText, 11.5, 'italic', margin, yPosition, contentWidth);
+            yPosition = addText(combinedText, 11.25, 'italic', margin, yPosition, contentWidth);
         }
         yPosition += 1;
 
@@ -173,7 +173,7 @@ function generateResumePDF(data) {
         yPosition += 1.5;
         yPosition = addText('Summary', 13, 'bold', margin, yPosition, contentWidth);
         if (data.summary) {
-            yPosition = addText(data.summary, 11.5, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(data.summary, 11.25, 'normal', margin, yPosition, contentWidth);
         }
         yPosition += 1.2;
 
@@ -185,10 +185,10 @@ function generateResumePDF(data) {
                 const title = `${exp.position} at ${exp.company}`;
                 yPosition = addText(title, 12, 'bold', margin, yPosition, contentWidth);
                 const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-                yPosition = addText(`${duration} | ${exp.location}`, 11.5, 'italic', margin, yPosition, contentWidth);
+                yPosition = addText(`${duration} | ${exp.location}`, 11.25, 'italic', margin, yPosition, contentWidth);
                 if (exp.description) {
-                    yPosition = addText(exp.description, 11.5, 'normal', margin, yPosition, contentWidth);
-                    yPosition += 0.3;
+                    yPosition = addText(exp.description, 11.25, 'normal', margin, yPosition, contentWidth);
+                    yPosition += 0.25;
                 }
                 if (exp.highlights) {
                     exp.highlights.forEach(highlight => {
@@ -196,12 +196,12 @@ function generateResumePDF(data) {
                             const url = 'https://apidoc.eccovia.com';
                             const before = highlight.replace(/\(\s*https:\/\/apidoc.eccovia.com\s*\)/, '(');
                             const after = ')';
-                            doc.setFontSize(11.5);
+                            doc.setFontSize(11.25);
                             doc.setFont('Helvetica', 'normal');
                             const beforeText = '- ' + before;
                             const lines = doc.splitTextToSize(beforeText, contentWidth);
                             doc.text(lines, margin, yPosition);
-                            const lineHeight = 11.5 * 0.45;
+                            const lineHeight = 11.25 * 0.425;
                             const lastLine = lines[lines.length - 1];
                             const lastLineWidth = doc.getTextWidth(lastLine);
                             const linkX = margin + lastLineWidth;
@@ -211,11 +211,11 @@ function generateResumePDF(data) {
                             doc.text(after, afterX, linkY);
                             yPosition = yPosition + lines.length * lineHeight;
                         } else {
-                            yPosition = addText(`- ${highlight}`, 11.5, 'normal', margin, yPosition, contentWidth);
+                            yPosition = addText(`- ${highlight}`, 11.25, 'normal', margin, yPosition, contentWidth);
                         }
                     });
                 }
-                yPosition += 1;
+                yPosition += 0.9;
             });
         }
         yPosition += 1;
@@ -225,9 +225,9 @@ function generateResumePDF(data) {
         yPosition = addText('Education', 13, 'bold', margin, yPosition, contentWidth);
         if (data.education) {
             yPosition = addText(data.education.degree, 12, 'bold', margin, yPosition, contentWidth);
-            yPosition = addText(data.education.institution, 11.5, 'italic', margin, yPosition, contentWidth);
+            yPosition = addText(data.education.institution, 11.25, 'italic', margin, yPosition, contentWidth);
             if (data.education.coursework) {
-                yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 11.5, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 11.25, 'normal', margin, yPosition, contentWidth);
             }
         }
         yPosition += 1.5;
@@ -245,31 +245,31 @@ function generateResumePDF(data) {
             if (data.skills?.coreSkills) {
                 leftY = addText('Core Skills', 13, 'bold', leftColumnX, leftY, columnWidth);
                 data.skills.coreSkills.forEach(skill => {
-                    leftY = addText(`- ${skill}`, 11.5, 'normal', leftColumnX, leftY, columnWidth);
+                    leftY = addText(`- ${skill}`, 11.25, 'normal', leftColumnX, leftY, columnWidth);
                 });
             }
 
             if (data.skills?.fun) {
-                leftY += 0.8;
+                leftY += 0.7;
                 leftY = addText('Interests & Hobbies', 13, 'bold', leftColumnX, leftY, columnWidth);
                 data.skills.fun.forEach(fun => {
-                    leftY = addText(`- ${fun}`, 11.5, 'normal', leftColumnX, leftY, columnWidth);
+                    leftY = addText(`- ${fun}`, 11.25, 'normal', leftColumnX, leftY, columnWidth);
                 });
             }
 
             if (data.skills?.toolsAndFrameworks) {
                 rightY = addText('Tools & Frameworks', 13, 'bold', rightColumnX, rightY, columnWidth);
                 data.skills.toolsAndFrameworks.forEach(tool => {
-                    rightY = addText(`- ${tool}`, 11.5, 'normal', rightColumnX, rightY, columnWidth);
+                    rightY = addText(`- ${tool}`, 11.25, 'normal', rightColumnX, rightY, columnWidth);
                 });
             }
 
             if (data.certifications) {
-                rightY += 0.8;
+                rightY += 0.7;
                 rightY = addText('Certifications', 13, 'bold', rightColumnX, rightY, columnWidth);
                 data.certifications.forEach(cert => {
                     const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
-                    rightY = addText(`- ${certText}`, 11.5, 'normal', rightColumnX, rightY, columnWidth);
+                    rightY = addText(`- ${certText}`, 11.25, 'normal', rightColumnX, rightY, columnWidth);
                 });
             }
 
