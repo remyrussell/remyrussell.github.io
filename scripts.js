@@ -46,7 +46,7 @@ function attachThemeToggleEvent() {
             menu.classList.toggle('active');
             console.log('Menu classList after toggle:', menu.classList);
         });
-       menu.addEventListener('click', (e) => {
+        menu.addEventListener('click', (e) => {
             e.stopPropagation();
             console.log('Menu clicked, preventing closure');
         });
