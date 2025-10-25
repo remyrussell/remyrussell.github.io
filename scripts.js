@@ -283,8 +283,18 @@ function generateResumePDF(data) {
         const fileName = 'Remy_Russell_Resume.pdf';
 
         // Try to open in a new tab
-        const newTab = window.open(pdfOutput, '_blank');
-        if (!newTab) {
+        const newTab = window.open('', '_blank');
+        if (newTab) {
+            newTab.document.write(`
+                <html>
+                    <head><title>${fileName}</title></head>
+                    <body style="margin:0">
+                        <embed src="${pdfOutput}" type="application/pdf" width="100%" height="100%">
+                    </body>
+                </html>
+            `);
+            newTab.document.close();
+        } else {
             console.warn('Failed to open new tab. Pop-up blocker may be enabled.');
             // Fallback: Create a download link
             const link = document.createElement('a');
