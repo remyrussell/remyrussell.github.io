@@ -127,11 +127,11 @@ function generateResumePDF(data) {
             doc.line(margin, y - offset, margin + contentWidth, y - offset);
         }
 
-        yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
+        yPosition = addText(data.name || 'Remy Russell', 17, 'bold', margin, yPosition, contentWidth);
 
         let currentX = margin;
         let currentY = yPosition + 0.5;
-        doc.setFontSize(10.5);
+        doc.setFontSize(11);
         doc.setFont('Helvetica', 'normal');
         const contactInfo = [];
         if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
@@ -159,36 +159,36 @@ function generateResumePDF(data) {
                 currentX += doc.getTextWidth(item);
             }
         });
-        yPosition = currentY + 10.5 * 0.45 + 0.5;
+        yPosition = currentY + 11 * 0.45 + 0.5;
 
         if (data.role || data.seeking) {
             const roleText = data.role || '';
             const seekingText = data.seeking || '';
             const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
-            yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth);
+            yPosition = addText(combinedText, 11, 'italic', margin, yPosition, contentWidth);
+        }
+        yPosition += 1;
+
+        addHorizontalLine(yPosition, 2.5);
+        yPosition += 1.5;
+        yPosition = addText('Summary', 13, 'bold', margin, yPosition, contentWidth);
+        if (data.summary) {
+            yPosition = addText(data.summary, 11, 'normal', margin, yPosition, contentWidth);
         }
         yPosition += 1.2;
 
         addHorizontalLine(yPosition, 2.5);
-        yPosition += 2;
-        yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
-        if (data.summary) {
-            yPosition = addText(data.summary, 10.5, 'normal', margin, yPosition, contentWidth);
-        }
         yPosition += 1.5;
-
-        addHorizontalLine(yPosition, 2.5);
-        yPosition += 2;
-        yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
+        yPosition = addText('Professional Experience', 13, 'bold', margin, yPosition, contentWidth);
         if (data.professionalExperience) {
             data.professionalExperience.forEach(exp => {
                 const title = `${exp.position} at ${exp.company}`;
-                yPosition = addText(title, 11.5, 'bold', margin, yPosition, contentWidth);
+                yPosition = addText(title, 12, 'bold', margin, yPosition, contentWidth);
                 const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-                yPosition = addText(`${duration} | ${exp.location}`, 10.5, 'italic', margin, yPosition, contentWidth);
+                yPosition = addText(`${duration} | ${exp.location}`, 11, 'italic', margin, yPosition, contentWidth);
                 if (exp.description) {
-                    yPosition = addText(exp.description, 10.5, 'normal', margin, yPosition, contentWidth);
-                    yPosition += 0.3;
+                    yPosition = addText(exp.description, 11, 'normal', margin, yPosition, contentWidth);
+                    yPosition += 0.2;
                 }
                 if (exp.highlights) {
                     exp.highlights.forEach(highlight => {
@@ -196,12 +196,12 @@ function generateResumePDF(data) {
                             const url = 'https://apidoc.eccovia.com';
                             const before = highlight.replace(/\(\s*https:\/\/apidoc.eccovia.com\s*\)/, '(');
                             const after = ')';
-                            doc.setFontSize(10.5);
+                            doc.setFontSize(11);
                             doc.setFont('Helvetica', 'normal');
                             const beforeText = '- ' + before;
                             const lines = doc.splitTextToSize(beforeText, contentWidth);
                             doc.text(lines, margin, yPosition);
-                            const lineHeight = 10.5 * 0.45;
+                            const lineHeight = 11 * 0.45;
                             const lastLine = lines[lines.length - 1];
                             const lastLineWidth = doc.getTextWidth(lastLine);
                             const linkX = margin + lastLineWidth;
@@ -211,29 +211,29 @@ function generateResumePDF(data) {
                             doc.text(after, afterX, linkY);
                             yPosition = yPosition + lines.length * lineHeight;
                         } else {
-                            yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
+                            yPosition = addText(`- ${highlight}`, 11, 'normal', margin, yPosition, contentWidth);
                         }
                     });
                 }
-                yPosition += 1;
+                yPosition += 0.8;
             });
         }
-        yPosition += 1.2;
+        yPosition += 1;
 
         addHorizontalLine(yPosition, 2.5);
-        yPosition += 2;
-        yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
+        yPosition += 1.5;
+        yPosition = addText('Education', 13, 'bold', margin, yPosition, contentWidth);
         if (data.education) {
-            yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
-            yPosition = addText(data.education.institution, 10.5, 'italic', margin, yPosition, contentWidth);
+            yPosition = addText(data.education.degree, 12, 'bold', margin, yPosition, contentWidth);
+            yPosition = addText(data.education.institution, 11, 'italic', margin, yPosition, contentWidth);
             if (data.education.coursework) {
-                yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 10.5, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 11, 'normal', margin, yPosition, contentWidth);
             }
         }
-        yPosition += 2;
+        yPosition += 1.5;
 
         addHorizontalLine(yPosition, 4);
-        yPosition += 2;
+        yPosition += 1.5;
         if (data.skills || data.certifications) {
             const columnWidth = (contentWidth - 2) / 2;
             const leftColumnX = margin;
@@ -243,33 +243,33 @@ function generateResumePDF(data) {
             let rightY = yPosition;
 
             if (data.skills?.coreSkills) {
-                leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
+                leftY = addText('Core Skills', 13, 'bold', leftColumnX, leftY, columnWidth);
                 data.skills.coreSkills.forEach(skill => {
-                    leftY = addText(`- ${skill}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
+                    leftY = addText(`- ${skill}`, 11, 'normal', leftColumnX, leftY, columnWidth);
                 });
             }
 
             if (data.skills?.fun) {
-                leftY += 0.8;
-                leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
+                leftY += 0.6;
+                leftY = addText('Interests & Hobbies', 13, 'bold', leftColumnX, leftY, columnWidth);
                 data.skills.fun.forEach(fun => {
-                    leftY = addText(`- ${fun}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
+                    leftY = addText(`- ${fun}`, 11, 'normal', leftColumnX, leftY, columnWidth);
                 });
             }
 
             if (data.skills?.toolsAndFrameworks) {
-                rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
+                rightY = addText('Tools & Frameworks', 13, 'bold', rightColumnX, rightY, columnWidth);
                 data.skills.toolsAndFrameworks.forEach(tool => {
-                    rightY = addText(`- ${tool}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
+                    rightY = addText(`- ${tool}`, 11, 'normal', rightColumnX, rightY, columnWidth);
                 });
             }
 
             if (data.certifications) {
-                rightY += 0.8;
-                rightY = addText('Certifications', 12.25, 'bold', rightColumnX, rightY, columnWidth);
+                rightY += 0.6;
+                rightY = addText('Certifications', 13, 'bold', rightColumnX, rightY, columnWidth);
                 data.certifications.forEach(cert => {
                     const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
-                    rightY = addText(`- ${certText}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
+                    rightY = addText(`- ${certText}`, 11, 'normal', rightColumnX, rightY, columnWidth);
                 });
             }
 
