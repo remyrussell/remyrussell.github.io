@@ -279,28 +279,23 @@ function generateResumePDF(data) {
             yPosition = maxY;
         }
 
-        const pdfOutput = doc.output('blob');
-        const url = URL.createObjectURL(pdfOutput);
+        const pdfOutput = doc.output('datauristring');
         const fileName = 'Remy_Russell_Resume.pdf';
 
         // Try to open in a new tab
-        const newTab = window.open(url, '_blank');
+        const newTab = window.open(pdfOutput, '_blank');
         if (!newTab) {
             console.warn('Failed to open new tab. Pop-up blocker may be enabled.');
             // Fallback: Create a download link
             const link = document.createElement('a');
-            link.href = url;
+            link.href = pdfOutput;
             link.download = fileName;
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             alert('Unable to open PDF in new tab. The PDF is being downloaded instead. Please check your pop-up blocker settings if you prefer to view it in a new tab.');
-        } else {
-            newTab.document.title = fileName;
         }
-        // Clean up the URL object
-        setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (err) {
         console.error('Error generating PDF:', err.message);
         alert('Error generating PDF: ' + err.message + '. Please try again.');
