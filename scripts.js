@@ -255,7 +255,7 @@ function updateBackgroundPosition(scrollY) {
 }
 
 const particles = [];
-const numParticles = 50; // Reduced for performance
+const numParticles = 150;
 
 function createParticleSystem() {
     const canvas = document.createElement('canvas');
@@ -282,7 +282,24 @@ function createParticleSystem() {
         });
     }
 
+    let lastFrameTime = Date.now();
+    let frameCount = 0;
+    let fps = 60;
+
     function animateParticles() {
+        const currentTime = Date.now();
+        frameCount++;
+        if (currentTime - lastFrameTime >= 1000) {
+            fps = frameCount;
+            frameCount = 0;
+            lastFrameTime = currentTime;
+        }
+
+        if (fps < 60 && frameCount % 3 === 0) {
+            requestAnimationFrame(animateParticles);
+            return;
+        }
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         particles.forEach(particle => {
