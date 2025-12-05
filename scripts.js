@@ -87,10 +87,6 @@ function attachThemeToggleEvent() {
     }
 }
 
-function linkify(text) {
-    return text.replace(/(https?:\/\/[^\s\)]+)/g, '<a href="$1" target="_blank">$1</a>');
-}
-
 function generateResumePDF(data) {
     if (!data) {
         alert('Error: Resume data not loaded. Please try again.');
@@ -119,7 +115,7 @@ function generateResumePDF(data) {
             doc.setFont('Helvetica', style);
             const lines = doc.splitTextToSize(text, maxWidth);
             doc.text(lines, x, y);
-            return y + (lines.length * size * 0.425);
+            return y + (lines.length * size * 0.45);
         }
 
         function addHorizontalLine(y, offset) {
@@ -127,104 +123,67 @@ function generateResumePDF(data) {
             doc.line(margin, y - offset, margin + contentWidth, y - offset);
         }
 
-        yPosition = addText(data.name || 'Remy Russell', 17, 'bold', margin, yPosition, contentWidth);
-
-        let currentX = margin;
-        let currentY = yPosition + 0.5;
-        doc.setFontSize(11.25);
-        doc.setFont('Helvetica', 'normal');
-        const contactInfo = [];
-        if (data.contact?.email) contactInfo.push(`${data.contact.email}`);
-        if (data.contact?.phone) contactInfo.push(`${data.contact.phone}`);
-        if (data.contact?.website) contactInfo.push(`${data.contact.website}`);
-        if (data.contact?.linkedin) contactInfo.push(`${data.contact.linkedin}`);
-        contactInfo.forEach((item, index) => {
-            if (index > 0) {
-                doc.text(' | ', currentX, currentY);
-                currentX += doc.getTextWidth(' | ');
-            }
-            if (item.startsWith('https://') || item.startsWith('http://')) {
-                doc.textWithLink(item, currentX, currentY, {url: item});
-            } else {
-                doc.text(item, currentX, currentY);
-            }
-            currentX += doc.getTextWidth(item);
-        });
-        yPosition = currentY + 11.25 * 0.425 + 0.5;
-
+        yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
+        let contactInfo = [];
+        if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
+        if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
+        if (contactInfo.length) {
+            yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
+        }
+        yPosition += 0.5;
         if (data.role || data.seeking) {
             const roleText = data.role || '';
             const seekingText = data.seeking || '';
             const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
-            yPosition = addText(combinedText, 11.25, 'italic', margin, yPosition, contentWidth);
-        }
-        yPosition += 1;
-
-        addHorizontalLine(yPosition, 2.5);
-        yPosition += 1.5;
-        yPosition = addText('Summary', 13, 'bold', margin, yPosition, contentWidth);
-        if (data.summary) {
-            yPosition = addText(data.summary, 11.25, 'normal', margin, yPosition, contentWidth);
+            yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth);
         }
         yPosition += 1.2;
 
         addHorizontalLine(yPosition, 2.5);
+        yPosition += 2;
+        yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
+        if (data.summary) {
+            yPosition = addText(data.summary, 10.5, 'normal', margin, yPosition, contentWidth);
+        }
         yPosition += 1.5;
-        yPosition = addText('Professional Experience', 13, 'bold', margin, yPosition, contentWidth);
+
+        addHorizontalLine(yPosition, 2.5);
+        yPosition += 2;
+        yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
         if (data.professionalExperience) {
             data.professionalExperience.forEach(exp => {
                 const title = `${exp.position} at ${exp.company}`;
-                yPosition = addText(title, 12, 'bold', margin, yPosition, contentWidth);
+                yPosition = addText(title, 11.5, 'bold', margin, yPosition, contentWidth);
                 const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-                yPosition = addText(`${duration} | ${exp.location}`, 11.25, 'italic', margin, yPosition, contentWidth);
+                yPosition = addText(`${duration} | ${exp.location}`, 10.5, 'italic', margin, yPosition, contentWidth);
                 if (exp.description) {
-                    yPosition = addText(exp.description, 11.25, 'normal', margin, yPosition, contentWidth);
-                    yPosition += 0.25;
+                    yPosition = addText(exp.description, 10.5, 'normal', margin, yPosition, contentWidth);
+                    yPosition += 0.3;
                 }
                 if (exp.highlights) {
                     exp.highlights.forEach(highlight => {
-                        if (highlight.includes('https://apidoc.eccovia.com')) {
-                            const url = 'https://apidoc.eccovia.com';
-                            const before = highlight.replace(/\(\s*https:\/\/apidoc.eccovia.com\s*\)/, '(');
-                            const after = ')';
-                            doc.setFontSize(11.25);
-                            doc.setFont('Helvetica', 'normal');
-                            const beforeText = '- ' + before;
-                            const lines = doc.splitTextToSize(beforeText, contentWidth);
-                            doc.text(lines, margin, yPosition);
-                            const lineHeight = 11.25 * 0.425;
-                            const lastLine = lines[lines.length - 1];
-                            const lastLineWidth = doc.getTextWidth(lastLine);
-                            const linkX = margin + lastLineWidth;
-                            const linkY = yPosition + (lines.length - 1) * lineHeight;
-                            doc.textWithLink(url, linkX, linkY, {url: url});
-                            const afterX = linkX + doc.getTextWidth(url);
-                            doc.text(after, afterX, linkY);
-                            yPosition = yPosition + lines.length * lineHeight;
-                        } else {
-                            yPosition = addText(`- ${highlight}`, 11.25, 'normal', margin, yPosition, contentWidth);
-                        }
+                        yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
                     });
                 }
-                yPosition += 0.8;
+                yPosition += 1;
             });
         }
-        yPosition += 1;
+        yPosition += 1.2;
 
         addHorizontalLine(yPosition, 2.5);
-        yPosition += 1.5;
-        yPosition = addText('Education', 13, 'bold', margin, yPosition, contentWidth);
+        yPosition += 2;
+        yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
         if (data.education) {
-            yPosition = addText(data.education.degree, 12, 'bold', margin, yPosition, contentWidth);
-            yPosition = addText(data.education.institution, 11.25, 'italic', margin, yPosition, contentWidth);
+            yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
+            yPosition = addText(data.education.institution, 10.5, 'italic', margin, yPosition, contentWidth);
             if (data.education.coursework) {
-                yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 11.25, 'normal', margin, yPosition, contentWidth);
+                yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 10.5, 'normal', margin, yPosition, contentWidth);
             }
         }
-        yPosition += 1.5;
+        yPosition += 2;
 
         addHorizontalLine(yPosition, 4);
-        yPosition += 1.5;
+        yPosition += 2;
         if (data.skills || data.certifications) {
             const columnWidth = (contentWidth - 2) / 2;
             const leftColumnX = margin;
@@ -234,69 +193,65 @@ function generateResumePDF(data) {
             let rightY = yPosition;
 
             if (data.skills?.coreSkills) {
-                leftY = addText('Core Skills', 13, 'bold', leftColumnX, leftY, columnWidth);
+                leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
                 data.skills.coreSkills.forEach(skill => {
-                    leftY = addText(`- ${skill}`, 11.25, 'normal', leftColumnX, leftY, columnWidth);
+                    leftY = addText(`- ${skill}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
                 });
             }
 
             if (data.skills?.fun) {
-                leftY += 0.7;
-                leftY = addText('Interests & Hobbies', 13, 'bold', leftColumnX, leftY, columnWidth);
+                leftY += 0.8;
+                leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
                 data.skills.fun.forEach(fun => {
-                    leftY = addText(`- ${fun}`, 11.25, 'normal', leftColumnX, leftY, columnWidth);
+                    leftY = addText(`- ${fun}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
                 });
             }
 
             if (data.skills?.toolsAndFrameworks) {
-                rightY = addText('Tools & Frameworks', 13, 'bold', rightColumnX, rightY, columnWidth);
+                rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
                 data.skills.toolsAndFrameworks.forEach(tool => {
-                    rightY = addText(`- ${tool}`, 11.25, 'normal', rightColumnX, rightY, columnWidth);
+                    rightY = addText(`- ${tool}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
                 });
             }
 
             if (data.certifications) {
-                rightY += 0.7;
-                rightY = addText('Certifications', 13, 'bold', rightColumnX, rightY, columnWidth);
+                rightY += 0.8;
+                rightY = addText('Certifications', 12.25, 'bold', rightColumnX, rightY, columnWidth);
                 data.certifications.forEach(cert => {
                     const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
-                    rightY = addText(`- ${certText}`, 11.25, 'normal', rightColumnX, rightY, columnWidth);
+                    rightY = addText(`- ${certText}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
                 });
             }
 
             const maxY = Math.max(leftY, rightY);
             doc.setLineWidth(0.2);
             doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
+
             yPosition = maxY;
         }
 
-        const pdfOutput = doc.output('datauristring');
+        const pdfOutput = doc.output('blob');
+        const url = URL.createObjectURL(pdfOutput);
         const fileName = 'Remy_Russell_Resume.pdf';
 
         // Try to open in a new tab
-        const newTab = window.open('', '_blank');
-        if (newTab) {
-            newTab.document.write(`
-                <html>
-                    <head><title>${fileName}</title></head>
-                    <body style="margin:0">
-                        <embed src="${pdfOutput}" type="application/pdf" width="100%" height="100%">
-                    </body>
-                </html>
-            `);
-            newTab.document.close();
-        } else {
+        const newTab = window.open(url, '_blank');
+        if (!newTab) {
             console.warn('Failed to open new tab. Pop-up blocker may be enabled.');
             // Fallback: Create a download link
             const link = document.createElement('a');
-            link.href = pdfOutput;
+            link.href = url;
             link.download = fileName;
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             alert('Unable to open PDF in new tab. The PDF is being downloaded instead. Please check your pop-up blocker settings if you prefer to view it in a new tab.');
+        } else {
+            newTab.document.title = fileName;
         }
+        // Clean up the URL objeect
+        setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (err) {
         console.error('Error generating PDF:', err.message);
         alert('Error generating PDF: ' + err.message + '. Please try again.');
@@ -395,48 +350,32 @@ function createParticleSystem() {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const isDark = document.body.classList.contains('theme-dark');
-        const particleColor = isDark ? 'rgba(200, 200, 200, 0.3)' : 'rgba(199, 21, 133, 0.5)';
-        const lineColorBase = isDark ? '200, 200, 200' : '199, 21, 133';
-
         particles.forEach(particle => {
-            particle.angle += particle.baseSpeed;
-            particle.x = canvas.width / 2 + Math.cos(particle.angle) * particle.orbitRadiusX;
-            particle.y = canvas.height / 2 + Math.sin(particle.angle) * particle.orbitRadiusY;
-
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < 150) {
-                ctx.beginPath();
-                ctx.moveTo(particle.x, particle.y);
-                ctx.lineTo(lastMouseX, lastMouseY);
-                const alpha = (150 - distance) / 150 * 0.5;
-                ctx.strokeStyle = `rgba(${lineColorBase}, ${alpha})`;
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
+            let gravityInfluence = 0.7;
+            let speed = particle.baseSpeed;
+
+            if (distance < 200) {
+                gravityInfluence = 1.2;
+                speed = particle.baseSpeed * 3;
+            } else if (distance > 800) {
+                gravityInfluence = 0.3;
+                speed = particle.baseSpeed * 0.5;
             }
 
-            // Draw connections between particles
-            for (let j = 0; j < particles.length; j++) {
-                if (particle === particles[j]) continue;
-                const pdx = particles[j].x - particle.x;
-                const pdy = particles[j].y - particle.y;
-                const pdistance = Math.sqrt(pdx * pdx + pdy * pdy);
-                if (pdistance < 100) {
-                    ctx.beginPath();
-                    ctx.moveTo(particle.x, particle.y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    const palpha = (100 - pdistance) / 100 * 0.2;
-                    ctx.strokeStyle = `rgba(${lineColorBase}, ${palpha})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.stroke();
-                }
-            }
+            particle.angle += speed;
+
+            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
+            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
+
+            particle.x = Math.max(0, Math.min(particle.x, canvas.width));
+            particle.y = Math.max(0, Math.min(particle.y, canvas.height));
 
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = particleColor;
+            ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
             ctx.fill();
         });
 
@@ -597,7 +536,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
                         const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
                         const combinedHighlights = [...highlightsArray, ...achievementsArray];
-                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${linkify(item)}</li>`).join('') : '';
+                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
                         if (combinedHighlights.length > 0) {
                             detailsDiv.appendChild(highlightsList);
                         }
