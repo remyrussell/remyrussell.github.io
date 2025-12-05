@@ -302,32 +302,48 @@ function createParticleSystem() {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        const isDark = document.body.classList.contains('theme-dark');
+        const particleColor = isDark ? 'rgba(200, 200, 200, 0.3)' : 'rgba(199, 21, 133, 0.5)';
+        const lineColorBase = isDark ? '200, 200, 200' : '199, 21, 133';
+
         particles.forEach(particle => {
+            particle.angle += particle.baseSpeed;
+            particle.x = canvas.width / 2 + Math.cos(particle.angle) * particle.orbitRadiusX;
+            particle.y = canvas.height / 2 + Math.sin(particle.angle) * particle.orbitRadiusY;
+
             const dx = particle.x - lastMouseX;
             const dy = particle.y - lastMouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            let gravityInfluence = 0.7;
-            let speed = particle.baseSpeed;
-
-            if (distance < 200) {
-                gravityInfluence = 1.2;
-                speed = particle.baseSpeed * 3;
-            } else if (distance > 800) {
-                gravityInfluence = 0.3;
-                speed = particle.baseSpeed * 0.5;
+            if (distance < 150) {
+                ctx.beginPath();
+                ctx.moveTo(particle.x, particle.y);
+                ctx.lineTo(lastMouseX, lastMouseY);
+                const alpha = (150 - distance) / 150 * 0.5;
+                ctx.strokeStyle = `rgba(${lineColorBase}, ${alpha})`;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
             }
 
-            particle.angle += speed;
-
-            particle.x = lastMouseX + Math.sin(particle.angle) * particle.orbitRadiusX * gravityInfluence;
-            particle.y = lastMouseY + Math.cos(particle.angle) * particle.orbitRadiusY * gravityInfluence;
-
-            particle.x = Math.max(0, Math.min(particle.x, canvas.width));
-            particle.y = Math.max(0, Math.min(particle.y, canvas.height));
+            // Draw connections between particles
+            for (let j = 0; j < particles.length; j++) {
+                if (particle === particles[j]) continue;
+                const pdx = particles[j].x - particle.x;
+                const pdy = particles[j].y - particle.y;
+                const pdistance = Math.sqrt(pdx * pdx + pdy * pdy);
+                if (pdistance < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(particle.x, particle.y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    const palpha = (100 - pdistance) / 100 * 0.2;
+                    ctx.strokeStyle = `rgba(${lineColorBase}, ${palpha})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
 
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(199, 21, 133, 0.5)';
+            ctx.fillStyle = particleColor;
             ctx.fill();
         });
 
