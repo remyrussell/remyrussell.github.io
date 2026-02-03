@@ -12,11 +12,11 @@
         "linkedin": "https://www.linkedin.com/in/remyrussell",
         "website": "https://remyrussell.com"
     },
-    "summary": "An optimistic tech enthusiast with 10 years of experience evolving SaaS platforms for Health and Human Services providers. Highly collaborative, skilled at simplifying complexity, and eager to drive impact.",
+    "summary": "An optimistic tech enthusiast with 10 years of experience evolving SaaS platforms for Health and Human Services providers. Highly collaborative and eager to drive impact",
     "professionalExperience":[
         {
             "position": "Associate Product Manager, Engineering",
-            "company": "CaseWorthy",
+            "company": "CaseWorthy (formerly Eccovia)",
             "logo": "assets/images/logos/caseworthy.png",
             "location": "Salt Lake City, UT",
             "duration": {
@@ -43,7 +43,7 @@
             },
             "description": "Problem discovery, requirements gathering, and solution delivery leveraging the case management platform",
             "highlights": [
-                "Drove successful implementation for 2 of Eccovia's top 10 largest customers by ARR, with complex data migration, system design, and reporting needs",
+                "Drove successful implementation for 2 of the top 10 largest customers by ARR, with complex data migration, system design, and reporting needs",
                 "Delivered over a dozen integration contracts and helped transition technical strategy towards agnostic services supporting multiple customers/partners"
             ]
         },
