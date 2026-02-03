@@ -20,8 +20,8 @@
             "logo": "assets/images/logos/caseworthy.png",
             "location": "Salt Lake City, UT",
             "duration": {
-                "start": "2022-03-14",
-                "end": "2025-03-27"
+                "start": "2022",
+                "end": "2025"
             },
             "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health)",
             "highlights": [
@@ -38,8 +38,8 @@
             "logo": "assets/images/logos/caseworthy.png",
             "location": "Salt Lake City, UT",
             "duration": {
-                "start": "2019-04-01",
-                "end": "2022-03-13"
+                "start": "2019",
+                "end": "2022"
             },
             "description": "Problem discovery, requirements gathering, and solution delivery leveraging the case management platform",
             "highlights": [
@@ -53,8 +53,8 @@
             "logo": "assets/images/logos/Acentra.png",
             "location": "Salt Lake City, UT",
             "duration": {
-                "start": "2017-08-01",
-                "end": "2019-04-01"
+                "start": "2017",
+                "end": "2019"
             },
             "description": "System migration and gap analysis activities for implementation of a Medicaid Management Information System for the Utah Department of Health",
             "highlights": [
@@ -67,8 +67,8 @@
             "logo": "assets/images/logos/Acentra.png",
             "location": "Lansing, MI",
             "duration": {
-                "start": "2015-06-01",
-                "end": "2017-08-01"
+                "start": "2015",
+                "end": "2017"
             },
             "description": "Analyzed program mandates published by CMS and iterated the 'Electronic Medicaid Incentive Payment Program' solution used by providers to report 'Meaningful Use' of EHRs",
             "highlights": []
