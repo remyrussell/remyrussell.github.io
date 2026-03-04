@@ -97,7 +97,7 @@
             "Agile, Scrum (Jira plans, backlogs, boards, sprints, dashboards)",
             "Insight analysis (Hubspot, ProductBoard, SQL)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
-            "Mock-ups, prototyping (Figma, AI Tools)",
+            "Mock-ups, rapid prototyping (Figma, AI Tools like Gemini, Grok, ChatGPT)",
             "API evaluation/testing, workflow automation (Postman, Zapier, Microsoft Power Automate)"
         ],
         "fun": [
