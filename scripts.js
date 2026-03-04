@@ -8,15 +8,32 @@ function formatDate(dateString) {
 function keepThemeSetting() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
-    if (document.body.classList.contains('dogs-page')) {
-        document.body.className = savedTheme === 'dark' ? 'theme-dark dogs-page' : 'dogs-page';
-    }
     const themeToggle = document.getElementById('themeToggleButton');
-    if (themeToggle) {
-        themeToggle.checked = savedTheme === 'dark';
-    } else {
-        console.error('Theme toggle button not found in DOM');
-    }
+    if (themeToggle) themeToggle.checked = savedTheme === 'dark';
+}
+
+function toggleDropdown() {
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        if (!toggle || !menu) {
+            console.error('Dropdown elements not found:', { toggle, menu });
+            return;
+        }
+        menu.style.display = 'none';
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Dropdown toggle clicked, current display:', menu.style.display);
+            const isVisible = menu.style.display === 'block';
+            menu.style.display = isVisible ? 'none' : 'block';
+        });
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+    });
 }
 
 function attachThemeToggleEvent() {
@@ -25,14 +42,8 @@ function attachThemeToggleEvent() {
         themeToggle.addEventListener('change', () => {
             const isDark = themeToggle.checked;
             document.body.className = isDark ? 'theme-dark' : '';
-            if (document.body.classList.contains('dogs-page')) {
-                document.body.className = isDark ? 'theme-dark dogs-page' : 'dogs-page';
-            }
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            console.log('Theme toggled to:', isDark ? 'dark' : 'light');
         });
-    } else {
-        console.error('Theme toggle button not found in DOM');
     }
     const menuToggleButton = document.getElementById('menuToggleButton');
     const menu = document.getElementById('menu');
@@ -40,28 +51,10 @@ function attachThemeToggleEvent() {
         if (window.innerWidth < 768) {
             menu.classList.remove('active');
         }
-        menuToggleButton.addEventListener('click', (e) => {
-            e.stopPropagation();
+        menuToggleButton.addEventListener('click', () => {
             console.log('Menu toggle clicked, current classList:', menu.classList);
             menu.classList.toggle('active');
             console.log('Menu classList after toggle:', menu.classList);
-        });
-        menu.addEventListener('click', (e) => {
-            e.stopPropagation();
-            console.log('Menu clicked, preventing closure');
-        });
-        document.addEventListener('click', (e) => {
-            if (!menu.contains(e.target) && !menuToggleButton.contains(e.target)) {
-                menu.classList.remove('active');
-                console.log('Clicked outside menu, closing:', menu.classList);
-            }
-        });
-        window.addEventListener('scroll', () => {
-            menuToggleButton.style.display = 'flex';
-            if (menu.classList.contains('active')) {
-                menu.style.display = 'block';
-            }
-            console.log('Scroll event, menu visibility:', menu.style.display);
         });
     } else {
         console.error('Menu elements not found:', { menuToggleButton, menu });
@@ -80,15 +73,9 @@ function attachThemeToggleEvent() {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
             const viewportHeight = window.innerHeight;
             backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
-            updateBackgroundPosition(scrollPosition);
         });
-    } else {
-        console.error('Back to top button not found in DOM');
     }
-}
-
-function linkify(text) {
-    return text.replace(/(https?:\/\/[^\s\)]+)/g, '<a href="$1" target="_blank">$1</a>');
+    toggleDropdown();
 }
 
 function generateResumePDF(data) {
@@ -97,389 +84,182 @@ function generateResumePDF(data) {
         console.error('generateResumePDF: data is undefined');
         return;
     }
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-            compress: true
-        });
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+    });
 
-        const margin = 10;
-        const pageWidth = 210;
-        const contentWidth = pageWidth - 2 * margin;
-        let yPosition = margin + 2;
+    const margin = 10;
+    const pageWidth = 210;
+    const contentWidth = pageWidth - 2 * margin;
+    let yPosition = margin + 2;
 
-        doc.setFont('Helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
 
-        function addText(text, size, style, x, y, maxWidth) {
-            doc.setFontSize(size);
-            doc.setFont('Helvetica', style);
-            const lines = doc.splitTextToSize(text, maxWidth);
-            doc.text(lines, x, y);
-            return y + (lines.length * size * 0.425);
-        }
+    function addText(text, size, style, x, y, maxWidth) {
+        doc.setFontSize(size);
+        doc.setFont('Helvetica', style);
+        const lines = doc.splitTextToSize(text, maxWidth);
+        doc.text(lines, x, y);
+        return y + (lines.length * size * 0.45);
+    }
 
-        function addHorizontalLine(y, offset) {
-            doc.setLineWidth(0.2);
-            doc.line(margin, y - offset, margin + contentWidth, y - offset);
-        }
+    function addHorizontalLine(y, offset) {
+        doc.setLineWidth(0.2);
+        doc.line(margin, y - offset, margin + contentWidth, y - offset);
+    }
 
-        yPosition = addText(data.name || 'Remy Russell', 17, 'bold', margin, yPosition, contentWidth);
+    yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
+    let contactInfo = [];
+    if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
+    if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
+    if (contactInfo.length) {
+        yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
+    }
+    yPosition += 0.5;
+    if (data.role || data.seeking) {
+        const roleText = data.role || '';
+        const seekingText = data.seeking || '';
+        const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
+        yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth);
+    }
+    yPosition += 1.2;
 
-        let currentX = margin;
-        let currentY = yPosition + 0.5;
-        doc.setFontSize(11.25);
-        doc.setFont('Helvetica', 'normal');
-        const contactInfo = [];
-        if (data.contact?.email) contactInfo.push(`${data.contact.email}`);
-        if (data.contact?.phone) contactInfo.push(`${data.contact.phone}`);
-        if (data.contact?.website) contactInfo.push(`${data.contact.website}`);
-        if (data.contact?.linkedin) contactInfo.push(`${data.contact.linkedin}`);
-        contactInfo.forEach((item, index) => {
-            if (index > 0) {
-                doc.text(' | ', currentX, currentY);
-                currentX += doc.getTextWidth(' | ');
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 2;
+    yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
+    if (data.summary) {
+        yPosition = addText(data.summary, 10.5, 'normal', margin, yPosition, contentWidth);
+    }
+    yPosition += 1.5;
+
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 2;
+    yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
+    let previousCompany = null;
+    if (data.professionalExperience) {
+        data.professionalExperience.forEach(exp => {
+            const title = `${exp.position} at ${exp.company}`;
+            yPosition = addText(title, 11.5, 'bold', margin, yPosition, contentWidth);
+            const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
+            yPosition = addText(`${duration} | ${exp.location}`, 10.5, 'italic', margin, yPosition, contentWidth);
+            if (exp.description) {
+                yPosition = addText(exp.description, 10.5, 'normal', margin, yPosition, contentWidth);
+                yPosition += 0.3;
             }
-            if (item.startsWith('https://') || item.startsWith('http://')) {
-                doc.textWithLink(item, currentX, currentY, {url: item});
-            } else {
-                doc.text(item, currentX, currentY);
+            if (exp.highlights) {
+                exp.highlights.forEach(highlight => {
+                    yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
+                });
             }
-            currentX += doc.getTextWidth(item);
+            yPosition += 1;
         });
-        yPosition = currentY + 11.25 * 0.425 + 0.5;
+    }
+    yPosition += 1.2;
 
-        if (data.role || data.seeking) {
-            const roleText = data.role || '';
-            const seekingText = data.seeking || '';
-            const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
-            yPosition = addText(combinedText, 11.25, 'italic', margin, yPosition, contentWidth);
+    addHorizontalLine(yPosition, 2.5);
+    yPosition += 2;
+    yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
+    if (data.education) {
+        yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
+        yPosition = addText(data.education.institution, 10.5, 'italic', margin, yPosition, contentWidth);
+        if (data.education.coursework) {
+            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 10.5, 'normal', margin, yPosition, contentWidth);
         }
-        yPosition += 1;
+    }
+    yPosition += 2;
 
-        addHorizontalLine(yPosition, 2.5);
-        yPosition += 1.5;
-        yPosition = addText('Summary', 13, 'bold', margin, yPosition, contentWidth);
-        if (data.summary) {
-            yPosition = addText(data.summary, 11.25, 'normal', margin, yPosition, contentWidth);
-        }
-        yPosition += 1.2;
+    addHorizontalLine(yPosition, 4);
+    yPosition += 2;
+    if (data.skills) {  // Removed certifications condition
+        const columnWidth = (contentWidth - 2) / 2;
+        const leftColumnX = margin;
+        const rightColumnX = margin + columnWidth + 3;
 
-        addHorizontalLine(yPosition, 2.5);
-        yPosition += 1.5;
-        yPosition = addText('Professional Experience', 13, 'bold', margin, yPosition, contentWidth);
-        if (data.professionalExperience) {
-            data.professionalExperience.forEach(exp => {
-                const title = `${exp.position} at ${exp.company}`;
-                yPosition = addText(title, 12, 'bold', margin, yPosition, contentWidth);
-                const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-                yPosition = addText(`${duration} | ${exp.location}`, 11.25, 'italic', margin, yPosition, contentWidth);
-                if (exp.description) {
-                    yPosition = addText(exp.description, 11.25, 'normal', margin, yPosition, contentWidth);
-                    yPosition += 0.25;
-                }
-                if (exp.highlights) {
-                    exp.highlights.forEach(highlight => {
-                        if (highlight.includes('https://apidoc.eccovia.com')) {
-                            const url = 'https://apidoc.eccovia.com';
-                            const before = highlight.replace(/\(\s*https:\/\/apidoc.eccovia.com\s*\)/, '(');
-                            const after = ')';
-                            doc.setFontSize(11.25);
-                            doc.setFont('Helvetica', 'normal');
-                            const beforeText = '- ' + before;
-                            const lines = doc.splitTextToSize(beforeText, contentWidth);
-                            doc.text(lines, margin, yPosition);
-                            const lineHeight = 11.25 * 0.425;
-                            const lastLine = lines[lines.length - 1];
-                            const lastLineWidth = doc.getTextWidth(lastLine);
-                            const linkX = margin + lastLineWidth;
-                            const linkY = yPosition + (lines.length - 1) * lineHeight;
-                            doc.textWithLink(url, linkX, linkY, {url: url});
-                            const afterX = linkX + doc.getTextWidth(url);
-                            doc.text(after, afterX, linkY);
-                            yPosition = yPosition + lines.length * lineHeight;
-                        } else {
-                            yPosition = addText(`- ${highlight}`, 11.25, 'normal', margin, yPosition, contentWidth);
-                        }
-                    });
-                }
-                yPosition += 0.8;
+        let leftY = yPosition;
+        let rightY = yPosition;
+
+        if (data.skills?.coreSkills) {
+            leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
+            data.skills.coreSkills.forEach(skill => {
+                leftY = addText(`- ${skill}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
             });
         }
-        yPosition += 1;
 
-        addHorizontalLine(yPosition, 2.5);
-        yPosition += 1.5;
-        yPosition = addText('Education', 13, 'bold', margin, yPosition, contentWidth);
-        if (data.education) {
-            yPosition = addText(data.education.degree, 12, 'bold', margin, yPosition, contentWidth);
-            yPosition = addText(data.education.institution, 11.25, 'italic', margin, yPosition, contentWidth);
-            if (data.education.coursework) {
-                yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 11.25, 'normal', margin, yPosition, contentWidth);
-            }
-        }
-        yPosition += 1.5;
-
-        addHorizontalLine(yPosition, 4);
-        yPosition += 1.5;
-        if (data.skills || data.certifications) {
-            const columnWidth = (contentWidth - 2) / 2;
-            const leftColumnX = margin;
-            const rightColumnX = margin + columnWidth + 3;
-
-            let leftY = yPosition;
-            let rightY = yPosition;
-
-            if (data.skills?.coreSkills) {
-                leftY = addText('Core Skills', 13, 'bold', leftColumnX, leftY, columnWidth);
-                data.skills.coreSkills.forEach(skill => {
-                    leftY = addText(`- ${skill}`, 11.25, 'normal', leftColumnX, leftY, columnWidth);
-                });
-            }
-
-            if (data.skills?.fun) {
-                leftY += 0.7;
-                leftY = addText('Interests & Hobbies', 13, 'bold', leftColumnX, leftY, columnWidth);
-                data.skills.fun.forEach(fun => {
-                    leftY = addText(`- ${fun}`, 11.25, 'normal', leftColumnX, leftY, columnWidth);
-                });
-            }
-
-            if (data.skills?.toolsAndFrameworks) {
-                rightY = addText('Tools & Frameworks', 13, 'bold', rightColumnX, rightY, columnWidth);
-                data.skills.toolsAndFrameworks.forEach(tool => {
-                    rightY = addText(`- ${tool}`, 11.25, 'normal', rightColumnX, rightY, columnWidth);
-                });
-            }
-
-            if (data.certifications) {
-                rightY += 0.7;
-                rightY = addText('Certifications', 13, 'bold', rightColumnX, rightY, columnWidth);
-                data.certifications.forEach(cert => {
-                    const certText = `${cert.name}, ${cert.issuer} (${cert.date})`;
-                    rightY = addText(`- ${certText}`, 11.25, 'normal', rightColumnX, rightY, columnWidth);
-                });
-            }
-
-            const maxY = Math.max(leftY, rightY);
-            doc.setLineWidth(0.2);
-            doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
-            yPosition = maxY;
+        if (data.skills?.fun) {
+            leftY += 0.8;
+            leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
+            data.skills.fun.forEach(fun => {
+                leftY = addText(`- ${fun}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
+            });
         }
 
-        const pdfOutput = doc.output('datauristring');
-        const fileName = 'Remy_Russell_Resume.pdf';
-
-        // Try to open in a new tab
-        const newTab = window.open('', '_blank');
-        if (newTab) {
-            newTab.document.write(`
-                <html>
-                    <head><title>${fileName}</title></head>
-                    <body style="margin:0">
-                        <embed src="${pdfOutput}" type="application/pdf" width="100%" height="100%">
-                    </body>
-                </html>
-            `);
-            newTab.document.close();
-        } else {
-            console.warn('Failed to open new tab. Pop-up blocker may be enabled.');
-            // Fallback: Create a download link
-            const link = document.createElement('a');
-            link.href = pdfOutput;
-            link.download = fileName;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            alert('Unable to open PDF in new tab. The PDF is being downloaded instead. Please check your pop-up blocker settings if you prefer to view it in a new tab.');
+        if (data.skills?.toolsAndFrameworks) {
+            rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
+            data.skills.toolsAndFrameworks.forEach(tool => {
+                rightY = addText(`- ${tool}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
+            });
         }
-    } catch (err) {
-        console.error('Error generating PDF:', err.message);
-        alert('Error generating PDF: ' + err.message + '. Please try again.');
+
+        // Removed Certifications block
+
+        const maxY = Math.max(leftY, rightY);
+        doc.setLineWidth(0.2);
+        doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
+
+        yPosition = maxY;
+    }
+
+    const pdfOutput = doc.output('blob');
+    const url = URL.createObjectURL(pdfOutput);
+    const newTab = window.open(url, '_blank');
+    if (newTab) {
+        newTab.document.title = 'Remy_Russell_Resume.pdf';
+    } else {
+        console.error('Failed to open new tab. Pop-up blocker may be enabled.');
+        alert('Unable to open PDF in new tab. Please allow pop-ups and try again.');
     }
 }
 
 async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
     for (let i = 0; i < retries; i++) {
         try {
-            console.log(`Fetching ${url}, attempt ${i + 1}`);
             const response = await fetch(url, options);
-            if (response.ok) {
-                console.log(`Successfully fetched ${url}`);
-                return response;
-            }
+            if (response.ok) return response;
             throw new Error(`Fetch failed: ${response.status} ${response.statusText}`);
         } catch (err) {
-            console.warn(`Fetch attempt ${i + 1} failed for ${url}: ${err.message}`);
-            if (i === retries - 1) {
-                console.error(`All fetch attempts failed for ${url}: ${err.message}`);
-                throw err;
-            }
+            if (i === retries - 1) throw err;
+            console.warn(`Fetch attempt ${i + 1} failed for ${url}. Retrying in ${delay}ms...`, err);
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
 }
 
-let lastMouseX = window.innerWidth / 2;
-let lastMouseY = window.innerHeight / 2;
-let lastScrollY = 0;
-
-function updateBackgroundPosition(scrollY) {
-    const mouseX = lastMouseX / window.innerWidth;
-    const mouseY = lastMouseY / window.innerHeight;
-    const scrollInfluence = scrollY / window.innerHeight;
-    const time = Date.now() / 1000;
-    const waveX = Math.sin(time + mouseX * Math.PI * 2) * 50;
-    const waveY = Math.cos(time + mouseY * Math.PI * 2) * 50;
-    const scrollOffset = scrollInfluence * 100;
-    const xOffset = (mouseX - 0.5) * 200 + waveX + scrollOffset;
-    const yOffset = (mouseY - 0.5) * 200 + waveY + scrollOffset;
-    document.body.style.backgroundPosition = `
-        ${xOffset}px ${yOffset}px,
-        ${xOffset + 50}px ${yOffset + 50}px,
-        ${xOffset - 50}px ${yOffset - 50}px
-    `;
-    lastScrollY = scrollInfluence;
-}
-
-const particles = [];
-const numParticles = 150;
-
-function createParticleSystem() {
-    const canvas = document.createElement('canvas');
-    canvas.id = 'particleCanvas';
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    });
-
-    for (let i = 0; i < numParticles; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            radius: Math.random() * 1 + 1,
-            angle: Math.random() * Math.PI * 2,
-            orbitRadiusX: Math.random() * 400 + 150,
-            orbitRadiusY: Math.random() * 200 + 100,
-            baseSpeed: Math.random() * 0.002 + 0.001
-        });
-    }
-
-    let lastFrameTime = Date.now();
-    let frameCount = 0;
-    let fps = 60;
-
-    function animateParticles() {
-        const currentTime = Date.now();
-        frameCount++;
-        if (currentTime - lastFrameTime >= 1000) {
-            fps = frameCount;
-            frameCount = 0;
-            lastFrameTime = currentTime;
-            console.log('FPS:', fps);
-        }
-
-        if (fps < 60 && frameCount % 3 === 0) {
-            requestAnimationFrame(animateParticles);
-            return;
-        }
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const isDark = document.body.classList.contains('theme-dark');
-        const particleColor = isDark ? 'rgba(200, 200, 200, 0.3)' : 'rgba(199, 21, 133, 0.5)';
-        const lineColorBase = isDark ? '200, 200, 200' : '199, 21, 133';
-
-        particles.forEach(particle => {
-            particle.angle += particle.baseSpeed;
-            particle.x = canvas.width / 2 + Math.cos(particle.angle) * particle.orbitRadiusX;
-            particle.y = canvas.height / 2 + Math.sin(particle.angle) * particle.orbitRadiusY;
-
-            const dx = particle.x - lastMouseX;
-            const dy = particle.y - lastMouseY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < 150) {
-                ctx.beginPath();
-                ctx.moveTo(particle.x, particle.y);
-                ctx.lineTo(lastMouseX, lastMouseY);
-                const alpha = (150 - distance) / 150 * 0.5;
-                ctx.strokeStyle = `rgba(${lineColorBase}, ${alpha})`;
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-            }
-
-            // Draw connections between particles
-            for (let j = 0; j < particles.length; j++) {
-                if (particle === particles[j]) continue;
-                const pdx = particles[j].x - particle.x;
-                const pdy = particles[j].y - particle.y;
-                const pdistance = Math.sqrt(pdx * pdx + pdy * pdy);
-                if (pdistance < 100) {
-                    ctx.beginPath();
-                    ctx.moveTo(particle.x, particle.y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    const palpha = (100 - pdistance) / 100 * 0.2;
-                    ctx.strokeStyle = `rgba(${lineColorBase}, ${palpha})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.stroke();
-                }
-            }
-
-            ctx.beginPath();
-            ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            ctx.fillStyle = particleColor;
-            ctx.fill();
-        });
-
-        requestAnimationFrame(animateParticles);
-    }
-
-    animateParticles();
-}
-
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('DOMContentLoaded event fired');
     keepThemeSetting();
     attachThemeToggleEvent();
 
-    setTimeout(createParticleSystem, 500);
-
-    if (document.body.classList.contains('dogs-page')) {
-        const dogPhotosLink = document.querySelector('a[href="/dogs.html"]');
-        if (dogPhotosLink) {
-            dogPhotosLink.classList.add('disabled');
-            dogPhotosLink.addEventListener('click', (e) => e.preventDefault());
-            console.log('Dog Photos link disabled on dogs page');
-        }
-        console.log('Dogs page detected, skipping resume.json fetch');
-        return;
-    }
-
     let data;
     try {
-        const response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
+        console.log('Fetching ./resume.json...');
+        let response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch resume.json: ${response.status} ${response.statusText}`);
+        }
         data = await response.json();
-        console.log('Parsed resume.json data:', data);
+        console.log('Parsed data:', data);
     } catch (err) {
-        console.error('Failed to load resume.json:', err.message);
-        alert('Error: Unable to load resume data. Please check your connection and try again.');
+        console.error('Fetch error:', err.message);
         const container = document.querySelector('.container');
         if (container) {
             container.innerHTML = `
-                <div class="error-message">
-                    <h1>Error Loading Resume</h1>
-                    <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
-                    <p>Error details: ${err.message}</p>
-                </div>
+                <h1>Error Loading Resume</h1>
+                <p>Unable to load resume data. Please try refreshing the page or check back later.</p>
+                <p>Error details: ${err.message}</p>
             `;
         } else {
             console.error('Container element not found in DOM');
@@ -597,7 +377,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
                         const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
                         const combinedHighlights = [...highlightsArray, ...achievementsArray];
-                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${linkify(item)}</li>`).join('') : '';
+                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
                         if (combinedHighlights.length > 0) {
                             detailsDiv.appendChild(highlightsList);
                         }
@@ -610,7 +390,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 });
             } else {
-                experienceContainer.innerHTML += `<p>No professional experience data available.</p>`;
+                experienceContainer.innerHTML += '<p>No professional experience data available.</p>';
             }
         } else {
             console.error('Professional experience container not found in DOM');
@@ -664,7 +444,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     educationContainer.innerHTML += `<p>Error rendering education: ${err.message}</p>`;
                 }
             } else {
-                educationContainer.innerHTML += `<p>No education data available.</p>`;
+                educationContainer.innerHTML += '<p>No education data available.</p>';
             }
         } else {
             console.error('Education container not found in DOM');
@@ -679,7 +459,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ).join('') || '<li>Certifications Not Found</li>';
                 } catch (err) {
                     console.error('Error rendering certifications:', err.message);
-                    certificationList.innerHTML = `<li>Error rendering certification: ${err.message}</li>`;
+                    certificationList.innerHTML = `<li>Error rendering certifications: ${err.message}</li>`;
                 }
             } else {
                 certificationList.innerHTML = '<li>No certifications data available.</li>';
@@ -719,27 +499,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error in rendering:', err.message);
         const container = document.querySelector('.container');
         if (container) {
-            container.innerHTML += `<p class="error-message">Unexpected error: ${err.message}</p>`;
+            container.innerHTML += `<p>Unexpected error: ${err.message}</p>`;
         }
     }
-
-    document.addEventListener('mousemove', (e) => {
-        if (window.innerWidth >= 768) {
-            lastMouseX = e.clientX;
-            lastMouseY = e.clientY;
-            const scrollY = window.scrollY || document.documentElement.scrollTop;
-            updateBackgroundPosition(scrollY);
-        }
-    });
-
-    document.addEventListener('touchmove', (e) => {
-        if (window.innerWidth < 768) {
-            lastMouseX = e.touches[0].clientX;
-            lastMouseY = e.touches[0].clientY;
-            const scrollY = window.scrollY || document.documentElement.scrollTop;
-            updateBackgroundPosition(scrollY);
-        }
-    });
-
-    updateBackgroundPosition(0);
 });
