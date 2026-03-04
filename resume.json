@@ -87,9 +87,9 @@
     },
     "skills": {
         "coreSkills": [
-            "Problem discovery, learning from custoemrs, users, and buyers",
+            "Problem discovery, learning from users",
             "Stakeholder communication, articulating technical details or high-level strategy",
-            "Project Management and prioritization based on data, insights, & empathy",
+            "Project Management, prioritization based on data/insights",
             "Facilitating collaboration, hypothesis testing, & rapid/iterative delivery",
             "Defining epics, stories, acceptance criteria, etc."
         ],
@@ -97,8 +97,8 @@
             "Agile, Scrum (Jira plans, backlogs, boards, sprints, dashboards)",
             "Insight analysis (Hubspot, ProductBoard, SQL)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
-            "Mock-ups, rapid prototyping (Figma, AI Tools like Gemini, Grok, ChatGPT)",
-            "API evaluation/testing, workflow automation (Postman, Zapier, Microsoft Power Automate)"
+            "Mock-ups, rapid prototyping (Figma, AI Tools like Gemini, Grok, etc",
+            "API evaluation, workflow automation (Postman, Zapier, Microsoft Power Automate)"
         ],
         "fun": [
             "Outdoor activities (skiing, biking, hiking, camping)",
