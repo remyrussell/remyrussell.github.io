@@ -1,7 +1,7 @@
 function formatDate(dateString) {
     if (!dateString) return "Present";
     const date = new Date(dateString);
-    const options = { year: 'numeric', month: 'long' };
+    const options = { year: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
 
