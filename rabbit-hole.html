@@ -485,6 +485,10 @@ const SPOTIFY_CLIENT_ID    = '8722cc320a354c689ba0d7e0363a68a4';
 const SPOTIFY_REDIRECT_URI = 'https://remyrussell.com/rabbit-hole.html';
 const SCOPES               = 'user-read-private user-read-email user-top-read';
 
+// Global canvas refs — declared here so all functions can access them
+let canvas = null;
+let ctx    = null;
+
 // ─────────────────────────────────────────────
 //  STARFIELD
 // ─────────────────────────────────────────────
@@ -833,7 +837,6 @@ function simulate() {
 // ─────────────────────────────────────────────
 //  CANVAS RENDERING
 // ─────────────────────────────────────────────
-let canvas, ctx;
 let hoveredNode = null;
 
 function initCanvas() {
