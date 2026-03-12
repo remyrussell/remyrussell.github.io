@@ -328,7 +328,7 @@
       <div class="step-title">Connect Spotify</div>
     </div>
     <div id="login-area">
-      <button class="btn-primary" onclick="loginWithSpotify()">🎵 &nbsp;Connect with Spotify</button>
+      <button class="btn-primary" id="btn-login" onclick="this.disabled=true; loginWithSpotify()">🎵 &nbsp;Connect with Spotify</button>
       <p style="font-size:.78rem;color:var(--muted);margin-top:10px;text-align:center;">
         Read-only access · no data stored · no playlist changes
       </p>
@@ -432,18 +432,65 @@ const CRANK_THAT_TRACK_ID  = '1qPbGZqppFwLwcBC1JkNlt';
 // ─────────────────────────────────────────────
 //  AUTH
 // ─────────────────────────────────────────────
-function loginWithSpotify() {
+// ─────────────────────────────────────────────
+//  PKCE HELPERS
+// ─────────────────────────────────────────────
+function generateRandomString(len) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const arr = new Uint8Array(len);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(b => chars[b % chars.length]).join('');
+}
+
+async function generateCodeChallenge(verifier) {
+  const enc  = new TextEncoder().encode(verifier);
+  const hash = await crypto.subtle.digest('SHA-256', enc);
+  return btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function loginWithSpotify() {
+  const verifier   = generateRandomString(64);
+  const challenge  = await generateCodeChallenge(verifier);
+  sessionStorage.setItem('pkce_verifier', verifier);
+
   const url = 'https://accounts.spotify.com/authorize'
-    + '?response_type=token'
-    + '&client_id='    + encodeURIComponent(SPOTIFY_CLIENT_ID)
-    + '&scope='        + encodeURIComponent(SCOPES)
-    + '&redirect_uri=' + encodeURIComponent(SPOTIFY_REDIRECT_URI);
-  window.location = url;
+    + '?response_type=code'
+    + '&client_id='             + encodeURIComponent(SPOTIFY_CLIENT_ID)
+    + '&scope='                 + encodeURIComponent(SCOPES)
+    + '&redirect_uri='          + encodeURIComponent(SPOTIFY_REDIRECT_URI)
+    + '&code_challenge_method=S256'
+    + '&code_challenge='        + challenge;
+  window.location.href = url;
+}
+
+async function exchangeCodeForToken(code) {
+  const verifier = sessionStorage.getItem('pkce_verifier');
+  const r = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type:    'authorization_code',
+      code,
+      redirect_uri:  SPOTIFY_REDIRECT_URI,
+      client_id:     SPOTIFY_CLIENT_ID,
+      code_verifier: verifier
+    })
+  });
+  const data = await r.json();
+  if (data.access_token) {
+    localStorage.setItem('sb_token',   data.access_token);
+    localStorage.setItem('sb_expiry',  Date.now() + (data.expires_in || 3600) * 1000);
+    if (data.refresh_token) localStorage.setItem('sb_refresh', data.refresh_token);
+    sessionStorage.removeItem('pkce_verifier');
+  }
+  return data.access_token || null;
 }
 
 function logout() {
   localStorage.removeItem('sb_token');
   localStorage.removeItem('sb_expiry');
+  localStorage.removeItem('sb_refresh');
   location.reload();
 }
 
@@ -453,20 +500,18 @@ function getToken() {
   return localStorage.getItem('sb_token');
 }
 
-// Handle redirect back from Spotify
-(function handleCallback() {
-  const hash = window.location.hash.substring(1);
-  if (!hash) return;
-  const params = Object.fromEntries(hash.split('&').map(p => p.split('=')));
-  if (params.access_token) {
-    localStorage.setItem('sb_token', params.access_token);
-    localStorage.setItem('sb_expiry', Date.now() + parseInt(params.expires_in || 3600) * 1000);
-    history.replaceState(null, '', window.location.pathname);
-  }
+// Handle redirect back from Spotify (PKCE — code in query params)
+(async function handleCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const code   = params.get('code');
+  if (!code) return;
+  history.replaceState(null, '', window.location.pathname);
+  await exchangeCodeForToken(code);
+  initUI();
 })();
 
 // Init UI on load
-(function initUI() {
+function initUI() {
   const token = getToken();
   if (token) {
     document.getElementById('login-area').classList.add('hidden');
@@ -474,7 +519,8 @@ function getToken() {
     fetchProfile(token);
     fetchSouljaPreview(token);
   }
-})();
+}
+initUI();
 
 async function fetchProfile(token) {
   try {
