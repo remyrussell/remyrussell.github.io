@@ -12,7 +12,7 @@
         "linkedin": "https://www.linkedin.com/in/remyrussell",
         "website": "https://remyrussell.com"
     },
-    "summary": "An optimistic tech enthusiast with 3 years of Product Management and 7 years of Business Analysis experience building software solutions for Health and Human Services providers. Experienced building APIs, internal tools for developers, and platform features, while leveraging AI and collaborative tools to drive agile iteration.",
+    "summary": "An optimistic tech enthusiast with 3 years of Product Management and 7 years of Business Analysis experience building SaaS solutions for Health and Human Services providers. ",
     "professionalExperience":[
         {
             "position": "Associate Product Manager, Engineering",
@@ -23,12 +23,12 @@
                 "start": "2022-03-14",
                 "end": "2025-03-27"
             },
-            "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by 160 customers (Homeless Management, Medically Tailored Meals, Behavioral Health)",
+            "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by 160 customer organizatitons",
             "highlights": [
-                "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and team capabilities",
+                "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and capabilities",
                 "Shipped a RESTful API from 0 to 1 and onboarded developers from 10 organizations to support custom integrations (https://apidoc.eccovia.com)",
                 "Developed standardized clinical data integrations (HL7, X12) for users to view clinical history, check Medicaid eligibility, and export claims",
-                "Managed MVP testing & controlled releases for platform enhancements (SSO & 2-Step Verification, SMS/email notifications, low-code design tools, etc)",
+                "Managed MVP & early access testing for platform enhancements (SSO & 2-Step Verification, SMS/email notifications, low-code design tools, etc)",
                 "Solved process painpoints for 6 organizations with a strategic integration partner, enabling thousands of daily meal deliveries with modern features for drivers and dispatchers"   
             ]
         },
@@ -87,23 +87,23 @@
     },
     "skills": {
         "coreSkills": [
-            "Problem discovery, learning from users",
-            "Stakeholder communication, articulating technical details or high-level strategy",
+            "Problem discovery, learning from users, strategizing",
+            "Stakeholder communication, cross-functional alignment",
             "Project Management, prioritization with data/insights",
             "Facilitating collaboration, hypothesis testing, & rapid/iterative delivery",
-            "Defining epics, stories, acceptance criteria, etc."
+            "Defining epics, user stories, acceptance criteria, etc."
         ],
         "toolsAndFrameworks": [
-            "Agile, Scrum (Jira plans, backlogs, boards, sprints, dashboards)",
-            "Insight analysis (Hubspot, ProductBoard, SQL)",
+            "Agile, Scrum (Jira for roadmaps, backlogs, boards, sprints, dashboards)",
+            "Insight analysis (Hubspot, ProductBoard, SQL, PowerBI)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
-            "Mock-ups, rapid prototyping (Figma, AI Tools like Gemini, Grok)",
+            "Mock-ups, rapid prototyping, productivity (Figma, AI Tools like Gemini, Grok, Claude)",
             "API evaluation, workflow automation (Postman, Zapier, Microsoft Power Automate)"
         ],
         "fun": [
             "Outdoor activities (skiing, biking, hiking, camping)",
             "Music creation/consumption (electronic, guitar, piano)",
-            "Podcasts/audiobooks (science, tech, health)"
+            "Podcasts/audiobooks, monitoring the situation (tech, AI, business)"
         ]
     },
     "certifications": [
