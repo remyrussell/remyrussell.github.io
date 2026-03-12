@@ -95,7 +95,7 @@
         ],
         "toolsAndFrameworks": [
             "Agile, Scrum (Jira for roadmaps, backlogs, boards, sprints, dashboards)",
-            "Insight analysis (Hubspot, ProductBoard, SQL, PowerBI)",
+            "Insight analysis (SQL, Hubspot, ProductBoard)",
             "Workshopping & Diagramming (Confluence Whiteboards, Figjam, Lucidchart)",
             "Mock-ups, rapid prototyping, productivity (Figma, AI Tools like Gemini, Grok, Claude)",
             "API evaluation, workflow automation (Postman, Zapier, Microsoft Power Automate)"
