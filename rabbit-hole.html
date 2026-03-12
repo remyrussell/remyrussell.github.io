@@ -687,7 +687,7 @@ async function loadTopArtists(timeRange) {
       addNode({
         id:         artist.id,
         name:       artist.name,
-        genres:     artist.genres.slice(0, 3),
+        genres:     (artist.genres || []).slice(0, 3),
         popularity: artist.popularity,
         image:      artist.images?.[1]?.url || artist.images?.[0]?.url || '',
         x:          cx + Math.cos(angle) * radius + (Math.random() - .5) * 40,
@@ -743,7 +743,7 @@ async function expandSelected() {
         addNode({
           id:         artist.id,
           name:       artist.name,
-          genres:     artist.genres.slice(0, 3),
+          genres:     (artist.genres || []).slice(0, 3),
           popularity: artist.popularity,
           image:      artist.images?.[1]?.url || artist.images?.[0]?.url || '',
           x:          cx + Math.cos(angle) * radius,
