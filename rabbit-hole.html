@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Artist Rabbit Hole</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --void: #04040a;
+  --deep: #080814;
+  --panel: rgba(10,10,24,0.92);
+  --border: rgba(255,255,255,0.07);
+  --text: #e8e4ff;
+  --muted: rgba(200,195,255,0.45);
+  --accent: #7c6aff;
+  --glow: #a78bff;
+  --radius: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  cursor: default;
+}
+
+/* ── STARFIELD ── */
+#stars {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+
+/* ── CANVAS ── */
+#graph-canvas {
+  position: fixed; inset: 0; z-index: 1;
+  cursor: grab;
+}
+#graph-canvas:active { cursor: grabbing; }
+
+/* ── UI LAYER ── */
+#ui {
+  position: fixed; inset: 0; z-index: 10;
+  pointer-events: none;
+}
+#ui > * { pointer-events: auto; }
+
+/* ── HEADER ── */
+#header {
+  position: absolute;
+  top: 24px; left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+  opacity: .8;
+}
+
+h1 {
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1;
+  background: linear-gradient(135deg, #fff 0%, var(--glow) 60%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+
+/* ── LOGIN PANEL ── */
+#login-panel {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 48px;
+  text-align: center;
+  width: min(420px, 90vw);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 80px rgba(124,106,255,.15), 0 0 0 1px rgba(124,106,255,.1);
+}
+
+#login-panel h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+#login-panel p {
+  font-family: 'Space Mono', monospace;
+  font-size: .75rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.btn-connect {
+  background: linear-gradient(135deg, #7c6aff, #a855f7);
+  color: #fff;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: .95rem;
+  letter-spacing: .04em;
+  cursor: pointer;
+  width: 100%;
+  transition: all .2s;
+  box-shadow: 0 0 30px rgba(124,106,255,.4);
+}
+.btn-connect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 50px rgba(124,106,255,.6);
+}
+
+/* ── TIME RANGE SELECTOR ── */
+#controls {
+  position: absolute;
+  top: 24px; left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.time-btn {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  backdrop-filter: blur(10px);
+}
+.time-btn:hover { border-color: var(--accent); color: var(--text); }
+.time-btn.active {
+  background: rgba(124,106,255,.2);
+  border-color: var(--accent);
+  color: var(--glow);
+}
+
+/* ── LEGEND ── */
+#legend {
+  position: absolute;
+  bottom: 24px; left: 24px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  backdrop-filter: blur(10px);
+  max-width: 200px;
+}
+
+#legend-title {
+  font-family: 'Space Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: .65rem;
+  color: var(--muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── TOOLTIP ── */
+#tooltip {
+  position: absolute;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  backdrop-filter: blur(20px);
+  max-width: 220px;
+  box-shadow: 0 0 40px rgba(124,106,255,.2);
+}
+#tooltip.visible { opacity: 1; }
+#tooltip-name {
+  font-weight: 700;
+  font-size: .95rem;
+  margin-bottom: 4px;
+  color: #fff;
+}
+#tooltip-genres {
+  font-family: 'Space Mono', monospace;
+  font-size: .65rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+#tooltip-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: .6rem;
+  color: var(--accent);
+  letter-spacing: .08em;
+}
+
+/* ── ARTIST DETAIL PANEL ── */
+#detail-panel {
+  position: absolute;
+  top: 50%; right: 24px;
+  transform: translateY(-50%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  width: 240px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 60px rgba(124,106,255,.15);
+  display: none;
+}
+#detail-panel.visible { display: block; }
+
+#detail-img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 14px;
+  background: #1a1a2e;
+}
+#detail-name {
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+#detail-genres {
+  font-family: 'Space Mono', monospace;
+  font-size: .65rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+#detail-popularity {
+  height: 4px;
+  background: rgba(255,255,255,.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+#detail-popularity-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #c084fc);
+  border-radius: 4px;
+  transition: width .6s ease;
+}
+#detail-pop-label {
+  font-family: 'Space Mono', monospace;
+  font-size: .6rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+#detail-expand {
+  background: rgba(124,106,255,.15);
+  border: 1px solid rgba(124,106,255,.3);
+  color: var(--glow);
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: .68rem;
+  letter-spacing: .08em;
+  cursor: pointer;
+  width: 100%;
+  transition: all .15s;
+  text-transform: uppercase;
+}
+#detail-expand:hover {
+  background: rgba(124,106,255,.3);
+  border-color: var(--accent);
+}
+#detail-expand:disabled {
+  opacity: .4; cursor: not-allowed;
+}
+#detail-close {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+#detail-close:hover { color: var(--text); }
+
+/* ── STATUS ── */
+#status {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: .7rem;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ── USER BADGE ── */
+#user-badge {
+  position: absolute;
+  top: 24px; right: 24px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px 7px 10px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+}
+#user-badge.visible { display: flex; }
+#user-avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  object-fit: cover;
+}
+#user-name {
+  font-family: 'Space Mono', monospace;
+  font-size: .68rem;
+  color: var(--text);
+}
+#btn-logout {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: .7rem;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  padding-left: 6px;
+  border-left: 1px solid var(--border);
+  margin-left: 2px;
+}
+#btn-logout:hover { color: var(--text); }
+
+.hidden { display: none !important; }
+
+/* ── DEPTH COUNTER ── */
+#depth-counter {
+  position: absolute;
+  bottom: 24px; right: 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: .65rem;
+  color: var(--muted);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-align: right;
+}
+#depth-num {
+  font-size: 1.4rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: var(--accent);
+  display: block;
+  line-height: 1;
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<canvas id="graph-canvas"></canvas>
+
+<div id="ui">
+  <div id="header">
+    <div class="eyebrow">Spotify · Interactive Graph</div>
+    <h1>Artist Rabbit Hole</h1>
+  </div>
+
+  <!-- Login -->
+  <div id="login-panel">
+    <h2>Dive In 🕳️</h2>
+    <p>Connect your Spotify to map your top artists<br/>and explore their musical universe.</p>
+    <button class="btn-connect" onclick="loginWithSpotify()">Connect with Spotify</button>
+  </div>
+
+  <!-- Controls -->
+  <div id="controls" class="hidden">
+    <div class="eyebrow" style="pointer-events:none;padding:0 2px;">Time Range</div>
+    <button class="time-btn active" onclick="setTimeRange('short_term', this)">4 Weeks</button>
+    <button class="time-btn" onclick="setTimeRange('medium_term', this)">6 Months</button>
+    <button class="time-btn" onclick="setTimeRange('long_term', this)">All Time</button>
+  </div>
+
+  <!-- User badge -->
+  <div id="user-badge">
+    <img id="user-avatar" src="" alt=""/>
+    <span id="user-name"></span>
+    <button id="btn-logout" onclick="logout()">logout</button>
+  </div>
+
+  <!-- Tooltip -->
+  <div id="tooltip">
+    <div id="tooltip-name"></div>
+    <div id="tooltip-genres"></div>
+    <div id="tooltip-hint">click to expand</div>
+  </div>
+
+  <!-- Detail panel -->
+  <div id="detail-panel">
+    <button id="detail-close" onclick="closeDetail()">✕</button>
+    <img id="detail-img" src="" alt=""/>
+    <div id="detail-name"></div>
+    <div id="detail-genres"></div>
+    <div id="detail-popularity"><div id="detail-popularity-bar" style="width:0%"></div></div>
+    <div id="detail-pop-label">popularity</div>
+    <button id="detail-expand" onclick="expandSelected()">＋ Expand Related Artists</button>
+  </div>
+
+  <!-- Legend -->
+  <div id="legend" class="hidden">
+    <div id="legend-title">Node Types</div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#fff;box-shadow:0 0 6px #fff"></div>
+      <span>Your top artist</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#7c6aff;box-shadow:0 0 6px #7c6aff"></div>
+      <span>Related (depth 1)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#a855f7;box-shadow:0 0 6px #a855f7"></div>
+      <span>Related (depth 2)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#ec4899;box-shadow:0 0 6px #ec4899"></div>
+      <span>Related (depth 3+)</span>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div id="status"></div>
+
+  <!-- Depth counter -->
+  <div id="depth-counter" class="hidden">
+    <span id="depth-num">0</span>
+    artists mapped
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  CONFIG
+// ─────────────────────────────────────────────
+const SPOTIFY_CLIENT_ID    = '8722cc320a354c689ba0d7e0363a68a4';
+const SPOTIFY_REDIRECT_URI = 'https://remyrussell.com/rabbit-hole.html';
+const SCOPES               = 'user-read-private user-read-email user-top-read';
+
+// ─────────────────────────────────────────────
+//  STARFIELD
+// ─────────────────────────────────────────────
+(function initStars() {
+  const canvas = document.getElementById('stars');
+  const ctx    = canvas.getContext('2d');
+  let stars    = [];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = Array.from({length: 180}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.2,
+      a: Math.random(),
+      s: Math.random() * 0.003 + 0.001
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.a += s.s;
+      const alpha = (Math.sin(s.a) * 0.5 + 0.5) * 0.6 + 0.1;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,190,255,${alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+// ─────────────────────────────────────────────
+//  AUTH — PKCE
+// ─────────────────────────────────────────────
+function generateRandomString(len) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const arr   = new Uint8Array(len);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(b => chars[b % chars.length]).join('');
+}
+
+async function generateCodeChallenge(verifier) {
+  const enc  = new TextEncoder().encode(verifier);
+  const hash = await crypto.subtle.digest('SHA-256', enc);
+  return btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+
+async function loginWithSpotify() {
+  const verifier  = generateRandomString(64);
+  const challenge = await generateCodeChallenge(verifier);
+  sessionStorage.setItem('pkce_verifier', verifier);
+  const url = 'https://accounts.spotify.com/authorize'
+    + '?response_type=code'
+    + '&client_id='           + encodeURIComponent(SPOTIFY_CLIENT_ID)
+    + '&scope='               + encodeURIComponent(SCOPES)
+    + '&redirect_uri='        + encodeURIComponent(SPOTIFY_REDIRECT_URI)
+    + '&code_challenge_method=S256'
+    + '&code_challenge='      + challenge;
+  window.location.href = url;
+}
+
+async function exchangeCode(code) {
+  const verifier = sessionStorage.getItem('pkce_verifier');
+  const r = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      code, redirect_uri: SPOTIFY_REDIRECT_URI,
+      client_id: SPOTIFY_CLIENT_ID,
+      code_verifier: verifier
+    })
+  });
+  const d = await r.json();
+  if (d.access_token) {
+    localStorage.setItem('sb_token',   d.access_token);
+    localStorage.setItem('sb_expiry',  Date.now() + (d.expires_in || 3600) * 1000);
+    if (d.refresh_token) localStorage.setItem('sb_refresh', d.refresh_token);
+    sessionStorage.removeItem('pkce_verifier');
+  }
+  return d.access_token || null;
+}
+
+function getToken() {
+  const expiry = parseInt(localStorage.getItem('sb_expiry') || '0');
+  if (Date.now() > expiry) return null;
+  return localStorage.getItem('sb_token');
+}
+
+function logout() {
+  localStorage.removeItem('sb_token');
+  localStorage.removeItem('sb_expiry');
+  localStorage.removeItem('sb_refresh');
+  location.reload();
+}
+
+// Handle callback
+(async function handleCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const code   = params.get('code');
+  if (!code) return;
+  history.replaceState(null, '', window.location.pathname);
+  setStatus('Connecting to Spotify…');
+  await exchangeCode(code);
+  init();
+})();
+
+// On load
+(function onLoad() {
+  if (getToken()) init();
+})();
+
+// ─────────────────────────────────────────────
+//  SPOTIFY API
+// ─────────────────────────────────────────────
+async function api(path) {
+  const token = getToken();
+  if (!token) throw new Error('No token');
+  const r = await fetch('https://api.spotify.com/v1' + path, {
+    headers: { Authorization: 'Bearer ' + token }
+  });
+  if (!r.ok) throw new Error('API error ' + r.status);
+  return r.json();
+}
+
+// ─────────────────────────────────────────────
+//  GRAPH STATE
+// ─────────────────────────────────────────────
+const nodes = new Map(); // id → node
+const edges = [];        // {source, target}
+let   selectedNode = null;
+let   currentTimeRange = 'short_term';
+let   simulationRunning = false;
+
+// Physics
+let   offsetX = 0, offsetY = 0, scale = 1;
+let   dragging = false, dragStart = {x:0,y:0}, dragOffset = {x:0,y:0};
+
+const DEPTH_COLORS = [
+  '#ffffff',  // 0 = your top artist (white)
+  '#7c6aff',  // 1
+  '#a855f7',  // 2
+  '#ec4899',  // 3
+  '#f97316',  // 4+
+];
+
+function depthColor(depth) {
+  return DEPTH_COLORS[Math.min(depth, DEPTH_COLORS.length - 1)];
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+async function init() {
+  document.getElementById('login-panel').classList.add('hidden');
+  document.getElementById('controls').classList.remove('hidden');
+  document.getElementById('legend').classList.remove('hidden');
+  document.getElementById('depth-counter').classList.remove('hidden');
+  document.getElementById('user-badge').classList.add('visible');
+  initCanvas();
+  await loadProfile();
+  await loadTopArtists(currentTimeRange);
+}
+
+async function loadProfile() {
+  try {
+    const d = await api('/me');
+    document.getElementById('user-name').textContent = d.display_name || d.id;
+    if (d.images?.[0]?.url) document.getElementById('user-avatar').src = d.images[0].url;
+  } catch(e) {}
+}
+
+async function loadTopArtists(timeRange) {
+  setStatus('Loading your top artists…');
+  nodes.clear();
+  edges.length = 0;
+  selectedNode = null;
+  closeDetail();
+
+  try {
+    const d = await api('/me/top/artists?limit=12&time_range=' + timeRange);
+    const cx = window.innerWidth  / 2;
+    const cy = window.innerHeight / 2;
+
+    d.items.forEach((artist, i) => {
+      const angle  = (i / d.items.length) * Math.PI * 2;
+      const radius = 180;
+      addNode({
+        id:         artist.id,
+        name:       artist.name,
+        genres:     artist.genres.slice(0, 3),
+        popularity: artist.popularity,
+        image:      artist.images?.[1]?.url || artist.images?.[0]?.url || '',
+        x:          cx + Math.cos(angle) * radius + (Math.random() - .5) * 40,
+        y:          cy + Math.sin(angle) * radius + (Math.random() - .5) * 40,
+        depth:      0,
+        isTop:      true,
+        expanded:   false,
+        radius:     22
+      });
+    });
+
+    setStatus('Click any artist to explore related artists →');
+    updateDepthCounter();
+    startSimulation();
+  } catch(e) {
+    setStatus('Error loading artists — try reconnecting');
+  }
+}
+
+function addNode(data) {
+  if (nodes.has(data.id)) return;
+  nodes.set(data.id, {
+    vx: (Math.random() - .5) * 2,
+    vy: (Math.random() - .5) * 2,
+    ...data
+  });
+}
+
+// ─────────────────────────────────────────────
+//  EXPAND RELATED
+// ─────────────────────────────────────────────
+async function expandSelected() {
+  if (!selectedNode) return;
+  const node = nodes.get(selectedNode);
+  if (!node || node.expanded) return;
+
+  document.getElementById('detail-expand').disabled = true;
+  document.getElementById('detail-expand').textContent = '⏳ Loading…';
+  setStatus('Fetching related artists for ' + node.name + '…');
+
+  try {
+    const d = await api('/artists/' + node.id + '/related-artists');
+    const related = d.artists.slice(0, 8);
+    const cx = node.x;
+    const cy = node.y;
+    const newDepth = node.depth + 1;
+
+    related.forEach((artist, i) => {
+      const angle  = (i / related.length) * Math.PI * 2;
+      const radius = 120 + Math.random() * 40;
+      if (!nodes.has(artist.id)) {
+        addNode({
+          id:         artist.id,
+          name:       artist.name,
+          genres:     artist.genres.slice(0, 3),
+          popularity: artist.popularity,
+          image:      artist.images?.[1]?.url || artist.images?.[0]?.url || '',
+          x:          cx + Math.cos(angle) * radius,
+          y:          cy + Math.sin(angle) * radius,
+          depth:      newDepth,
+          isTop:      false,
+          expanded:   false,
+          radius:     16 - Math.min(newDepth, 4) * 2
+        });
+      }
+      // Add edge if not already present
+      const edgeKey = [node.id, artist.id].sort().join('|');
+      if (!edges.find(e => [e.source, e.target].sort().join('|') === edgeKey)) {
+        edges.push({ source: node.id, target: artist.id });
+      }
+    });
+
+    node.expanded = true;
+    updateDepthCounter();
+    setStatus('Expanded ' + node.name + ' → ' + related.length + ' related artists');
+    document.getElementById('detail-expand').textContent = '✓ Already Expanded';
+
+  } catch(e) {
+    setStatus('Could not load related artists');
+    document.getElementById('detail-expand').disabled = false;
+    document.getElementById('detail-expand').textContent = '＋ Expand Related Artists';
+  }
+}
+
+// ─────────────────────────────────────────────
+//  PHYSICS SIMULATION
+// ─────────────────────────────────────────────
+function startSimulation() {
+  if (simulationRunning) return;
+  simulationRunning = true;
+  simulate();
+}
+
+function simulate() {
+  const nodeArr = Array.from(nodes.values());
+
+  // Repulsion
+  for (let i = 0; i < nodeArr.length; i++) {
+    for (let j = i + 1; j < nodeArr.length; j++) {
+      const a = nodeArr[i], b = nodeArr[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      const minDist = 90;
+      if (dist < minDist) {
+        const force = (minDist - dist) / minDist * 0.8;
+        const fx = (dx / dist) * force;
+        const fy = (dy / dist) * force;
+        a.vx -= fx; a.vy -= fy;
+        b.vx += fx; b.vy += fy;
+      }
+    }
+  }
+
+  // Attraction along edges
+  edges.forEach(edge => {
+    const a = nodes.get(edge.source);
+    const b = nodes.get(edge.target);
+    if (!a || !b) return;
+    const dx   = b.x - a.x, dy = b.y - a.y;
+    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    const ideal = 140;
+    const force = (dist - ideal) / ideal * 0.04;
+    const fx = (dx / dist) * force;
+    const fy = (dy / dist) * force;
+    a.vx += fx; a.vy += fy;
+    b.vx -= fx; b.vy -= fy;
+  });
+
+  // Center gravity
+  const cx = window.innerWidth / 2 - offsetX;
+  const cy = window.innerHeight / 2 - offsetY;
+  nodeArr.forEach(n => {
+    n.vx += (cx - n.x) * 0.003;
+    n.vy += (cy - n.y) * 0.003;
+  });
+
+  // Apply velocity + damping
+  nodeArr.forEach(n => {
+    n.vx *= 0.85; n.vy *= 0.85;
+    n.x  += n.vx;  n.y  += n.vy;
+  });
+
+  drawGraph();
+  requestAnimationFrame(simulate);
+}
+
+// ─────────────────────────────────────────────
+//  CANVAS RENDERING
+// ─────────────────────────────────────────────
+let canvas, ctx;
+let hoveredNode = null;
+
+function initCanvas() {
+  canvas = document.getElementById('graph-canvas');
+  ctx    = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Pan
+  canvas.addEventListener('mousedown', e => {
+    dragging   = true;
+    dragStart  = { x: e.clientX, y: e.clientY };
+    dragOffset = { x: offsetX, y: offsetY };
+  });
+  window.addEventListener('mousemove', e => {
+    if (dragging) {
+      offsetX = dragOffset.x + (e.clientX - dragStart.x);
+      offsetY = dragOffset.y + (e.clientY - dragStart.y);
+    } else {
+      handleHover(e);
+    }
+  });
+  window.addEventListener('mouseup', e => {
+    if (!dragging) return;
+    const dx = Math.abs(e.clientX - dragStart.x);
+    const dy = Math.abs(e.clientY - dragStart.y);
+    dragging = false;
+    if (dx < 4 && dy < 4) handleClick(e);
+  });
+
+  // Zoom
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.max(0.3, Math.min(3, scale * delta));
+  }, { passive: false });
+
+  // Touch
+  canvas.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      dragging   = true;
+      dragStart  = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      dragOffset = { x: offsetX, y: offsetY };
+    }
+  });
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (dragging && e.touches.length === 1) {
+      offsetX = dragOffset.x + (e.touches[0].clientX - dragStart.x);
+      offsetY = dragOffset.y + (e.touches[0].clientY - dragStart.y);
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchend', e => {
+    dragging = false;
+  });
+}
+
+function worldToScreen(x, y) {
+  return {
+    x: x * scale + offsetX,
+    y: y * scale + offsetY
+  };
+}
+
+function screenToWorld(x, y) {
+  return {
+    x: (x - offsetX) / scale,
+    y: (y - offsetY) / scale
+  };
+}
+
+function nodeAtScreen(sx, sy) {
+  const world = screenToWorld(sx, sy);
+  for (const [id, node] of nodes) {
+    const dx = world.x - node.x, dy = world.y - node.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < node.radius + 8) return node;
+  }
+  return null;
+}
+
+function handleHover(e) {
+  const node = nodeAtScreen(e.clientX, e.clientY);
+  hoveredNode = node ? node.id : null;
+  canvas.style.cursor = node ? 'pointer' : (dragging ? 'grabbing' : 'grab');
+
+  const tip = document.getElementById('tooltip');
+  if (node) {
+    document.getElementById('tooltip-name').textContent   = node.name;
+    document.getElementById('tooltip-genres').textContent = node.genres.join(' · ') || 'no genre data';
+    document.getElementById('tooltip-hint').textContent   = node.expanded ? 'already expanded' : 'click to expand';
+    tip.classList.add('visible');
+    tip.style.left = (e.clientX + 14) + 'px';
+    tip.style.top  = (e.clientY - 10) + 'px';
+  } else {
+    tip.classList.remove('visible');
+  }
+}
+
+function handleClick(e) {
+  const node = nodeAtScreen(e.clientX, e.clientY);
+  if (!node) { closeDetail(); return; }
+  selectNode(node);
+}
+
+function selectNode(node) {
+  selectedNode = node.id;
+  const panel  = document.getElementById('detail-panel');
+  panel.classList.add('visible');
+
+  document.getElementById('detail-name').textContent    = node.name;
+  document.getElementById('detail-genres').textContent  = node.genres.join(' · ') || 'no genre data';
+  document.getElementById('detail-popularity-bar').style.width = node.popularity + '%';
+  document.getElementById('detail-pop-label').textContent = 'popularity · ' + node.popularity + '/100';
+
+  const img = document.getElementById('detail-img');
+  img.src = node.image || '';
+  img.style.display = node.image ? 'block' : 'none';
+
+  const btn = document.getElementById('detail-expand');
+  btn.disabled = node.expanded;
+  btn.textContent = node.expanded ? '✓ Already Expanded' : '＋ Expand Related Artists';
+}
+
+function closeDetail() {
+  selectedNode = null;
+  document.getElementById('detail-panel').classList.remove('visible');
+}
+
+function drawGraph() {
+  if (!canvas) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+
+  // Draw edges
+  edges.forEach(edge => {
+    const a = nodes.get(edge.source);
+    const b = nodes.get(edge.target);
+    if (!a || !b) return;
+    const sa = worldToScreen(a.x, a.y);
+    const sb = worldToScreen(b.x, b.y);
+    const depth = Math.max(a.depth, b.depth);
+    const col   = depthColor(depth);
+    ctx.beginPath();
+    ctx.moveTo(sa.x, sa.y);
+    ctx.lineTo(sb.x, sb.y);
+    ctx.strokeStyle = col + '22';
+    ctx.lineWidth   = 1;
+    ctx.stroke();
+  });
+
+  // Draw nodes
+  for (const [id, node] of nodes) {
+    const s      = worldToScreen(node.x, node.y);
+    const r      = node.radius * scale;
+    const color  = depthColor(node.depth);
+    const isHov  = hoveredNode === id;
+    const isSel  = selectedNode === id;
+    const glow   = isHov || isSel ? r * 3.5 : r * 2;
+
+    // Glow
+    const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glow);
+    grad.addColorStop(0, color + (isHov || isSel ? '55' : '30'));
+    grad.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, glow, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Node circle
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+    ctx.fillStyle   = color + (isSel ? 'ff' : isHov ? 'cc' : '99');
+    ctx.fill();
+
+    // Ring for top artists
+    if (node.isTop) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, r + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = color + 'aa';
+      ctx.lineWidth   = 1.5;
+      ctx.stroke();
+    }
+
+    // Label
+    if (scale > 0.5) {
+      const fontSize = Math.max(9, Math.min(13, node.radius * scale * 0.7));
+      ctx.font        = `${node.isTop ? '700' : '400'} ${fontSize}px Syne, sans-serif`;
+      ctx.fillStyle   = isHov || isSel ? '#fff' : 'rgba(230,225,255,0.75)';
+      ctx.textAlign   = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(node.name, s.x, s.y + r + fontSize * 0.9);
+    }
+  }
+
+  ctx.restore();
+}
+
+// ─────────────────────────────────────────────
+//  TIME RANGE
+// ─────────────────────────────────────────────
+function setTimeRange(range, btn) {
+  currentTimeRange = range;
+  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  closeDetail();
+  loadTopArtists(range);
+}
+
+// ─────────────────────────────────────────────
+//  UTILS
+// ─────────────────────────────────────────────
+function setStatus(msg) {
+  document.getElementById('status').textContent = msg;
+}
+
+function updateDepthCounter() {
+  document.getElementById('depth-num').textContent = nodes.size;
+}
+</script>
+</body>
+</html>
