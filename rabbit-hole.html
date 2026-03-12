@@ -703,7 +703,8 @@ async function loadTopArtists(timeRange) {
     updateDepthCounter();
     startSimulation();
   } catch(e) {
-    setStatus('Error loading artists — try reconnecting');
+    console.error('loadTopArtists error:', e);
+    setStatus('Error: ' + e.message);
   }
 }
 
@@ -783,6 +784,9 @@ function startSimulation() {
 
 function simulate() {
   const nodeArr = Array.from(nodes.values());
+
+  // Guard against empty graph
+  if (nodeArr.length === 0) { requestAnimationFrame(simulate); return; }
 
   // Repulsion
   for (let i = 0; i < nodeArr.length; i++) {
@@ -971,8 +975,16 @@ function closeDetail() {
   document.getElementById('detail-panel').classList.remove('visible');
 }
 
+// Convert hex color to rgba string
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 function drawGraph() {
-  if (!canvas) return;
+  if (!canvas || !ctx) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
 
@@ -988,7 +1000,7 @@ function drawGraph() {
     ctx.beginPath();
     ctx.moveTo(sa.x, sa.y);
     ctx.lineTo(sb.x, sb.y);
-    ctx.strokeStyle = col + '22';
+    ctx.strokeStyle = hexToRgba(col, 0.15);
     ctx.lineWidth   = 1;
     ctx.stroke();
   });
@@ -996,32 +1008,34 @@ function drawGraph() {
   // Draw nodes
   for (const [id, node] of nodes) {
     const s      = worldToScreen(node.x, node.y);
-    const r      = node.radius * scale;
+    const r      = Math.max(node.radius * scale, 1);
     const color  = depthColor(node.depth);
     const isHov  = hoveredNode === id;
     const isSel  = selectedNode === id;
-    const glow   = isHov || isSel ? r * 3.5 : r * 2;
+    const glow   = Math.max(isHov || isSel ? r * 3.5 : r * 2, 2);
 
     // Glow
-    const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glow);
-    grad.addColorStop(0, color + (isHov || isSel ? '55' : '30'));
-    grad.addColorStop(1, 'transparent');
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, glow, 0, Math.PI * 2);
-    ctx.fillStyle = grad;
-    ctx.fill();
+    try {
+      const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glow);
+      grad.addColorStop(0, hexToRgba(color, isHov || isSel ? 0.35 : 0.2));
+      grad.addColorStop(1, hexToRgba(color, 0));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, glow, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    } catch(e) {}
 
     // Node circle
     ctx.beginPath();
     ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-    ctx.fillStyle   = color + (isSel ? 'ff' : isHov ? 'cc' : '99');
+    ctx.fillStyle = hexToRgba(color, isSel ? 1 : isHov ? 0.85 : 0.65);
     ctx.fill();
 
     // Ring for top artists
     if (node.isTop) {
       ctx.beginPath();
       ctx.arc(s.x, s.y, r + 3, 0, Math.PI * 2);
-      ctx.strokeStyle = color + 'aa';
+      ctx.strokeStyle = hexToRgba(color, 0.7);
       ctx.lineWidth   = 1.5;
       ctx.stroke();
     }
