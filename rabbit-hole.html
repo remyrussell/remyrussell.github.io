@@ -3,477 +3,766 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Artist Rabbit Hole</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+<title>My Wrapped — Spotify Stats · remyrussell.com</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --void: #04040a;
-  --deep: #080814;
-  --panel: rgba(10,10,24,0.92);
-  --border: rgba(255,255,255,0.07);
-  --text: #e8e4ff;
-  --muted: rgba(200,195,255,0.45);
-  --accent: #7c6aff;
-  --glow: #a78bff;
-  --radius: 12px;
+  --cream:  #141414;
+  --paper:  #1a1a1a;
+  --ink:    #f0f0f0;
+  --ink2:   #cccccc;
+  --muted:  #888888;
+  --accent: #e91e8c;
+  --accent2:#7b5ea7;
+  --border: #2e2e2e;
+  --card:   #222222;
+  --radius: 4px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { scroll-behavior: smooth; }
+
 body {
-  background: var(--void);
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  height: 100vh;
-  overflow: hidden;
-  cursor: default;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
-/* ── STARFIELD ── */
-#stars {
-  position: fixed; inset: 0; z-index: 0;
-  pointer-events: none;
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 999;
+  opacity: .15;
 }
 
-/* ── CANVAS ── */
-#graph-canvas {
-  position: fixed; inset: 0; z-index: 1;
-  cursor: grab;
-}
-#graph-canvas:active { cursor: grabbing; }
-
-/* ── UI LAYER ── */
-#ui {
-  position: fixed; inset: 0; z-index: 10;
-  pointer-events: none;
-}
-#ui > * { pointer-events: auto; }
-
-/* ── HEADER ── */
-#header {
-  position: absolute;
-  top: 24px; left: 50%;
-  transform: translateX(-50%);
+/* ── LOGIN ── */
+#login-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
   text-align: center;
-  pointer-events: none;
+  padding: 40px 20px;
 }
 
-.eyebrow {
-  font-family: 'Space Mono', monospace;
-  font-size: .68rem;
-  letter-spacing: .22em;
+.login-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: .7rem;
+  letter-spacing: .2em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 6px;
-  opacity: .8;
-}
-
-h1 {
-  font-size: clamp(1.6rem, 4vw, 2.8rem);
-  font-weight: 800;
-  letter-spacing: -.02em;
-  line-height: 1;
-  background: linear-gradient(135deg, #fff 0%, var(--glow) 60%, #c084fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: none;
-}
-
-/* ── LOGIN PANEL ── */
-#login-panel {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 40px 48px;
-  text-align: center;
-  width: min(420px, 90vw);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 80px rgba(124,106,255,.15), 0 0 0 1px rgba(124,106,255,.1);
-}
-
-#login-panel h2 {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-#login-panel p {
-  font-family: 'Space Mono', monospace;
-  font-size: .75rem;
   color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
-.btn-connect {
-  background: linear-gradient(135deg, #7c6aff, #a855f7);
+.login-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 900;
+  line-height: .95;
+  margin-bottom: 8px;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+
+.login-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.login-sub {
+  font-size: .95rem;
+  color: var(--muted);
+  margin-bottom: 40px;
+  max-width: 340px;
+}
+
+.btn-login {
+  background: var(--accent);
   color: #fff;
   border: none;
-  padding: 14px 32px;
-  border-radius: 999px;
-  font-family: 'Syne', sans-serif;
+  padding: 16px 40px;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 700;
-  font-size: .95rem;
-  letter-spacing: .04em;
+  font-size: .9rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
   cursor: pointer;
-  width: 100%;
+  border-radius: 2px;
   transition: all .2s;
-  box-shadow: 0 0 30px rgba(124,106,255,.4);
 }
-.btn-connect:hover {
+.btn-login:hover {
+  background: #c4157a;
   transform: translateY(-2px);
-  box-shadow: 0 0 50px rgba(124,106,255,.6);
 }
 
-/* ── TIME RANGE SELECTOR ── */
-#controls {
+/* ── MAIN LAYOUT ── */
+#main { display: none; }
+#main.visible { display: block; }
+
+/* ── MASTHEAD ── */
+#masthead {
+  border-bottom: 2px solid var(--accent);
+  padding: 20px 0 18px;
+  background: var(--paper);
+  position: sticky; top: 0; z-index: 100;
+}
+
+.masthead-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.masthead-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: -.01em;
+}
+
+.masthead-title span { color: var(--accent); font-style: italic; }
+.masthead-title { color: var(--ink); }
+
+.masthead-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--ink2);
+}
+
+.user-chip img {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--border);
+  object-fit: cover;
+}
+
+.time-select {
+  display: flex;
+  gap: 2px;
+  background: #111;
+  padding: 3px;
+  border-radius: 4px;
+}
+
+.time-btn {
+  background: none;
+  border: none;
+  padding: 5px 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .15s;
+}
+.time-btn.active {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.btn-logout {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .15s;
+}
+.btn-logout:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── CONTENT ── */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 40px 100px;
+}
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: .7rem;
+  color: var(--accent);
+  letter-spacing: .1em;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+
+.section-title em { font-style: italic; color: var(--accent); }
+
+.section-desc {
+  margin-left: auto;
+  font-size: .78rem;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+section { margin-bottom: 80px; }
+
+/* ── ARTISTS GRID ── */
+.artists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 2px;
+}
+
+.artist-card {
+  background: var(--card);
+  overflow: hidden;
+  cursor: default;
+  transition: transform .2s;
+  position: relative;
+}
+.artist-card:hover { transform: translateY(-3px); z-index: 2; }
+
+.artist-img-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--border);
+}
+
+.artist-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+  display: block;
+}
+.artist-card:hover .artist-img-wrap img { transform: scale(1.06); }
+
+.artist-rank {
   position: absolute;
-  top: 24px; left: 24px;
+  top: 10px; left: 10px;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  font-family: 'DM Mono', monospace;
+  font-size: .7rem;
+  font-weight: 500;
+  padding: 3px 8px;
+  letter-spacing: .05em;
+}
+
+.artist-rank.top3 {
+  background: var(--accent);
+  color: #fff;
+}
+
+.artist-info {
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.artist-name {
+  font-weight: 700;
+  font-size: .92rem;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist-genre {
+  font-size: .72rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 10px;
+  font-family: 'DM Mono', monospace;
+}
+
+.pop-bar {
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+}
+.pop-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width .8s ease;
+}
+
+/* ── TRACKS LIST ── */
+.tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track-row {
+  display: grid;
+  grid-template-columns: 48px 56px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  background: var(--card);
+  padding: 14px 20px;
+  transition: background .15s;
+}
+.track-row:hover { background: #2a2a2a; }
+
+.track-rank-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--border);
+  text-align: right;
+  line-height: 1;
+}
+.track-row:nth-child(-n+3) .track-rank-num { color: var(--accent); }
+
+.track-art {
+  width: 56px; height: 56px;
+  object-fit: cover;
+  background: var(--border);
+  flex-shrink: 0;
+  display: block;
+}
+
+.track-info { min-width: 0; }
+.track-name {
+  font-weight: 700;
+  font-size: .92rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.track-artist {
+  font-size: .78rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-meta {
+  text-align: right;
+  flex-shrink: 0;
+}
+.track-pop {
+  font-family: 'DM Mono', monospace;
+  font-size: .7rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.track-pop strong {
+  color: var(--ink);
+  font-size: .85rem;
+}
+
+/* ── RECENTLY PLAYED ── */
+.recent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px;
+}
+
+.recent-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--card);
+  padding: 12px 16px;
+  transition: background .15s;
+}
+.recent-row:hover { background: #2a2a2a; }
+
+.recent-art {
+  width: 44px; height: 44px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--border);
+}
+
+.recent-info { flex: 1; min-width: 0; }
+.recent-name {
+  font-weight: 600;
+  font-size: .85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.recent-artist {
+  font-size: .75rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-time {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  color: var(--muted);
+  flex-shrink: 0;
+  text-align: right;
+}
+
+/* ── STATS CARD ── */
+#stats-card-wrap {
+  background: #0f0f0f;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+#stats-card {
+  padding: 48px;
+  color: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
+
+#stats-card::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233,30,140,.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+#stats-card::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(123,94,167,.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.card-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,.4);
+  margin-bottom: 6px;
+}
+
+.card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 40px;
+  letter-spacing: -.02em;
+}
+
+.card-name span { color: var(--accent); font-style: italic; }
+
+.card-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  margin-bottom: 40px;
+  position: relative; z-index: 1;
+}
+
+.card-stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,.4);
+  margin-bottom: 6px;
+}
+
+.card-stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+
+.card-stat-sub {
+  font-size: .78rem;
+  color: rgba(245,240,232,.5);
+  margin-top: 4px;
+}
+
+.card-divider {
+  height: 1px;
+  background: rgba(245,240,232,.1);
+  margin-bottom: 32px;
+  position: relative; z-index: 1;
+}
+
+.card-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  position: relative; z-index: 1;
+}
+
+.card-top-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,.4);
+  margin-bottom: 10px;
+}
+
+.card-top-list {
+  list-style: none;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.time-btn {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-family: 'Space Mono', monospace;
-  font-size: .68rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all .15s;
-  backdrop-filter: blur(10px);
-}
-.time-btn:hover { border-color: var(--accent); color: var(--text); }
-.time-btn.active {
-  background: rgba(124,106,255,.2);
-  border-color: var(--accent);
-  color: var(--glow);
-}
-
-/* ── LEGEND ── */
-#legend {
-  position: absolute;
-  bottom: 24px; left: 24px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  backdrop-filter: blur(10px);
-  max-width: 200px;
-}
-
-#legend-title {
-  font-family: 'Space Mono', monospace;
-  font-size: .6rem;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-
-.legend-item {
+.card-top-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-  font-family: 'Space Mono', monospace;
-  font-size: .65rem;
-  color: var(--muted);
+  gap: 12px;
+  font-size: .85rem;
+  font-weight: 500;
 }
-.legend-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
+
+.card-top-num {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  color: var(--accent);
+  width: 16px;
   flex-shrink: 0;
 }
 
-/* ── TOOLTIP ── */
-#tooltip {
-  position: absolute;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .15s;
-  backdrop-filter: blur(20px);
-  max-width: 220px;
-  box-shadow: 0 0 40px rgba(124,106,255,.2);
-}
-#tooltip.visible { opacity: 1; }
-#tooltip-name {
-  font-weight: 700;
-  font-size: .95rem;
-  margin-bottom: 4px;
-  color: #fff;
-}
-#tooltip-genres {
-  font-family: 'Space Mono', monospace;
-  font-size: .65rem;
-  color: var(--muted);
-  line-height: 1.6;
-  margin-bottom: 8px;
-}
-#tooltip-hint {
-  font-family: 'Space Mono', monospace;
-  font-size: .6rem;
-  color: var(--accent);
-  letter-spacing: .08em;
-}
-
-/* ── ARTIST DETAIL PANEL ── */
-#detail-panel {
-  position: absolute;
-  top: 50%; right: 24px;
-  transform: translateY(-50%);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-  width: 240px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 60px rgba(124,106,255,.15);
-  display: none;
-}
-#detail-panel.visible { display: block; }
-
-#detail-img {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 10px;
+.card-top-img {
+  width: 32px; height: 32px;
   object-fit: cover;
-  margin-bottom: 14px;
-  background: #1a1a2e;
+  border-radius: 2px;
+  background: rgba(255,255,255,.1);
+  flex-shrink: 0;
 }
-#detail-name {
-  font-weight: 800;
-  font-size: 1.1rem;
-  margin-bottom: 6px;
-}
-#detail-genres {
-  font-family: 'Space Mono', monospace;
-  font-size: .65rem;
-  color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 12px;
-}
-#detail-popularity {
-  height: 4px;
-  background: rgba(255,255,255,.08);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 4px;
-}
-#detail-popularity-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), #c084fc);
-  border-radius: 4px;
-  transition: width .6s ease;
-}
-#detail-pop-label {
-  font-family: 'Space Mono', monospace;
-  font-size: .6rem;
-  color: var(--muted);
-  margin-bottom: 14px;
-}
-#detail-expand {
-  background: rgba(124,106,255,.15);
-  border: 1px solid rgba(124,106,255,.3);
-  color: var(--glow);
-  padding: 9px 14px;
-  border-radius: 8px;
-  font-family: 'Space Mono', monospace;
-  font-size: .68rem;
-  letter-spacing: .08em;
-  cursor: pointer;
-  width: 100%;
-  transition: all .15s;
-  text-transform: uppercase;
-}
-#detail-expand:hover {
-  background: rgba(124,106,255,.3);
-  border-color: var(--accent);
-}
-#detail-expand:disabled {
-  opacity: .4; cursor: not-allowed;
-}
-#detail-close {
-  position: absolute;
-  top: 12px; right: 12px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 1.1rem;
-  cursor: pointer;
-  padding: 4px;
-  line-height: 1;
-}
-#detail-close:hover { color: var(--text); }
 
-/* ── STATUS ── */
-#status {
-  position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Space Mono', monospace;
-  font-size: .7rem;
+.card-footer {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative; z-index: 1;
+}
+
+.card-footer-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: .9rem;
+  font-style: italic;
+  color: rgba(245,240,232,.3);
+}
+
+.btn-share {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .2s;
+}
+.btn-share:hover { background: #c4157a; transform: translateY(-1px); }
+
+/* ── LOADING ── */
+.loading-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 30px 0;
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem;
   color: var(--muted);
   letter-spacing: .1em;
   text-transform: uppercase;
+}
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  padding: 40px;
   text-align: center;
-  pointer-events: none;
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem;
+  color: var(--muted);
+  letter-spacing: .1em;
+  background: var(--card);
 }
 
-/* ── USER BADGE ── */
-#user-badge {
-  position: absolute;
-  top: 24px; right: 24px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 7px 14px 7px 10px;
-  display: none;
-  align-items: center;
-  gap: 8px;
-  backdrop-filter: blur(10px);
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .masthead-inner { padding: 0 20px; flex-wrap: wrap; gap: 10px; }
+  .content { padding: 40px 20px 80px; }
+  .track-row { grid-template-columns: 36px 44px 1fr; }
+  .track-meta { display: none; }
+  #stats-card { padding: 28px; }
+  .card-top-row { grid-template-columns: 1fr; }
+  .section-desc { display: none; }
 }
-#user-badge.visible { display: flex; }
-#user-avatar {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  background: var(--accent);
-  object-fit: cover;
-}
-#user-name {
-  font-family: 'Space Mono', monospace;
-  font-size: .68rem;
-  color: var(--text);
-}
-#btn-logout {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: .7rem;
-  cursor: pointer;
-  font-family: 'Space Mono', monospace;
-  padding-left: 6px;
-  border-left: 1px solid var(--border);
-  margin-left: 2px;
-}
-#btn-logout:hover { color: var(--text); }
 
 .hidden { display: none !important; }
 
-/* ── DEPTH COUNTER ── */
-#depth-counter {
-  position: absolute;
-  bottom: 24px; right: 24px;
-  font-family: 'Space Mono', monospace;
-  font-size: .65rem;
-  color: var(--muted);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  text-align: right;
+/* ── FADE IN ANIMATION ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-#depth-num {
-  font-size: 1.4rem;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  color: var(--accent);
-  display: block;
-  line-height: 1;
-}
+.fade-in { animation: fadeUp .4s ease forwards; }
+.fade-in-delay-1 { animation: fadeUp .4s ease .1s both; }
+.fade-in-delay-2 { animation: fadeUp .4s ease .2s both; }
+.fade-in-delay-3 { animation: fadeUp .4s ease .3s both; }
 </style>
 </head>
 <body>
 
-<canvas id="stars"></canvas>
-<canvas id="graph-canvas"></canvas>
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <div class="login-eyebrow">Your personal spotify recap</div>
+  <h1 class="login-title">My<br/><em>Wrapped</em></h1>
+  <p class="login-sub">Your top artists, tracks, and listening history — on demand, any time of year.</p>
+  <button class="btn-login" onclick="loginWithSpotify()">Connect Spotify</button>
+</div>
 
-<div id="ui">
-  <div id="header">
-    <div class="eyebrow">Spotify · Interactive Graph</div>
-    <h1>Artist Rabbit Hole</h1>
-  </div>
+<!-- ── MAIN ── -->
+<div id="main">
 
-  <!-- Login -->
-  <div id="login-panel">
-    <h2>Dive In 🕳️</h2>
-    <p>Connect your Spotify to map your top artists<br/>and explore their musical universe.</p>
-    <button class="btn-connect" onclick="loginWithSpotify()">Connect with Spotify</button>
-  </div>
-
-  <!-- Controls -->
-  <div id="controls" class="hidden">
-    <div class="eyebrow" style="pointer-events:none;padding:0 2px;">Time Range</div>
-    <button class="time-btn active" onclick="setTimeRange('short_term', this)">4 Weeks</button>
-    <button class="time-btn" onclick="setTimeRange('medium_term', this)">6 Months</button>
-    <button class="time-btn" onclick="setTimeRange('long_term', this)">All Time</button>
-  </div>
-
-  <!-- User badge -->
-  <div id="user-badge">
-    <img id="user-avatar" src="" alt=""/>
-    <span id="user-name"></span>
-    <button id="btn-logout" onclick="logout()">logout</button>
-  </div>
-
-  <!-- Tooltip -->
-  <div id="tooltip">
-    <div id="tooltip-name"></div>
-    <div id="tooltip-genres"></div>
-    <div id="tooltip-hint">click to expand</div>
-  </div>
-
-  <!-- Detail panel -->
-  <div id="detail-panel">
-    <button id="detail-close" onclick="closeDetail()">✕</button>
-    <img id="detail-img" src="" alt=""/>
-    <div id="detail-name"></div>
-    <div id="detail-genres"></div>
-    <div id="detail-popularity"><div id="detail-popularity-bar" style="width:0%"></div></div>
-    <div id="detail-pop-label">popularity</div>
-    <button id="detail-expand" onclick="expandSelected()">＋ Expand Related Artists</button>
-  </div>
-
-  <!-- Legend -->
-  <div id="legend" class="hidden">
-    <div id="legend-title">Node Types</div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#fff;box-shadow:0 0 6px #fff"></div>
-      <span>Your top artist</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#7c6aff;box-shadow:0 0 6px #7c6aff"></div>
-      <span>Related (depth 1)</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#a855f7;box-shadow:0 0 6px #a855f7"></div>
-      <span>Related (depth 2)</span>
-    </div>
-    <div class="legend-item">
-      <div class="legend-dot" style="background:#ec4899;box-shadow:0 0 6px #ec4899"></div>
-      <span>Related (depth 3+)</span>
+  <!-- Masthead -->
+  <div id="masthead">
+    <div class="masthead-inner">
+      <div class="masthead-title">My <span>Wrapped</span></div>
+      <div class="masthead-right">
+        <div class="time-select">
+          <button class="time-btn active" onclick="setRange('short_term',this)">4 Weeks</button>
+          <button class="time-btn" onclick="setRange('medium_term',this)">6 Months</button>
+          <button class="time-btn" onclick="setRange('long_term',this)">All Time</button>
+        </div>
+        <div class="user-chip">
+          <img id="user-avatar" src="" alt=""/>
+          <span id="user-name">—</span>
+        </div>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
     </div>
   </div>
 
-  <!-- Status -->
-  <div id="status"></div>
+  <!-- Content -->
+  <div class="content">
 
-  <!-- Depth counter -->
-  <div id="depth-counter" class="hidden">
-    <span id="depth-num">0</span>
-    artists mapped
+    <!-- § 01 TOP ARTISTS -->
+    <section id="sec-artists">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <h2 class="section-title">Top <em>Artists</em></h2>
+        <div class="section-desc">Your most played</div>
+      </div>
+      <div id="artists-container"><div class="loading-row"><div class="spinner"></div>Loading artists…</div></div>
+    </section>
+
+    <!-- § 02 TOP TRACKS -->
+    <section id="sec-tracks">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <h2 class="section-title">Top <em>Tracks</em></h2>
+        <div class="section-desc">Songs on repeat</div>
+      </div>
+      <div id="tracks-container"><div class="loading-row"><div class="spinner"></div>Loading tracks…</div></div>
+    </section>
+
+    <!-- § 03 RECENTLY PLAYED -->
+    <section id="sec-recent">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <h2 class="section-title">Recently <em>Played</em></h2>
+        <div class="section-desc">Last 50 listens</div>
+      </div>
+      <div id="recent-container"><div class="loading-row"><div class="spinner"></div>Loading history…</div></div>
+    </section>
+
+    <!-- § 04 STATS CARD -->
+    <section id="sec-card">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <h2 class="section-title">Your <em>Card</em></h2>
+        <div class="section-desc">Shareable summary</div>
+      </div>
+      <div id="stats-card-wrap">
+        <div id="stats-card">
+          <div class="card-eyebrow">remyrussell.com · my wrapped</div>
+          <div class="card-name" id="card-name">Loading<span>…</span></div>
+          <div class="card-stats" id="card-stats"></div>
+          <div class="card-divider"></div>
+          <div class="card-top-row">
+            <div>
+              <div class="card-top-label">Top Artists</div>
+              <ul class="card-top-list" id="card-artists-list"></ul>
+            </div>
+            <div>
+              <div class="card-top-label">Top Tracks</div>
+              <ul class="card-top-list" id="card-tracks-list"></ul>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="card-footer-brand">my wrapped</div>
+            <button class="btn-share" onclick="shareCard()">↗ Share Card</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 </div>
 
@@ -483,52 +772,13 @@ h1 {
 // ─────────────────────────────────────────────
 const SPOTIFY_CLIENT_ID    = '8722cc320a354c689ba0d7e0363a68a4';
 const SPOTIFY_REDIRECT_URI = 'https://remyrussell.com/rabbit-hole.html';
-const SCOPES               = 'user-read-private user-read-email user-top-read';
+const SCOPES               = 'user-read-private user-read-email user-top-read user-read-recently-played';
 
-// Global canvas refs — declared here so all functions can access them
-let canvas = null;
-let ctx    = null;
-
-// ─────────────────────────────────────────────
-//  STARFIELD
-// ─────────────────────────────────────────────
-(function initStars() {
-  const canvas = document.getElementById('stars');
-  const ctx    = canvas.getContext('2d');
-  let stars    = [];
-
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-    stars = Array.from({length: 180}, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.2 + 0.2,
-      a: Math.random(),
-      s: Math.random() * 0.003 + 0.001
-    }));
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    stars.forEach(s => {
-      s.a += s.s;
-      const alpha = (Math.sin(s.a) * 0.5 + 0.5) * 0.6 + 0.1;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200,190,255,${alpha})`;
-      ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-
-  window.addEventListener('resize', resize);
-  resize();
-  draw();
-})();
+let currentRange = 'short_term';
+let userData     = {};
 
 // ─────────────────────────────────────────────
-//  AUTH — PKCE
+//  PKCE AUTH
 // ─────────────────────────────────────────────
 function generateRandomString(len) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
@@ -548,14 +798,13 @@ async function loginWithSpotify() {
   const verifier  = generateRandomString(64);
   const challenge = await generateCodeChallenge(verifier);
   sessionStorage.setItem('pkce_verifier', verifier);
-  const url = 'https://accounts.spotify.com/authorize'
+  window.location.href = 'https://accounts.spotify.com/authorize'
     + '?response_type=code'
     + '&client_id='           + encodeURIComponent(SPOTIFY_CLIENT_ID)
     + '&scope='               + encodeURIComponent(SCOPES)
     + '&redirect_uri='        + encodeURIComponent(SPOTIFY_REDIRECT_URI)
     + '&code_challenge_method=S256'
     + '&code_challenge='      + challenge;
-  window.location.href = url;
 }
 
 async function exchangeCode(code) {
@@ -564,8 +813,8 @@ async function exchangeCode(code) {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      grant_type: 'authorization_code',
-      code, redirect_uri: SPOTIFY_REDIRECT_URI,
+      grant_type: 'authorization_code', code,
+      redirect_uri: SPOTIFY_REDIRECT_URI,
       client_id: SPOTIFY_CLIENT_ID,
       code_verifier: verifier
     })
@@ -587,30 +836,27 @@ function getToken() {
 }
 
 function logout() {
-  localStorage.removeItem('sb_token');
-  localStorage.removeItem('sb_expiry');
-  localStorage.removeItem('sb_refresh');
+  ['sb_token','sb_expiry','sb_refresh'].forEach(k => localStorage.removeItem(k));
   location.reload();
 }
 
-// Handle callback
+// Handle OAuth callback
 (async function handleCallback() {
   const params = new URLSearchParams(window.location.search);
   const code   = params.get('code');
   if (!code) return;
   history.replaceState(null, '', window.location.pathname);
-  setStatus('Connecting to Spotify…');
   await exchangeCode(code);
   init();
 })();
 
-// On load
+// On page load
 (function onLoad() {
   if (getToken()) init();
 })();
 
 // ─────────────────────────────────────────────
-//  SPOTIFY API
+//  API
 // ─────────────────────────────────────────────
 async function api(path) {
   const token = getToken();
@@ -618,462 +864,316 @@ async function api(path) {
   const r = await fetch('https://api.spotify.com/v1' + path, {
     headers: { Authorization: 'Bearer ' + token }
   });
-  if (!r.ok) throw new Error('API error ' + r.status);
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    throw new Error(err?.error?.message || 'API error ' + r.status);
+  }
   return r.json();
-}
-
-// ─────────────────────────────────────────────
-//  GRAPH STATE
-// ─────────────────────────────────────────────
-const nodes = new Map(); // id → node
-const edges = [];        // {source, target}
-let   selectedNode = null;
-let   currentTimeRange = 'short_term';
-let   simulationRunning = false;
-
-// Physics
-let   offsetX = 0, offsetY = 0, scale = 1;
-let   dragging = false, dragStart = {x:0,y:0}, dragOffset = {x:0,y:0};
-
-const DEPTH_COLORS = [
-  '#ffffff',  // 0 = your top artist (white)
-  '#7c6aff',  // 1
-  '#a855f7',  // 2
-  '#ec4899',  // 3
-  '#f97316',  // 4+
-];
-
-function depthColor(depth) {
-  return DEPTH_COLORS[Math.min(depth, DEPTH_COLORS.length - 1)];
 }
 
 // ─────────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────────
 async function init() {
-  document.getElementById('login-panel').classList.add('hidden');
-  document.getElementById('controls').classList.remove('hidden');
-  document.getElementById('legend').classList.remove('hidden');
-  document.getElementById('depth-counter').classList.remove('hidden');
-  document.getElementById('user-badge').classList.add('visible');
-  initCanvas();
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('main').classList.add('visible');
   await loadProfile();
-  await loadTopArtists(currentTimeRange);
+  await loadAll();
 }
 
 async function loadProfile() {
   try {
     const d = await api('/me');
-    document.getElementById('user-name').textContent = d.display_name || d.id;
+    userData.name = d.display_name || d.id;
+    document.getElementById('user-name').textContent = userData.name;
     if (d.images?.[0]?.url) document.getElementById('user-avatar').src = d.images[0].url;
-  } catch(e) {}
+  } catch(e) { console.error('Profile error:', e); }
 }
 
-async function loadTopArtists(timeRange) {
-  setStatus('Loading your top artists…');
-  nodes.clear();
-  edges.length = 0;
-  selectedNode = null;
-  closeDetail();
-
-  try {
-    const d = await api('/me/top/artists?limit=12&time_range=' + timeRange);
-    const cx = window.innerWidth  / 2;
-    const cy = window.innerHeight / 2;
-
-    d.items.forEach((artist, i) => {
-      const angle  = (i / d.items.length) * Math.PI * 2;
-      const radius = 180;
-      addNode({
-        id:         artist.id,
-        name:       artist.name,
-        genres:     (artist.genres || []).slice(0, 3),
-        popularity: artist.popularity,
-        image:      artist.images?.[1]?.url || artist.images?.[0]?.url || '',
-        x:          cx + Math.cos(angle) * radius + (Math.random() - .5) * 40,
-        y:          cy + Math.sin(angle) * radius + (Math.random() - .5) * 40,
-        depth:      0,
-        isTop:      true,
-        expanded:   false,
-        radius:     22
-      });
-    });
-
-    setStatus('Click any artist to explore related artists →');
-    updateDepthCounter();
-    startSimulation();
-  } catch(e) {
-    console.error('loadTopArtists error:', e);
-    setStatus('Error: ' + e.message);
-  }
+async function loadAll() {
+  await Promise.all([
+    loadArtists(),
+    loadTracks(),
+    loadRecent()
+  ]);
 }
 
-function addNode(data) {
-  if (nodes.has(data.id)) return;
-  nodes.set(data.id, {
-    vx: (Math.random() - .5) * 2,
-    vy: (Math.random() - .5) * 2,
-    ...data
-  });
-}
-
-// ─────────────────────────────────────────────
-//  EXPAND RELATED
-// ─────────────────────────────────────────────
-async function expandSelected() {
-  if (!selectedNode) return;
-  const node = nodes.get(selectedNode);
-  if (!node || node.expanded) return;
-
-  document.getElementById('detail-expand').disabled = true;
-  document.getElementById('detail-expand').textContent = '⏳ Loading…';
-  setStatus('Fetching related artists for ' + node.name + '…');
-
-  try {
-    const d = await api('/artists/' + node.id + '/related-artists');
-    const related = d.artists.slice(0, 8);
-    const cx = node.x;
-    const cy = node.y;
-    const newDepth = node.depth + 1;
-
-    related.forEach((artist, i) => {
-      const angle  = (i / related.length) * Math.PI * 2;
-      const radius = 120 + Math.random() * 40;
-      if (!nodes.has(artist.id)) {
-        addNode({
-          id:         artist.id,
-          name:       artist.name,
-          genres:     (artist.genres || []).slice(0, 3),
-          popularity: artist.popularity,
-          image:      artist.images?.[1]?.url || artist.images?.[0]?.url || '',
-          x:          cx + Math.cos(angle) * radius,
-          y:          cy + Math.sin(angle) * radius,
-          depth:      newDepth,
-          isTop:      false,
-          expanded:   false,
-          radius:     16 - Math.min(newDepth, 4) * 2
-        });
-      }
-      // Add edge if not already present
-      const edgeKey = [node.id, artist.id].sort().join('|');
-      if (!edges.find(e => [e.source, e.target].sort().join('|') === edgeKey)) {
-        edges.push({ source: node.id, target: artist.id });
-      }
-    });
-
-    node.expanded = true;
-    updateDepthCounter();
-    setStatus('Expanded ' + node.name + ' → ' + related.length + ' related artists');
-    document.getElementById('detail-expand').textContent = '✓ Already Expanded';
-
-  } catch(e) {
-    setStatus('Could not load related artists');
-    document.getElementById('detail-expand').disabled = false;
-    document.getElementById('detail-expand').textContent = '＋ Expand Related Artists';
-  }
-}
-
-// ─────────────────────────────────────────────
-//  PHYSICS SIMULATION
-// ─────────────────────────────────────────────
-function startSimulation() {
-  if (simulationRunning) return;
-  simulationRunning = true;
-  simulate();
-}
-
-function simulate() {
-  const nodeArr = Array.from(nodes.values());
-
-  // Guard against empty graph
-  if (nodeArr.length === 0) { requestAnimationFrame(simulate); return; }
-
-  // Repulsion
-  for (let i = 0; i < nodeArr.length; i++) {
-    for (let j = i + 1; j < nodeArr.length; j++) {
-      const a = nodeArr[i], b = nodeArr[j];
-      const dx = b.x - a.x, dy = b.y - a.y;
-      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-      const minDist = 90;
-      if (dist < minDist) {
-        const force = (minDist - dist) / minDist * 0.8;
-        const fx = (dx / dist) * force;
-        const fy = (dy / dist) * force;
-        a.vx -= fx; a.vy -= fy;
-        b.vx += fx; b.vy += fy;
-      }
-    }
-  }
-
-  // Attraction along edges
-  edges.forEach(edge => {
-    const a = nodes.get(edge.source);
-    const b = nodes.get(edge.target);
-    if (!a || !b) return;
-    const dx   = b.x - a.x, dy = b.y - a.y;
-    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-    const ideal = 140;
-    const force = (dist - ideal) / ideal * 0.04;
-    const fx = (dx / dist) * force;
-    const fy = (dy / dist) * force;
-    a.vx += fx; a.vy += fy;
-    b.vx -= fx; b.vy -= fy;
-  });
-
-  // Center gravity
-  const cx = window.innerWidth / 2 - offsetX;
-  const cy = window.innerHeight / 2 - offsetY;
-  nodeArr.forEach(n => {
-    n.vx += (cx - n.x) * 0.003;
-    n.vy += (cy - n.y) * 0.003;
-  });
-
-  // Apply velocity + damping
-  nodeArr.forEach(n => {
-    n.vx *= 0.85; n.vy *= 0.85;
-    n.x  += n.vx;  n.y  += n.vy;
-  });
-
-  drawGraph();
-  requestAnimationFrame(simulate);
-}
-
-// ─────────────────────────────────────────────
-//  CANVAS RENDERING
-// ─────────────────────────────────────────────
-let hoveredNode = null;
-
-function initCanvas() {
-  canvas = document.getElementById('graph-canvas');
-  ctx    = canvas.getContext('2d');
-
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  // Pan
-  canvas.addEventListener('mousedown', e => {
-    dragging   = true;
-    dragStart  = { x: e.clientX, y: e.clientY };
-    dragOffset = { x: offsetX, y: offsetY };
-  });
-  window.addEventListener('mousemove', e => {
-    if (dragging) {
-      offsetX = dragOffset.x + (e.clientX - dragStart.x);
-      offsetY = dragOffset.y + (e.clientY - dragStart.y);
-    } else {
-      handleHover(e);
-    }
-  });
-  window.addEventListener('mouseup', e => {
-    if (!dragging) return;
-    const dx = Math.abs(e.clientX - dragStart.x);
-    const dy = Math.abs(e.clientY - dragStart.y);
-    dragging = false;
-    if (dx < 4 && dy < 4) handleClick(e);
-  });
-
-  // Zoom
-  canvas.addEventListener('wheel', e => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    scale = Math.max(0.3, Math.min(3, scale * delta));
-  }, { passive: false });
-
-  // Touch
-  canvas.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) {
-      dragging   = true;
-      dragStart  = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      dragOffset = { x: offsetX, y: offsetY };
-    }
-  });
-  canvas.addEventListener('touchmove', e => {
-    e.preventDefault();
-    if (dragging && e.touches.length === 1) {
-      offsetX = dragOffset.x + (e.touches[0].clientX - dragStart.x);
-      offsetY = dragOffset.y + (e.touches[0].clientY - dragStart.y);
-    }
-  }, { passive: false });
-  canvas.addEventListener('touchend', e => {
-    dragging = false;
-  });
-}
-
-function worldToScreen(x, y) {
-  return {
-    x: x * scale + offsetX,
-    y: y * scale + offsetY
-  };
-}
-
-function screenToWorld(x, y) {
-  return {
-    x: (x - offsetX) / scale,
-    y: (y - offsetY) / scale
-  };
-}
-
-function nodeAtScreen(sx, sy) {
-  const world = screenToWorld(sx, sy);
-  for (const [id, node] of nodes) {
-    const dx = world.x - node.x, dy = world.y - node.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    if (dist < node.radius + 8) return node;
-  }
-  return null;
-}
-
-function handleHover(e) {
-  const node = nodeAtScreen(e.clientX, e.clientY);
-  hoveredNode = node ? node.id : null;
-  canvas.style.cursor = node ? 'pointer' : (dragging ? 'grabbing' : 'grab');
-
-  const tip = document.getElementById('tooltip');
-  if (node) {
-    document.getElementById('tooltip-name').textContent   = node.name;
-    document.getElementById('tooltip-genres').textContent = node.genres.join(' · ') || 'no genre data';
-    document.getElementById('tooltip-hint').textContent   = node.expanded ? 'already expanded' : 'click to expand';
-    tip.classList.add('visible');
-    tip.style.left = (e.clientX + 14) + 'px';
-    tip.style.top  = (e.clientY - 10) + 'px';
-  } else {
-    tip.classList.remove('visible');
-  }
-}
-
-function handleClick(e) {
-  const node = nodeAtScreen(e.clientX, e.clientY);
-  if (!node) { closeDetail(); return; }
-  selectNode(node);
-}
-
-function selectNode(node) {
-  selectedNode = node.id;
-  const panel  = document.getElementById('detail-panel');
-  panel.classList.add('visible');
-
-  document.getElementById('detail-name').textContent    = node.name;
-  document.getElementById('detail-genres').textContent  = node.genres.join(' · ') || 'no genre data';
-  document.getElementById('detail-popularity-bar').style.width = node.popularity + '%';
-  document.getElementById('detail-pop-label').textContent = 'popularity · ' + node.popularity + '/100';
-
-  const img = document.getElementById('detail-img');
-  img.src = node.image || '';
-  img.style.display = node.image ? 'block' : 'none';
-
-  const btn = document.getElementById('detail-expand');
-  btn.disabled = node.expanded;
-  btn.textContent = node.expanded ? '✓ Already Expanded' : '＋ Expand Related Artists';
-}
-
-function closeDetail() {
-  selectedNode = null;
-  document.getElementById('detail-panel').classList.remove('visible');
-}
-
-// Convert hex color to rgba string
-function hexToRgba(hex, alpha) {
-  const r = parseInt(hex.slice(1,3),16);
-  const g = parseInt(hex.slice(3,5),16);
-  const b = parseInt(hex.slice(5,7),16);
-  return `rgba(${r},${g},${b},${alpha})`;
-}
-
-function drawGraph() {
-  if (!canvas || !ctx) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.save();
-
-  // Draw edges
-  edges.forEach(edge => {
-    const a = nodes.get(edge.source);
-    const b = nodes.get(edge.target);
-    if (!a || !b) return;
-    const sa = worldToScreen(a.x, a.y);
-    const sb = worldToScreen(b.x, b.y);
-    const depth = Math.max(a.depth, b.depth);
-    const col   = depthColor(depth);
-    ctx.beginPath();
-    ctx.moveTo(sa.x, sa.y);
-    ctx.lineTo(sb.x, sb.y);
-    ctx.strokeStyle = hexToRgba(col, 0.15);
-    ctx.lineWidth   = 1;
-    ctx.stroke();
-  });
-
-  // Draw nodes
-  for (const [id, node] of nodes) {
-    const s      = worldToScreen(node.x, node.y);
-    const r      = Math.max(node.radius * scale, 1);
-    const color  = depthColor(node.depth);
-    const isHov  = hoveredNode === id;
-    const isSel  = selectedNode === id;
-    const glow   = Math.max(isHov || isSel ? r * 3.5 : r * 2, 2);
-
-    // Glow
-    try {
-      const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glow);
-      grad.addColorStop(0, hexToRgba(color, isHov || isSel ? 0.35 : 0.2));
-      grad.addColorStop(1, hexToRgba(color, 0));
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, glow, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-    } catch(e) {}
-
-    // Node circle
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = hexToRgba(color, isSel ? 1 : isHov ? 0.85 : 0.65);
-    ctx.fill();
-
-    // Ring for top artists
-    if (node.isTop) {
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, r + 3, 0, Math.PI * 2);
-      ctx.strokeStyle = hexToRgba(color, 0.7);
-      ctx.lineWidth   = 1.5;
-      ctx.stroke();
-    }
-
-    // Label
-    if (scale > 0.5) {
-      const fontSize = Math.max(9, Math.min(13, node.radius * scale * 0.7));
-      ctx.font        = `${node.isTop ? '700' : '400'} ${fontSize}px Syne, sans-serif`;
-      ctx.fillStyle   = isHov || isSel ? '#fff' : 'rgba(230,225,255,0.75)';
-      ctx.textAlign   = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(node.name, s.x, s.y + r + fontSize * 0.9);
-    }
-  }
-
-  ctx.restore();
-}
-
-// ─────────────────────────────────────────────
-//  TIME RANGE
-// ─────────────────────────────────────────────
-function setTimeRange(range, btn) {
-  currentTimeRange = range;
+function setRange(range, btn) {
+  currentRange = range;
   document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  closeDetail();
-  loadTopArtists(range);
+  setLoading();
+  loadArtists();
+  loadTracks();
+  // Recently played doesn't change with time range
+}
+
+function setLoading() {
+  document.getElementById('artists-container').innerHTML = '<div class="loading-row"><div class="spinner"></div>Loading artists…</div>';
+  document.getElementById('tracks-container').innerHTML  = '<div class="loading-row"><div class="spinner"></div>Loading tracks…</div>';
+}
+
+// ─────────────────────────────────────────────
+//  ARTISTS
+// ─────────────────────────────────────────────
+async function loadArtists() {
+  try {
+    const d       = await api('/me/top/artists?limit=12&time_range=' + currentRange);
+    const artists = d.items || [];
+    userData.topArtists = artists;
+    renderArtists(artists);
+    updateCard();
+  } catch(e) {
+    document.getElementById('artists-container').innerHTML =
+      `<div class="empty-state">Could not load artists — ${e.message}</div>`;
+  }
+}
+
+function renderArtists(artists) {
+  if (!artists.length) {
+    document.getElementById('artists-container').innerHTML =
+      '<div class="empty-state">No data for this time range yet — listen more!</div>';
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'artists-grid';
+
+  artists.forEach((a, i) => {
+    const img    = a.images?.[1]?.url || a.images?.[0]?.url || '';
+    const genre  = (a.genres || [])[0] || 'unknown genre';
+    const card   = document.createElement('div');
+    card.className = 'artist-card fade-in';
+    card.style.animationDelay = (i * 0.04) + 's';
+    card.innerHTML = `
+      <div class="artist-img-wrap">
+        ${img ? `<img src="${img}" alt="${esc(a.name)}" loading="lazy"/>` : ''}
+        <div class="artist-rank ${i < 3 ? 'top3' : ''}">#${i+1}</div>
+      </div>
+      <div class="artist-info">
+        <div class="artist-name">${esc(a.name)}</div>
+        <div class="artist-genre">${esc(genre)}</div>
+        <div class="pop-bar"><div class="pop-bar-fill" style="width:${a.popularity}%"></div></div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  document.getElementById('artists-container').innerHTML = '';
+  document.getElementById('artists-container').appendChild(grid);
+}
+
+// ─────────────────────────────────────────────
+//  TRACKS
+// ─────────────────────────────────────────────
+async function loadTracks() {
+  try {
+    const d      = await api('/me/top/tracks?limit=20&time_range=' + currentRange);
+    const tracks = d.items || [];
+    userData.topTracks = tracks;
+    renderTracks(tracks);
+    updateCard();
+  } catch(e) {
+    document.getElementById('tracks-container').innerHTML =
+      `<div class="empty-state">Could not load tracks — ${e.message}</div>`;
+  }
+}
+
+function renderTracks(tracks) {
+  if (!tracks.length) {
+    document.getElementById('tracks-container').innerHTML =
+      '<div class="empty-state">No track data yet — keep listening!</div>';
+    return;
+  }
+
+  const list = document.createElement('div');
+  list.className = 'tracks-list';
+
+  tracks.forEach((t, i) => {
+    const img    = t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '';
+    const artist = t.artists?.map(a => a.name).join(', ') || '';
+    const row    = document.createElement('div');
+    row.className = 'track-row fade-in';
+    row.style.animationDelay = (i * 0.03) + 's';
+    row.innerHTML = `
+      <div class="track-rank-num">${i+1}</div>
+      ${img ? `<img class="track-art" src="${img}" alt="" loading="lazy"/>` : '<div class="track-art"></div>'}
+      <div class="track-info">
+        <div class="track-name">${esc(t.name)}</div>
+        <div class="track-artist">${esc(artist)}</div>
+      </div>
+      <div class="track-meta">
+        <div class="track-pop"><strong>${t.popularity}</strong>/100</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+
+  document.getElementById('tracks-container').innerHTML = '';
+  document.getElementById('tracks-container').appendChild(list);
+}
+
+// ─────────────────────────────────────────────
+//  RECENTLY PLAYED
+// ─────────────────────────────────────────────
+async function loadRecent() {
+  try {
+    const d      = await api('/me/player/recently-played?limit=50');
+    const items  = d.items || [];
+    renderRecent(items);
+  } catch(e) {
+    document.getElementById('recent-container').innerHTML =
+      `<div class="empty-state">Could not load recent plays — ${e.message}</div>`;
+  }
+}
+
+function renderRecent(items) {
+  if (!items.length) {
+    document.getElementById('recent-container').innerHTML =
+      '<div class="empty-state">No recent plays found.</div>';
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'recent-grid';
+
+  items.forEach((item, i) => {
+    const t      = item.track;
+    const img    = t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '';
+    const artist = t.artists?.map(a => a.name).join(', ') || '';
+    const time   = timeAgo(new Date(item.played_at));
+    const row    = document.createElement('div');
+    row.className = 'recent-row fade-in';
+    row.style.animationDelay = (i * 0.02) + 's';
+    row.innerHTML = `
+      ${img ? `<img class="recent-art" src="${img}" alt="" loading="lazy"/>` : '<div class="recent-art"></div>'}
+      <div class="recent-info">
+        <div class="recent-name">${esc(t.name)}</div>
+        <div class="recent-artist">${esc(artist)}</div>
+      </div>
+      <div class="recent-time">${time}</div>
+    `;
+    grid.appendChild(row);
+  });
+
+  document.getElementById('recent-container').innerHTML = '';
+  document.getElementById('recent-container').appendChild(grid);
+}
+
+// ─────────────────────────────────────────────
+//  STATS CARD
+// ─────────────────────────────────────────────
+function updateCard() {
+  const artists = userData.topArtists || [];
+  const tracks  = userData.topTracks  || [];
+  if (!artists.length && !tracks.length) return;
+
+  const rangeLabel = { short_term: '4 Weeks', medium_term: '6 Months', long_term: 'All Time' }[currentRange];
+
+  // Name
+  document.getElementById('card-name').innerHTML =
+    `${esc(userData.name || 'Your')}<span>'s ${rangeLabel}</span>`;
+
+  // Stats
+  const avgPop = artists.length
+    ? Math.round(artists.reduce((s,a) => s + a.popularity, 0) / artists.length)
+    : 0;
+  const topGenre = getTopGenre(artists);
+  const uniqueArtists = new Set(tracks.flatMap(t => t.artists.map(a => a.id))).size;
+
+  document.getElementById('card-stats').innerHTML = `
+    <div>
+      <div class="card-stat-label">Top Genre</div>
+      <div class="card-stat-value" style="font-size:1.4rem">${esc(topGenre)}</div>
+    </div>
+    <div>
+      <div class="card-stat-label">Avg Popularity</div>
+      <div class="card-stat-value">${avgPop}<span style="font-size:1rem;font-family:'DM Sans',sans-serif;font-weight:300">/100</span></div>
+      <div class="card-stat-sub">across your top artists</div>
+    </div>
+    <div>
+      <div class="card-stat-label">Unique Artists</div>
+      <div class="card-stat-value">${uniqueArtists}</div>
+      <div class="card-stat-sub">in your top tracks</div>
+    </div>
+  `;
+
+  // Top artists list
+  const aList = document.getElementById('card-artists-list');
+  aList.innerHTML = '';
+  artists.slice(0, 5).forEach((a, i) => {
+    const img = a.images?.[2]?.url || a.images?.[0]?.url || '';
+    const li  = document.createElement('li');
+    li.className = 'card-top-item';
+    li.innerHTML = `
+      <span class="card-top-num">${i+1}</span>
+      ${img ? `<img class="card-top-img" src="${img}" alt=""/>` : ''}
+      <span>${esc(a.name)}</span>
+    `;
+    aList.appendChild(li);
+  });
+
+  // Top tracks list
+  const tList = document.getElementById('card-tracks-list');
+  tList.innerHTML = '';
+  tracks.slice(0, 5).forEach((t, i) => {
+    const img    = t.album?.images?.[2]?.url || '';
+    const artist = t.artists?.[0]?.name || '';
+    const li     = document.createElement('li');
+    li.className = 'card-top-item';
+    li.innerHTML = `
+      <span class="card-top-num">${i+1}</span>
+      ${img ? `<img class="card-top-img" src="${img}" alt=""/>` : ''}
+      <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.name)} <span style="opacity:.5;font-weight:300">· ${esc(artist)}</span></span>
+    `;
+    tList.appendChild(li);
+  });
+}
+
+function getTopGenre(artists) {
+  const counts = {};
+  artists.forEach(a => {
+    (a.genres || []).forEach(g => { counts[g] = (counts[g] || 0) + 1; });
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  return sorted[0]?.[0] || 'eclectic';
+}
+
+// ─────────────────────────────────────────────
+//  SHARE CARD
+// ─────────────────────────────────────────────
+function shareCard() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'My Wrapped',
+      text: `Check out my Spotify stats on remyrussell.com/my-wrapped.html`,
+      url: 'https://remyrussell.com/my-wrapped.html'
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText('https://remyrussell.com/my-wrapped.html')
+      .then(() => alert('Link copied to clipboard!'))
+      .catch(() => alert('Share link: https://remyrussell.com/my-wrapped.html'));
+  }
 }
 
 // ─────────────────────────────────────────────
 //  UTILS
 // ─────────────────────────────────────────────
-function setStatus(msg) {
-  document.getElementById('status').textContent = msg;
+function timeAgo(date) {
+  const diff = Date.now() - date.getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1)  return 'just now';
+  if (mins < 60) return mins + 'm ago';
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24)  return hrs + 'h ago';
+  const days = Math.floor(hrs / 24);
+  return days + 'd ago';
 }
 
-function updateDepthCounter() {
-  document.getElementById('depth-num').textContent = nodes.size;
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
 </body>
