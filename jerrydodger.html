@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jerry Dodger | remyrussell.com</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Russo+One&family=DM+Sans:wght@400;600&display=swap');
+
+    :root {
+      --pink:    #ff2d78;
+      --purple:  #c724f5;
+      --electric:#7b2fff;
+      --gold:    #ffe033;
+      --snow:    #eef6ff;
+      --dark:    #0d0820;
+      --ui-bg:   rgba(13,8,32,0.92);
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      background: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; overflow: hidden; user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* NAV */
+    #site-nav {
+      width:100%; background:rgba(13,8,32,0.97);
+      padding:9px 18px; display:flex; align-items:center; gap:18px;
+      z-index:100; border-bottom:2px solid var(--pink);
+      box-shadow:0 2px 18px rgba(255,45,120,0.28);
+    }
+    #site-nav .brand {
+      font-family:'Bangers',cursive; font-size:1.35rem; letter-spacing:0.1em;
+      color:#fff; margin-right:auto; text-shadow:0 0 12px var(--pink);
+    }
+    #site-nav a {
+      color:#c8b0e8; text-decoration:none; font-size:0.83rem;
+      font-weight:600; letter-spacing:0.05em; transition:color 0.2s;
+    }
+    #site-nav a:hover, #site-nav a.active { color:var(--pink); }
+
+    /* HUD */
+    #hud {
+      width:100%; max-width:520px; display:flex; align-items:center;
+      gap:8px; padding:5px 12px; background:var(--ui-bg);
+      border-bottom:1px solid rgba(199,36,245,0.3);
+    }
+    .level-tag {
+      font-family:'Bangers',cursive; font-size:1.05rem; color:var(--gold);
+      letter-spacing:0.12em; text-shadow:0 0 8px rgba(255,224,51,0.6);
+      white-space:nowrap;
+    }
+    .score-disp {
+      font-family:'Russo One',sans-serif; font-size:0.78rem;
+      color:#ddd; letter-spacing:0.06em; flex:1; text-align:center;
+    }
+    #hp-wrap { display:flex; align-items:center; gap:5px; white-space:nowrap; }
+    #hp-label { font-family:'Bangers',cursive; font-size:0.82rem; color:#c8b0e8; letter-spacing:0.08em; }
+    #hp-outer {
+      width:72px; height:10px; background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,45,120,0.5); border-radius:5px; overflow:hidden;
+    }
+    #hp-inner { height:100%; width:100%; background:#39ff7a; border-radius:5px; transition:width 0.2s,background 0.3s; }
+
+    /* CANVAS WRAPPER */
+    #game-wrapper { position:relative; width:100%; max-width:520px; flex:1; min-height:0; }
+    #gameCanvas { display:block; width:100%; max-width:520px; cursor:none; touch-action:none; }
+
+    /* OVERLAYS */
+    .overlay {
+      position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      background:rgba(13,8,32,0.91); z-index:50;
+      padding:20px; text-align:center;
+    }
+    .overlay h1 {
+      font-family:'Bangers',cursive; font-size:clamp(2.6rem,9vw,4.8rem);
+      color:#fff; letter-spacing:0.07em; line-height:1;
+      text-shadow:3px 3px 0 var(--pink),6px 6px 0 var(--electric),0 0 40px rgba(255,45,120,0.5);
+    }
+    .overlay .sub {
+      color:#c8b0e8; font-size:0.88rem; margin:10px 0 18px;
+      max-width:310px; line-height:1.55;
+    }
+    .score-big {
+      font-family:'Bangers',cursive; font-size:2.8rem;
+      background:linear-gradient(135deg,var(--gold),var(--pink));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text; letter-spacing:0.12em; margin:6px 0;
+    }
+    .btn {
+      background:linear-gradient(135deg,var(--pink),var(--purple));
+      color:#fff; border:none; padding:11px 30px;
+      font-family:'Bangers',cursive; font-size:1.45rem;
+      letter-spacing:0.12em; border-radius:7px; cursor:pointer;
+      transition:filter 0.15s,transform 0.1s; margin:5px;
+      box-shadow:0 4px 18px rgba(255,45,120,0.45);
+    }
+    .btn:hover { filter:brightness(1.15); transform:scale(1.04); }
+
+    /* LEVEL FLASH */
+    #level-flash {
+      position:absolute; top:42%; left:50%;
+      transform:translate(-50%,-50%) scale(0.5);
+      font-family:'Bangers',cursive; font-size:clamp(2.5rem,11vw,5.5rem);
+      color:var(--gold);
+      text-shadow:3px 3px 0 var(--pink),0 0 30px rgba(255,224,51,0.8),0 0 60px rgba(199,36,245,0.5);
+      pointer-events:none; opacity:0;
+      transition:opacity 0.25s,transform 0.25s;
+      z-index:40; white-space:nowrap;
+    }
+    #level-flash.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+
+    /* POPUP MESSAGES */
+    .pop {
+      position:absolute; font-family:'Bangers',cursive; font-size:1.6rem;
+      letter-spacing:0.1em; pointer-events:none; z-index:45;
+      text-shadow:2px 2px 0 rgba(0,0,0,0.75); white-space:nowrap;
+      animation:popUp 1.15s ease-out forwards;
+    }
+    @keyframes popUp {
+      0%   { opacity:1; transform:translateY(0) scale(1); }
+      55%  { opacity:1; transform:translateY(-30px) scale(1.1); }
+      100% { opacity:0; transform:translateY(-60px) scale(0.85); }
+    }
+
+    /* MOBILE CONTROLS */
+    #mob-ctrl {
+      width:100%; max-width:520px; display:flex;
+      justify-content:space-between; align-items:center;
+      padding:8px 16px; background:var(--ui-bg);
+      border-top:1px solid rgba(199,36,245,0.25); gap:10px;
+    }
+    .dpad {
+      display:grid; grid-template-columns:repeat(3,42px);
+      grid-template-rows:repeat(3,42px); gap:3px;
+    }
+    .dpad button {
+      background:rgba(199,36,245,0.12); border:1px solid rgba(199,36,245,0.35);
+      border-radius:6px; color:#e0c8ff; font-size:1rem;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+    }
+    .dpad button:active, .dpad button.pressed {
+      background:rgba(255,45,120,0.35); border-color:var(--pink);
+    }
+    .dpad .dp-up    { grid-column:2; grid-row:1; }
+    .dpad .dp-left  { grid-column:1; grid-row:2; }
+    .dpad .dp-right { grid-column:3; grid-row:2; }
+    .dpad .dp-down  { grid-column:2; grid-row:3; }
+    .act-area { display:flex; flex-direction:column; gap:7px; align-items:flex-end; }
+    .act-btn {
+      background:rgba(199,36,245,0.14); border:1px solid rgba(199,36,245,0.4);
+      border-radius:7px; color:#e0c8ff; font-family:'Bangers',cursive;
+      font-size:0.88rem; padding:9px 14px; cursor:pointer;
+      letter-spacing:0.08em; white-space:nowrap;
+    }
+    .act-btn:active { background:rgba(255,45,120,0.35); }
+    #mob-jump { background:rgba(255,45,120,0.2); border-color:var(--pink); color:#ffb3d0; }
+
+    .tips {
+      font-size:0.72rem; color:#6a4a88; padding:5px 14px 8px;
+      text-align:center; line-height:1.6;
+    }
+    .tips b { color:#c8b0e8; }
+  </style>
+</head>
+<body>
+
+<nav id="site-nav">
+  <span class="brand">RR</span>
+  <a href="/">Home</a>
+  <a href="/dogs.html">Dogs</a>
+  <a href="/jerrydodger.html" class="active">🎿 Jerry Dodger</a>
+</nav>
+
+<div id="hud">
+  <span class="level-tag" id="hud-lvl">LEVEL 1</span>
+  <span class="score-disp" id="hud-sc">SCORE: 0</span>
+  <div id="hp-wrap">
+    <span id="hp-label">HP</span>
+    <div id="hp-outer"><div id="hp-inner"></div></div>
+  </div>
+</div>
+
+<div id="game-wrapper">
+  <canvas id="gameCanvas" width="520" height="590"></canvas>
+  <div id="level-flash"></div>
+
+  <div class="overlay" id="ov-start">
+    <h1>JERRY<br>DODGER</h1>
+    <p class="sub">You rip. They send it wrong.<br>Dodge Jerrys, hit jumps, survive the descent. 🎿🤙</p>
+    <button class="btn" id="btn-start">DROP IN</button>
+    <div style="margin-top:12px;color:#6a4a88;font-size:0.76rem;line-height:1.9">
+      ← → / WASD to carve · ↑ to BRAKE · ↓ to TUCK · Space to JUMP<br>
+      <span style="color:#c8b0e8">Everyone goes downhill — you can't go back up!</span>
+    </div>
+  </div>
+
+  <div class="overlay" id="ov-over" style="display:none">
+    <h1>YARD<br>SALE 💀</h1>
+    <p class="sub">A Jerry got you. Gear everywhere.</p>
+    <div class="score-big" id="go-sc">0</div>
+    <p style="color:#6a4a88;font-size:0.78rem;margin-bottom:14px">Level: <span id="go-lvl" style="color:#c8b0e8">1</span></p>
+    <button class="btn" id="btn-restart">TRY AGAIN</button>
+  </div>
+
+  <div class="overlay" id="ov-lvlup" style="display:none">
+    <h1>RUN<br>CLEAR! 🏆</h1>
+    <div class="score-big" id="lu-sc">0</div>
+    <button class="btn" id="btn-next">NEXT RUN ▶</button>
+  </div>
+</div>
+
+<div id="mob-ctrl">
+  <div class="dpad">
+    <button class="dp-up"    data-d="up">▲</button>
+    <button class="dp-left"  data-d="left">◀</button>
+    <button class="dp-right" data-d="right">▶</button>
+    <button class="dp-down"  data-d="down">▼</button>
+  </div>
+  <div class="act-area">
+    <button class="act-btn" id="mob-jump">JUMP 🚀</button>
+    <button class="act-btn" id="mob-pause">PAUSE ⏸</button>
+  </div>
+</div>
+
+<div class="tips">
+  <b>↑ BRAKE</b> · <b>↓ TUCK</b> · <b>Space/Jump btn</b> to leap Jerrys → <b style="color:#ff2d78">JERRY GAP!</b> ·
+  <b style="color:#c724f5">Heat-seekers</b> approach from behind · Level 3+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  JERRY DODGER  v2
+// ══════════════════════════════════════════════════════
+const canvas = document.getElementById('gameCanvas');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const P = {
+  pink:   '#ff2d78', purple: '#c724f5', electric: '#7b2fff',
+  gold:   '#ffe033', snow:   '#eef6ff', dark:     '#0d0820',
+};
+
+// ── State ────────────────────────────────────────────
+let state = 'start';
+let score=0, level=1, fc=0;
+// worldSpd = how fast the world scrolls UP past the camera (px/frame).
+// Player is always descending at worldSpd. Up/Down keys adjust playerSpd
+// (player speed RELATIVE to world). Positive playerSpd = skiing faster than
+// world (moves down screen). Negative = braking (moves up screen, but clamped
+// so you can never actually go backwards up the hill — min worldSpd offset 0).
+let worldSpd=0, needJerrys=0, gotJerrys=0;
+let animId=null, lastTs=0;
+let iTimer=0;
+let jCool=0;
+let maxHP=100, hp=100;
+
+// Player Y is fixed near 65% of screen. We only move the world around them.
+// Player X moves left/right. Player screen-Y shifts slightly with speed delta
+// (braking drifts up a bit, tucking drifts down a bit) but is clamped.
+const pl = {
+  x:W/2, y:H*0.65, w:26, h:36,
+  vx:0,
+  // speed relative to world: 0 = matching world speed (middle of slope feel)
+  // positive = going faster downhill (moves toward bottom of screen)
+  // negative = braking (moves toward top), clamped so player never exits top
+  speedRel: 0,
+  airborne:false, jumpVel:0, jumpH:0, jumpMaxH:58,
+  wiping:false, wipeF:0, wipeAngle:0, wipeVx:0,
+};
+
+let obs=[], snow=[], trees=[], jibs=[], jumps=[], boards=[];
+let hitPtx=[], trickPtx=[];
+let trackOff=0;
+
+// ── Input ────────────────────────────────────────────
+const K={}, M={};
+document.addEventListener('keydown', e=>{
+  if(!K[e.key]){
+    K[e.key]=true;
+    if(e.key===' '&&state==='playing') tryJump();
+  }
+  if(e.key==='p'||e.key==='P'||e.key==='Escape') togglePause();
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+});
+document.addEventListener('keyup',e=>{ K[e.key]=false; });
+
+document.querySelectorAll('.dpad button').forEach(b=>{
+  const d=b.dataset.d;
+  b.addEventListener('pointerdown',()=>{ M[d]=true; b.classList.add('pressed'); });
+  const up=()=>{ M[d]=false; b.classList.remove('pressed'); };
+  b.addEventListener('pointerup',up); b.addEventListener('pointerleave',up);
+});
+document.getElementById('mob-jump').addEventListener('click', tryJump);
+document.getElementById('mob-pause').addEventListener('click', togglePause);
+document.getElementById('btn-start').addEventListener('click', startGame);
+document.getElementById('btn-restart').addEventListener('click', startGame);
+document.getElementById('btn-next').addEventListener('click', nextLevel);
+
+// ── Utils ────────────────────────────────────────────
+const rnd   = (a,b)=>a+Math.random()*(b-a);
+const rndI  = (a,b)=>Math.floor(rnd(a,b));
+const clamp = (v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+
+function showOv(id){
+  ['ov-start','ov-over','ov-lvlup'].forEach(n=>
+    document.getElementById(n).style.display = n===id?'flex':'none');
+}
+function hideOvs(){ ['ov-start','ov-over','ov-lvlup'].forEach(n=>document.getElementById(n).style.display='none'); }
+
+function hudUpdate(){
+  document.getElementById('hud-lvl').textContent='LEVEL '+level;
+  document.getElementById('hud-sc').textContent='SCORE: '+score;
+  const pct=hp/maxHP;
+  const bar=document.getElementById('hp-inner');
+  bar.style.width=(pct*100)+'%';
+  bar.style.background=pct>0.55?'#39ff7a':pct>0.28?'#ffe033':'#ff2d78';
+}
+
+function popup(x,y,txt,col){
+  const el=document.createElement('div');
+  el.className='pop'; el.textContent=txt;
+  el.style.cssText=`color:${col||P.gold};left:${Math.round(x)}px;top:${Math.round(y)}px`;
+  document.getElementById('game-wrapper').appendChild(el);
+  setTimeout(()=>el.remove(), 1200);
+}
+
+function flashLvl(){
+  const el=document.getElementById('level-flash');
+  el.textContent='LEVEL '+level; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),1500);
+}
+
+// ── Level config ─────────────────────────────────────
+function C(lv){
+  return {
+    // worldSpd: how fast the camera scrolls upward each frame (everyone's
+    // baseline downhill speed in screen pixels). Player Y is derived from
+    // speedRel — positive = tucking faster (drifts toward bottom),
+    // negative = braking (drifts toward top, never past top 15%).
+    worldSpd:  2.0+lv*0.5,
+    rate:      Math.max(30-lv*2.2,11),
+    maxObs:    4+lv*2,
+    heats:     Math.max(0,lv-2),
+    need:      10+lv*5,
+    bigCh:     0.07+lv*0.03,
+    clusterCh: lv>3?0.2:0,
+    boardInt:  Math.max(320-lv*25,120),
+    jCount:    Math.min(2+lv-1,5),
+    dmg:       12+lv*2,
+  };
+}
+
+// ── Init / Level ─────────────────────────────────────
+function startGame(){
+  score=0; level=1; hp=maxHP;
+  resetLevel(); hideOvs(); state='playing';
+  if(animId) cancelAnimationFrame(animId);
+  lastTs=performance.now();
+  animId=requestAnimationFrame(loop);
+  hudUpdate();
+}
+function resetLevel(){
+  const c=C(level);
+  worldSpd=c.worldSpd; needJerrys=c.need; gotJerrys=0;
+  obs=[]; boards=[]; hitPtx=[]; trickPtx=[]; fc=0;
+  iTimer=0; jCool=0;
+  pl.x=W/2; pl.y=H*0.62; pl.vx=0; pl.speedRel=0;
+  pl.airborne=false; pl.jumpH=0; pl.jumpVel=0;
+  pl.wiping=false; pl.wipeF=0;
+  buildSnow(); buildTrees(); buildJibs(); buildJumps(c.jCount);
+}
+function nextLevel(){
+  level++; resetLevel(); hideOvs(); state='playing';
+  flashLvl(); lastTs=performance.now();
+  animId=requestAnimationFrame(loop);
+}
+function togglePause(){
+  if(state==='playing'){
+    state='paused';
+    document.getElementById('mob-pause').textContent='RESUME ▶';
+  } else if(state==='paused'){
+    state='playing';
+    document.getElementById('mob-pause').textContent='PAUSE ⏸';
+    lastTs=performance.now();
+    animId=requestAnimationFrame(loop);
+  }
+}
+function tryJump(){
+  if(state!=='playing'||pl.airborne||jCool>0||pl.wiping) return;
+  pl.airborne=true; pl.jumpVel=-9; jCool=55;
+}
+
+// ── World builders ───────────────────────────────────
+function buildSnow(){
+  snow=[];
+  for(let i=0;i<70;i++) snow.push({
+    x:rnd(0,W),y:rnd(0,H),r:rnd(1.2,3.2),
+    spd:rnd(0.4,1.6),drift:rnd(-0.2,0.2),alpha:rnd(0.3,0.8)
+  });
+}
+function buildTrees(){
+  trees=[];
+  for(let y=0;y<H+80;y+=140) trees.push({
+    y, ts:Array.from({length:rndI(2,5)},()=>({x:rnd(0,W),h:rnd(28,58)}))
+  });
+}
+function buildJibs(){
+  jibs=Array.from({length:7},()=>({
+    x:rnd(20,W-20),y:rnd(0,H),w:rnd(14,30),t:rndI(0,2)
+  }));
+}
+function buildJumps(n){
+  jumps=[];
+  const xs=[W*0.2,W*0.5,W*0.78,W*0.35,W*0.65];
+  for(let i=0;i<n&&i<xs.length;i++){
+    jumps.push({x:xs[i]+rnd(-28,28), y:rnd(H*0.15,H*0.75), w:54,h:14, cool:0});
+  }
+}
+
+// ── Jerry colors ─────────────────────────────────────
+const JACK = ['#e8b4d0','#b4c6e8','#b4e8c2','#e8deb4','#d4b4e8','#e8c4b4'];
+const PANT = ['#4a2060','#203060','#1a4020','#604020','#402050','#303030'];
+const HAT  = ['#ff2d78','#c724f5','#ffe033','#7b2fff','#ff8c00','#00e5ff'];
+
+function mkJerry(lc,forceType){
+  const type=forceType||(()=>{
+    const r=Math.random();
+    if(r<lc.bigCh) return 'big';
+    if(r<lc.bigCh+0.28) return 'snowboarder';
+    return 'beginner';
+  })();
+  const big=type==='big', w=big?40:24, h=big?46:32;
+  const o={
+    type,w,h,
+    // All normal jerrys start above screen — they will be carried DOWN by
+    // their worldVy which mirrors worldSpd (same downhill speed as player).
+    // Their screen position therefore drifts based on how fast they move
+    // relative to the camera.
+    x:rnd(30,W-30), y:-h-rnd(0,60),
+    vx:rnd(-0.5,0.5),
+    // worldVy is their ABSOLUTE downhill speed (same units as worldSpd).
+    // On screen they move DOWN at (worldVy - worldSpd) + player's speedRel.
+    // Slower than world = they look like they're above player coming down.
+    // Same as world = stationary on screen. Faster = pass player going down.
+    worldVy: worldSpd * (big ? rnd(0.7,0.9) : rnd(0.72,0.95)),
+    wobble:rnd(0,Math.PI*2), wobSpd:rnd(0.04,0.1),
+    ow:rndI(0,JACK.length), hat:rndI(0,HAT.length),
+    scored:false, alarm:0,
+    jacketOpen: Math.random()<0.62,
+    gogglesGap: Math.random()<0.72,
+    helmTilt:   rnd(-0.28,0.28),
+    stance:     rnd(-0.14,0.14),
+  };
+  if(type==='heatseeker'){
+    // Heat-seekers start below screen and descend FASTER than player —
+    // so they appear to approach from behind (bottom of screen).
+    o.y = H+h+rnd(0,60);
+    o.worldVy = worldSpd * rnd(1.12, 1.55);
+    o.alarm=0;
+  }
+  return o;
+}
+
+function mkBoard(){
+  boards.push({
+    x:rnd(30,W-30), y:-30,
+    worldVy: worldSpd * rnd(1.8, 2.8), // runaway = much faster than player
+    vx:rnd(-1.0,1.0),
+    angle:rnd(-0.3,0.3), spin:rnd(-0.09,0.09),
+    color:[P.pink,P.electric,P.purple,'#ff8c00','#00e5ff'][rndI(0,5)],
+    w:50,h:12,
+  });
+}
+
+// ── Collision ────────────────────────────────────────
+function hits(a,b){
+  if(pl.airborne&&pl.jumpH>16) return false;
+  const s=6;
+  return !(a.x+a.w/2-s<b.x-b.w/2+s||a.x-a.w/2+s>b.x+b.w/2-s||
+           a.y+a.h/2-s<b.y-b.h/2+s||a.y-a.h/2+s>b.y+b.h/2-s);
+}
+function hitsBoard(a,b){
+  if(pl.airborne&&pl.jumpH>12) return false;
+  const s=5;
+  return !(a.x+a.w/2-s<b.x-b.w/2||a.x-a.w/2+s>b.x+b.w/2||
+           a.y+a.h/2-s<b.y-b.h/2||a.y-a.h/2+s>b.y+b.h/2);
+}
+
+function wipeout(dmg){
+  if(iTimer>0) return;
+  hp=Math.max(0,hp-dmg); iTimer=130; hudUpdate();
+  for(let i=0;i<18;i++) hitPtx.push({
+    x:pl.x,y:pl.y,vx:rnd(-4,4),vy:rnd(-5,-0.4),
+    r:rnd(3,8),life:48,maxL:48,
+    col:[P.pink,P.gold,'#fff',P.purple][rndI(0,4)]
+  });
+  pl.wiping=true; pl.wipeF=0; pl.wipeAngle=0; pl.wipeVx=rnd(-3.5,3.5);
+  popup(pl.x-25,pl.y-52,'WIPEOUT! 💥',P.pink);
+  if(hp<=0) setTimeout(()=>{
+    state='gameover';
+    document.getElementById('go-sc').textContent=score;
+    document.getElementById('go-lvl').textContent=level;
+    showOv('ov-over');
+  },700);
+}
+
+// ── Update ───────────────────────────────────────────
+function update(){
+  if(state!=='playing') return;
+  fc++;
+  const c=C(level);
+
+  if(iTimer>0) iTimer--;
+  if(jCool>0)  jCool--;
+
+  // ── Player: left/right carving, up = brake, down = tuck ──────────────
+  // The player's Y on screen represents their speed relative to the world:
+  //   centre-ish = matching world speed
+  //   higher on screen (smaller y) = braking / slower than world
+  //   lower on screen (larger y)   = tucking / faster than world
+  // ↑ key BRAKES (slows relative to world → player moves up screen)
+  // ↓ key TUCKS  (speeds up relative → player moves down screen)
+  // Player can never move backward up the actual hill — speedRel is clamped
+  // so total downhill velocity (worldSpd + speedRel) >= 0.
+  const left  = K['ArrowLeft'] ||K['a']||K['A']||M['left'];
+  const right = K['ArrowRight']||K['d']||K['D']||M['right'];
+  const brakeK= K['ArrowUp']   ||K['w']||K['W']||M['up'];
+  const tuckK = K['ArrowDown'] ||K['s']||K['S']||M['down'];
+
+  if(!pl.wiping){
+    const maxLat = 3.5+level*0.08;
+    if(left)  pl.vx-=0.3;
+    if(right) pl.vx+=0.3;
+    pl.vx*=0.82; pl.vx=clamp(pl.vx,-maxLat,maxLat);
+    pl.x+=pl.vx;
+    pl.x=clamp(pl.x,pl.w/2+4,W-pl.w/2-4);
+
+    // Speed-relative controls (up/down screen drift)
+    const maxTuck  =  2.5;   // px/frame extra downhill (toward bottom)
+    const maxBrake = -worldSpd * 0.85; // can brake to ~15% of world speed, not stop
+    if(tuckK)  pl.speedRel+=0.18;
+    else if(brakeK) pl.speedRel-=0.18;
+    else { pl.speedRel*=0.88; } // coast back toward matching world speed
+    pl.speedRel=clamp(pl.speedRel, maxBrake, maxTuck);
+    pl.y+=pl.speedRel;
+    pl.y=clamp(pl.y, H*0.15, H*0.88);
+  } else {
+    pl.wipeF++; pl.wipeAngle+=0.22; pl.x+=pl.wipeVx;
+    pl.x=clamp(pl.x,pl.w/2+4,W-pl.w/2-4);
+    if(pl.wipeF>52){ pl.wiping=false; pl.wipeAngle=0; pl.speedRel=0; }
+  }
+
+  // Jump physics (vertical hop, independent of downhill motion)
+  if(pl.airborne){
+    pl.jumpVel+=0.52; pl.jumpH-=pl.jumpVel;
+    pl.jumpH=Math.max(0,pl.jumpH);
+    if(pl.jumpH<=0&&pl.jumpVel>0){
+      pl.airborne=false; pl.jumpH=0; pl.jumpVel=0;
+    }
+  }
+
+  // Jump ramp triggers
+  if(!pl.airborne&&!pl.wiping){
+    for(const j of jumps){
+      if(j.cool>0){j.cool--;continue;}
+      if(pl.x>j.x-j.w/2&&pl.x<j.x+j.w/2&&
+         pl.y+pl.h/2>j.y-j.h&&pl.y+pl.h/2<j.y+j.h*0.6){
+        pl.airborne=true; pl.jumpVel=-11; jCool=70; j.cool=90;
+        popup(pl.x-30,pl.y-42,'KICKER! 🚀',P.purple);
+        break;
+      }
+    }
+  }
+
+  // Spawn jerrys
+  if(fc%Math.ceil(c.rate)===0&&obs.length<c.maxObs){
+    obs.push(mkJerry(c));
+    if(Math.random()<c.clusterCh) obs.push(mkJerry(c,'beginner'));
+    if(c.heats>0&&fc%Math.ceil(c.rate*5)===0)
+      for(let i=0;i<c.heats;i++) obs.push(mkJerry(c,'heatseeker'));
+  }
+
+  // Spawn runaway boards
+  if(fc%c.boardInt===0) mkBoard();
+
+  // ── Move obstacles on screen ──────────────────────────────────────────
+  // Screen delta for an object with worldVy:
+  //   screenDY = (worldVy - worldSpd) + speedRel
+  //   = how fast they move relative to player's current on-screen position
+  // Normal jerrys (worldVy ≈ worldSpd * 0.8): slightly slower than world
+  //   → appear above player and slide toward them from the top (downhill).
+  // Heat-seekers (worldVy > worldSpd): faster → approach from below.
+  // Runaway boards (worldVy >> worldSpd): shoot past from top to bottom.
+  obs.forEach(o=>{
+    o.wobble+=o.wobSpd;
+    if(o.type==='heatseeker'){
+      // Home in on player in screen space
+      const dx=pl.x-o.x, dy=pl.y-o.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
+      o.vx+=dx/dist*0.1;
+      // vertical homing: also adjust worldVy slightly toward player
+      const targetScreenVy = (dy/dist) * worldSpd*1.3;
+      o.worldVy += (targetScreenVy - (o.worldVy-worldSpd))*0.05;
+      o.worldVy  = clamp(o.worldVy, worldSpd*0.9, worldSpd*1.8);
+      o.vx=clamp(o.vx,-worldSpd*1.2,worldSpd*1.2);
+      o.alarm=Math.min(1,o.alarm+0.04);
+    } else {
+      if(o.type==='beginner')
+        o.vx=Math.sin(o.wobble)*0.9+Math.sin(o.wobble*0.4)*0.3;
+      else if(o.type==='snowboarder'){
+        o.vx+=Math.sin(o.wobble*0.6)*0.28; o.vx=clamp(o.vx,-2.8,2.8);
+      }
+    }
+    // Convert worldVy → screen delta given current player speedRel
+    const screenDY = (o.worldVy - worldSpd) + pl.speedRel;
+    o.x+=o.vx; o.y+=screenDY;
+    if(o.x<o.w/2){o.x=o.w/2;o.vx*=-1;}
+    if(o.x>W-o.w/2){o.x=W-o.w/2;o.vx*=-1;}
+  });
+
+  // Move runaway boards
+  boards.forEach(b=>{
+    const screenDY = (b.worldVy - worldSpd) + pl.speedRel;
+    b.y+=screenDY; b.x+=b.vx; b.angle+=b.spin;
+    if(b.x<b.w/2||b.x>W-b.w/2) b.vx*=-1;
+  });
+
+  // Scroll terrain elements upward by worldSpd, offset by player speedRel
+  // (when player brakes, scenery slows; when tucking, scenery rushes by faster)
+  const terrainDY = -worldSpd + (-pl.speedRel * 0.5);
+
+  // Jerry Gap detection
+  if(pl.airborne&&pl.jumpH>16){
+    for(const o of obs){
+      if(o.scored) continue;
+      const dx=Math.abs(pl.x-o.x), dy=pl.y-o.y;
+      if(dx<(pl.w/2+o.w/2-4)&&dy>-12&&dy<o.h){
+        score+=o.type==='big'?260:110;
+        o.scored=true;
+        popup(o.x-35,o.y-48,'JERRY GAP! 🤙',P.pink);
+        for(let i=0;i<14;i++) trickPtx.push({
+          x:pl.x,y:pl.y-pl.jumpH,vx:rnd(-3.5,3.5),vy:rnd(-4.5,-0.4),
+          r:rnd(3,7),life:42,maxL:42,
+          col:[P.pink,P.gold,'#fff',P.purple][rndI(0,4)]
+        });
+        hudUpdate();
+      }
+    }
+  }
+
+  // Collision
+  if(iTimer===0&&!pl.wiping&&hp>0){
+    for(const o of obs){ if(hits(pl,o)){wipeout(c.dmg);break;} }
+    for(const b of boards){ if(hitsBoard(pl,b)){wipeout(c.dmg+6);break;} }
+  }
+
+  // Cull out-of-bounds objects
+  for(let i=obs.length-1;i>=0;i--){
+    const o=obs[i];
+    if(o.y>H+60||o.y<-80||o.x<-80||o.x>W+80){
+      if(!o.scored&&o.type!=='heatseeker'){
+        gotJerrys++; score+=o.type==='big'?80:20; hudUpdate();
+      }
+      obs.splice(i,1);
+    }
+  }
+  for(let i=boards.length-1;i>=0;i--)
+    if(boards[i].y>H+40||boards[i].y<-60) boards.splice(i,1);
+
+  // Level complete
+  if(gotJerrys>=needJerrys&&state==='playing'){
+    state='levelup';
+    document.getElementById('lu-sc').textContent=score;
+    showOv('ov-lvlup');
+    return;
+  }
+
+  // Score trickle
+  if(fc%28===0){ score+=level; hudUpdate(); }
+
+  // Scroll terrain using terrainDY computed above
+  snow.forEach(p=>{
+    p.y+=terrainDY - p.spd*0.5; // snow drifts slightly faster for parallax
+    p.x+=p.drift;
+    if(p.y>H+4){p.y=-4;p.x=rnd(0,W);}
+    if(p.y<-4)  p.y=H;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+  });
+  trees.forEach(r=>{
+    r.y+=terrainDY*0.45; // trees parallax slower (farther away)
+    if(r.y>H+80){
+      r.y-=H+160;
+      r.ts=Array.from({length:rndI(2,5)},()=>({x:rnd(0,W),h:rnd(28,56)}));
+    }
+    if(r.y<-160) r.y+=H+160;
+  });
+  jibs.forEach(j=>{ j.y+=terrainDY*0.75; if(j.y>H+40)j.y=-40; if(j.y<-40)j.y=H+40; });
+  jumps.forEach(j=>{ j.y+=terrainDY; if(j.y>H+50)j.y=-50; if(j.y<-50)j.y=H+50; });
+}
+
+// ════════════════ DRAW ════════════════
+function draw(){
+  // Slope gradient
+  const sg=ctx.createLinearGradient(0,0,0,H);
+  sg.addColorStop(0,'#ccdff5'); sg.addColorStop(0.45,'#b8d0ec'); sg.addColorStop(1,'#a8c0e0');
+  ctx.fillStyle=sg; ctx.fillRect(0,0,W,H);
+
+  // Light bands
+  ctx.save(); ctx.globalAlpha=0.05;
+  for(let i=0;i<5;i++){
+    const sy=(fc*worldSpd*0.1+i*(H/4))%(H+50)-25;
+    const g2=ctx.createLinearGradient(0,sy,0,sy+H/5);
+    g2.addColorStop(0,'#fff'); g2.addColorStop(1,'transparent');
+    ctx.fillStyle=g2; ctx.fillRect(0,sy,W,H/5);
+  }
+  ctx.restore();
+
+  // Trees (edges)
+  trees.forEach(r=>r.ts.forEach(t=>{
+    if(t.x>W*0.08&&t.x<W*0.92) return;
+    drawTree(t.x,r.y,t.h);
+  }));
+
+  // Tracks
+  drawTracks();
+
+  // Jibs
+  jibs.forEach(j=>{
+    ctx.save(); ctx.globalAlpha=0.48; ctx.fillStyle='#90aac4';
+    if(j.t===0){ctx.beginPath();ctx.ellipse(j.x,j.y,j.w,j.w*0.42,0,0,Math.PI*2);ctx.fill();}
+    else{ctx.fillRect(j.x-j.w/2,j.y-5,j.w,8);}
+    ctx.restore();
+  });
+
+  // Jump ramps
+  jumps.forEach(drawJump);
+
+  // Snow
+  ctx.save();
+  snow.forEach(p=>{
+    ctx.globalAlpha=p.alpha; ctx.fillStyle='#fff';
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+  });
+  ctx.restore();
+
+  // Runaway boards
+  boards.forEach(b=>{
+    ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(b.angle);
+    ctx.fillStyle='rgba(0,0,40,0.18)';
+    ctx.beginPath(); ctx.ellipse(0,4,b.w*0.5,5,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=b.color;
+    ctx.beginPath(); ctx.roundRect(-b.w/2,-b.h/2,b.w,b.h,5); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.25)';
+    ctx.fillRect(-b.w/2+6,-b.h/2+2,8,b.h-4);
+    ctx.fillRect(b.w/2-14,-b.h/2+2,8,b.h-4);
+    ctx.fillStyle='rgba(0,0,0,0.42)';
+    ctx.fillRect(-10,-b.h/2,7,b.h); ctx.fillRect(3,-b.h/2,7,b.h);
+    ctx.restore();
+  });
+
+  // Jerrys
+  obs.forEach(drawJerry);
+
+  // Player
+  if(iTimer===0||Math.floor(iTimer/6)%2===0) drawPlayer();
+
+  // Particles
+  drawPtx(hitPtx); drawPtx(trickPtx);
+
+  // Pause
+  if(state==='paused'){
+    ctx.save();
+    ctx.fillStyle='rgba(13,8,32,0.6)'; ctx.fillRect(0,0,W,H);
+    ctx.font="2.4rem 'Bangers',cursive"; ctx.textAlign='center';
+    ctx.fillStyle='#fff'; ctx.fillText('PAUSED',W/2,H/2-8);
+    ctx.font="0.88rem 'DM Sans',sans-serif"; ctx.fillStyle='#c8b0e8';
+    ctx.fillText('press P or tap RESUME',W/2,H/2+22);
+    ctx.restore();
+  }
+}
+
+function drawPtx(arr){
+  for(let i=arr.length-1;i>=0;i--){
+    const p=arr[i];
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.18; p.life--;
+    ctx.save(); ctx.globalAlpha=p.life/p.maxL; ctx.fillStyle=p.col;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+    if(p.life<=0) arr.splice(i,1);
+  }
+}
+
+function drawTracks(){
+  trackOff=(trackOff+worldSpd*0.38)%40;
+  ctx.save(); ctx.strokeStyle='rgba(150,190,225,0.3)'; ctx.lineWidth=1.5;
+  [W*0.3,W*0.7].forEach(tx=>{
+    ctx.beginPath();
+    for(let y=-40+trackOff;y<H+40;y+=40){
+      ctx.moveTo(tx-6,y);ctx.lineTo(tx-6,y+13);
+      ctx.moveTo(tx+6,y+7);ctx.lineTo(tx+6,y+20);
+    }
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function drawJump(j){
+  ctx.save(); ctx.translate(j.x,j.y);
+  ctx.fillStyle='rgba(0,0,50,0.13)';
+  ctx.beginPath(); ctx.ellipse(0,j.h*0.9,j.w*0.55,6,0,0,Math.PI*2); ctx.fill();
+  const rg=ctx.createLinearGradient(-j.w/2,0,j.w/2,0);
+  rg.addColorStop(0,'#dce8ff'); rg.addColorStop(0.5,'#fff'); rg.addColorStop(1,'#c5daf0');
+  ctx.fillStyle=rg;
+  ctx.beginPath();
+  ctx.moveTo(-j.w/2,j.h); ctx.lineTo(j.w/2,j.h);
+  ctx.lineTo(j.w/2-6,0);  ctx.lineTo(-j.w/2+10,-j.h*0.3);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=P.pink; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(-j.w/2+10,-j.h*0.3); ctx.lineTo(j.w/2-6,0); ctx.stroke();
+  ctx.restore();
+}
+
+function drawTree(x,y,h){
+  ctx.save();
+  for(let t=0;t<3;t++){
+    const tw=h*0.6*(1-t*0.24),th=h*0.38,ty=y-t*th*0.5;
+    ctx.fillStyle=t===0?'#1e5c38':'#2d6a4f';
+    ctx.beginPath(); ctx.moveTo(x,ty-th); ctx.lineTo(x-tw/2,ty); ctx.lineTo(x+tw/2,ty); ctx.closePath(); ctx.fill();
+  }
+  ctx.fillStyle='#5a3010'; ctx.fillRect(x-3,y,6,h*0.2);
+  ctx.restore();
+}
+
+// ── PLAYER (rad) ─────────────────────────────────────
+function drawPlayer(){
+  const {x,y,w,h,wiping,wipeAngle,airborne,jumpH} = pl;
+  const dy = y - jumpH;
+  ctx.save(); ctx.translate(x,dy);
+  if(wiping) ctx.rotate(wipeAngle);
+
+  // shadow (shrinks when airborne)
+  const ss=airborne?Math.max(0.25,1-jumpH/pl.jumpMaxH):1;
+  ctx.save(); ctx.globalAlpha=0.18*ss; ctx.fillStyle='#000022';
+  ctx.beginPath(); ctx.ellipse(0,h/2+2+jumpH*0.25,w*0.48*ss,5*ss,0,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // HOT PINK SKIS with white edge
+  ctx.fillStyle=P.pink;
+  ctx.beginPath(); ctx.roundRect(-w/2-5,h/2-5,w+10,5,2); ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.7)'; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.roundRect(-w/2-5,h/2-5,w+10,5,2); ctx.stroke();
+
+  // Electric purple pants w/ pink stripe
+  ctx.fillStyle=P.electric;
+  ctx.fillRect(-w/2+3,h/2-h*0.33,w-6,h*0.3);
+  ctx.fillStyle=P.pink; ctx.fillRect(-w/2+4,h/2-h*0.33,3,h*0.28);
+  ctx.fillStyle=P.pink; ctx.fillRect(w/2-7,h/2-h*0.33,3,h*0.28);
+
+  // Neon jacket (magenta gradient, ZIPPED)
+  const jg=ctx.createLinearGradient(-w/2,0,w/2,0);
+  jg.addColorStop(0,'#cc10b0'); jg.addColorStop(0.5,'#e030cc'); jg.addColorStop(1,'#b010a8');
+  ctx.fillStyle=jg;
+  ctx.beginPath(); ctx.roundRect(-w/2+1,-h/2+9,w-2,h*0.52,5); ctx.fill();
+  // zip line
+  ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(0,-h/2+10); ctx.lineTo(0,-h/2+9+h*0.47); ctx.stroke();
+  // gold cuff
+  ctx.fillStyle=P.gold; ctx.fillRect(-w/2+1,-h/2+9+h*0.45,w-2,3);
+
+  // Face
+  ctx.fillStyle='#ffe5c4';
+  ctx.beginPath(); ctx.arc(0,-h/2+5,w*0.32,0,Math.PI*2); ctx.fill();
+
+  // Sleek purple helmet (no tilt, flush)
+  const hg=ctx.createLinearGradient(-8,-h/2+2,8,-h/2+8);
+  hg.addColorStop(0,P.purple); hg.addColorStop(1,P.electric);
+  ctx.fillStyle=hg;
+  ctx.beginPath(); ctx.arc(0,-h/2+3,w*0.33,Math.PI,0); ctx.fill();
+  ctx.fillRect(-w*0.33,-h/2+3,w*0.66,5);
+  ctx.fillStyle='rgba(255,255,255,0.28)';
+  ctx.beginPath(); ctx.ellipse(-3,-h/2+1,4,2,0.4,0,Math.PI*2); ctx.fill();
+
+  // Gold goggles FLUSH to helmet (no gap!)
+  ctx.fillStyle=P.gold;
+  ctx.beginPath(); ctx.roundRect(-7,-h/2+5,14,5,2); ctx.fill();
+  ctx.fillStyle='rgba(0,80,180,0.75)';
+  ctx.beginPath(); ctx.ellipse(-3.5,-h/2+7,2.5,2,0,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(3.5,-h/2+7,2.5,2,0,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle=P.gold; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(-7,-h/2+7); ctx.lineTo(-w*0.33,-h/2+4); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(7,-h/2+7);  ctx.lineTo( w*0.33,-h/2+4); ctx.stroke();
+
+  // Poles (clean parallel)
+  ctx.strokeStyle='#c0d8f0'; ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.moveTo(-w/2-1,-h/2+16); ctx.lineTo(-w/2-7,h/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo( w/2+1,-h/2+16); ctx.lineTo( w/2+7,h/2); ctx.stroke();
+  ctx.strokeStyle=P.pink; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.arc(-w/2-7,h/2,3,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc( w/2+7,h/2,3,0,Math.PI*2); ctx.stroke();
+
+  // Airborne grab
+  if(airborne&&jumpH>22){
+    ctx.font='11px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('🤙',1,-h/2-15);
+  }
+
+  ctx.restore();
+}
+
+// ── JERRY (chaotic mess) ─────────────────────────────
+function drawJerry(o){
+  const {x,y,w,h,type,wobble,ow,hat,gogglesGap,jacketOpen,helmTilt,stance} = o;
+  ctx.save(); ctx.translate(x,y);
+  const lean=type==='snowboarder'?Math.sin(wobble)*0.35:Math.sin(wobble)*0.15;
+  ctx.rotate(lean+stance);
+
+  // Heatseeker rings
+  if(type==='heatseeker'&&o.alarm>0){
+    ctx.save(); ctx.globalAlpha=o.alarm*0.38;
+    ctx.strokeStyle=P.pink; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.arc(0,0,w*1.12,0,Math.PI*2); ctx.stroke();
+    ctx.globalAlpha=o.alarm*0.18; ctx.strokeStyle=P.gold; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(0,0,w*1.6,0,Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+
+  // Shadow
+  ctx.fillStyle='rgba(0,0,40,0.12)';
+  ctx.beginPath(); ctx.ellipse(0,h/2+2,w*0.5,5,0,0,Math.PI*2); ctx.fill();
+
+  // Pants
+  ctx.fillStyle=type==='heatseeker'?'#1a1a1a':PANT[ow%PANT.length];
+  ctx.fillRect(-w/2+2,h/2-h*0.33,w-4,h*0.32);
+
+  // Board or skis — pointing DOWN the slope
+  if(type==='snowboarder'){
+    ctx.save();
+    // board at slight cross-slope angle (but still going downhill overall)
+    ctx.rotate(Math.sin(wobble)*0.18+0.1);
+    ctx.fillStyle='#8b0000';
+    ctx.beginPath(); ctx.roundRect(-w*0.72,h/2-5,w*1.44,6,3); ctx.fill();
+    ctx.restore();
+  } else {
+    // misaligned skis (slight toe/heel errors)
+    const skiToe=type==='beginner'?Math.sin(wobble)*2.5:0;
+    ctx.fillStyle=type==='heatseeker'?'#8b0000':(type==='big'?'#c8782a':'#6aadce');
+    ctx.save(); ctx.rotate(skiToe*0.03);
+    ctx.beginPath(); ctx.roundRect(-w/2-4,h/2-5,w/2+2,4,2); ctx.fill();
+    ctx.restore();
+    ctx.save(); ctx.rotate(-skiToe*0.04);
+    ctx.beginPath(); ctx.roundRect(2,h/2-5,w/2+2,4,2); ctx.fill();
+    ctx.restore();
+  }
+
+  // Body/jacket
+  let jc=JACK[ow%JACK.length];
+  if(type==='big') jc='#c8782a';
+  if(type==='heatseeker') jc='#8b0000';
+  ctx.fillStyle=jc;
+  ctx.beginPath(); ctx.roundRect(-w/2+1,-h/2+9,w-2,h*0.52,4); ctx.fill();
+  // Open jacket flap (messy!)
+  if(jacketOpen&&type!=='heatseeker'){
+    ctx.save(); ctx.rotate(Math.sin(wobble*1.6)*0.22);
+    ctx.fillStyle='rgba(255,255,255,0.2)';
+    ctx.beginPath();
+    ctx.moveTo(0,-h/2+10); ctx.lineTo(w*0.5,-h/2+10);
+    ctx.lineTo(w*0.55,-h/2+10+h*0.46); ctx.lineTo(0,-h/2+10+h*0.46);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+    // interior layer stripe
+    ctx.fillStyle='rgba(255,255,255,0.15)';
+    ctx.fillRect(-2,-h/2+10,4,h*0.44);
+  }
+
+  // Face
+  ctx.fillStyle='#ffe5c4';
+  ctx.beginPath(); ctx.arc(0,-h/2+5,w*0.3,0,Math.PI*2); ctx.fill();
+
+  // Helmet — CROOKED
+  const hc=type==='heatseeker'?'#550000':HAT[hat%HAT.length];
+  ctx.save(); ctx.rotate(helmTilt);
+  ctx.fillStyle=hc;
+  ctx.beginPath(); ctx.arc(0,-h/2+2,w*0.3,Math.PI,0); ctx.fill();
+  ctx.fillRect(-w*0.32,-h/2+2,w*0.64,4);
+  ctx.restore();
+
+  // Goggles: either gap (on forehead) or sloppy fit
+  if(gogglesGap){
+    // Goggles pushed WAY up — visible skin gap between goggles & helmet
+    ctx.fillStyle='rgba(255,228,180,1)'; // exposed skin
+    ctx.fillRect(-w*0.28,-h/2+1,w*0.56,6);
+    // goggles on forehead
+    ctx.fillStyle='rgba(0,0,0,0.52)';
+    ctx.beginPath(); ctx.ellipse(-3.5,-h/2-2,3.5,2.5,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(3.5,-h/2-2,3.5,2.5,0,0,Math.PI*2); ctx.fill();
+    // dangling strap
+    ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(-3,-h/2+2); ctx.lineTo(-5,-h/2+9); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(3,-h/2+2); ctx.lineTo(5,-h/2+9); ctx.stroke();
+  } else {
+    ctx.fillStyle='rgba(0,0,0,0.35)';
+    ctx.beginPath(); ctx.ellipse(-4,-h/2+5,4,3,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(4,-h/2+5,4,3,0,0,Math.PI*2); ctx.fill();
+  }
+
+  if(type==='heatseeker'){ ctx.font=`${w*0.75}px serif`; ctx.textAlign='center'; ctx.fillText('😤',0,-h/2-6); }
+  if(type==='big'){        ctx.font='13px serif';         ctx.textAlign='center'; ctx.fillText('👑',0,-h/2-9); }
+
+  ctx.restore();
+}
+
+// ── Loop ─────────────────────────────────────────────
+function loop(ts){
+  if(state==='paused') return;
+  lastTs=ts; update(); draw();
+  if(state==='playing'||state==='paused') animId=requestAnimationFrame(loop);
+}
+
+// Boot
+buildSnow(); buildTrees();
+showOv('ov-start');
+draw();
+</script>
+</body>
+</html>
