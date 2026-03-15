@@ -282,6 +282,7 @@ const K={}, M={};
 document.addEventListener('keydown', e=>{
   if(!K[e.key]){
     K[e.key]=true;
+    // Space = jump only. Arrow keys handle movement/brake/tuck.
     if(e.key===' '&&state==='playing') tryJump();
   }
   if(e.key==='p'||e.key==='P'||e.key==='Escape') togglePause();
@@ -443,10 +444,9 @@ function mkJerry(lc,forceType){
     // relative to the camera.
     x:rnd(30,W-30), y:-h-rnd(0,60),
     vx:rnd(-0.5,0.5),
-    // worldVy is their ABSOLUTE downhill speed (same units as worldSpd).
-    // On screen they move DOWN at (worldVy - worldSpd) + player's speedRel.
-    // Slower than world = they look like they're above player coming down.
-    // Same as world = stationary on screen. Faster = pass player going down.
+    // worldVy = their absolute downhill speed in world space.
+    // screenDY = (worldSpd - worldVy) - pl.speedRel
+    // Since worldVy < worldSpd, screenDY > 0 → they drift DOWN toward player. ✓
     worldVy: worldSpd * (big ? rnd(0.7,0.9) : rnd(0.72,0.95)),
     wobble:rnd(0,Math.PI*2), wobSpd:rnd(0.04,0.1),
     ow:rndI(0,JACK.length), hat:rndI(0,HAT.length),
@@ -469,11 +469,13 @@ function mkJerry(lc,forceType){
 function mkBoard(){
   boards.push({
     x:rnd(30,W-30), y:-30,
-    worldVy: worldSpd * rnd(1.8, 2.8), // runaway = much faster than player
+    // screenVy: how fast board moves DOWN the screen (positive = downward).
+    // Boards are rogue — much faster than jerrys on screen.
+    screenVy: worldSpd * rnd(2.2, 3.4),
     vx:rnd(-1.0,1.0),
     angle:rnd(-0.3,0.3), spin:rnd(-0.09,0.09),
     color:[P.pink,P.electric,P.purple,'#ff8c00','#00e5ff'][rndI(0,5)],
-    w:50,h:12,
+    w:50, h:12,
   });
 }
 
@@ -518,41 +520,58 @@ function update(){
   if(iTimer>0) iTimer--;
   if(jCool>0)  jCool--;
 
-  // ── Player: left/right carving, up = brake, down = tuck ──────────────
-  // The player's Y on screen represents their speed relative to the world:
-  //   centre-ish = matching world speed
-  //   higher on screen (smaller y) = braking / slower than world
-  //   lower on screen (larger y)   = tucking / faster than world
-  // ↑ key BRAKES (slows relative to world → player moves up screen)
-  // ↓ key TUCKS  (speeds up relative → player moves down screen)
-  // Player can never move backward up the actual hill — speedRel is clamped
-  // so total downhill velocity (worldSpd + speedRel) >= 0.
+  // ── Player movement ──────────────────────────────────────────────────────
+  // Camera model: the world scrolls UPWARD at worldSpd px/frame, representing
+  // everyone going downhill at the same base speed.
+  //
+  // pl.speedRel = player speed RELATIVE to the world camera:
+  //   0        = matching world speed — player stays at same Y on screen
+  //   positive = player going FASTER downhill → drifts toward bottom of screen
+  //   negative = player BRAKING (still going downhill, just slower) → drifts
+  //              toward top of screen. Clamped so total speed never goes < 0
+  //              (you cannot ski back UP the hill).
+  //
+  // Jerrys all have worldVy slightly LESS than worldSpd → they appear to drift
+  // slowly DOWN the screen toward the player (they're slower than the camera,
+  // so relative to the camera they move down = toward the player from above).
+  // Heat-seekers have worldVy GREATER than worldSpd → approach from below.
+
   const left  = K['ArrowLeft'] ||K['a']||K['A']||M['left'];
   const right = K['ArrowRight']||K['d']||K['D']||M['right'];
-  const brakeK= K['ArrowUp']   ||K['w']||K['W']||M['up'];
-  const tuckK = K['ArrowDown'] ||K['s']||K['S']||M['down'];
+  // UP = brake (slow down relative to world → drift toward top of screen)
+  // DOWN = tuck (speed up → drift toward bottom)
+  const brakeK = K['ArrowUp']  ||K['w']||K['W']||M['up'];
+  const tuckK  = K['ArrowDown']||K['s']||K['S']||M['down'];
 
   if(!pl.wiping){
+    // Lateral carving
     const maxLat = 3.5+level*0.08;
-    if(left)  pl.vx-=0.3;
-    if(right) pl.vx+=0.3;
-    pl.vx*=0.82; pl.vx=clamp(pl.vx,-maxLat,maxLat);
-    pl.x+=pl.vx;
-    pl.x=clamp(pl.x,pl.w/2+4,W-pl.w/2-4);
+    if(left)  pl.vx -= 0.3;
+    if(right) pl.vx += 0.3;
+    pl.vx *= 0.82;
+    pl.vx = clamp(pl.vx, -maxLat, maxLat);
+    pl.x += pl.vx;
+    pl.x  = clamp(pl.x, pl.w/2+4, W-pl.w/2-4);
 
-    // Speed-relative controls (up/down screen drift)
-    const maxTuck  =  2.5;   // px/frame extra downhill (toward bottom)
-    const maxBrake = -worldSpd * 0.85; // can brake to ~15% of world speed, not stop
-    if(tuckK)  pl.speedRel+=0.18;
-    else if(brakeK) pl.speedRel-=0.18;
-    else { pl.speedRel*=0.88; } // coast back toward matching world speed
-    pl.speedRel=clamp(pl.speedRel, maxBrake, maxTuck);
-    pl.y+=pl.speedRel;
-    pl.y=clamp(pl.y, H*0.15, H*0.88);
+    // Longitudinal speed relative to world
+    // maxBrake: player can slow to 0 absolute speed (braking to a full stop)
+    // which means speedRel can go as negative as -worldSpd.
+    // maxTuck: can go up to 2.8 px/frame faster than world.
+    const maxBrake = -worldSpd;   // full stop — can't go backwards
+    const maxTuck  =  2.8;
+    if(tuckK)       pl.speedRel += 0.22;
+    else if(brakeK) pl.speedRel -= 0.22;
+    else            pl.speedRel *= 0.90;  // coast back to world speed
+    pl.speedRel = clamp(pl.speedRel, maxBrake, maxTuck);
+
+    // Drift player Y on screen based on relative speed
+    pl.y += pl.speedRel;
+    pl.y  = clamp(pl.y, H*0.12, H*0.90);
   } else {
-    pl.wipeF++; pl.wipeAngle+=0.22; pl.x+=pl.wipeVx;
-    pl.x=clamp(pl.x,pl.w/2+4,W-pl.w/2-4);
-    if(pl.wipeF>52){ pl.wiping=false; pl.wipeAngle=0; pl.speedRel=0; }
+    // Wipeout tumble
+    pl.wipeF++; pl.wipeAngle += 0.22; pl.x += pl.wipeVx;
+    pl.x = clamp(pl.x, pl.w/2+4, W-pl.w/2-4);
+    if(pl.wipeF > 52){ pl.wiping=false; pl.wipeAngle=0; pl.speedRel=0; }
   }
 
   // Jump physics (vertical hop, independent of downhill motion)
@@ -588,50 +607,76 @@ function update(){
   // Spawn runaway boards
   if(fc%c.boardInt===0) mkBoard();
 
-  // ── Move obstacles on screen ──────────────────────────────────────────
-  // Screen delta for an object with worldVy:
-  //   screenDY = (worldVy - worldSpd) + speedRel
-  //   = how fast they move relative to player's current on-screen position
-  // Normal jerrys (worldVy ≈ worldSpd * 0.8): slightly slower than world
-  //   → appear above player and slide toward them from the top (downhill).
-  // Heat-seekers (worldVy > worldSpd): faster → approach from below.
-  // Runaway boards (worldVy >> worldSpd): shoot past from top to bottom.
+  // (obstacle movement handled below)
+
+  // ── Move obstacles (screen-space) ────────────────────────────────────────
+  // An obstacle's screen position changes by:
+  //   screenDY = (worldVy - worldSpd) - pl.speedRel
+  //
+  // Why: the camera moves UP at worldSpd. The obstacle moves DOWN at worldVy.
+  // Net camera-relative motion = worldVy - worldSpd.
+  // If player is tucking (speedRel > 0) they move down, so obstacles appear
+  // to move UP relative to player → subtract speedRel.
+  // If player brakes (speedRel < 0) obstacles drift DOWN faster past player.
+  //
+  // Normal jerry: worldVy = worldSpd * ~0.80 → screenDY ≈ negative (upward on
+  // screen) when player matches world. Wait — that means they'd vanish upward.
+  //
+  // CORRECT mental model for "same direction, jerrys slightly slower":
+  // Jerry worldVy < worldSpd  →  camera overtakes them  →  they move DOWN on
+  // screen (toward bottom) relative to camera. screenDY = worldSpd - worldVy > 0.
+  //
+  // So the right formula is:  screenDY = (worldSpd - worldVy) - pl.speedRel
+  // At baseline (pl.speedRel=0, worldVy = worldSpd*0.82):
+  //   screenDY = worldSpd*0.18 > 0  → jerry drifts DOWN toward player ✓
+  // When player tucks (speedRel>0): player catches up faster → jerrys appear
+  // to drift DOWN screen even faster ✓
+  // When player brakes (speedRel<0): player slows relative to world, jerrys
+  // now approach even faster from above ✓
+  // Heat-seeker: worldVy > worldSpd → screenDY < 0 → approaches from below ✓
+
   obs.forEach(o=>{
-    o.wobble+=o.wobSpd;
+    o.wobble += o.wobSpd;
     if(o.type==='heatseeker'){
-      // Home in on player in screen space
+      // Home in on player in screen-space
       const dx=pl.x-o.x, dy=pl.y-o.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
-      o.vx+=dx/dist*0.1;
-      // vertical homing: also adjust worldVy slightly toward player
-      const targetScreenVy = (dy/dist) * worldSpd*1.3;
-      o.worldVy += (targetScreenVy - (o.worldVy-worldSpd))*0.05;
-      o.worldVy  = clamp(o.worldVy, worldSpd*0.9, worldSpd*1.8);
-      o.vx=clamp(o.vx,-worldSpd*1.2,worldSpd*1.2);
-      o.alarm=Math.min(1,o.alarm+0.04);
+      o.vx += (dx/dist)*0.1;
+      o.vx  = clamp(o.vx, -worldSpd*1.2, worldSpd*1.2);
+      // Adjust worldVy to home vertically: want to appear to approach from below
+      const desiredScreenVy = -(dy/dist)*worldSpd*1.3; // negative = upward on screen
+      // screenDY = worldSpd - worldVy - speedRel = desiredScreenVy
+      // → worldVy = worldSpd - speedRel - desiredScreenVy
+      const targetWorldVy = worldSpd - pl.speedRel - desiredScreenVy;
+      o.worldVy += (targetWorldVy - o.worldVy)*0.06;
+      o.worldVy  = clamp(o.worldVy, worldSpd*0.85, worldSpd*2.0);
+      o.alarm = Math.min(1, o.alarm+0.04);
     } else {
       if(o.type==='beginner')
-        o.vx=Math.sin(o.wobble)*0.9+Math.sin(o.wobble*0.4)*0.3;
+        o.vx = Math.sin(o.wobble)*0.9 + Math.sin(o.wobble*0.4)*0.3;
       else if(o.type==='snowboarder'){
-        o.vx+=Math.sin(o.wobble*0.6)*0.28; o.vx=clamp(o.vx,-2.8,2.8);
+        o.vx += Math.sin(o.wobble*0.6)*0.28;
+        o.vx  = clamp(o.vx, -2.8, 2.8);
       }
     }
-    // Convert worldVy → screen delta given current player speedRel
-    const screenDY = (o.worldVy - worldSpd) + pl.speedRel;
-    o.x+=o.vx; o.y+=screenDY;
-    if(o.x<o.w/2){o.x=o.w/2;o.vx*=-1;}
-    if(o.x>W-o.w/2){o.x=W-o.w/2;o.vx*=-1;}
+    // Screen delta: positive = moves DOWN screen (toward player from above)
+    const screenDY = (worldSpd - o.worldVy) - pl.speedRel;
+    o.x += o.vx;
+    o.y += screenDY;
+    if(o.x < o.w/2)    { o.x = o.w/2;     o.vx *= -1; }
+    if(o.x > W-o.w/2)  { o.x = W-o.w/2;   o.vx *= -1; }
   });
 
-  // Move runaway boards
+  // Runaway boards: worldVy >> worldSpd → screenDY very negative = shoot upward fast
+  // But we want boards to come FROM the top and zoom PAST player going down.
+  // Boards spawn at y=-30 (top). We want them to move DOWN screen toward player.
+  // So their worldVy should be LESS than worldSpd (slow in world space) → camera
+  // overtakes them fast → they zoom down screen.
+  // Actually the simplest: just give them a direct positive screenVy (ignore worldVy).
   boards.forEach(b=>{
-    const screenDY = (b.worldVy - worldSpd) + pl.speedRel;
-    b.y+=screenDY; b.x+=b.vx; b.angle+=b.spin;
-    if(b.x<b.w/2||b.x>W-b.w/2) b.vx*=-1;
+    b.y += b.screenVy - pl.speedRel;
+    b.x += b.vx; b.angle += b.spin;
+    if(b.x < b.w/2 || b.x > W-b.w/2) b.vx *= -1;
   });
-
-  // Scroll terrain elements upward by worldSpd, offset by player speedRel
-  // (when player brakes, scenery slows; when tucking, scenery rushes by faster)
-  const terrainDY = -worldSpd + (-pl.speedRel * 0.5);
 
   // Jerry Gap detection
   if(pl.airborne&&pl.jumpH>16){
@@ -669,7 +714,7 @@ function update(){
     }
   }
   for(let i=boards.length-1;i>=0;i--)
-    if(boards[i].y>H+40||boards[i].y<-60) boards.splice(i,1);
+    if(boards[i].y > H+40) boards.splice(i,1);
 
   // Level complete
   if(gotJerrys>=needJerrys&&state==='playing'){
@@ -682,24 +727,33 @@ function update(){
   // Score trickle
   if(fc%28===0){ score+=level; hudUpdate(); }
 
-  // Scroll terrain using terrainDY computed above
+  // ── Terrain scroll ───────────────────────────────────────────────────────
+  // As player descends, terrain features scroll UPWARD past the camera.
+  // Rate = worldSpd + pl.speedRel (if tucking, scenery rushes past faster).
+  // Terrain moves UP = negative Y change each frame.
+  const terrainUp = worldSpd + pl.speedRel;
+
   snow.forEach(p=>{
-    p.y+=terrainDY - p.spd*0.5; // snow drifts slightly faster for parallax
-    p.x+=p.drift;
-    if(p.y>H+4){p.y=-4;p.x=rnd(0,W);}
-    if(p.y<-4)  p.y=H;
-    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+    p.y -= terrainUp * 0.55;   // snow slightly slower than ground (parallax)
+    p.x += p.drift;
+    if(p.y < -4){ p.y = H+4; p.x = rnd(0,W); }
+    if(p.x < 0) p.x = W; if(p.x > W) p.x = 0;
   });
   trees.forEach(r=>{
-    r.y+=terrainDY*0.45; // trees parallax slower (farther away)
-    if(r.y>H+80){
-      r.y-=H+160;
-      r.ts=Array.from({length:rndI(2,5)},()=>({x:rnd(0,W),h:rnd(28,56)}));
+    r.y -= terrainUp * 0.30;   // trees parallax slowest (far away)
+    if(r.y < -160){
+      r.y += H + 200;
+      r.ts = Array.from({length:rndI(2,5)},()=>({x:rnd(0,W),h:rnd(28,56)}));
     }
-    if(r.y<-160) r.y+=H+160;
   });
-  jibs.forEach(j=>{ j.y+=terrainDY*0.75; if(j.y>H+40)j.y=-40; if(j.y<-40)j.y=H+40; });
-  jumps.forEach(j=>{ j.y+=terrainDY; if(j.y>H+50)j.y=-50; if(j.y<-50)j.y=H+50; });
+  jibs.forEach(j=>{
+    j.y -= terrainUp * 0.75;
+    if(j.y < -40) j.y = H + 40;
+  });
+  jumps.forEach(j=>{
+    j.y -= terrainUp;
+    if(j.y < -50) j.y = H + 50;
+  });
 }
 
 // ════════════════ DRAW ════════════════
@@ -709,10 +763,10 @@ function draw(){
   sg.addColorStop(0,'#ccdff5'); sg.addColorStop(0.45,'#b8d0ec'); sg.addColorStop(1,'#a8c0e0');
   ctx.fillStyle=sg; ctx.fillRect(0,0,W,H);
 
-  // Light bands
+  // Light bands scrolling upward (descending)
   ctx.save(); ctx.globalAlpha=0.05;
   for(let i=0;i<5;i++){
-    const sy=(fc*worldSpd*0.1+i*(H/4))%(H+50)-25;
+    const sy = H - ((fc*worldSpd*0.12 + i*(H/4)) % (H+50));
     const g2=ctx.createLinearGradient(0,sy,0,sy+H/5);
     g2.addColorStop(0,'#fff'); g2.addColorStop(1,'transparent');
     ctx.fillStyle=g2; ctx.fillRect(0,sy,W,H/5);
@@ -795,13 +849,15 @@ function drawPtx(arr){
 }
 
 function drawTracks(){
-  trackOff=(trackOff+worldSpd*0.38)%40;
+  const terrainUp = worldSpd + pl.speedRel;
+  trackOff = (trackOff + terrainUp * 0.38) % 40;
   ctx.save(); ctx.strokeStyle='rgba(150,190,225,0.3)'; ctx.lineWidth=1.5;
   [W*0.3,W*0.7].forEach(tx=>{
     ctx.beginPath();
-    for(let y=-40+trackOff;y<H+40;y+=40){
-      ctx.moveTo(tx-6,y);ctx.lineTo(tx-6,y+13);
-      ctx.moveTo(tx+6,y+7);ctx.lineTo(tx+6,y+20);
+    // Tracks scroll upward: offset from top, repeating
+    for(let y = -40 + (40 - trackOff); y < H+40; y += 40){
+      ctx.moveTo(tx-6,y);   ctx.lineTo(tx-6,y+13);
+      ctx.moveTo(tx+6,y+7); ctx.lineTo(tx+6,y+20);
     }
     ctx.stroke();
   });
