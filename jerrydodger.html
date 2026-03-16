@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Jerry Dodger | remyrussell.com</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Russo+One&family=DM+Sans:wght@400;600&display=swap');
@@ -127,38 +127,71 @@
       100% { opacity:0; transform:translateY(-60px) scale(0.85); }
     }
 
-    /* MOBILE CONTROLS */
+    /* MOBILE TOUCH ZONE */
     #mob-ctrl {
-      width:100%; max-width:520px; display:flex;
-      justify-content:space-between; align-items:center;
-      padding:8px 16px; background:var(--ui-bg);
-      border-top:1px solid rgba(199,36,245,0.25); gap:10px;
+      width:100%; max-width:520px;
+      display:flex; flex-direction:column;
+      background:var(--ui-bg);
+      border-top:1px solid rgba(199,36,245,0.25);
+      /* prevent any browser zoom gestures in this area */
+      touch-action: none;
+      user-select: none; -webkit-user-select: none;
     }
-    .dpad {
-      display:grid; grid-template-columns:repeat(3,42px);
-      grid-template-rows:repeat(3,42px); gap:3px;
+    #touch-zone {
+      position: relative;
+      width: 100%; height: 88px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
     }
-    .dpad button {
-      background:rgba(199,36,245,0.12); border:1px solid rgba(199,36,245,0.35);
-      border-radius:6px; color:#e0c8ff; font-size:1rem;
-      cursor:pointer; display:flex; align-items:center; justify-content:center;
+    /* sliding position indicator */
+    #touch-thumb {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 38%, rgba(255,45,120,0.9), rgba(123,47,255,0.7));
+      border: 2px solid rgba(255,45,120,0.8);
+      box-shadow: 0 0 18px rgba(255,45,120,0.5);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      left: 50%;
+      margin-left: -22px;
     }
-    .dpad button:active, .dpad button.pressed {
-      background:rgba(255,45,120,0.35); border-color:var(--pink);
+    #touch-zone.active #touch-thumb { opacity: 1; }
+    /* tuck fill bar at bottom of touch zone */
+    #tuck-bar {
+      position: absolute; bottom: 0; left: 0;
+      height: 4px; width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      transition: width 0.1s;
+      border-radius: 0 2px 2px 0;
     }
-    .dpad .dp-up    { grid-column:2; grid-row:1; }
-    .dpad .dp-left  { grid-column:1; grid-row:2; }
-    .dpad .dp-right { grid-column:3; grid-row:2; }
-    .dpad .dp-down  { grid-column:2; grid-row:3; }
-    .act-area { display:flex; flex-direction:column; gap:7px; align-items:flex-end; }
-    .act-btn {
-      background:rgba(199,36,245,0.14); border:1px solid rgba(199,36,245,0.4);
-      border-radius:7px; color:#e0c8ff; font-family:'Bangers',cursive;
-      font-size:0.88rem; padding:9px 14px; cursor:pointer;
-      letter-spacing:0.08em; white-space:nowrap;
+    /* labels */
+    #touch-hint {
+      font-family: 'Bangers', cursive;
+      font-size: 0.78rem; letter-spacing: 0.1em;
+      color: rgba(200,176,232,0.4);
+      pointer-events: none;
+      text-align: center;
+      line-height: 1.5;
     }
-    .act-btn:active { background:rgba(255,45,120,0.35); }
-    #mob-jump { background:rgba(255,45,120,0.2); border-color:var(--pink); color:#ffb3d0; }
+    #touch-zone.active #touch-hint { opacity: 0; }
+    /* pause button row */
+    #mob-pause-row {
+      display: flex; justify-content: flex-end;
+      padding: 5px 12px 7px;
+      border-top: 1px solid rgba(199,36,245,0.12);
+    }
+    #mob-pause {
+      background: rgba(199,36,245,0.14);
+      border: 1px solid rgba(199,36,245,0.4);
+      border-radius: 7px; color: #e0c8ff;
+      font-family: 'Bangers', cursive; font-size: 0.82rem;
+      padding: 6px 14px; cursor: pointer; letter-spacing: 0.08em;
+    }
+    #mob-pause:active { background: rgba(255,45,120,0.35); }
 
     .tips {
       font-size:0.72rem; color:#6a4a88; padding:5px 14px 8px;
@@ -215,21 +248,18 @@
 </div>
 
 <div id="mob-ctrl">
-  <div class="dpad">
-    <button class="dp-up"    data-d="up">▲</button>
-    <button class="dp-left"  data-d="left">◀</button>
-    <button class="dp-right" data-d="right">▶</button>
-    <button class="dp-down"  data-d="down">▼</button>
+  <div id="touch-zone">
+    <div id="touch-thumb"></div>
+    <div id="tuck-bar"></div>
+    <span id="touch-hint">HOLD &amp; STEER<br><span style="font-size:0.65rem;opacity:0.7">hold = tuck · release = jump · slide = steer</span></span>
   </div>
-  <div class="act-area">
-    <button class="act-btn" id="mob-jump">JUMP 🚀</button>
-    <button class="act-btn" id="mob-pause">PAUSE ⏸</button>
+  <div id="mob-pause-row">
+    <button id="mob-pause">PAUSE ⏸</button>
   </div>
 </div>
 
 <div class="tips">
-  <b>↑ BRAKE</b> · <b>↓ TUCK</b> · <b>Space/Jump btn</b> to leap Jerrys → <b style="color:#ff2d78">JERRY GAP!</b> ·
-  <b style="color:#c724f5">Heat-seekers</b> approach from behind · Level 3+
+  📱 <b>Hold &amp; slide</b> to tuck + steer · <b>Release</b> to jump · ⌨️ <b>← →</b> carve · <b>↑</b> brake · <b>↓</b> tuck · <b>Space</b> jump
 </div>
 
 <script>
@@ -278,11 +308,30 @@ let hitPtx=[], trickPtx=[];
 let trackOff=0;
 
 // ── Input ────────────────────────────────────────────
-const K={}, M={};
+const K={};
+
+// Mobile touch state
+const touch = {
+  active: false,
+  x: 0,              // current touch X (for steering)
+  zoneLeft: 0,       // touch-zone left edge in page coords (set on first touch)
+  zoneWidth: 0,
+  holdStart: 0,      // timestamp when touch began
+  JUMP_THRESHOLD: 180, // ms — hold longer than this = tuck; shorter = treat as jump
+  tuck: false,
+  targetX: -1,       // -1 = not steering
+};
+
+// Prevent ALL default touch behavior on the page to kill double-tap zoom
+document.addEventListener('touchstart',  e=>e.preventDefault(), {passive:false});
+document.addEventListener('touchmove',   e=>e.preventDefault(), {passive:false});
+document.addEventListener('touchend',    e=>e.preventDefault(), {passive:false});
+document.addEventListener('touchcancel', e=>e.preventDefault(), {passive:false});
+
+// Keyboard
 document.addEventListener('keydown', e=>{
   if(!K[e.key]){
     K[e.key]=true;
-    // Space = jump only. Arrow keys handle movement/brake/tuck.
     if(e.key===' '&&state==='playing') tryJump();
   }
   if(e.key==='p'||e.key==='P'||e.key==='Escape') togglePause();
@@ -290,14 +339,64 @@ document.addEventListener('keydown', e=>{
 });
 document.addEventListener('keyup',e=>{ K[e.key]=false; });
 
-document.querySelectorAll('.dpad button').forEach(b=>{
-  const d=b.dataset.d;
-  b.addEventListener('pointerdown',()=>{ M[d]=true; b.classList.add('pressed'); });
-  const up=()=>{ M[d]=false; b.classList.remove('pressed'); };
-  b.addEventListener('pointerup',up); b.addEventListener('pointerleave',up);
-});
-document.getElementById('mob-jump').addEventListener('click', tryJump);
-document.getElementById('mob-pause').addEventListener('click', togglePause);
+// Touch zone setup — runs after DOM ready
+function initTouchZone(){
+  const zone  = document.getElementById('touch-zone');
+  const thumb = document.getElementById('touch-thumb');
+  const tbar  = document.getElementById('tuck-bar');
+
+  function zoneRect(){ return zone.getBoundingClientRect(); }
+
+  function onTouchStart(e){
+    if(state==='paused') return;
+    const t = e.changedTouches[0];
+    const rect = zoneRect();
+    touch.active    = true;
+    touch.holdStart = performance.now();
+    touch.x         = t.clientX;
+    touch.zoneLeft   = rect.left;
+    touch.zoneWidth  = rect.width;
+    touch.tuck       = false;
+    touch.targetX    = clamp((t.clientX - rect.left) / rect.width, 0, 1);
+    zone.classList.add('active');
+    thumb.style.left = (touch.targetX * 100) + '%';
+  }
+
+  function onTouchMove(e){
+    if(!touch.active) return;
+    const t = e.changedTouches[0];
+    const rect = zoneRect();
+    touch.x       = t.clientX;
+    touch.targetX = clamp((t.clientX - rect.left) / rect.width, 0, 1);
+    thumb.style.left = (touch.targetX * 100) + '%';
+    // If held long enough, engage tuck
+    const held = performance.now() - touch.holdStart;
+    touch.tuck = held >= touch.JUMP_THRESHOLD;
+    tbar.style.width = Math.min(held / touch.JUMP_THRESHOLD, 1) * 100 + '%';
+  }
+
+  function onTouchEnd(e){
+    if(!touch.active) return;
+    const held = performance.now() - touch.holdStart;
+    touch.active  = false;
+    touch.tuck    = false;
+    touch.targetX = -1;
+    zone.classList.remove('active');
+    tbar.style.width = '0%';
+    // Release after a tuck = jump!
+    if(held >= touch.JUMP_THRESHOLD && state==='playing') tryJump();
+  }
+
+  zone.addEventListener('touchstart',  onTouchStart, {passive:false});
+  zone.addEventListener('touchmove',   onTouchMove,  {passive:false});
+  zone.addEventListener('touchend',    onTouchEnd,   {passive:false});
+  zone.addEventListener('touchcancel', onTouchEnd,   {passive:false});
+
+  // Pause button (a real button — needs click, not touch raw)
+  document.getElementById('mob-pause').addEventListener('click', togglePause);
+  // Allow overlays to still work (they use click)
+}
+
 document.getElementById('btn-start').addEventListener('click', startGame);
 document.getElementById('btn-restart').addEventListener('click', startGame);
 document.getElementById('btn-next').addEventListener('click', nextLevel);
@@ -536,18 +635,26 @@ function update(){
   // so relative to the camera they move down = toward the player from above).
   // Heat-seekers have worldVy GREATER than worldSpd → approach from below.
 
-  const left  = K['ArrowLeft'] ||K['a']||K['A']||M['left'];
-  const right = K['ArrowRight']||K['d']||K['D']||M['right'];
+  const left  = K['ArrowLeft'] ||K['a']||K['A'];
+  const right = K['ArrowRight']||K['d']||K['D'];
   // UP = brake (slow down relative to world → drift toward top of screen)
   // DOWN = tuck (speed up → drift toward bottom)
-  const brakeK = K['ArrowUp']  ||K['w']||K['W']||M['up'];
-  const tuckK  = K['ArrowDown']||K['s']||K['S']||M['down'];
+  const brakeK = K['ArrowUp']  ||K['w']||K['W'];
+  const tuckK  = K['ArrowDown']||K['s']||K['S'] || touch.tuck;
 
   if(!pl.wiping){
-    // Lateral carving
+    // Lateral carving — keyboard OR touch position
     const maxLat = 3.5+level*0.08;
-    if(left)  pl.vx -= 0.3;
-    if(right) pl.vx += 0.3;
+    if(touch.active && touch.targetX >= 0){
+      // Steer toward where thumb is: map 0..1 → target screen X
+      const targetPx = touch.targetX * W;
+      const diff = targetPx - pl.x;
+      // Proportional steering — faster the further away
+      pl.vx += clamp(diff * 0.08, -0.6, 0.6);
+    } else {
+      if(left)  pl.vx -= 0.3;
+      if(right) pl.vx += 0.3;
+    }
     pl.vx *= 0.82;
     pl.vx = clamp(pl.vx, -maxLat, maxLat);
     pl.x += pl.vx;
@@ -1078,8 +1185,18 @@ function loop(ts){
 
 // Boot
 buildSnow(); buildTrees();
+initTouchZone();
 showOv('ov-start');
 draw();
+
+// Make overlay buttons work on mobile despite blanket touchstart preventDefault
+['btn-start','btn-restart','btn-next'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('touchend', e=>{ e.stopPropagation(); el.click(); }, {passive:false});
+});
+document.getElementById('mob-pause').addEventListener('touchend', e=>{
+  e.stopPropagation(); togglePause();
+}, {passive:false});
 </script>
 </body>
 </html>
