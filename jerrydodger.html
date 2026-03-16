@@ -461,11 +461,21 @@ const touch = {
   originNormY: 0.5,
 };
 
-// Kill ALL default touch to prevent double-tap zoom everywhere
-document.addEventListener('touchstart',  e=>e.preventDefault(), {passive:false});
-document.addEventListener('touchmove',   e=>e.preventDefault(), {passive:false});
-document.addEventListener('touchend',    e=>e.preventDefault(), {passive:false});
-document.addEventListener('touchcancel', e=>e.preventDefault(), {passive:false});
+// Prevent default touch behavior ONLY within the game area (canvas + controls)
+// to kill browser double-tap zoom and scroll interference during gameplay.
+// Must NOT prevent default on the leaderboard overlay or nav links — those need
+// normal touch behaviour so inputs get focus and links navigate correctly.
+function isGameTouch(e) {
+  const lb  = document.getElementById('ov-lb');
+  const nav = document.getElementById('site-nav');
+  if (lb  && lb.contains(e.target))  return false;  // leaderboard inputs/buttons
+  if (nav && nav.contains(e.target)) return false;  // home link etc.
+  return true;
+}
+document.addEventListener('touchstart',  e=>{ if(isGameTouch(e)) e.preventDefault(); }, {passive:false});
+document.addEventListener('touchmove',   e=>{ if(isGameTouch(e)) e.preventDefault(); }, {passive:false});
+document.addEventListener('touchend',    e=>{ if(isGameTouch(e)) e.preventDefault(); }, {passive:false});
+document.addEventListener('touchcancel', e=>{ if(isGameTouch(e)) e.preventDefault(); }, {passive:false});
 
 // Keyboard
 document.addEventListener('keydown', e=>{
