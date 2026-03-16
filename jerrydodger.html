@@ -590,7 +590,7 @@ function C(lv){
     jCount:    Math.min(2+lv-1,5),
     dmg:       12+lv*2,
     bottomRate: Math.max(80-lv*8,30), // how often to spawn a bottom-approach jerry
-    hotdogInt:  Math.max(60-lv*3,25),
+    hotdogInt:  Math.max(480-lv*20, 300),   // one hotdog every ~5-8 seconds, not every second
     yardsaleInt: Math.max(90-lv*5,35),
   };
 }
@@ -610,9 +610,9 @@ function resetLevel(){
   obs=[]; boards=[]; hitPtx=[]; trickPtx=[]; hotdogs=[]; yardsales=[]; cheerParticles=[]; fc=0;
   iTimer=0; jCool=0;
   runDist=0;
-  // runTotal: approximate px of scrolling to complete the level (tuned to feel right)
-  runTotal = needJerrys * 320 + 1200;
-  finishY  = 9999;   // starts off-screen; approaches as runDist nears runTotal
+  // runTotal: ~20s of skiing at baseline speed for level 1, +5s per level
+  runTotal = Math.round((20 + level * 5) * c.worldSpd * 60);
+  finishY  = 9999;
   finishTriggered = false;
   beerAnim = 0;
   pl.x=W/2; pl.y=H*0.62; pl.vx=0; pl.speedRel=0;
@@ -1091,26 +1091,26 @@ function update(){
   for(let i=boards.length-1;i>=0;i--)
     if(boards[i].y > H+40) boards.splice(i,1);
 
-  // Accumulate distance scrolled this level (use worldSpd baseline so it's consistent)
-  runDist += worldSpd + pl.speedRel;
+  // Accumulate distance at the fixed world speed — independent of braking/tucking
+  // so the progress bar reflects time on the run, not how fast you ski
+  runDist += worldSpd;
 
-  // Finish line scrolls DOWN with terrain
+  // Finish line: spawns BELOW screen when 90% distance covered, scrolls up toward player
   const progress = Math.min(runDist / runTotal, 1);
   if(progress >= 0.90 && !finishTriggered){
-    if(finishY === 9999) finishY = -200;  // start above screen, scrolls down
+    if(finishY === 9999) finishY = H + 80;  // just below screen, scrolls UP toward player
   }
   if(finishY < 9999){
-    finishY += worldSpd - pl.speedRel;    // same as static terrain object
+    // Finish line is a static slope object — scrolls down like terrain
+    finishY += worldSpd - pl.speedRel;
   }
 
-  // Player crosses the finish line
-  if(!finishTriggered && finishY > 0 && finishY < H &&
-     pl.y + pl.h/2 > finishY - 8 && pl.y - pl.h/2 < finishY + 8){
+  // Player crosses the finish line — check when banner is near player Y
+  if(!finishTriggered && finishY !== 9999 && finishY > H*0.3 && finishY < H*0.9){
     finishTriggered = true;
-    state = 'finishing';   // special state: player coasts to bottom
-    pl.speedRel = 2.5;    // tuck into the finish
+    state = 'finishing';
+    pl.speedRel = 1.5;
     beerAnim = 0;
-    // Bonus points for finishing
     const bonus = Math.round(hp * 2 + level * 100);
     score += bonus;
     hudUpdate();
@@ -1123,15 +1123,16 @@ function update(){
     });
   }
 
+  // Fallback: if all Jerrys dodged but finish not yet visible, fast-track it
+  if(gotJerrys>=needJerrys && state==='playing' && !finishTriggered){
+    if(finishY===9999) finishY = H + 80;
+    // Also fast-forward progress so bar fills
+    runDist = runTotal;
+  }
+
   // Score trickle + continuous progress update
   if(fc%28===0 && state==='playing'){ score+=level; }
-  hudUpdate(); // always update for smooth progress bar
-
-  // Level complete: old Jerry-count trigger now just advances past finishing anim
-  if(gotJerrys>=needJerrys && state==='playing' && !finishTriggered){
-    // All Jerrys cleared but no finish line yet — just let finish line appear immediately
-    if(finishY===9999) finishY = H + 100;
-  }
+  hudUpdate();
 
   // ── Terrain scroll ───────────────────────────────────────────────────────
   // Static slope objects (snow, trees, jibs, jumps) all move DOWN the screen
