@@ -604,37 +604,43 @@ nav#menu.menu.active {
     margin: 0;
 }
 
-.menu-accordion-toggle {
+nav#menu .menu-accordion-toggle {
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    background: none;
-    border: none;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none;
     cursor: pointer;
-    /* Match .menu-text exactly */
     font-size: 1.1rem;
     font-family: inherit;
     padding: 0.75rem;
     color: #c71585;
     text-decoration: none;
-    transition: color 0.3s ease, background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    transition: color 0.3s ease, background-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    border-radius: 0;
 }
 
-.menu-accordion-toggle:hover {
+nav#menu .menu-accordion-toggle:hover {
     color: #ffffff;
-    background-color: rgba(199, 21, 133, 0.3);
+    background-color: rgba(199, 21, 133, 0.3) !important;
     opacity: 0.95;
     transform: translateY(-2px);
 }
 
-.theme-dark .menu-accordion-toggle {
+.theme-dark nav#menu .menu-accordion-toggle {
     color: #c71585;
+    background: transparent !important;
 }
 
-.theme-dark .menu-accordion-toggle:hover {
-    background-color: rgba(199, 21, 133, 0.3);
+.theme-dark nav#menu .menu-accordion-toggle:hover {
+    background-color: rgba(199, 21, 133, 0.3) !important;
 }
 
 .menu-chevron {
