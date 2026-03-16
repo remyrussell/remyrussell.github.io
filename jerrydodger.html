@@ -1099,18 +1099,18 @@ function update(){
   // so the progress bar reflects time on the run, not how fast you ski
   runDist += worldSpd;
 
-  // Finish line: spawns BELOW screen when 90% distance covered, scrolls up toward player
+  // Finish line: spawns ABOVE screen when 90% distance covered, scrolls DOWN toward player
   const progress = Math.min(runDist / runTotal, 1);
   if(progress >= 0.90 && !finishTriggered){
-    if(finishY === 9999) finishY = H + 80;  // just below screen, scrolls UP toward player
+    if(finishY === 9999) finishY = -80;  // above screen, will scroll down to player
   }
-  if(finishY < 9999){
-    // Finish line is a static slope object — scrolls down like terrain
+  if(finishY !== 9999 && !finishTriggered){
+    // Scrolls down same as all static terrain objects
     finishY += worldSpd + pl.speedRel;
   }
 
-  // Player crosses the finish line — check when banner is near player Y
-  if(!finishTriggered && finishY !== 9999 && finishY > H*0.3 && finishY < H*0.9){
+  // Player crosses the finish line — triggered when banner scrolls down past player Y
+  if(!finishTriggered && finishY !== 9999 && finishY >= pl.y - pl.h && finishY <= pl.y + pl.h){
     finishTriggered = true;
     state = 'finishing';
     pl.speedRel = 1.5;
@@ -1127,10 +1127,9 @@ function update(){
     });
   }
 
-  // Fallback: if all Jerrys dodged but finish not yet visible, fast-track it
+  // Fallback: all Jerrys dodged before timer — spawn finish immediately
   if(gotJerrys>=needJerrys && state==='playing' && !finishTriggered){
-    if(finishY===9999) finishY = H + 80;
-    // Also fast-forward progress so bar fills
+    if(finishY===9999) finishY = -80;
     runDist = runTotal;
   }
 
@@ -1261,8 +1260,17 @@ function draw(){
     drawBeerCelebration(beerAnim);
   }
 
-  // Pause
-  if(state==='paused'){
+  // DEBUG: show finish line state on screen
+  ctx.save();
+  ctx.fillStyle='rgba(0,0,0,0.6)';
+  ctx.fillRect(0, H-50, W, 50);
+  ctx.fillStyle='#fff';
+  ctx.font='11px monospace';
+  ctx.textAlign='left';
+  const pct = Math.min(runDist/runTotal*100,100).toFixed(1);
+  ctx.fillText(`dist:${Math.round(runDist)}/${runTotal} (${pct}%)  finishY:${Math.round(finishY)}  plY:${Math.round(pl.y)}  triggered:${finishTriggered}`, 6, H-32);
+  ctx.fillText(`state:${state}  speedRel:${pl.speedRel.toFixed(2)}  worldSpd:${worldSpd}  fc:${fc}`, 6, H-14);
+  ctx.restore();
     ctx.save();
     ctx.fillStyle='rgba(13,8,32,0.6)'; ctx.fillRect(0,0,W,H);
     ctx.font="2.4rem 'Bangers',cursive"; ctx.textAlign='center';
