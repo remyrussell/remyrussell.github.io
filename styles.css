@@ -599,6 +599,30 @@ nav#menu.menu.active {
     background-color: rgba(199, 21, 133, 0.3);
 }
 
+/* Section divider label in menu (e.g. "Vibecoding") */
+.menu-section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #999;
+    padding: 0.5rem 0.75rem 0.15rem;
+    margin-top: 0.25rem;
+    border-top: 1px solid rgba(199, 21, 133, 0.2);
+    cursor: default;
+}
+
+.theme-dark .menu-section-label {
+    color: #888;
+    border-top-color: rgba(199, 21, 133, 0.3);
+}
+
+/* Slightly indented sub-items under a section */
+.menu-sub {
+    font-size: 1rem !important;
+    padding-left: 1.5rem !important;
+}
+
 .menu.active .theme-toggle-wrapper {
     display: block;
 }
@@ -612,6 +636,43 @@ ul {
 
 li {
     margin-bottom: 0.75rem;
+}
+
+/* Inline links inside resume content (highlights, description, summary, email) */
+.container a,
+#summaryText a,
+#email a,
+.details a,
+.description a {
+    color: #c71585;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-all;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.container a:hover,
+#summaryText a:hover,
+#email a:hover,
+.details a:hover,
+.description a:hover {
+    color: #ff3ea5;
+    opacity: 0.85;
+}
+
+.theme-dark .container a,
+.theme-dark #summaryText a,
+.theme-dark #email a,
+.theme-dark .details a,
+.theme-dark .description a {
+    color: #e040a0;
+}
+
+.theme-dark .container a:hover,
+.theme-dark #email a:hover,
+.theme-dark .details a:hover,
+.theme-dark .description a:hover {
+    color: #ff3ea5;
 }
 
 /* Back to Top Button */

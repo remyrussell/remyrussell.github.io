@@ -5,6 +5,32 @@ function formatDate(dateString) {
     return date.toLocaleDateString('en-US', options);
 }
 
+// Convert plain URLs and email addresses in text to clickable <a> links
+function linkifyText(text) {
+    if (!text) return text;
+    // Escape HTML first to prevent XSS, then re-linkify
+    const escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    // Match http/https URLs and bare domain-like URLs (e.g. apidoc.eccovia.com)
+    return escaped.replace(
+        /(https?:\/\/[^\s,;)]+)|((?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s,;)]*)?)/g,
+        (match, httpUrl, bareUrl) => {
+            if (httpUrl) {
+                return `<a href="${httpUrl}" target="_blank" rel="noopener">${httpUrl}</a>`;
+            }
+            // Only linkify bare URLs that look like real domains (contain a dot, no spaces)
+            if (bareUrl && bareUrl.includes('.') && !bareUrl.match(/^\d+\.\d+/)) {
+                const href = bareUrl.startsWith('www.') ? `https://${bareUrl}` : `https://${bareUrl}`;
+                return `<a href="${href}" target="_blank" rel="noopener">${bareUrl}</a>`;
+            }
+            return match;
+        }
+    );
+}
+
 function keepThemeSetting() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.body.className = savedTheme === 'dark' ? 'theme-dark' : '';
@@ -108,6 +134,37 @@ function generateResumePDF(data) {
         return y + (lines.length * size * 0.45);
     }
 
+    // Renders text and makes any URLs in it clickable in the PDF
+    function addTextWithLinks(text, size, style, x, y, maxWidth) {
+        doc.setFontSize(size);
+        doc.setFont('Helvetica', style);
+        const urlRegex = /(https?:\/\/[^\s,;)]+)|((?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s,;)]*)?)/g;
+        const lines = doc.splitTextToSize(text, maxWidth);
+        const lineHeight = size * 0.45;
+        lines.forEach((line, i) => {
+            const lineY = y + i * lineHeight;
+            doc.text(line, x, lineY);
+            // Find URL matches in this line and draw invisible link rects over them
+            let match;
+            urlRegex.lastIndex = 0;
+            while ((match = urlRegex.exec(line)) !== null) {
+                const url = match[1] || (match[2] ? (match[2].startsWith('www.') || match[2].startsWith('http') ? 'https://' + match[2] : 'https://' + match[2]) : null);
+                if (!url) continue;
+                const preText = line.substring(0, match.index);
+                const matchText = match[0];
+                const preWidth = doc.getStringUnitWidth(preText) * size * 0.352;
+                const linkWidth = doc.getStringUnitWidth(matchText) * size * 0.352;
+                // Underline the link text in blue
+                doc.setTextColor(0, 0, 200);
+                doc.text(matchText, x + preWidth, lineY);
+                doc.setTextColor(0, 0, 0);
+                // Add clickable link rect
+                doc.link(x + preWidth, lineY - lineHeight * 0.7, linkWidth, lineHeight * 0.9, { url });
+            }
+        });
+        return y + (lines.length * lineHeight);
+    }
+
     function addHorizontalLine(y, offset) {
         doc.setLineWidth(0.2);
         doc.line(margin, y - offset, margin + contentWidth, y - offset);
@@ -118,7 +175,7 @@ function generateResumePDF(data) {
     if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
     if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
     if (contactInfo.length) {
-        yPosition = addText(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
+        yPosition = addTextWithLinks(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
     }
     yPosition += 0.5;
     if (data.role || data.seeking) {
@@ -153,7 +210,7 @@ function generateResumePDF(data) {
             }
             if (exp.highlights) {
                 exp.highlights.forEach(highlight => {
-                    yPosition = addText(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
+                    yPosition = addTextWithLinks(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
                 });
             }
             yPosition += 1;
@@ -284,7 +341,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const emailElement = document.getElementById('email');
         if (emailElement) {
-            emailElement.innerText = data.contact?.email || 'Email Not Found';
+            const email = data.contact?.email;
+            if (email) {
+                emailElement.innerHTML = `<a href="mailto:${email}">${email}</a>`;
+            } else {
+                emailElement.innerText = 'Email Not Found';
+            }
         } else {
             console.error('Email element not found in DOM');
         }
@@ -309,7 +371,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const summaryTextElement = document.getElementById('summaryText');
         if (summaryTextElement) {
-            summaryTextElement.innerText = data.summary || 'Summary Data Not Found';
+            summaryTextElement.innerHTML = linkifyText(data.summary) || 'Summary Data Not Found';
         } else {
             console.error('Summary text element not found in DOM');
         }
@@ -370,14 +432,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                         const descriptionPara = document.createElement('p');
                         descriptionPara.className = 'description';
-                        descriptionPara.innerText = experience.description || 'Description Not Found';
+                        descriptionPara.innerHTML = linkifyText(experience.description) || 'Description Not Found';
                         detailsDiv.appendChild(descriptionPara);
 
                         const highlightsList = document.createElement('ul');
                         const highlightsArray = Array.isArray(experience.highlights) ? experience.highlights : [];
                         const achievementsArray = Array.isArray(experience.achievements) ? experience.achievements : [];
                         const combinedHighlights = [...highlightsArray, ...achievementsArray];
-                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${item}</li>`).join('') : '';
+                        highlightsList.innerHTML = combinedHighlights.length > 0 ? combinedHighlights.map(item => `<li>${linkifyText(item)}</li>`).join('') : '';
                         if (combinedHighlights.length > 0) {
                             detailsDiv.appendChild(highlightsList);
                         }
