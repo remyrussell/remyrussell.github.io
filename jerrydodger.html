@@ -244,12 +244,18 @@
     }
     .tips b { color:#c8b0e8; }
 
-    /* LEADERBOARD OVERLAY */
+    /* LEADERBOARD — full-screen fixed overlay, outside game-wrapper */
     #ov-lb {
-      display:none; position:absolute; inset:0; z-index:55;
-      background:rgba(13,8,32,0.96);
+      display:none; position:fixed; inset:0; z-index:200;
+      background:rgba(13,8,32,0.97);
       flex-direction:column; align-items:center;
       padding:18px 16px 14px; overflow-y:auto;
+      /* Allow touch/pointer events — do NOT block inputs */
+      touch-action:auto;
+    }
+    #ov-lb input, #ov-lb button {
+      touch-action:auto;
+      pointer-events:auto;
     }
     #ov-lb h2 {
       font-family:'Bangers',cursive; font-size:2rem; color:#fff;
@@ -337,33 +343,33 @@
     <button class="btn" id="btn-go-lb" style="background:linear-gradient(135deg,#7b2fff,#c724f5);margin-top:4px">🏆 LEADERBOARD</button>
   </div>
 
-  <!-- LEADERBOARD -->
-  <div id="ov-lb">
-    <h2>🏔 LEADERBOARD</h2>
-    <p class="lb-sub">Top 10 shredders on remyrussell.com</p>
-    <div id="name-form" id="name-form">
-      <label for="lb-name">Your name</label>
-      <input id="lb-name" type="text" maxlength="24" placeholder="e.g. Remy Russell" autocomplete="off"/>
-      <label for="lb-company">Company <span style="opacity:0.5">(optional)</span></label>
-      <input id="lb-company" type="text" maxlength="32" placeholder="e.g. Anthropic" autocomplete="off"/>
-    </div>
-    <div class="lb-btn-row">
-      <button class="btn" id="btn-lb-save">SUBMIT SCORE</button>
-      <button class="btn" id="btn-lb-skip" style="background:rgba(123,47,255,0.5);box-shadow:none">SKIP</button>
-    </div>
-    <table id="lb-table">
-      <thead><tr><th>#</th><th>NAME</th><th>CO.</th><th>SCORE</th><th>LVL</th></tr></thead>
-      <tbody id="lb-body"></tbody>
-    </table>
-    <div class="lb-btn-row">
-      <button class="btn" id="btn-lb-play">PLAY AGAIN</button>
-    </div>
-  </div>
-
   <div class="overlay" id="ov-lvlup" style="display:none">
     <h1>RUN<br>CLEAR! 🏆</h1>
     <div class="score-big" id="lu-sc">0</div>
     <button class="btn" id="btn-next">NEXT RUN ▶</button>
+  </div>
+</div>
+
+<!-- LEADERBOARD — outside game-wrapper so touch inputs work on mobile -->
+<div id="ov-lb" style="display:none">
+  <h2>🏔 LEADERBOARD</h2>
+  <p class="lb-sub">Top 10 shredders on remyrussell.com</p>
+  <div id="name-form">
+    <label for="lb-name">Your name</label>
+    <input id="lb-name" type="text" maxlength="24" placeholder="e.g. Remy Russell" autocomplete="off"/>
+    <label for="lb-company">Company <span style="opacity:0.5">(optional)</span></label>
+    <input id="lb-company" type="text" maxlength="32" placeholder="e.g. Anthropic" autocomplete="off"/>
+  </div>
+  <div class="lb-btn-row">
+    <button class="btn" id="btn-lb-save">SUBMIT SCORE</button>
+    <button class="btn" id="btn-lb-skip" style="background:rgba(123,47,255,0.5);box-shadow:none">SKIP</button>
+  </div>
+  <table id="lb-table">
+    <thead><tr><th>#</th><th>NAME</th><th>CO.</th><th>SCORE</th><th>LVL</th></tr></thead>
+    <tbody id="lb-body"></tbody>
+  </table>
+  <div class="lb-btn-row">
+    <button class="btn" id="btn-lb-play">PLAY AGAIN</button>
   </div>
 </div>
 
@@ -718,14 +724,11 @@ function mkJerry(lc,forceType){
 
 function mkBoard(){
   boards.push({
-    x:rnd(30,W-30), y:-30,
-    // screenVy: how fast board moves DOWN the screen (positive = downward).
-    // Boards are rogue — much faster than jerrys on screen.
-    screenVy: worldSpd * rnd(2.2, 3.4),
-    vx:rnd(-1.0,1.0),
-    angle:rnd(-0.3,0.3), spin:rnd(-0.09,0.09),
+    x:rnd(30,W-30), y:-60,
+    screenVy: worldSpd * rnd(2.4, 3.6),  // fast — overtakes player from top
+    vx:rnd(-0.6,0.6),
+    w:14, h:52,   // tall+narrow — oriented down the slope
     color:[P.pink,P.electric,P.purple,'#ff8c00','#00e5ff'][rndI(0,5)],
-    w:50, h:12,
   });
 }
 
@@ -1003,7 +1006,7 @@ function update(){
   // Actually the simplest: just give them a direct positive screenVy (ignore worldVy).
   boards.forEach(b=>{
     b.y += b.screenVy + pl.speedRel;
-    b.x += b.vx; b.angle += b.spin;
+    b.x += b.vx;
     if(b.x < b.w/2 || b.x > W-b.w/2) b.vx *= -1;
   });
 
@@ -1212,9 +1215,13 @@ function draw(){
   // Jump ramps
   jumps.forEach(drawJump);
 
-  // Finish line banner
-  if(finishY < H + 60 && finishY > -60){
-    drawFinishLine(finishY);
+  // Finish line banner — once visible, draw at a fixed position on screen
+  // (player is stationary; the world moves past them, so the banner just stays put)
+  if(finishY !== 9999 && !finishTriggered){
+    drawFinishLine(Math.round(finishY));
+  } else if(finishTriggered){
+    // Keep it on screen at the player's crossing point while celebrating
+    drawFinishLine(Math.round(pl.y));
   }
 
   // Hotdogs
@@ -1228,18 +1235,38 @@ function draw(){
   });
   ctx.restore();
 
-  // Runaway boards
+  // Runaway boards — vertical, flying tip-first down the slope
   boards.forEach(b=>{
-    ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(b.angle);
+    ctx.save(); ctx.translate(b.x, b.y);
+    // slight wobble side to side
+    ctx.rotate(Math.sin(b.x * 0.04 + b.y * 0.02) * 0.12);
+    // shadow
     ctx.fillStyle='rgba(0,0,40,0.18)';
-    ctx.beginPath(); ctx.ellipse(0,4,b.w*0.5,5,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0, b.h*0.5+4, b.w*0.6, 5, 0, 0, Math.PI*2); ctx.fill();
+    // board body
     ctx.fillStyle=b.color;
-    ctx.beginPath(); ctx.roundRect(-b.w/2,-b.h/2,b.w,b.h,5); ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.25)';
-    ctx.fillRect(-b.w/2+6,-b.h/2+2,8,b.h-4);
-    ctx.fillRect(b.w/2-14,-b.h/2+2,8,b.h-4);
-    ctx.fillStyle='rgba(0,0,0,0.42)';
-    ctx.fillRect(-10,-b.h/2,7,b.h); ctx.fillRect(3,-b.h/2,7,b.h);
+    ctx.beginPath(); ctx.roundRect(-b.w/2, -b.h/2, b.w, b.h, 4); ctx.fill();
+    // graphic stripes
+    ctx.fillStyle='rgba(255,255,255,0.28)';
+    ctx.fillRect(-b.w/2+2, -b.h/2+6, b.w-4, 10);
+    ctx.fillRect(-b.w/2+2, b.h/2-16, b.w-4, 10);
+    // bindings
+    ctx.fillStyle='rgba(0,0,0,0.45)';
+    ctx.beginPath(); ctx.roundRect(-b.w/2+1, -8, b.w-2, 7, 2); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(-b.w/2+1,  4, b.w-2, 7, 2); ctx.fill();
+    // tip (top — pointed end flying ahead)
+    ctx.fillStyle=b.color;
+    ctx.beginPath();
+    ctx.moveTo(-b.w/2, -b.h/2);
+    ctx.lineTo(b.w/2, -b.h/2);
+    ctx.lineTo(0, -b.h/2-10);
+    ctx.closePath(); ctx.fill();
+    // tail
+    ctx.beginPath();
+    ctx.moveTo(-b.w/2, b.h/2);
+    ctx.lineTo(b.w/2, b.h/2);
+    ctx.lineTo(0, b.h/2+6);
+    ctx.closePath(); ctx.fill();
     ctx.restore();
   });
 
@@ -1283,62 +1310,89 @@ function drawPtx(arr){
   }
 }
 
-// ── Draw yardsale ─────────────────────────────────────
+// ── Draw crashed skier ────────────────────────────────
 function drawYardsale(ys){
   ctx.save();
   ctx.translate(ys.x, ys.y);
 
-  // Shadow blob
+  // shadow
   ctx.fillStyle='rgba(0,0,40,0.15)';
-  ctx.beginPath(); ctx.ellipse(0, 4, ys.w*0.55, 8, 0, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(0, 6, 28, 8, 0, 0, Math.PI*2); ctx.fill();
 
-  ys.items.forEach(item=>{
-    ctx.save();
-    ctx.translate(item.dx, item.dy);
-    ctx.rotate(item.angle);
-    ctx.fillStyle = item.color;
-    ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-    ctx.lineWidth = 1;
+  // The items array encodes: ys.items[0].color = jacket, ys.items[1].color = pants
+  const jktCol  = ys.items[0]?.color || '#e8b4d0';
+  const pantCol = ys.items[1]?.color || '#4a2060';
+  const hatCol  = ys.items[2]?.color || P.pink;
 
-    if(item.type===0){
-      // Ski — long thin rectangle
-      ctx.beginPath(); ctx.roundRect(-3,-22,6,44,3); ctx.fill(); ctx.stroke();
-      ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.fillRect(-1,-20,2,38);
-    } else if(item.type===1){
-      // Pole — thinner, with basket
-      ctx.beginPath(); ctx.roundRect(-2,-18,4,36,2); ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.arc(0, 16, 4, 0, Math.PI*2); ctx.fill();
-    } else if(item.type===2){
-      // Glove — rounded blob
-      ctx.beginPath();
-      ctx.ellipse(0,-5,6,8,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(5,0,3,5,0.4,0,Math.PI*2); ctx.fill();
-    } else if(item.type===3){
-      // Goggles — two circles
-      ctx.beginPath(); ctx.ellipse(-5,0,5,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(5,0,5,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      ctx.strokeStyle=item.color; ctx.lineWidth=2;
-      ctx.beginPath(); ctx.moveTo(-2,0); ctx.lineTo(0,0); ctx.stroke();
-      // Lens glare
-      ctx.fillStyle='rgba(255,255,255,0.35)';
-      ctx.beginPath(); ctx.ellipse(-6,-1,2,1.5,0.3,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(4,-1,2,1.5,0.3,0,Math.PI*2); ctx.fill();
-    } else {
-      // Helmet
-      ctx.beginPath(); ctx.arc(0,-2,8,Math.PI,0); ctx.fill(); ctx.stroke();
-      ctx.fillRect(-8,-2,16,5);
-      ctx.fillStyle='rgba(255,255,255,0.25)';
-      ctx.beginPath(); ctx.ellipse(-2,-5,3,2,0.3,0,Math.PI*2); ctx.fill();
-    }
-    ctx.restore();
-  });
+  // Skier lying face-down, splayed out — body rotated ~15° off horizontal
+  ctx.rotate(0.25);
 
-  // "YARD SALE" label above the pile
-  ctx.fillStyle='rgba(255,45,120,0.85)';
+  // Skis — one still on, one flying off
+  ctx.fillStyle = '#6aadce';
+  // Ski still on (left foot)
+  ctx.save(); ctx.rotate(-0.15);
+  ctx.beginPath(); ctx.roundRect(-3, 2, 6, 46, 3); ctx.fill();
+  ctx.restore();
+  // Ski flying off (right foot, angled away)
+  ctx.save(); ctx.translate(18, -8); ctx.rotate(0.7);
+  ctx.beginPath(); ctx.roundRect(-3, -4, 6, 42, 3); ctx.fill();
+  ctx.restore();
+
+  // Legs
+  ctx.fillStyle = pantCol;
+  ctx.save(); ctx.rotate(-0.1);
+  ctx.fillRect(-6, 0, 10, 24); // left leg
+  ctx.restore();
+  ctx.save(); ctx.rotate(0.3); ctx.translate(4, 0);
+  ctx.fillRect(-2, 0, 10, 20); // right leg (splayed)
+  ctx.restore();
+
+  // Body
+  ctx.fillStyle = jktCol;
+  ctx.beginPath(); ctx.roundRect(-10, -22, 20, 24, 5); ctx.fill();
+
+  // One arm outstretched forward
+  ctx.fillStyle = jktCol;
+  ctx.save(); ctx.rotate(-0.4);
+  ctx.fillRect(-4, -34, 8, 16); // arm reaching up slope
+  ctx.restore();
+  // Other arm splayed to side
+  ctx.save(); ctx.rotate(1.2); ctx.translate(0, -8);
+  ctx.fillRect(-4, -18, 8, 16);
+  ctx.restore();
+
+  // Head face-down
+  ctx.fillStyle = '#ffe5c4';
+  ctx.beginPath(); ctx.arc(0, -28, 8, 0, Math.PI*2); ctx.fill();
+
+  // Helmet (askew)
+  ctx.save(); ctx.rotate(-0.4);
+  ctx.fillStyle = hatCol;
+  ctx.beginPath(); ctx.arc(0, -28, 8, Math.PI, 0); ctx.fill();
+  ctx.fillRect(-8, -28, 16, 3);
+  ctx.restore();
+
+  // Goggles knocked off, lying nearby
+  ctx.save(); ctx.translate(-18, 10); ctx.rotate(0.6);
+  ctx.fillStyle='rgba(0,0,0,0.45)';
+  ctx.beginPath(); ctx.ellipse(-4, 0, 4, 3, 0, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(4, 0, 4, 3, 0, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#888'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(-1,0); ctx.lineTo(1,0); ctx.stroke();
+  ctx.restore();
+
+  // A pole lying flat
+  ctx.save(); ctx.rotate(-0.2); ctx.translate(-8, 8);
+  ctx.strokeStyle = '#c0d8f0'; ctx.lineWidth = 2.5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(-20, 0); ctx.lineTo(22, 0); ctx.stroke();
+  ctx.restore();
+
+  // "WIPEOUT" label
+  ctx.fillStyle='rgba(255,45,120,0.9)';
   ctx.font="bold 7px 'Bangers',cursive";
   ctx.textAlign='center';
-  ctx.fillText('YARD SALE', 0, -ys.h*0.5 - 4);
+  ctx.rotate(-0.25); // counter-rotate so text reads straight
+  ctx.fillText('WIPEOUT', 0, -40);
 
   ctx.restore();
 }
@@ -2044,19 +2098,18 @@ function lbRender(entries, highlightScore){
 function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 function showLeaderboard(pendingScore, pendingLevel){
-  // Show/hide name form based on whether score is worth saving
-  const entries = lbLoad();
-  const nameForm = document.getElementById('name-form');
-  const savebtn  = document.getElementById('btn-lb-save');
+  const entries   = lbLoad();
+  const nameForm  = document.getElementById('name-form');
+  const savebtn   = document.getElementById('btn-lb-save');
+  const skipbtn   = document.getElementById('btn-lb-skip');
   const qualifies = entries.length < 10 || pendingScore > (entries[entries.length-1]?.score||0);
 
   nameForm.style.display = qualifies ? 'flex' : 'none';
   savebtn.style.display  = qualifies ? '' : 'none';
+  skipbtn.style.display  = qualifies ? '' : 'none';
 
   lbRender(entries, pendingScore);
 
-  // Show overlay (inside game-wrapper)
-  ['ov-start','ov-over','ov-lvlup'].forEach(n=>document.getElementById(n).style.display='none');
   const lb = document.getElementById('ov-lb');
   lb.style.display = 'flex';
 
@@ -2066,13 +2119,15 @@ function showLeaderboard(pendingScore, pendingLevel){
     const updated = lbAddScore(name, co, pendingScore, pendingLevel);
     nameForm.style.display = 'none';
     savebtn.style.display  = 'none';
+    skipbtn.style.display  = 'none';
     lbRender(updated, pendingScore);
   };
 
-  document.getElementById('btn-lb-skip').onclick = ()=>{
-    lbRender(lbLoad(), null);
+  skipbtn.onclick = ()=>{
     nameForm.style.display = 'none';
     savebtn.style.display  = 'none';
+    skipbtn.style.display  = 'none';
+    lbRender(lbLoad(), null);
   };
 
   document.getElementById('btn-lb-play').onclick = ()=>{
@@ -2111,24 +2166,26 @@ document.getElementById('btn-go-lb').addEventListener('click', ()=> showLeaderbo
 document.getElementById('btn-view-lb').addEventListener('click', ()=>{
   document.getElementById('name-form').style.display='none';
   document.getElementById('btn-lb-save').style.display='none';
+  document.getElementById('btn-lb-skip').style.display='none';
   lbRender(lbLoad(), null);
-  ['ov-start','ov-over','ov-lvlup'].forEach(n=>document.getElementById(n).style.display='none');
-  document.getElementById('ov-lb').style.display='flex';
-  document.getElementById('btn-lb-play').textContent='← BACK';
-  document.getElementById('btn-lb-play').onclick=()=>{
-    document.getElementById('ov-lb').style.display='none';
+  const lb = document.getElementById('ov-lb');
+  lb.style.display='flex';
+  const playBtn = document.getElementById('btn-lb-play');
+  playBtn.textContent='← BACK';
+  playBtn.onclick=()=>{
+    lb.style.display='none';
+    playBtn.textContent='PLAY AGAIN';
+    playBtn.onclick=()=>{ lb.style.display='none'; startGame(); };
     showOv('ov-start');
-    document.getElementById('btn-lb-play').textContent='PLAY AGAIN';
-    document.getElementById('btn-lb-play').onclick=()=>{ document.getElementById('ov-lb').style.display='none'; startGame(); };
   };
 });
 
-// Mobile touch handlers for overlay buttons (touchend fires after our blanket preventDefault)
+// Mobile touch handlers for in-game overlay buttons inside game-wrapper
 const touchClick = id => {
   const el = document.getElementById(id);
   if(el) el.addEventListener('touchend', e=>{ e.stopPropagation(); el.click(); }, {passive:false});
 };
-['btn-start','btn-restart','btn-next','btn-go-lb','btn-view-lb','btn-lb-save','btn-lb-skip','btn-lb-play'].forEach(touchClick);
+['btn-start','btn-restart','btn-next','btn-go-lb','btn-view-lb'].forEach(touchClick);
 document.getElementById('mob-pause').addEventListener('touchend', e=>{ e.stopPropagation(); togglePause(); }, {passive:false});
 </script>
 </body>
