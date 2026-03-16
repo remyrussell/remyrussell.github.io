@@ -864,8 +864,8 @@ function update(){
       else if(touch.normY > 0.62) brakeIntensity = Math.max(brakeIntensity, (touch.normY-0.62)/0.38);
     }
 
-    if(tuckIntensity > 0)       pl.speedRel += 0.22 * tuckIntensity;
-    else if(brakeIntensity > 0) pl.speedRel -= 0.28 * brakeIntensity;
+    if(tuckIntensity > 0)       pl.speedRel += 0.22 * tuckIntensity;   // positive = faster
+    else if(brakeIntensity > 0) pl.speedRel -= 0.28 * brakeIntensity;  // negative = slower
     else                        pl.speedRel *= 0.90;
     pl.speedRel = clamp(pl.speedRel, maxBrake, maxTuck);
 
@@ -971,8 +971,9 @@ function update(){
       // Target: screenDY such that o.y moves toward pl.y at a closing speed
       const closingRate = 1.0 + level*0.1;
       const targetScreenDY = (dy > 0 ? 1 : -1) * Math.min(Math.abs(dy)*0.04, closingRate);
-      // worldVy = worldSpd - speedRel - targetScreenDY
-      const targetWorldVy = worldSpd - pl.speedRel - targetScreenDY;
+      // screenDY = (worldSpd - worldVy) + speedRel = targetScreenDY
+      // → worldVy = worldSpd + speedRel - targetScreenDY
+      const targetWorldVy = worldSpd + pl.speedRel - targetScreenDY;
       o.worldVy += (targetWorldVy - o.worldVy)*0.07;
       o.worldVy  = clamp(o.worldVy, worldSpd*0.2, worldSpd*0.85);
       o.alarm = Math.min(1, o.alarm+0.04);
@@ -984,8 +985,10 @@ function update(){
         o.vx  = clamp(o.vx, -2.8, 2.8);
       }
     }
-    // Screen delta: positive = moves DOWN screen (toward player from above)
-    const screenDY = (worldSpd - o.worldVy) - pl.speedRel;
+    // screenDY: how many px this obstacle moves DOWN the screen each frame.
+    // = (worldSpd - worldVy) + speedRel
+    // tuck (speedRel>0): obstacles come faster ✓  brake (speedRel<0): slower ✓
+    const screenDY = (worldSpd - o.worldVy) + pl.speedRel;
     o.x += o.vx;
     o.y += screenDY;
     if(o.x < o.w/2)    { o.x = o.w/2;     o.vx *= -1; }
@@ -999,7 +1002,7 @@ function update(){
   // overtakes them fast → they zoom down screen.
   // Actually the simplest: just give them a direct positive screenVy (ignore worldVy).
   boards.forEach(b=>{
-    b.y += b.screenVy - pl.speedRel;
+    b.y += b.screenVy + pl.speedRel;
     b.x += b.vx; b.angle += b.spin;
     if(b.x < b.w/2 || b.x > W-b.w/2) b.vx *= -1;
   });
@@ -1010,7 +1013,7 @@ function update(){
     const hd=hotdogs[i];
     hd.bob += 0.07;
     // Static slope object: screenDY = worldSpd - speedRel (same formula as obstacles with worldVy=0)
-    const hdScreenDY = worldSpd - pl.speedRel;
+    const hdScreenDY = worldSpd + pl.speedRel;
     hd.y += hdScreenDY;
     // Collect check
     if(!hd.collected){
@@ -1034,7 +1037,7 @@ function update(){
   // Yardsale movement + collision (static terrain objects)
   for(let i=yardsales.length-1;i>=0;i--){
     const ys=yardsales[i];
-    ys.y += worldSpd - pl.speedRel;
+    ys.y += worldSpd + pl.speedRel;
     // Collision — count as damage (you ran into scattered gear)
     if(iTimer===0&&!pl.wiping&&hp>0&&state==='playing'){
       const dx=Math.abs(pl.x-ys.x), dy=Math.abs(pl.y-ys.y);
@@ -1103,7 +1106,7 @@ function update(){
   }
   if(finishY < 9999){
     // Finish line is a static slope object — scrolls down like terrain
-    finishY += worldSpd - pl.speedRel;
+    finishY += worldSpd + pl.speedRel;
   }
 
   // Player crosses the finish line — check when banner is near player Y
@@ -1143,7 +1146,7 @@ function update(){
   // When braking:  screenDY = worldSpd + |speedRel| (objects approach faster)
   // When tucking:  screenDY = worldSpd - speedRel (objects approach slower)
   // This means static objects NEVER move up past the player — they always come from the top.
-  const terrainDY = worldSpd - pl.speedRel;  // always positive (downward)
+  const terrainDY = worldSpd + pl.speedRel;  // tuck>0 = faster, brake<0 = slower, never negative
 
   snow.forEach(p=>{
     p.y += terrainDY * 0.55;   // snow slightly slower (parallax)
@@ -1180,7 +1183,7 @@ function draw(){
   // Light bands scrolling downward (terrain coming toward you)
   ctx.save(); ctx.globalAlpha=0.05;
   for(let i=0;i<5;i++){
-    const sy = (fc*(worldSpd-pl.speedRel)*0.12 + i*(H/4)) % (H+50) - 25;
+    const sy = (fc*(worldSpd+pl.speedRel)*0.12 + i*(H/4)) % (H+50) - 25;
     const g2=ctx.createLinearGradient(0,sy,0,sy+H/5);
     g2.addColorStop(0,'#fff'); g2.addColorStop(1,'transparent');
     ctx.fillStyle=g2; ctx.fillRect(0,sy,W,H/5);
@@ -1342,7 +1345,7 @@ function drawYardsale(ys){
 }
 
 function drawTracks(){
-  const tDY = worldSpd - pl.speedRel;
+  const tDY = worldSpd + pl.speedRel;
   trackOff = (trackOff + tDY * 0.38) % 40;
   ctx.save(); ctx.strokeStyle='rgba(150,190,225,0.3)'; ctx.lineWidth=1.5;
   [W*0.3,W*0.7].forEach(tx=>{
