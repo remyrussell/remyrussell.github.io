@@ -293,8 +293,7 @@
 
 <nav id="site-nav">
   <span class="brand">RR</span>
-  <a href="/">Home</a>
-  <a href="/dogs.html">Dogs</a>
+  <a href="/">← remyrussell.com</a>
   <a href="/jerrydodger.html" class="active">🎿 Jerry Dodger</a>
 </nav>
 
@@ -320,7 +319,7 @@
 
   <div class="overlay" id="ov-start">
     <h1>JERRY<br>DODGER</h1>
-    <p class="sub">You rip. They send it wrong.<br>Dodge Jerrys, hit jumps, survive the descent. 🎿🤙</p>
+    <p class="sub">Dodge the Jerry.<br>Gap the Jerry.<br>Or become the Jerry. 🎿</p>
     <button class="btn" id="btn-start">DROP IN</button>
     <button class="btn" id="btn-view-lb" style="background:linear-gradient(135deg,#7b2fff,#c724f5);margin-top:0px">🏆 LEADERBOARD</button>
     <div style="margin-top:12px;color:#6a4a88;font-size:0.76rem;line-height:1.9">
@@ -434,9 +433,10 @@ const pl = {
   speedRel: 0,
   airborne:false, jumpVel:0, jumpH:0, jumpMaxH:58,
   wiping:false, wipeF:0, wipeAngle:0, wipeVx:0,
+  backflip:false, flipAngle:0,   // kicker backflip
 };
 
-let obs=[], snow=[], trees=[], jibs=[], jumps=[], boards=[], hotdogs=[];
+let obs=[], snow=[], trees=[], jibs=[], jumps=[], boards=[], hotdogs=[], yardsales=[];
 let hitPtx=[], trickPtx=[];
 let trackOff=0;
 
@@ -582,7 +582,7 @@ function C(lv){
     worldSpd:  2.0+lv*0.5,
     rate:      Math.max(30-lv*2.2,11),
     maxObs:    4+lv*2,
-    heats:     Math.max(0,lv-2),
+    heats:     Math.max(0,lv-1),
     need:      10+lv*5,
     bigCh:     0.07+lv*0.03,
     clusterCh: lv>3?0.2:0,
@@ -590,7 +590,8 @@ function C(lv){
     jCount:    Math.min(2+lv-1,5),
     dmg:       12+lv*2,
     bottomRate: Math.max(80-lv*8,30), // how often to spawn a bottom-approach jerry
-    hotdogInt:  Math.max(280-lv*15,120),
+    hotdogInt:  Math.max(60-lv*3,25),
+    yardsaleInt: Math.max(90-lv*5,35),
   };
 }
 
@@ -606,7 +607,7 @@ function startGame(){
 function resetLevel(){
   const c=C(level);
   worldSpd=c.worldSpd; needJerrys=c.need; gotJerrys=0;
-  obs=[]; boards=[]; hitPtx=[]; trickPtx=[]; hotdogs=[]; cheerParticles=[]; fc=0;
+  obs=[]; boards=[]; hitPtx=[]; trickPtx=[]; hotdogs=[]; yardsales=[]; cheerParticles=[]; fc=0;
   iTimer=0; jCool=0;
   runDist=0;
   // runTotal: approximate px of scrolling to complete the level (tuned to feel right)
@@ -701,11 +702,16 @@ function mkJerry(lc,forceType){
     stance:     rnd(-0.14,0.14),
   };
   if(type==='heatseeker'){
-    // Heat-seekers start below screen and descend FASTER than player —
-    // so they appear to approach from behind (bottom of screen).
-    o.y = H+h+rnd(0,60);
-    o.worldVy = worldSpd * rnd(1.12, 1.55);
-    o.alarm=0;
+    // Heat-seekers spawn at the TOP and ski FASTER than worldSpd.
+    // screenDY = worldSpd - worldVy - speedRel
+    // worldVy > worldSpd → screenDY < 0 → they move UP relative to camera
+    // But we spawn them above the player and want them to drift DOWN toward player.
+    // So: worldVy < worldSpd → screenDY > 0 → drifts down from top.
+    // Make them slightly slower than world so camera overtakes them less —
+    // they linger above the player and creep down menacingly.
+    o.y = -o.h - rnd(20, 100);
+    o.worldVy = worldSpd * rnd(0.45, 0.65); // much slower than world → drifts down screen fast
+    o.alarm = 0;
   }
   return o;
 }
@@ -723,6 +729,23 @@ function mkBoard(){
   });
 }
 
+function mkYardsale(){
+  // A scattered gear pile — static obstacle on the slope
+  const items = [];
+  const cx = rnd(40, W-40);
+  const spread = rnd(18, 35);
+  const count = rndI(3, 7);
+  for(let i=0; i<count; i++){
+    items.push({
+      dx: rnd(-spread, spread),
+      dy: rnd(-spread*0.5, spread*0.5),
+      type: rndI(0, 4), // 0=ski, 1=pole, 2=glove, 3=goggles, 4=helmet
+      angle: rnd(-Math.PI, Math.PI),
+      color: [P.pink,P.electric,'#e8b4d0','#ffe033','#b4c6e8',P.purple,'#c8782a'][rndI(0,7)],
+    });
+  }
+  yardsales.push({ x:cx, y:-60, items, w:spread+16, h:spread+16 });
+}
 function mkHotdog(){
   hotdogs.push({
     x: rnd(40, W-40),
@@ -745,7 +768,7 @@ function hitsBoard(a,b){
            a.y+a.h/2-s<b.y-b.h/2||a.y-a.h/2+s>b.y+b.h/2);
 }
 
-function wipeout(dmg){
+function wipeout(dmg, source){
   if(iTimer>0) return;
   hp=Math.max(0,hp-dmg); iTimer=130; hudUpdate();
   for(let i=0;i<18;i++) hitPtx.push({
@@ -754,7 +777,13 @@ function wipeout(dmg){
     col:[P.pink,P.gold,'#fff',P.purple][rndI(0,4)]
   });
   pl.wiping=true; pl.wipeF=0; pl.wipeAngle=0; pl.wipeVx=rnd(-3.5,3.5);
-  popup(pl.x-25,pl.y-52,'WIPEOUT! 💥',P.pink);
+  if(source==='heatseeker'){
+    popup(pl.x-42, pl.y-56, 'HEAT SEEKER! 🔥🚀', '#ff6600');
+  } else if(source==='yardsale'){
+    popup(pl.x-30, pl.y-52, 'YARD SALE! 🎿💀', P.pink);
+  } else {
+    popup(pl.x-25, pl.y-52, 'WIPEOUT! 💥', P.pink);
+  }
   if(hp<=0) setTimeout(()=>{
     state='gameover';
     document.getElementById('go-sc').textContent=score;
@@ -799,14 +828,10 @@ function update(){
   const right = K['ArrowRight']||K['d']||K['D'];
   const brakeK = K['ArrowUp']  ||K['w']||K['W'];
   const tuckK  = K['ArrowDown']||K['s']||K['S'];
-  // Touch: normY < 0.38 = brake, normY > 0.62 = tuck
-  const touchBrake = touch.active && touch.normY < 0.38;
-  const touchTuck  = touch.active && touch.normY > 0.62;
 
   if(!pl.wiping){
     const maxLat = 3.5+level*0.08;
     if(touch.active){
-      // Steer proportionally to horizontal thumb position
       const targetPx = touch.normX * W;
       const diff = targetPx - pl.x;
       pl.vx += clamp(diff * 0.09, -0.7, 0.7);
@@ -819,33 +844,47 @@ function update(){
     pl.x += pl.vx;
     pl.x  = clamp(pl.x, pl.w/2+4, W-pl.w/2-4);
 
-    // Longitudinal speed relative to world
-    // maxBrake: player can slow to 0 absolute speed (braking to a full stop)
-    // which means speedRel can go as negative as -worldSpd.
-    // maxTuck: can go up to 2.8 px/frame faster than world.
-    const maxBrake = -worldSpd;
+    // ── Speed relative to world ───────────────────────────────────────────
+    // The player is ALWAYS at a fixed Y on screen (H*0.62).
+    // speedRel controls how fast the terrain scrolls past them:
+    //   speedRel = 0   → terrain scrolls at worldSpd  (baseline)
+    //   speedRel > 0   → tuck: terrain scrolls faster  (player going faster downhill)
+    //   speedRel < 0   → brake: terrain scrolls slower (player slowing down)
+    //   speedRel = -worldSpd → full stop: terrain doesn't scroll at all
+    // The player's screen Y does NOT change — only the world moves around them.
+    const maxBrake = -worldSpd;   // full stop, can't reverse
     const maxTuck  =  2.8;
-    if(tuckK || touchTuck)        pl.speedRel += 0.22;
-    else if(brakeK || touchBrake) pl.speedRel -= 0.22;
-    else                          pl.speedRel *= 0.90;
+
+    let brakeIntensity = 0, tuckIntensity = 0;
+    if(brakeK) brakeIntensity = 1.0;
+    if(tuckK)  tuckIntensity  = 1.0;
+    if(touch.active){
+      if(touch.normY < 0.38)      brakeIntensity = Math.max(brakeIntensity, (0.38-touch.normY)/0.38);
+      else if(touch.normY > 0.62) tuckIntensity  = Math.max(tuckIntensity,  (touch.normY-0.62)/0.38);
+    }
+
+    if(tuckIntensity > 0)       pl.speedRel += 0.22 * tuckIntensity;
+    else if(brakeIntensity > 0) pl.speedRel -= 0.28 * brakeIntensity;
+    else                        pl.speedRel *= 0.90;
     pl.speedRel = clamp(pl.speedRel, maxBrake, maxTuck);
 
-    // Drift player Y on screen based on relative speed
-    pl.y += pl.speedRel;
-    pl.y  = clamp(pl.y, H*0.12, H*0.90);
+    // Player Y is FIXED — never drifts. Only the world scrolls.
+    pl.y = H * 0.62;
   } else {
-    // Wipeout tumble
+    // Wipeout tumble — allow brief visual drift but snap back
     pl.wipeF++; pl.wipeAngle += 0.22; pl.x += pl.wipeVx;
     pl.x = clamp(pl.x, pl.w/2+4, W-pl.w/2-4);
-    if(pl.wipeF > 52){ pl.wiping=false; pl.wipeAngle=0; pl.speedRel=0; }
+    if(pl.wipeF > 52){ pl.wiping=false; pl.wipeAngle=0; pl.speedRel=0; pl.y=H*0.62; }
   }
 
-  // Jump physics (vertical hop, independent of downhill motion)
+  // Jump physics
   if(pl.airborne){
     pl.jumpVel+=0.52; pl.jumpH-=pl.jumpVel;
     pl.jumpH=Math.max(0,pl.jumpH);
+    if(pl.backflip) pl.flipAngle += 0.19;   // one full rotation over ~33 frames
     if(pl.jumpH<=0&&pl.jumpVel>0){
       pl.airborne=false; pl.jumpH=0; pl.jumpVel=0;
+      pl.backflip=false; pl.flipAngle=0;
     }
   }
 
@@ -856,6 +895,7 @@ function update(){
       if(pl.x>j.x-j.w/2&&pl.x<j.x+j.w/2&&
          pl.y+pl.h/2>j.y-j.h&&pl.y+pl.h/2<j.y+j.h*0.6){
         pl.airborne=true; pl.jumpVel=-11; jCool=70; j.cool=90;
+        pl.backflip=true; pl.flipAngle=0;
         popup(pl.x-30,pl.y-42,'KICKER! 🚀',P.purple);
         break;
       }
@@ -885,7 +925,10 @@ function update(){
   if(fc%c.boardInt===0) mkBoard();
 
   // Spawn hotdogs
-  if(fc%c.hotdogInt===0 && hotdogs.length<3) mkHotdog();
+  if(fc%c.hotdogInt===0 && hotdogs.length<4) mkHotdog();
+
+  // Spawn yardsales
+  if(fc%c.yardsaleInt===0 && yardsales.length<3) mkYardsale();
 
   // (obstacle movement handled below)
 
@@ -918,17 +961,19 @@ function update(){
   obs.forEach(o=>{
     o.wobble += o.wobSpd;
     if(o.type==='heatseeker'){
-      // Home in on player in screen-space
+      // Home in on player laterally
       const dx=pl.x-o.x, dy=pl.y-o.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
-      o.vx += (dx/dist)*0.1;
-      o.vx  = clamp(o.vx, -worldSpd*1.2, worldSpd*1.2);
-      // Adjust worldVy to home vertically: want to appear to approach from below
-      const desiredScreenVy = -(dy/dist)*worldSpd*1.3; // negative = upward on screen
-      // screenDY = worldSpd - worldVy - speedRel = desiredScreenVy
-      // → worldVy = worldSpd - speedRel - desiredScreenVy
-      const targetWorldVy = worldSpd - pl.speedRel - desiredScreenVy;
-      o.worldVy += (targetWorldVy - o.worldVy)*0.06;
-      o.worldVy  = clamp(o.worldVy, worldSpd*0.85, worldSpd*2.0);
+      o.vx += (dx/dist)*0.12;
+      o.vx  = clamp(o.vx, -worldSpd*1.4, worldSpd*1.4);
+      // Vertical homing: adjust worldVy so screenDY homes toward player.
+      // screenDY = (worldSpd - worldVy) - speedRel
+      // Target: screenDY such that o.y moves toward pl.y at a closing speed
+      const closingRate = 1.0 + level*0.1;
+      const targetScreenDY = (dy > 0 ? 1 : -1) * Math.min(Math.abs(dy)*0.04, closingRate);
+      // worldVy = worldSpd - speedRel - targetScreenDY
+      const targetWorldVy = worldSpd - pl.speedRel - targetScreenDY;
+      o.worldVy += (targetWorldVy - o.worldVy)*0.07;
+      o.worldVy  = clamp(o.worldVy, worldSpd*0.2, worldSpd*0.85);
       o.alarm = Math.min(1, o.alarm+0.04);
     } else {
       if(o.type==='beginner')
@@ -958,17 +1003,18 @@ function update(){
     if(b.x < b.w/2 || b.x > W-b.w/2) b.vx *= -1;
   });
 
-  // Hotdog movement — static on slope, scrolls with terrain just like jibs/jumps
-  // terrainUp is computed below but we need it here; compute it early
-  const terrainUpNow = worldSpd + pl.speedRel;
+  // Hotdog movement — static on slope, scrolls down toward player
+  // screenDY = worldSpd - speedRel (worldVy=0 for fully static object)
   for(let i=hotdogs.length-1;i>=0;i--){
     const hd=hotdogs[i];
     hd.bob += 0.07;
-    hd.y   -= terrainUpNow;   // same as jibs — moves UP the screen as player descends
+    // Static slope object: screenDY = worldSpd - speedRel (same formula as obstacles with worldVy=0)
+    const hdScreenDY = worldSpd - pl.speedRel;
+    hd.y += hdScreenDY;
     // Collect check
     if(!hd.collected){
       const dx=Math.abs(pl.x-hd.x), dy=Math.abs((pl.y-pl.jumpH)-hd.y);
-      if(dx<(pl.w/2+hd.w/2)&&dy<(pl.h/2+hd.h/2)){
+      if(dx<(pl.w/2+hd.w/2+4)&&dy<(pl.h/2+hd.h/2+4)){
         hd.collected=true;
         hp=Math.min(maxHP, hp+25);
         score+=50;
@@ -981,7 +1027,21 @@ function update(){
         });
       }
     }
-    if(hd.collected || hd.y > H+30 || hd.y < -50) hotdogs.splice(i,1);
+    if(hd.collected || hd.y > H+30) hotdogs.splice(i,1);
+  }
+
+  // Yardsale movement + collision (static terrain objects)
+  for(let i=yardsales.length-1;i>=0;i--){
+    const ys=yardsales[i];
+    ys.y += worldSpd - pl.speedRel;
+    // Collision — count as damage (you ran into scattered gear)
+    if(iTimer===0&&!pl.wiping&&hp>0&&state==='playing'){
+      const dx=Math.abs(pl.x-ys.x), dy=Math.abs(pl.y-ys.y);
+      if(dx<(pl.w/2+ys.w*0.5)&&dy<(pl.h/2+ys.h*0.5)){
+        wipeout(c.dmg, 'yardsale');
+      }
+    }
+    if(ys.y > H+80) yardsales.splice(i,1);
   }
   if(pl.airborne&&pl.jumpH>16){
     for(const o of obs){
@@ -1005,7 +1065,16 @@ function update(){
 
   // Collision — disabled during finish celebration
   if(iTimer===0&&!pl.wiping&&hp>0&&state==='playing'){
-    for(const o of obs){ if(hits(pl,o)){wipeout(c.dmg);break;} }
+    for(const o of obs){
+      if(hits(pl,o)){
+        if(o.type==='heatseeker'){
+          wipeout(c.dmg+4, 'heatseeker');
+        } else {
+          wipeout(c.dmg);
+        }
+        break;
+      }
+    }
     for(const b of boards){ if(hitsBoard(pl,b)){wipeout(c.dmg+6);break;} }
   }
 
@@ -1022,17 +1091,16 @@ function update(){
   for(let i=boards.length-1;i>=0;i--)
     if(boards[i].y > H+40) boards.splice(i,1);
 
-  // Accumulate distance scrolled this level
-  runDist += terrainUpNow;
+  // Accumulate distance scrolled this level (use worldSpd baseline so it's consistent)
+  runDist += worldSpd + pl.speedRel;
 
-  // Finish line: appears when ~90% distance covered, scrolls with terrain
+  // Finish line scrolls DOWN with terrain
   const progress = Math.min(runDist / runTotal, 1);
   if(progress >= 0.90 && !finishTriggered){
-    // Place finish line well below screen, it will scroll up
-    if(finishY === 9999) finishY = H + 200;
+    if(finishY === 9999) finishY = -200;  // start above screen, scrolls down
   }
   if(finishY < 9999){
-    finishY -= terrainUpNow;
+    finishY += worldSpd - pl.speedRel;    // same as static terrain object
   }
 
   // Player crosses the finish line
@@ -1066,29 +1134,38 @@ function update(){
   }
 
   // ── Terrain scroll ───────────────────────────────────────────────────────
-  const terrainUp = terrainUpNow;
+  // Static slope objects (snow, trees, jibs, jumps) all move DOWN the screen
+  // toward the player, just like obstacles with worldVy=0:
+  //   screenDY = worldSpd - speedRel
+  // When coasting: screenDY = worldSpd (normal scroll speed)
+  // When braking:  screenDY = worldSpd + |speedRel| (objects approach faster)
+  // When tucking:  screenDY = worldSpd - speedRel (objects approach slower)
+  // This means static objects NEVER move up past the player — they always come from the top.
+  const terrainDY = worldSpd - pl.speedRel;  // always positive (downward)
 
   snow.forEach(p=>{
-    p.y -= terrainUp * 0.55;   // snow slightly slower than ground (parallax)
+    p.y += terrainDY * 0.55;   // snow slightly slower (parallax)
     p.x += p.drift;
-    if(p.y < -4){ p.y = H+4; p.x = rnd(0,W); }
+    if(p.y > H+4){ p.y = -4; p.x = rnd(0,W); }
     if(p.x < 0) p.x = W; if(p.x > W) p.x = 0;
   });
   trees.forEach(r=>{
-    r.y -= terrainUp * 0.30;   // trees parallax slowest (far away)
-    if(r.y < -160){
-      r.y += H + 200;
+    r.y += terrainDY * 0.30;   // trees parallax slowest
+    if(r.y > H+160){
+      r.y -= H + 200;
       r.ts = Array.from({length:rndI(2,5)},()=>({x:rnd(0,W),h:rnd(28,56)}));
     }
   });
   jibs.forEach(j=>{
-    j.y -= terrainUp * 0.75;
-    if(j.y < -40) j.y = H + 40;
+    j.y += terrainDY * 0.85;
+    if(j.y > H+40) j.y = -40;
   });
   jumps.forEach(j=>{
-    j.y -= terrainUp;
-    if(j.y < -50) j.y = H + 50;
+    j.y += terrainDY;
+    if(j.y > H+50) j.y = -50;
+    if(j.cool > 0) j.cool--;
   });
+
 }
 
 // ════════════════ DRAW ════════════════
@@ -1098,10 +1175,10 @@ function draw(){
   sg.addColorStop(0,'#ccdff5'); sg.addColorStop(0.45,'#b8d0ec'); sg.addColorStop(1,'#a8c0e0');
   ctx.fillStyle=sg; ctx.fillRect(0,0,W,H);
 
-  // Light bands scrolling upward (descending)
+  // Light bands scrolling downward (terrain coming toward you)
   ctx.save(); ctx.globalAlpha=0.05;
   for(let i=0;i<5;i++){
-    const sy = H - ((fc*worldSpd*0.12 + i*(H/4)) % (H+50));
+    const sy = (fc*(worldSpd-pl.speedRel)*0.12 + i*(H/4)) % (H+50) - 25;
     const g2=ctx.createLinearGradient(0,sy,0,sy+H/5);
     g2.addColorStop(0,'#fff'); g2.addColorStop(1,'transparent');
     ctx.fillStyle=g2; ctx.fillRect(0,sy,W,H/5);
@@ -1124,6 +1201,9 @@ function draw(){
     else{ctx.fillRect(j.x-j.w/2,j.y-5,j.w,8);}
     ctx.restore();
   });
+
+  // Yardsale gear piles
+  yardsales.forEach(drawYardsale);
 
   // Jump ramps
   jumps.forEach(drawJump);
@@ -1199,14 +1279,73 @@ function drawPtx(arr){
   }
 }
 
+// ── Draw yardsale ─────────────────────────────────────
+function drawYardsale(ys){
+  ctx.save();
+  ctx.translate(ys.x, ys.y);
+
+  // Shadow blob
+  ctx.fillStyle='rgba(0,0,40,0.15)';
+  ctx.beginPath(); ctx.ellipse(0, 4, ys.w*0.55, 8, 0, 0, Math.PI*2); ctx.fill();
+
+  ys.items.forEach(item=>{
+    ctx.save();
+    ctx.translate(item.dx, item.dy);
+    ctx.rotate(item.angle);
+    ctx.fillStyle = item.color;
+    ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+    ctx.lineWidth = 1;
+
+    if(item.type===0){
+      // Ski — long thin rectangle
+      ctx.beginPath(); ctx.roundRect(-3,-22,6,44,3); ctx.fill(); ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.fillRect(-1,-20,2,38);
+    } else if(item.type===1){
+      // Pole — thinner, with basket
+      ctx.beginPath(); ctx.roundRect(-2,-18,4,36,2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, 16, 4, 0, Math.PI*2); ctx.fill();
+    } else if(item.type===2){
+      // Glove — rounded blob
+      ctx.beginPath();
+      ctx.ellipse(0,-5,6,8,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(5,0,3,5,0.4,0,Math.PI*2); ctx.fill();
+    } else if(item.type===3){
+      // Goggles — two circles
+      ctx.beginPath(); ctx.ellipse(-5,0,5,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(5,0,5,4,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle=item.color; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(-2,0); ctx.lineTo(0,0); ctx.stroke();
+      // Lens glare
+      ctx.fillStyle='rgba(255,255,255,0.35)';
+      ctx.beginPath(); ctx.ellipse(-6,-1,2,1.5,0.3,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(4,-1,2,1.5,0.3,0,Math.PI*2); ctx.fill();
+    } else {
+      // Helmet
+      ctx.beginPath(); ctx.arc(0,-2,8,Math.PI,0); ctx.fill(); ctx.stroke();
+      ctx.fillRect(-8,-2,16,5);
+      ctx.fillStyle='rgba(255,255,255,0.25)';
+      ctx.beginPath(); ctx.ellipse(-2,-5,3,2,0.3,0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  });
+
+  // "YARD SALE" label above the pile
+  ctx.fillStyle='rgba(255,45,120,0.85)';
+  ctx.font="bold 7px 'Bangers',cursive";
+  ctx.textAlign='center';
+  ctx.fillText('YARD SALE', 0, -ys.h*0.5 - 4);
+
+  ctx.restore();
+}
+
 function drawTracks(){
-  const terrainUp = worldSpd + pl.speedRel;
-  trackOff = (trackOff + terrainUp * 0.38) % 40;
+  const tDY = worldSpd - pl.speedRel;
+  trackOff = (trackOff + tDY * 0.38) % 40;
   ctx.save(); ctx.strokeStyle='rgba(150,190,225,0.3)'; ctx.lineWidth=1.5;
   [W*0.3,W*0.7].forEach(tx=>{
     ctx.beginPath();
-    // Tracks scroll upward: offset from top, repeating
-    for(let y = -40 + (40 - trackOff); y < H+40; y += 40){
+    for(let y = -40 + trackOff; y < H+40; y += 40){
       ctx.moveTo(tx-6,y);   ctx.lineTo(tx-6,y+13);
       ctx.moveTo(tx+6,y+7); ctx.lineTo(tx+6,y+20);
     }
@@ -1244,10 +1383,11 @@ function drawTree(x,y,h){
 
 // ── PLAYER (rad) ─────────────────────────────────────
 function drawPlayer(){
-  const {x,y,w,h,wiping,wipeAngle,airborne,jumpH} = pl;
+  const {x,y,w,h,wiping,wipeAngle,airborne,jumpH,backflip,flipAngle} = pl;
   const dy = y - jumpH;
   ctx.save(); ctx.translate(x,dy);
-  if(wiping) ctx.rotate(wipeAngle);
+  if(wiping)          ctx.rotate(wipeAngle);
+  else if(backflip)   ctx.rotate(flipAngle);   // full backflip rotation around centre
 
   // shadow (shrinks when airborne)
   const ss=airborne?Math.max(0.25,1-jumpH/pl.jumpMaxH):1;
@@ -1502,165 +1642,357 @@ function drawFinishLine(fy){
 
 // ── Beer celebration scene ────────────────────────────
 function drawBeerCelebration(frame){
-  const t     = Math.min((frame - 40) / 60, 1); // 0→1 fade/slide in
+  const t     = Math.min((frame - 40) / 60, 1);
   const alpha = t;
   const slideY= (1-t) * 80;
 
   ctx.save();
-  ctx.globalAlpha = alpha * 0.82;
-  ctx.fillStyle   = 'rgba(13,8,32,0.88)';
-  ctx.fillRect(0, H*0.38 + slideY, W, H*0.52);
+  ctx.globalAlpha = alpha * 0.85;
+  ctx.fillStyle   = 'rgba(13,8,32,0.90)';
+  ctx.fillRect(0, H*0.35 + slideY, W, H*0.58);
+  ctx.globalAlpha = alpha;
+  ctx.translate(0, slideY);
+
+  const cx = W/2, by = H*0.80;
+
+  // ── SKI RESORT BACKGROUND ──────────────────────────────
+  // Twilight alpine sky (end of a great run)
+  const skyG = ctx.createLinearGradient(0, H*0.37, 0, H*0.56);
+  skyG.addColorStop(0,'#1a1040'); skyG.addColorStop(0.5,'#3a2060'); skyG.addColorStop(1,'#6a3090');
+  ctx.fillStyle = skyG;
+  ctx.fillRect(0, H*0.37, W, H*0.19);
+
+  // Stars
+  ctx.fillStyle='#fff';
+  [[W*0.08,H*0.39],[W*0.22,H*0.41],[W*0.45,H*0.38],[W*0.67,H*0.42],[W*0.81,H*0.40],
+   [W*0.55,H*0.44],[W*0.33,H*0.43],[W*0.91,H*0.39]].forEach(([sx,sy])=>{
+    ctx.globalAlpha = alpha*(0.5+Math.sin(frame*0.04+sx)*0.3);
+    ctx.beginPath(); ctx.arc(sx,sy,1.2,0,Math.PI*2); ctx.fill();
+  });
   ctx.globalAlpha = alpha;
 
-  ctx.translate(0, slideY);
-  const cx = W/2, by = H*0.78;
+  // Mountain silhouettes behind lodge
+  ctx.fillStyle='#2a1850';
+  ctx.beginPath();
+  ctx.moveTo(0,H*0.56);
+  ctx.lineTo(W*0.15,H*0.44); ctx.lineTo(W*0.28,H*0.56);
+  ctx.lineTo(W*0.38,H*0.42); ctx.lineTo(W*0.52,H*0.56);
+  ctx.lineTo(W*0.62,H*0.46); ctx.lineTo(W*0.78,H*0.56);
+  ctx.lineTo(W*0.88,H*0.43); ctx.lineTo(W,H*0.56);
+  ctx.closePath(); ctx.fill();
+  // snow caps
+  ctx.fillStyle='rgba(255,255,255,0.18)';
+  [[W*0.15,H*0.44],[W*0.38,H*0.42],[W*0.62,H*0.46],[W*0.88,H*0.43]].forEach(([px,py])=>{
+    ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px-14,py+14); ctx.lineTo(px+14,py+14); ctx.closePath(); ctx.fill();
+  });
 
-  // === BEACH BACKGROUND ===
-  // sky gradient behind scene
-  const skyG = ctx.createLinearGradient(0, H*0.4, 0, H*0.62);
-  skyG.addColorStop(0,'#1a6fa8'); skyG.addColorStop(1,'#7ec8e3');
-  ctx.fillStyle = skyG;
-  ctx.fillRect(0, H*0.4, W, H*0.22);
+  // Snow ground
+  const snowG = ctx.createLinearGradient(0,H*0.56,0,H*0.95);
+  snowG.addColorStop(0,'#dce8f8'); snowG.addColorStop(1,'#b0c8e0');
+  ctx.fillStyle=snowG;
+  ctx.fillRect(0,H*0.56,W,H*0.39);
 
-  // Sun
+  // Ski lodge (warm wooden chalet)
+  const lx=W*0.5, ly=H*0.56;
+  ctx.save(); ctx.translate(lx,ly);
+
+  // Lodge body
+  ctx.fillStyle='#6a3a1a';
+  ctx.fillRect(-60,0,120,55);
+  // Wood grain lines
+  ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=1;
+  for(let wy=8;wy<55;wy+=10){ ctx.beginPath(); ctx.moveTo(-60,wy); ctx.lineTo(60,wy); ctx.stroke(); }
+
+  // Roof (A-frame with snow)
+  ctx.fillStyle='#3a2010';
+  ctx.beginPath(); ctx.moveTo(-70,0); ctx.lineTo(0,-42); ctx.lineTo(70,0); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='rgba(220,235,250,0.9)'; // snow on roof
+  ctx.beginPath(); ctx.moveTo(-70,0); ctx.lineTo(0,-42); ctx.lineTo(70,0); ctx.lineTo(60,-3); ctx.lineTo(0,-36); ctx.lineTo(-60,-3); ctx.closePath(); ctx.fill();
+
+  // Warm glowing windows
+  const winGlow = ctx.createRadialGradient(-25,20,2,-25,20,14);
+  winGlow.addColorStop(0,'rgba(255,200,80,0.9)'); winGlow.addColorStop(1,'rgba(255,140,20,0)');
+  ctx.fillStyle=winGlow; ctx.fillRect(-38,8,28,24);
+  ctx.fillStyle='rgba(255,200,80,0.85)';
+  ctx.beginPath(); ctx.roundRect(-35,10,22,18,2); ctx.fill();
+  ctx.strokeStyle='#5a3010'; ctx.lineWidth=2;
+  ctx.strokeRect(-35,10,22,18);
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(-24,10); ctx.lineTo(-24,28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-35,19); ctx.lineTo(-13,19); ctx.stroke();
+
+  const winGlow2 = ctx.createRadialGradient(20,20,2,20,20,14);
+  winGlow2.addColorStop(0,'rgba(255,200,80,0.9)'); winGlow2.addColorStop(1,'rgba(255,140,20,0)');
+  ctx.fillStyle=winGlow2; ctx.fillRect(7,8,28,24);
+  ctx.fillStyle='rgba(255,200,80,0.85)';
+  ctx.beginPath(); ctx.roundRect(10,10,22,18,2); ctx.fill();
+  ctx.strokeStyle='#5a3010'; ctx.lineWidth=2;
+  ctx.strokeRect(10,10,22,18);
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(21,10); ctx.lineTo(21,28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(10,19); ctx.lineTo(32,19); ctx.stroke();
+
+  // Door
+  ctx.fillStyle='#3a1808';
+  ctx.beginPath(); ctx.roundRect(-10,28,20,27,2); ctx.fill();
+  ctx.fillStyle='rgba(255,180,60,0.4)'; // door glow
+  ctx.beginPath(); ctx.roundRect(-10,28,20,27,2); ctx.fill();
+
+  // Chimney with smoke
+  ctx.fillStyle='#5a3010';
+  ctx.fillRect(35,-42,14,30);
+  ctx.fillStyle='rgba(200,200,200,0.35)';
+  for(let s=0;s<3;s++){
+    const sy=-44-s*12 + Math.sin(frame*0.06+s*1.5)*3;
+    const sr=5+s*3;
+    ctx.beginPath(); ctx.arc(42+Math.sin(frame*0.04+s)*4,sy,sr,0,Math.PI*2); ctx.fill();
+  }
+
+  // "APRÈS SKI" neon sign on lodge
   ctx.save();
-  ctx.fillStyle = '#ffe033';
-  ctx.shadowColor = '#ffe033'; ctx.shadowBlur = 18;
-  ctx.beginPath(); ctx.arc(W*0.82, H*0.46, 18, 0, Math.PI*2); ctx.fill();
-  ctx.shadowBlur = 0;
+  ctx.shadowColor=P.pink; ctx.shadowBlur=10;
+  ctx.fillStyle=P.pink;
+  ctx.font="bold 8px 'Bangers',cursive"; ctx.textAlign='center'; ctx.letterSpacing='0.1em';
+  ctx.fillText('APRÈS SKI BAR', 0, -8);
+  ctx.shadowBlur=0;
   ctx.restore();
 
-  // Ocean
-  ctx.fillStyle = '#1e90c8';
-  ctx.fillRect(0, H*0.62, W, H*0.06);
-  // Wave shimmer
-  ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1.5;
-  for(let wx=0; wx<W; wx+=28){
-    ctx.beginPath();
-    ctx.arc(wx + Math.sin(frame*0.06 + wx*0.08)*4, H*0.635, 9, Math.PI, 0);
-    ctx.stroke();
-  }
+  ctx.restore(); // end lodge translate
 
-  // Sand
-  const sandG = ctx.createLinearGradient(0, H*0.68, 0, H*0.92);
-  sandG.addColorStop(0,'#e8c87a'); sandG.addColorStop(1,'#c8a050');
-  ctx.fillStyle = sandG;
-  ctx.fillRect(0, H*0.68, W, H*0.32);
+  // Ski lift tower (right edge)
+  ctx.strokeStyle='#666'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(W*0.9,H*0.56); ctx.lineTo(W*0.9,H*0.47); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W*0.86,H*0.47); ctx.lineTo(W*0.94,H*0.47); ctx.stroke();
+  // Gondola dangling
+  ctx.fillStyle='#cc3388';
+  ctx.beginPath(); ctx.roundRect(W*0.87,H*0.47,14,10,2); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillRect(W*0.888,H*0.472,5,6);
 
-  // Palm tree (left)
-  ctx.save(); ctx.translate(W*0.12, H*0.69);
-  ctx.fillStyle = '#7a5020';
-  ctx.fillRect(-4, -55, 8, 55);
-  ctx.fillStyle = '#2d8a30';
-  for(let ang=-0.7; ang<=0.7; ang+=0.35){
-    ctx.save(); ctx.rotate(ang);
-    ctx.beginPath();
-    ctx.ellipse(0, -58, 28, 8, -0.3+ang*0.5, 0, Math.PI*2);
-    ctx.fill(); ctx.restore();
-  }
+  // Finish banner poles still standing
+  ctx.strokeStyle='#aaa'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(18,H*0.56); ctx.lineTo(18,H*0.62); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W-18,H*0.56); ctx.lineTo(W-18,H*0.62); ctx.stroke();
+  ctx.fillStyle=P.pink; ctx.font="7px 'Bangers',cursive"; ctx.textAlign='center';
+  ctx.fillText('🏁',W/2,H*0.575);
+
+  // ── CROWD SCENE ────────────────────────────────────
+  // Draw several apreski characters spread across the base
+  const crowd = [
+    // [x, y-offset, jacket, action, delay]
+    {x:W*0.14, y:by-2,  jkt:'#e8b4d0', act:'wave',    delay:0  },
+    {x:W*0.28, y:by,    jkt:'#b4c6e8', act:'cheer',   delay:12 },
+    {x:W*0.42, y:by+2,  jkt:'#b4e8c2', act:'sit',     delay:0  },
+    {x:W*0.70, y:by-4,  jkt:'#e8deb4', act:'dance',   delay:20 },
+    {x:W*0.84, y:by,    jkt:'#d4b4e8', act:'wave',    delay:8  },
+    {x:W*0.94, y:by-2,  jkt:'#ff8c55', act:'cheer',   delay:16 },
+  ];
+
+  crowd.forEach(p=>{
+    const ef = Math.max(0, Math.min(1,(frame-40-p.delay)/40));
+    if(ef<=0) return;
+    ctx.save(); ctx.globalAlpha *= ef; ctx.translate(p.x, p.y);
+
+    // tiny person: boots, pants, body, head
+    const ph = frame+p.delay*0.5; // phase offset for animation
+
+    // boots
+    ctx.fillStyle='#222';
+    ctx.beginPath(); ctx.roundRect(-7,0,6,5,2); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(1,0,6,5,2); ctx.fill();
+
+    // legs/pants
+    ctx.fillStyle='#2a3060';
+    ctx.fillRect(-6,-12,12,13);
+
+    // body
+    ctx.fillStyle=p.jkt;
+    ctx.beginPath(); ctx.roundRect(-7,-26,14,15,3); ctx.fill();
+
+    // arms — animated
+    ctx.strokeStyle=p.jkt; ctx.lineWidth=4; ctx.lineCap='round';
+    if(p.act==='wave'){
+      const wa = Math.sin(ph*0.08)*0.5;
+      ctx.beginPath(); ctx.moveTo(-7,-22); ctx.lineTo(-14,-16+wa*6); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(7,-22);  ctx.lineTo(16,-28+Math.sin(ph*0.12)*5); ctx.stroke();
+    } else if(p.act==='cheer'){
+      const ca = Math.sin(ph*0.1)*0.4+0.3;
+      ctx.beginPath(); ctx.moveTo(-7,-22); ctx.lineTo(-15,-30+ca*4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(7,-22);  ctx.lineTo(15,-30+ca*4); ctx.stroke();
+      // pom pom / raised fists
+      ctx.fillStyle='#fff'; ctx.globalAlpha*=0.7;
+      ctx.beginPath(); ctx.arc(-15,-32+ca*4,4,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(15,-32+ca*4,4,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha = ef * alpha;
+    } else if(p.act==='dance'){
+      const da = Math.sin(ph*0.09);
+      ctx.rotate(da*0.08);
+      ctx.beginPath(); ctx.moveTo(-7,-22); ctx.lineTo(-14,-18+da*5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(7,-22);  ctx.lineTo(14,-28-da*5); ctx.stroke();
+    } else if(p.act==='sit'){
+      // sitting on a snow lump — arms out holding cup
+      ctx.translate(0,8); ctx.rotate(-0.15);
+      ctx.beginPath(); ctx.moveTo(-7,-14); ctx.lineTo(-15,-10); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(7,-14);  ctx.lineTo(16,-8); ctx.stroke();
+      // cup
+      ctx.fillStyle='#ffe033';
+      ctx.beginPath(); ctx.roundRect(13,-12,7,9,2); ctx.fill();
+    }
+
+    // head
+    ctx.fillStyle='#ffe5c4';
+    ctx.beginPath(); ctx.arc(0,-32,7,0,Math.PI*2); ctx.fill();
+
+    // hat — random fun hats
+    const hatIdx = Math.floor(p.x/50)%3;
+    if(hatIdx===0){
+      // beanie
+      ctx.fillStyle=p.jkt;
+      ctx.beginPath(); ctx.arc(0,-37,7,Math.PI,0); ctx.fill();
+      ctx.fillRect(-7,-37,14,4);
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(0,-43,3,0,Math.PI*2); ctx.fill(); // pom
+    } else if(hatIdx===1){
+      // ski helmet
+      ctx.fillStyle='#c724f5';
+      ctx.beginPath(); ctx.arc(0,-36,7,Math.PI,0); ctx.fill();
+      ctx.fillRect(-7,-36,14,3);
+    } else {
+      // backwards cap
+      ctx.fillStyle='#ff2d78';
+      ctx.beginPath(); ctx.arc(0,-36,7,Math.PI,0); ctx.fill();
+      ctx.fillRect(-7,-36,14,3);
+      ctx.fillStyle='#ff2d78'; ctx.fillRect(-11,-36,5,3); // brim pointing back
+    }
+
+    ctx.restore();
+  });
+
+  // Extra props: a couple of snow-lump seats, scattered gear
+  // Snow lump seat (left of main skier)
+  ctx.save(); ctx.globalAlpha *= Math.min(1,(frame-40)/40);
+  ctx.fillStyle='rgba(220,235,250,0.85)';
+  ctx.beginPath(); ctx.ellipse(W*0.28,by+4,18,8,0,0,Math.PI*2); ctx.fill();
+  // scattered ski gear pile (right side)
+  ctx.fillStyle='#ff2d78'; ctx.save(); ctx.translate(W*0.82,by+2); ctx.rotate(0.4);
+  ctx.beginPath(); ctx.roundRect(-3,-28,6,32,3); ctx.fill(); ctx.restore();
+  ctx.fillStyle='#7b2fff'; ctx.save(); ctx.translate(W*0.86,by+2); ctx.rotate(-0.2);
+  ctx.beginPath(); ctx.roundRect(-3,-26,6,30,3); ctx.fill(); ctx.restore();
+  // discarded helmet on snow
+  ctx.fillStyle='#c724f5';
+  ctx.beginPath(); ctx.arc(W*0.18,by+3,8,Math.PI,0); ctx.fill();
+  ctx.fillRect(W*0.18-8,by+3,16,3);
   ctx.restore();
 
-  // === BEACH CHAIR ===
+  // Hot chocolate stand (far left)
+  ctx.save(); ctx.globalAlpha *= Math.min(1,(frame-50)/30);
+  ctx.translate(W*0.05, H*0.63);
+  ctx.fillStyle='#8b4513'; ctx.fillRect(-12,0,24,30); // table
+  ctx.fillStyle='#6b3010'; ctx.fillRect(-14,-2,28,4); // table top
+  ctx.fillStyle='#c0401a'; // hot choc urn
+  ctx.beginPath(); ctx.roundRect(-8,-20,16,20,4); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fillRect(-5,-18,6,15);
+  ctx.fillStyle='#ffe033'; ctx.font="5px serif"; ctx.textAlign='center';
+  ctx.fillText('☕',0,-8);
+  // Sign
+  ctx.fillStyle='#fff'; ctx.font="bold 5px 'DM Sans',sans-serif"; ctx.textAlign='center';
+  ctx.fillText('HOT',0,-25); ctx.fillText('CHOC',0,-19);
+  ctx.restore();
   ctx.save(); ctx.translate(cx, by);
 
-  // Chair legs
-  ctx.strokeStyle = '#c88030'; ctx.lineWidth = 4; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(-22, 10); ctx.lineTo(-18,-28); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo( 22, 10); ctx.lineTo( 18,-28); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-22, 10); ctx.lineTo( 22, 10); ctx.stroke();
-  // Back support
-  ctx.beginPath(); ctx.moveTo(-18,-28); ctx.lineTo(-14,-52); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo( 18,-28); ctx.lineTo( 14,-52); ctx.stroke();
+  // Snow bench
+  ctx.fillStyle='rgba(220,235,250,0.95)';
+  ctx.beginPath(); ctx.roundRect(-30,-4,60,10,3); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(-28,-18,8,16,2); ctx.fill(); // left leg
+  ctx.beginPath(); ctx.roundRect(20,-18,8,16,2); ctx.fill();  // right leg
+  ctx.strokeStyle='rgba(180,200,220,0.6)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.roundRect(-30,-4,60,10,3); ctx.stroke();
 
-  // Chair fabric (striped — hot pink & white)
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(-18,-28); ctx.lineTo(18,-28); ctx.lineTo(14,-52); ctx.lineTo(-14,-52); ctx.closePath();
-  ctx.clip();
-  for(let sx=-20; sx<20; sx+=6){
-    ctx.fillStyle = (Math.floor((sx+20)/6)%2===0) ? P.pink : '#fff';
-    ctx.fillRect(sx,-52,6,28);
-  }
+  // Skis leaning against bench (propped up)
+  ctx.save(); ctx.translate(-38,-15);
+  ctx.rotate(-0.15);
+  ctx.fillStyle=P.pink;
+  ctx.beginPath(); ctx.roundRect(-4,-40,8,50,3); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillRect(-1,-38,2,45);
   ctx.restore();
-  // Seat fabric
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(-22,10); ctx.lineTo(22,10); ctx.lineTo(18,-28); ctx.lineTo(-18,-28); ctx.closePath();
-  ctx.clip();
-  for(let sx=-24; sx<24; sx+=6){
-    ctx.fillStyle = (Math.floor((sx+24)/6)%2===0) ? P.pink : '#fff';
-    ctx.fillRect(sx,-28,6,40);
-  }
+  ctx.save(); ctx.translate(-30,-15);
+  ctx.rotate(-0.08);
+  ctx.fillStyle=P.pink;
+  ctx.beginPath(); ctx.roundRect(-4,-40,8,50,3); ctx.fill();
   ctx.restore();
 
-  // === SKIER (sitting, relaxed) ===
-  // Legs out on chair
-  ctx.fillStyle = P.electric;
-  ctx.fillRect(-18, -10, 36, 10); // seated pants
-  // Shoes
-  ctx.fillStyle = '#333';
-  ctx.beginPath(); ctx.roundRect(12, -4, 14, 7, 3); ctx.fill();
-  ctx.beginPath(); ctx.roundRect(-26, -4, 14, 7, 3); ctx.fill();
+  // Seated pants
+  ctx.fillStyle=P.electric;
+  ctx.fillRect(-18,-12,36,12);
+  ctx.fillStyle=P.pink; ctx.fillRect(-17,-12,3,10); ctx.fillRect(14,-12,3,10);
+  // Ski boots
+  ctx.fillStyle='#222';
+  ctx.beginPath(); ctx.roundRect(14,-6,16,8,3); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(-30,-6,16,8,3); ctx.fill();
 
-  // Body (jacket — same neon magenta as player)
-  const jg2 = ctx.createLinearGradient(-13,-36,13,-36);
+  // Body / jacket
+  const jg2=ctx.createLinearGradient(-13,-40,13,-40);
   jg2.addColorStop(0,'#cc10b0'); jg2.addColorStop(1,'#e030cc');
-  ctx.fillStyle = jg2;
-  ctx.beginPath(); ctx.roundRect(-13,-50,26,28,5); ctx.fill();
+  ctx.fillStyle=jg2;
+  ctx.beginPath(); ctx.roundRect(-13,-52,26,28,5); ctx.fill();
+  // zip
+  ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(0,-51); ctx.lineTo(0,-27); ctx.stroke();
 
   // Head
-  ctx.fillStyle = '#ffe5c4';
-  ctx.beginPath(); ctx.arc(0,-58,10,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#ffe5c4';
+  ctx.beginPath(); ctx.arc(0,-60,10,0,Math.PI*2); ctx.fill();
 
-  // Helmet off! — sunglasses instead
-  ctx.fillStyle = '#444';
-  ctx.beginPath(); ctx.roundRect(-10,-60,9,5,2); ctx.fill();
-  ctx.beginPath(); ctx.roundRect(1,-60,9,5,2); ctx.fill();
-  ctx.strokeStyle='#222'; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.moveTo(-1,-57); ctx.lineTo(1,-57); ctx.stroke();
-  // Hair (rad)
-  ctx.fillStyle = '#ffe033';
-  ctx.beginPath(); ctx.arc(0,-66,5,Math.PI,0); ctx.fill();
+  // Helmet (still on, but visor up — relaxed mode)
+  const hg=ctx.createLinearGradient(-10,-68,10,-60);
+  hg.addColorStop(0,P.purple); hg.addColorStop(1,P.electric);
+  ctx.fillStyle=hg;
+  ctx.beginPath(); ctx.arc(0,-62,10,Math.PI,0); ctx.fill();
+  ctx.fillRect(-10,-62,20,4);
+  // Visor pushed up
+  ctx.fillStyle='rgba(255,200,50,0.6)';
+  ctx.beginPath(); ctx.roundRect(-8,-58,16,3,1); ctx.fill();
 
-  // Beer can in right hand — bounce with frame
-  const beerBob = Math.sin(frame*0.12)*3;
-  ctx.save(); ctx.translate(22, -38+beerBob);
-  // Can body
-  const canG = ctx.createLinearGradient(-6,-16,6,-16);
+  // Goggles pushed up on helmet (they earned it)
+  ctx.fillStyle='rgba(0,0,0,0.5)';
+  ctx.beginPath(); ctx.ellipse(-4,-70,4,2.5,0,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(4,-70,4,2.5,0,0,Math.PI*2); ctx.fill();
+
+  // Beer can in right hand
+  const beerBob = Math.sin(frame*0.1)*3;
+  ctx.save(); ctx.translate(22,-40+beerBob);
+  const canG=ctx.createLinearGradient(-6,-16,6,-16);
   canG.addColorStop(0,'#e8c020'); canG.addColorStop(0.5,'#ffe033'); canG.addColorStop(1,'#c0a010');
-  ctx.fillStyle = canG;
+  ctx.fillStyle=canG;
   ctx.beginPath(); ctx.roundRect(-6,-18,12,20,3); ctx.fill();
-  // Can top
   ctx.fillStyle='#aaa'; ctx.beginPath(); ctx.ellipse(0,-18,6,2.5,0,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='#888'; ctx.beginPath(); ctx.ellipse(0,-18,3,1.5,0,0,Math.PI*2); ctx.fill();
-  // Brand text
   ctx.fillStyle='#8b0000'; ctx.font="bold 5px 'DM Sans',sans-serif"; ctx.textAlign='center';
-  ctx.fillText('APRÈS', 0, -10);
-  ctx.fillStyle='#8b0000'; ctx.fillText('SKI', 0, -4);
-  // Foam drip
+  ctx.fillText('APRÈS', 0,-10); ctx.fillText('SKI', 0,-4);
   ctx.fillStyle='rgba(255,255,255,0.7)';
   ctx.beginPath(); ctx.arc(0,-18,3,Math.PI,0); ctx.fill();
   ctx.restore();
 
-  // Arm reaching for beer
+  // Arm
   ctx.strokeStyle='#e030cc'; ctx.lineWidth=5; ctx.lineCap='round';
-  ctx.beginPath(); ctx.moveTo(13,-42); ctx.lineTo(20,-38+beerBob); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(13,-44); ctx.lineTo(20,-40+beerBob); ctx.stroke();
 
-  // Speech bubble "Après ski! 🍺"
+  // Other arm — pole in left hand
+  ctx.strokeStyle='#c0d8f0'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(-13,-44); ctx.lineTo(-28,-20); ctx.stroke();
+
+  // Speech bubble
   if(frame > 80){
-    const bubbleAlpha = Math.min((frame-80)/20,1);
-    ctx.save(); ctx.globalAlpha *= bubbleAlpha;
+    const bAlpha=Math.min((frame-80)/20,1);
+    ctx.save(); ctx.globalAlpha*=bAlpha;
     ctx.fillStyle='#fff';
-    ctx.beginPath(); ctx.roundRect(-46,-95,92,26,8); ctx.fill();
-    ctx.fillStyle='#fff';
-    ctx.beginPath(); ctx.moveTo(-4,-69); ctx.lineTo(8,-69); ctx.lineTo(2,-62); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(-50,-98,100,28,8); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-4,-70); ctx.lineTo(8,-70); ctx.lineTo(2,-62); ctx.closePath(); ctx.fill();
     ctx.fillStyle='#1a1a2e'; ctx.font="bold 9px 'DM Sans',sans-serif"; ctx.textAlign='center';
-    ctx.fillText('Après ski! 🍺', 0,-78);
+    ctx.fillText('Après ski! 🍺 🎿', 0,-80);
     ctx.restore();
   }
 
-  ctx.restore(); // end translate(cx, by)
-  ctx.restore(); // end translate(slideY) + globalAlpha
+  ctx.restore(); // end skier translate
+  ctx.restore(); // end globalAlpha + slideY
 }
 
 // ════════════════ LEADERBOARD ════════════════
