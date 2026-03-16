@@ -5,28 +5,22 @@ function formatDate(dateString) {
     return date.toLocaleDateString('en-US', options);
 }
 
-// Convert plain URLs and email addresses in text to clickable <a> links
+// Convert explicit URLs (http/https/www) in text to clickable <a> links.
+// Only matches URLs that clearly start with a protocol or www — never guesses bare domains
+// to avoid false positives on things like file extensions or email domains.
 function linkifyText(text) {
     if (!text) return text;
-    // Escape HTML first to prevent XSS, then re-linkify
     const escaped = text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
-    // Match http/https URLs and bare domain-like URLs (e.g. apidoc.eccovia.com)
+    // Only match http://, https://, or www. prefixed URLs
     return escaped.replace(
-        /(https?:\/\/[^\s,;)]+)|((?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s,;)]*)?)/g,
-        (match, httpUrl, bareUrl) => {
-            if (httpUrl) {
-                return `<a href="${httpUrl}" target="_blank" rel="noopener">${httpUrl}</a>`;
-            }
-            // Only linkify bare URLs that look like real domains (contain a dot, no spaces)
-            if (bareUrl && bareUrl.includes('.') && !bareUrl.match(/^\d+\.\d+/)) {
-                const href = bareUrl.startsWith('www.') ? `https://${bareUrl}` : `https://${bareUrl}`;
-                return `<a href="${href}" target="_blank" rel="noopener">${bareUrl}</a>`;
-            }
-            return match;
+        /((https?:\/\/|www\.)[^\s,;)<>"]+)/g,
+        (match) => {
+            const href = match.startsWith('www.') ? `https://${match}` : match;
+            return `<a href="${href}" target="_blank" rel="noopener">${match}</a>`;
         }
     );
 }
@@ -102,6 +96,18 @@ function attachThemeToggleEvent() {
         });
     }
     toggleDropdown();
+
+    // Vibecoded Tools accordion
+    const vibecodeToggle = document.getElementById('vibecodeToggle');
+    const vibecodeContent = document.getElementById('vibecodeContent');
+    const vibecodeChevron = document.getElementById('vibecodeChevron');
+    if (vibecodeToggle && vibecodeContent) {
+        vibecodeToggle.addEventListener('click', () => {
+            const isOpen = vibecodeContent.classList.toggle('open');
+            vibecodeToggle.setAttribute('aria-expanded', isOpen);
+            if (vibecodeChevron) vibecodeChevron.classList.toggle('rotated', isOpen);
+        });
+    }
 }
 
 function generateResumePDF(data) {
@@ -134,32 +140,35 @@ function generateResumePDF(data) {
         return y + (lines.length * size * 0.45);
     }
 
-    // Renders text and makes any URLs in it clickable in the PDF
+    // Renders text as normal, then overlays clickable blue link regions for any http/https/www URLs
     function addTextWithLinks(text, size, style, x, y, maxWidth) {
         doc.setFontSize(size);
         doc.setFont('Helvetica', style);
-        const urlRegex = /(https?:\/\/[^\s,;)]+)|((?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s,;)]*)?)/g;
+        doc.setTextColor(0, 0, 0);
         const lines = doc.splitTextToSize(text, maxWidth);
         const lineHeight = size * 0.45;
+        // Only match explicit http/https/www URLs — no bare domain guessing
+        const urlRegex = /((https?:\/\/|www\.)[^\s,;)<>"]+)/g;
         lines.forEach((line, i) => {
             const lineY = y + i * lineHeight;
+            // First pass: draw entire line in black
+            doc.setTextColor(0, 0, 0);
             doc.text(line, x, lineY);
-            // Find URL matches in this line and draw invisible link rects over them
+            // Second pass: re-draw URL segments in blue on top, add link rect
             let match;
             urlRegex.lastIndex = 0;
             while ((match = urlRegex.exec(line)) !== null) {
-                const url = match[1] || (match[2] ? (match[2].startsWith('www.') || match[2].startsWith('http') ? 'https://' + match[2] : 'https://' + match[2]) : null);
-                if (!url) continue;
-                const preText = line.substring(0, match.index);
                 const matchText = match[0];
-                const preWidth = doc.getStringUnitWidth(preText) * size * 0.352;
-                const linkWidth = doc.getStringUnitWidth(matchText) * size * 0.352;
-                // Underline the link text in blue
-                doc.setTextColor(0, 0, 200);
+                const href = matchText.startsWith('www.') ? `https://${matchText}` : matchText;
+                const preText  = line.substring(0, match.index);
+                const preWidth  = doc.getStringUnitWidth(preText)  * size * 0.352778;
+                const linkWidth = doc.getStringUnitWidth(matchText) * size * 0.352778;
+                // Draw URL text in blue (overwrites the black already drawn)
+                doc.setTextColor(0, 0, 180);
                 doc.text(matchText, x + preWidth, lineY);
                 doc.setTextColor(0, 0, 0);
-                // Add clickable link rect
-                doc.link(x + preWidth, lineY - lineHeight * 0.7, linkWidth, lineHeight * 0.9, { url });
+                // Invisible clickable rectangle
+                doc.link(x + preWidth, lineY - lineHeight * 0.75, linkWidth, lineHeight, { url: href });
             }
         });
         return y + (lines.length * lineHeight);
@@ -171,11 +180,14 @@ function generateResumePDF(data) {
     }
 
     yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
-    let contactInfo = [];
-    if (data.contact?.email) contactInfo.push(`Email: ${data.contact.email}`);
-    if (data.contact?.linkedin) contactInfo.push(`LinkedIn: ${data.contact.linkedin}`);
-    if (contactInfo.length) {
-        yPosition = addTextWithLinks(contactInfo.join(' | '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
+    // Build contact line: email | website | linkedin
+    let contactParts = [];
+    if (data.contact?.email)    contactParts.push(`${data.contact.email}`);
+    if (data.contact?.website)  contactParts.push(data.contact.website);
+    else                        contactParts.push('https://remyrussell.com');
+    if (data.contact?.linkedin) contactParts.push(data.contact.linkedin);
+    if (contactParts.length) {
+        yPosition = addTextWithLinks(contactParts.join('  |  '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
     }
     yPosition += 0.5;
     if (data.role || data.seeking) {
