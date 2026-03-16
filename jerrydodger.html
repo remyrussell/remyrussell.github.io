@@ -323,7 +323,7 @@
     <button class="btn" id="btn-start">DROP IN</button>
     <button class="btn" id="btn-view-lb" style="background:linear-gradient(135deg,#7b2fff,#c724f5);margin-top:0px">🏆 LEADERBOARD</button>
     <div style="margin-top:12px;color:#6a4a88;font-size:0.76rem;line-height:1.9">
-      ← → / WASD to carve · ↑ to BRAKE · ↓ to TUCK · Space to JUMP<br>
+      ← → / A D to carve · ↑ / W to TUCK · ↓ / S to BRAKE · Space to JUMP<br>
       <span style="color:#c8b0e8">Everyone goes downhill — you can't go back up!</span>
     </div>
   </div>
@@ -371,11 +371,11 @@
   <div id="touch-zone">
     <div id="touch-thumb"></div>
     <div id="speed-bar-wrap"><div id="speed-bar"></div><div id="brake-bar"></div></div>
-    <span class="zone-label" id="zl-brake">▲ BRAKE</span>
-    <span class="zone-label" id="zl-tuck">▼ TUCK</span>
+    <span class="zone-label" id="zl-brake">▲ TUCK</span>
+    <span class="zone-label" id="zl-tuck">▼ BRAKE</span>
     <span class="zone-label" id="zl-left">◀</span>
     <span class="zone-label" id="zl-right">▶</span>
-    <div id="touch-hint">DRAG TO STEER &amp; SPEED<br><span style="font-size:0.6rem;opacity:0.7">← → steer · ↑ brake · ↓ tuck · release from tuck = jump</span></div>
+    <div id="touch-hint">DRAG TO STEER &amp; SPEED<br><span style="font-size:0.6rem;opacity:0.7">← → steer · ↑ tuck (faster) · ↓ brake · release from tuck = jump</span></div>
   </div>
   <div id="mob-pause-row">
     <button id="mob-pause">PAUSE ⏸</button>
@@ -383,7 +383,7 @@
 </div>
 
 <div class="tips">
-  📱 <b>Drag</b> zone: ← → steer · ↑ brake · ↓ tuck · release = jump &nbsp;|&nbsp; ⌨️ arrows + Space &nbsp;|&nbsp; 🌭 grab hotdogs for HP!
+  📱 <b>↑ tuck</b> (faster) · <b>↓ brake</b> · release from tuck = jump · ← → steer &nbsp;|&nbsp; ⌨️ ↑ tuck · ↓ brake · Space jump &nbsp;|&nbsp; 🌭 grab hotdogs for HP!
 </div>
 
 <script>
@@ -486,19 +486,19 @@ function initTouchZone(){
     thumb.style.left = (touch.normX * 100) + '%';
     thumb.style.top  = (touch.normY * 100) + '%';
     // Speed indicator bars
-    // normY < 0.5 = brake zone (green bar grows up from center)
-    // normY > 0.5 = tuck zone (pink bar grows down from center)
+    // normY < 0.5 = TOP = TUCK zone (pink bar grows up from center)
+    // normY > 0.5 = BOTTOM = BRAKE zone (green bar grows down from center)
     const mid = 0.5;
     if(touch.normY < mid){
-      const brakePct = (mid - touch.normY) / mid * 100;
-      brakeBar.style.height = brakePct + '%';
-      speedBar.style.height = '0%';
-    } else {
-      const tuckPct  = (touch.normY - mid) / mid * 100;
+      const tuckPct = (mid - touch.normY) / mid * 100;
       speedBar.style.height = tuckPct + '%';
       brakeBar.style.height = '0%';
+    } else {
+      const brakePct = (touch.normY - mid) / mid * 100;
+      brakeBar.style.height = brakePct + '%';
+      speedBar.style.height = '0%';
     }
-    touch.wasTucking = touch.normY > 0.62;
+    touch.wasTucking = touch.normY < 0.38;  // top = tuck → release from top = jump
   }
 
   zone.addEventListener('touchstart', e=>{
@@ -826,8 +826,8 @@ function update(){
 
   const left  = K['ArrowLeft'] ||K['a']||K['A'];
   const right = K['ArrowRight']||K['d']||K['D'];
-  const brakeK = K['ArrowUp']  ||K['w']||K['W'];
-  const tuckK  = K['ArrowDown']||K['s']||K['S'];
+  const brakeK = K['ArrowDown']||K['s']||K['S'];   // ↓ = brake (skier faces up screen)
+  const tuckK  = K['ArrowUp']  ||K['w']||K['W'];   // ↑ = tuck (lean forward, faster)
 
   if(!pl.wiping){
     const maxLat = 3.5+level*0.08;
@@ -859,8 +859,9 @@ function update(){
     if(brakeK) brakeIntensity = 1.0;
     if(tuckK)  tuckIntensity  = 1.0;
     if(touch.active){
-      if(touch.normY < 0.38)      brakeIntensity = Math.max(brakeIntensity, (0.38-touch.normY)/0.38);
-      else if(touch.normY > 0.62) tuckIntensity  = Math.max(tuckIntensity,  (touch.normY-0.62)/0.38);
+      // UP (normY < 0.38) = TUCK (faster), DOWN (normY > 0.62) = BRAKE (slower)
+      if(touch.normY < 0.38)      tuckIntensity  = Math.max(tuckIntensity,  (0.38-touch.normY)/0.38);
+      else if(touch.normY > 0.62) brakeIntensity = Math.max(brakeIntensity, (touch.normY-0.62)/0.38);
     }
 
     if(tuckIntensity > 0)       pl.speedRel += 0.22 * tuckIntensity;
