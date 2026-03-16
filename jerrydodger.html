@@ -45,8 +45,32 @@
     /* HUD */
     #hud {
       width:100%; max-width:520px; display:flex; align-items:center;
-      gap:8px; padding:5px 12px; background:var(--ui-bg);
-      border-bottom:1px solid rgba(199,36,245,0.3);
+      gap:6px; padding:5px 10px; background:var(--ui-bg);
+      border-bottom:1px solid rgba(199,36,245,0.3); flex-wrap:wrap;
+    }
+    /* Progress bar */
+    #progress-wrap {
+      flex:1; min-width:80px; display:flex; flex-direction:column; gap:1px;
+    }
+    #progress-track {
+      position:relative; height:8px;
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(199,36,245,0.4); border-radius:4px; overflow:visible;
+    }
+    #progress-fill {
+      height:100%; width:0%; border-radius:4px;
+      background:linear-gradient(90deg,var(--electric),var(--pink));
+      transition:width 0.3s;
+    }
+    #progress-skier {
+      position:absolute; top:50%; transform:translate(-50%,-50%);
+      font-size:10px; left:0%; transition:left 0.3s;
+      filter:drop-shadow(0 0 3px rgba(255,45,120,0.8));
+      pointer-events:none;
+    }
+    #progress-labels {
+      display:flex; justify-content:space-between;
+      font-size:0.52rem; color:rgba(200,176,232,0.4); letter-spacing:0.06em;
     }
     .level-tag {
       font-family:'Bangers',cursive; font-size:1.05rem; color:var(--gold);
@@ -127,77 +151,142 @@
       100% { opacity:0; transform:translateY(-60px) scale(0.85); }
     }
 
-    /* MOBILE TOUCH ZONE */
+    /* MOBILE TOUCH ZONE — 2D joystick */
     #mob-ctrl {
       width:100%; max-width:520px;
       display:flex; flex-direction:column;
       background:var(--ui-bg);
       border-top:1px solid rgba(199,36,245,0.25);
-      /* prevent any browser zoom gestures in this area */
       touch-action: none;
       user-select: none; -webkit-user-select: none;
     }
     #touch-zone {
       position: relative;
-      width: 100%; height: 88px;
-      display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 110px;
       overflow: hidden;
       cursor: pointer;
     }
-    /* sliding position indicator */
+    /* crosshair grid lines */
+    #touch-zone::before {
+      content:''; position:absolute; inset:0;
+      background:
+        linear-gradient(to bottom, transparent 49%, rgba(199,36,245,0.12) 49%, rgba(199,36,245,0.12) 51%, transparent 51%),
+        linear-gradient(to right,  transparent 49%, rgba(199,36,245,0.12) 49%, rgba(199,36,245,0.12) 51%, transparent 51%);
+      pointer-events:none;
+    }
+    /* zone labels */
+    .zone-label {
+      position:absolute; font-family:'Bangers',cursive;
+      font-size:0.62rem; letter-spacing:0.08em;
+      color:rgba(200,176,232,0.28); pointer-events:none;
+    }
+    #zl-brake  { top:5px;   left:50%; transform:translateX(-50%); }
+    #zl-tuck   { bottom:5px;left:50%; transform:translateX(-50%); }
+    #zl-left   { left:6px;  top:50%; transform:translateY(-50%); }
+    #zl-right  { right:6px; top:50%; transform:translateY(-50%); }
+    /* thumb puck */
     #touch-thumb {
       position: absolute;
-      top: 50%; transform: translateY(-50%);
-      width: 44px; height: 44px;
+      width: 48px; height: 48px;
       border-radius: 50%;
-      background: radial-gradient(circle at 38% 38%, rgba(255,45,120,0.9), rgba(123,47,255,0.7));
-      border: 2px solid rgba(255,45,120,0.8);
-      box-shadow: 0 0 18px rgba(255,45,120,0.5);
+      background: radial-gradient(circle at 36% 36%, rgba(255,45,120,0.95), rgba(123,47,255,0.75));
+      border: 2px solid rgba(255,45,120,0.9);
+      box-shadow: 0 0 20px rgba(255,45,120,0.55);
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.15s;
-      left: 50%;
-      margin-left: -22px;
+      transition: opacity 0.12s;
+      transform: translate(-50%, -50%);
+      top: 50%; left: 50%;
     }
     #touch-zone.active #touch-thumb { opacity: 1; }
-    /* tuck fill bar at bottom of touch zone */
-    #tuck-bar {
-      position: absolute; bottom: 0; left: 0;
-      height: 4px; width: 0%;
-      background: linear-gradient(90deg, var(--purple), var(--pink));
-      transition: width 0.1s;
-      border-radius: 0 2px 2px 0;
+    /* speed bar — left edge, vertical */
+    #speed-bar-wrap {
+      position:absolute; left:0; top:0; width:5px; height:100%;
+      background:rgba(255,255,255,0.06);
     }
-    /* labels */
+    #speed-bar {
+      position:absolute; bottom:50%; left:0; width:100%; height:0%;
+      background:linear-gradient(to top, var(--pink), var(--purple));
+      transition: height 0.08s, bottom 0.08s;
+    }
+    #brake-bar {
+      position:absolute; top:50%; left:0; width:100%; height:0%;
+      background:linear-gradient(to bottom, #39ff7a, #00c060);
+      transition: height 0.08s;
+    }
+    /* hint when idle */
     #touch-hint {
-      font-family: 'Bangers', cursive;
-      font-size: 0.78rem; letter-spacing: 0.1em;
-      color: rgba(200,176,232,0.4);
-      pointer-events: none;
-      text-align: center;
-      line-height: 1.5;
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Bangers',cursive; font-size:0.75rem;
+      letter-spacing:0.1em; color:rgba(200,176,232,0.35);
+      pointer-events:none; text-align:center; line-height:1.6;
     }
-    #touch-zone.active #touch-hint { opacity: 0; }
-    /* pause button row */
+    #touch-zone.active #touch-hint { opacity:0; }
+    /* pause row */
     #mob-pause-row {
-      display: flex; justify-content: flex-end;
-      padding: 5px 12px 7px;
-      border-top: 1px solid rgba(199,36,245,0.12);
+      display:flex; justify-content:flex-end;
+      padding:5px 12px 7px;
+      border-top:1px solid rgba(199,36,245,0.12);
     }
     #mob-pause {
-      background: rgba(199,36,245,0.14);
-      border: 1px solid rgba(199,36,245,0.4);
-      border-radius: 7px; color: #e0c8ff;
-      font-family: 'Bangers', cursive; font-size: 0.82rem;
-      padding: 6px 14px; cursor: pointer; letter-spacing: 0.08em;
+      background:rgba(199,36,245,0.14);
+      border:1px solid rgba(199,36,245,0.4);
+      border-radius:7px; color:#e0c8ff;
+      font-family:'Bangers',cursive; font-size:0.82rem;
+      padding:6px 14px; cursor:pointer; letter-spacing:0.08em;
     }
-    #mob-pause:active { background: rgba(255,45,120,0.35); }
+    #mob-pause:active { background:rgba(255,45,120,0.35); }
 
     .tips {
       font-size:0.72rem; color:#6a4a88; padding:5px 14px 8px;
       text-align:center; line-height:1.6;
     }
     .tips b { color:#c8b0e8; }
+
+    /* LEADERBOARD OVERLAY */
+    #ov-lb {
+      display:none; position:absolute; inset:0; z-index:55;
+      background:rgba(13,8,32,0.96);
+      flex-direction:column; align-items:center;
+      padding:18px 16px 14px; overflow-y:auto;
+    }
+    #ov-lb h2 {
+      font-family:'Bangers',cursive; font-size:2rem; color:#fff;
+      letter-spacing:0.1em;
+      text-shadow:2px 2px 0 var(--pink), 4px 4px 0 var(--electric);
+      margin-bottom:4px;
+    }
+    #ov-lb .lb-sub { color:#6a4a88; font-size:0.72rem; margin-bottom:12px; }
+    #lb-table {
+      width:100%; border-collapse:collapse; margin-bottom:14px; font-size:0.8rem;
+    }
+    #lb-table th {
+      font-family:'Bangers',cursive; letter-spacing:0.08em; color:var(--gold);
+      border-bottom:1px solid rgba(199,36,245,0.4); padding:4px 6px; text-align:left;
+      font-size:0.78rem;
+    }
+    #lb-table td {
+      padding:5px 6px; border-bottom:1px solid rgba(199,36,245,0.1);
+      color:#d0c0e8; vertical-align:middle;
+    }
+    #lb-table tr:first-child td { color:#fff; }
+    .lb-rank { font-family:'Bangers',cursive; color:var(--gold); font-size:1rem; }
+    .lb-score { font-family:'Russo One',sans-serif; color:var(--pink); }
+    .lb-you td { background:rgba(255,45,120,0.08); }
+    /* name entry form */
+    #name-form {
+      width:100%; display:flex; flex-direction:column; gap:8px; margin-bottom:12px;
+    }
+    #name-form label { font-size:0.75rem; color:#c8b0e8; letter-spacing:0.05em; }
+    #name-form input {
+      background:rgba(255,255,255,0.07); border:1px solid rgba(199,36,245,0.5);
+      border-radius:6px; color:#fff; font-family:'DM Sans',sans-serif;
+      font-size:0.9rem; padding:8px 10px; outline:none; width:100%;
+      -webkit-appearance:none;
+    }
+    #name-form input:focus { border-color:var(--pink); box-shadow:0 0 8px rgba(255,45,120,0.3); }
+    .lb-btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
   </style>
 </head>
 <body>
@@ -211,6 +300,13 @@
 
 <div id="hud">
   <span class="level-tag" id="hud-lvl">LEVEL 1</span>
+  <div id="progress-wrap">
+    <div id="progress-track">
+      <div id="progress-fill"></div>
+      <div id="progress-skier">🎿</div>
+    </div>
+    <div id="progress-labels"><span>START</span><span>🏁</span></div>
+  </div>
   <span class="score-disp" id="hud-sc">SCORE: 0</span>
   <div id="hp-wrap">
     <span id="hp-label">HP</span>
@@ -226,6 +322,7 @@
     <h1>JERRY<br>DODGER</h1>
     <p class="sub">You rip. They send it wrong.<br>Dodge Jerrys, hit jumps, survive the descent. 🎿🤙</p>
     <button class="btn" id="btn-start">DROP IN</button>
+    <button class="btn" id="btn-view-lb" style="background:linear-gradient(135deg,#7b2fff,#c724f5);margin-top:0px">🏆 LEADERBOARD</button>
     <div style="margin-top:12px;color:#6a4a88;font-size:0.76rem;line-height:1.9">
       ← → / WASD to carve · ↑ to BRAKE · ↓ to TUCK · Space to JUMP<br>
       <span style="color:#c8b0e8">Everyone goes downhill — you can't go back up!</span>
@@ -238,6 +335,30 @@
     <div class="score-big" id="go-sc">0</div>
     <p style="color:#6a4a88;font-size:0.78rem;margin-bottom:14px">Level: <span id="go-lvl" style="color:#c8b0e8">1</span></p>
     <button class="btn" id="btn-restart">TRY AGAIN</button>
+    <button class="btn" id="btn-go-lb" style="background:linear-gradient(135deg,#7b2fff,#c724f5);margin-top:4px">🏆 LEADERBOARD</button>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="ov-lb">
+    <h2>🏔 LEADERBOARD</h2>
+    <p class="lb-sub">Top 10 shredders on remyrussell.com</p>
+    <div id="name-form" id="name-form">
+      <label for="lb-name">Your name</label>
+      <input id="lb-name" type="text" maxlength="24" placeholder="e.g. Remy Russell" autocomplete="off"/>
+      <label for="lb-company">Company <span style="opacity:0.5">(optional)</span></label>
+      <input id="lb-company" type="text" maxlength="32" placeholder="e.g. Anthropic" autocomplete="off"/>
+    </div>
+    <div class="lb-btn-row">
+      <button class="btn" id="btn-lb-save">SUBMIT SCORE</button>
+      <button class="btn" id="btn-lb-skip" style="background:rgba(123,47,255,0.5);box-shadow:none">SKIP</button>
+    </div>
+    <table id="lb-table">
+      <thead><tr><th>#</th><th>NAME</th><th>CO.</th><th>SCORE</th><th>LVL</th></tr></thead>
+      <tbody id="lb-body"></tbody>
+    </table>
+    <div class="lb-btn-row">
+      <button class="btn" id="btn-lb-play">PLAY AGAIN</button>
+    </div>
   </div>
 
   <div class="overlay" id="ov-lvlup" style="display:none">
@@ -250,8 +371,12 @@
 <div id="mob-ctrl">
   <div id="touch-zone">
     <div id="touch-thumb"></div>
-    <div id="tuck-bar"></div>
-    <span id="touch-hint">HOLD &amp; STEER<br><span style="font-size:0.65rem;opacity:0.7">hold = tuck · release = jump · slide = steer</span></span>
+    <div id="speed-bar-wrap"><div id="speed-bar"></div><div id="brake-bar"></div></div>
+    <span class="zone-label" id="zl-brake">▲ BRAKE</span>
+    <span class="zone-label" id="zl-tuck">▼ TUCK</span>
+    <span class="zone-label" id="zl-left">◀</span>
+    <span class="zone-label" id="zl-right">▶</span>
+    <div id="touch-hint">DRAG TO STEER &amp; SPEED<br><span style="font-size:0.6rem;opacity:0.7">← → steer · ↑ brake · ↓ tuck · release from tuck = jump</span></div>
   </div>
   <div id="mob-pause-row">
     <button id="mob-pause">PAUSE ⏸</button>
@@ -259,7 +384,7 @@
 </div>
 
 <div class="tips">
-  📱 <b>Hold &amp; slide</b> to tuck + steer · <b>Release</b> to jump · ⌨️ <b>← →</b> carve · <b>↑</b> brake · <b>↓</b> tuck · <b>Space</b> jump
+  📱 <b>Drag</b> zone: ← → steer · ↑ brake · ↓ tuck · release = jump &nbsp;|&nbsp; ⌨️ arrows + Space &nbsp;|&nbsp; 🌭 grab hotdogs for HP!
 </div>
 
 <script>
@@ -288,6 +413,14 @@ let animId=null, lastTs=0;
 let iTimer=0;
 let jCool=0;
 let maxHP=100, hp=100;
+// Progress / finish line
+let runDist=0;       // world-distance scrolled this level (px)
+let runTotal=0;      // total distance needed to finish
+let finishY=9999;    // screen Y of the finish line banner
+let finishTriggered=false;
+// Beer celebration
+let beerAnim=0;      // frame counter for post-finish animation
+let cheerParticles=[];
 
 // Player Y is fixed near 65% of screen. We only move the world around them.
 // Player X moves left/right. Player screen-Y shifts slightly with speed delta
@@ -303,26 +436,26 @@ const pl = {
   wiping:false, wipeF:0, wipeAngle:0, wipeVx:0,
 };
 
-let obs=[], snow=[], trees=[], jibs=[], jumps=[], boards=[];
+let obs=[], snow=[], trees=[], jibs=[], jumps=[], boards=[], hotdogs=[];
 let hitPtx=[], trickPtx=[];
 let trackOff=0;
 
 // ── Input ────────────────────────────────────────────
 const K={};
 
-// Mobile touch state
+// Mobile 2D joystick state
 const touch = {
   active: false,
-  x: 0,              // current touch X (for steering)
-  zoneLeft: 0,       // touch-zone left edge in page coords (set on first touch)
-  zoneWidth: 0,
-  holdStart: 0,      // timestamp when touch began
-  JUMP_THRESHOLD: 180, // ms — hold longer than this = tuck; shorter = treat as jump
-  tuck: false,
-  targetX: -1,       // -1 = not steering
+  // Normalized 0..1 position within the touch zone
+  normX: 0.5,  // 0=left edge, 1=right edge  → steering
+  normY: 0.5,  // 0=top edge,  1=bottom edge → brake(top)/tuck(bottom)
+  // Was holding in tuck zone when lifted? → jump
+  wasTucking: false,
+  originY: 0,  // page Y when finger first touched (for relative feel)
+  originNormY: 0.5,
 };
 
-// Prevent ALL default touch behavior on the page to kill double-tap zoom
+// Kill ALL default touch to prevent double-tap zoom everywhere
 document.addEventListener('touchstart',  e=>e.preventDefault(), {passive:false});
 document.addEventListener('touchmove',   e=>e.preventDefault(), {passive:false});
 document.addEventListener('touchend',    e=>e.preventDefault(), {passive:false});
@@ -339,62 +472,62 @@ document.addEventListener('keydown', e=>{
 });
 document.addEventListener('keyup',e=>{ K[e.key]=false; });
 
-// Touch zone setup — runs after DOM ready
 function initTouchZone(){
-  const zone  = document.getElementById('touch-zone');
-  const thumb = document.getElementById('touch-thumb');
-  const tbar  = document.getElementById('tuck-bar');
+  const zone      = document.getElementById('touch-zone');
+  const thumb     = document.getElementById('touch-thumb');
+  const speedBar  = document.getElementById('speed-bar');
+  const brakeBar  = document.getElementById('brake-bar');
 
-  function zoneRect(){ return zone.getBoundingClientRect(); }
+  function update(clientX, clientY){
+    const rect = zone.getBoundingClientRect();
+    touch.normX = clamp((clientX - rect.left)  / rect.width,  0, 1);
+    touch.normY = clamp((clientY - rect.top)   / rect.height, 0, 1);
+    // Position thumb puck
+    thumb.style.left = (touch.normX * 100) + '%';
+    thumb.style.top  = (touch.normY * 100) + '%';
+    // Speed indicator bars
+    // normY < 0.5 = brake zone (green bar grows up from center)
+    // normY > 0.5 = tuck zone (pink bar grows down from center)
+    const mid = 0.5;
+    if(touch.normY < mid){
+      const brakePct = (mid - touch.normY) / mid * 100;
+      brakeBar.style.height = brakePct + '%';
+      speedBar.style.height = '0%';
+    } else {
+      const tuckPct  = (touch.normY - mid) / mid * 100;
+      speedBar.style.height = tuckPct + '%';
+      brakeBar.style.height = '0%';
+    }
+    touch.wasTucking = touch.normY > 0.62;
+  }
 
-  function onTouchStart(e){
+  zone.addEventListener('touchstart', e=>{
     if(state==='paused') return;
-    const t = e.changedTouches[0];
-    const rect = zoneRect();
-    touch.active    = true;
-    touch.holdStart = performance.now();
-    touch.x         = t.clientX;
-    touch.zoneLeft   = rect.left;
-    touch.zoneWidth  = rect.width;
-    touch.tuck       = false;
-    touch.targetX    = clamp((t.clientX - rect.left) / rect.width, 0, 1);
+    touch.active = true;
     zone.classList.add('active');
-    thumb.style.left = (touch.targetX * 100) + '%';
-  }
+    update(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }, {passive:false});
 
-  function onTouchMove(e){
+  zone.addEventListener('touchmove', e=>{
     if(!touch.active) return;
-    const t = e.changedTouches[0];
-    const rect = zoneRect();
-    touch.x       = t.clientX;
-    touch.targetX = clamp((t.clientX - rect.left) / rect.width, 0, 1);
-    thumb.style.left = (touch.targetX * 100) + '%';
-    // If held long enough, engage tuck
-    const held = performance.now() - touch.holdStart;
-    touch.tuck = held >= touch.JUMP_THRESHOLD;
-    tbar.style.width = Math.min(held / touch.JUMP_THRESHOLD, 1) * 100 + '%';
-  }
+    update(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }, {passive:false});
 
-  function onTouchEnd(e){
+  const endTouch = e=>{
     if(!touch.active) return;
-    const held = performance.now() - touch.holdStart;
-    touch.active  = false;
-    touch.tuck    = false;
-    touch.targetX = -1;
+    // Lift from tuck zone → jump!
+    if(touch.wasTucking && state==='playing') tryJump();
+    touch.active = false;
+    touch.normX = 0.5; touch.normY = 0.5;
+    touch.wasTucking = false;
     zone.classList.remove('active');
-    tbar.style.width = '0%';
-    // Release after a tuck = jump!
-    if(held >= touch.JUMP_THRESHOLD && state==='playing') tryJump();
-  }
+    speedBar.style.height = '0%';
+    brakeBar.style.height = '0%';
+  };
+  zone.addEventListener('touchend',    endTouch, {passive:false});
+  zone.addEventListener('touchcancel', endTouch, {passive:false});
 
-  zone.addEventListener('touchstart',  onTouchStart, {passive:false});
-  zone.addEventListener('touchmove',   onTouchMove,  {passive:false});
-  zone.addEventListener('touchend',    onTouchEnd,   {passive:false});
-  zone.addEventListener('touchcancel', onTouchEnd,   {passive:false});
-
-  // Pause button (a real button — needs click, not touch raw)
   document.getElementById('mob-pause').addEventListener('click', togglePause);
-  // Allow overlays to still work (they use click)
 }
 
 document.getElementById('btn-start').addEventListener('click', startGame);
@@ -419,6 +552,10 @@ function hudUpdate(){
   const bar=document.getElementById('hp-inner');
   bar.style.width=(pct*100)+'%';
   bar.style.background=pct>0.55?'#39ff7a':pct>0.28?'#ffe033':'#ff2d78';
+  // Progress bar
+  const prog = Math.min((runDist||0)/(runTotal||1),1)*100;
+  document.getElementById('progress-fill').style.width = prog+'%';
+  document.getElementById('progress-skier').style.left  = prog+'%';
 }
 
 function popup(x,y,txt,col){
@@ -452,6 +589,8 @@ function C(lv){
     boardInt:  Math.max(320-lv*25,120),
     jCount:    Math.min(2+lv-1,5),
     dmg:       12+lv*2,
+    bottomRate: Math.max(80-lv*8,30), // how often to spawn a bottom-approach jerry
+    hotdogInt:  Math.max(280-lv*15,120),
   };
 }
 
@@ -467,8 +606,14 @@ function startGame(){
 function resetLevel(){
   const c=C(level);
   worldSpd=c.worldSpd; needJerrys=c.need; gotJerrys=0;
-  obs=[]; boards=[]; hitPtx=[]; trickPtx=[]; fc=0;
+  obs=[]; boards=[]; hitPtx=[]; trickPtx=[]; hotdogs=[]; cheerParticles=[]; fc=0;
   iTimer=0; jCool=0;
+  runDist=0;
+  // runTotal: approximate px of scrolling to complete the level (tuned to feel right)
+  runTotal = needJerrys * 320 + 1200;
+  finishY  = 9999;   // starts off-screen; approaches as runDist nears runTotal
+  finishTriggered = false;
+  beerAnim = 0;
   pl.x=W/2; pl.y=H*0.62; pl.vx=0; pl.speedRel=0;
   pl.airborne=false; pl.jumpH=0; pl.jumpVel=0;
   pl.wiping=false; pl.wipeF=0;
@@ -578,7 +723,15 @@ function mkBoard(){
   });
 }
 
-// ── Collision ────────────────────────────────────────
+function mkHotdog(){
+  hotdogs.push({
+    x: rnd(40, W-40),
+    y: -30,           // starts above screen, scrolls down WITH terrain
+    w: 22, h: 14,
+    bob: rnd(0, Math.PI*2),
+    collected: false,
+  });
+}
 function hits(a,b){
   if(pl.airborne&&pl.jumpH>16) return false;
   const s=6;
@@ -607,12 +760,19 @@ function wipeout(dmg){
     document.getElementById('go-sc').textContent=score;
     document.getElementById('go-lvl').textContent=level;
     showOv('ov-over');
+    // auto-show leaderboard after a beat if this score qualifies
+    const entries = lbLoad();
+    const qualifies = entries.length < 10 || score > (entries[entries.length-1]?.score||0);
+    if(qualifies){
+      document.getElementById('btn-go-lb').style.background = 'linear-gradient(135deg,#ff2d78,#c724f5)';
+      document.getElementById('btn-go-lb').textContent = '🏆 SAVE SCORE';
+    }
   },700);
 }
 
 // ── Update ───────────────────────────────────────────
 function update(){
-  if(state!=='playing') return;
+  if(state!=='playing' && state!=='finishing') return;
   fc++;
   const c=C(level);
 
@@ -637,20 +797,19 @@ function update(){
 
   const left  = K['ArrowLeft'] ||K['a']||K['A'];
   const right = K['ArrowRight']||K['d']||K['D'];
-  // UP = brake (slow down relative to world → drift toward top of screen)
-  // DOWN = tuck (speed up → drift toward bottom)
   const brakeK = K['ArrowUp']  ||K['w']||K['W'];
-  const tuckK  = K['ArrowDown']||K['s']||K['S'] || touch.tuck;
+  const tuckK  = K['ArrowDown']||K['s']||K['S'];
+  // Touch: normY < 0.38 = brake, normY > 0.62 = tuck
+  const touchBrake = touch.active && touch.normY < 0.38;
+  const touchTuck  = touch.active && touch.normY > 0.62;
 
   if(!pl.wiping){
-    // Lateral carving — keyboard OR touch position
     const maxLat = 3.5+level*0.08;
-    if(touch.active && touch.targetX >= 0){
-      // Steer toward where thumb is: map 0..1 → target screen X
-      const targetPx = touch.targetX * W;
+    if(touch.active){
+      // Steer proportionally to horizontal thumb position
+      const targetPx = touch.normX * W;
       const diff = targetPx - pl.x;
-      // Proportional steering — faster the further away
-      pl.vx += clamp(diff * 0.08, -0.6, 0.6);
+      pl.vx += clamp(diff * 0.09, -0.7, 0.7);
     } else {
       if(left)  pl.vx -= 0.3;
       if(right) pl.vx += 0.3;
@@ -664,11 +823,11 @@ function update(){
     // maxBrake: player can slow to 0 absolute speed (braking to a full stop)
     // which means speedRel can go as negative as -worldSpd.
     // maxTuck: can go up to 2.8 px/frame faster than world.
-    const maxBrake = -worldSpd;   // full stop — can't go backwards
+    const maxBrake = -worldSpd;
     const maxTuck  =  2.8;
-    if(tuckK)       pl.speedRel += 0.22;
-    else if(brakeK) pl.speedRel -= 0.22;
-    else            pl.speedRel *= 0.90;  // coast back to world speed
+    if(tuckK || touchTuck)        pl.speedRel += 0.22;
+    else if(brakeK || touchBrake) pl.speedRel -= 0.22;
+    else                          pl.speedRel *= 0.90;
     pl.speedRel = clamp(pl.speedRel, maxBrake, maxTuck);
 
     // Drift player Y on screen based on relative speed
@@ -703,16 +862,30 @@ function update(){
     }
   }
 
-  // Spawn jerrys
+  // Spawn jerrys from top
   if(fc%Math.ceil(c.rate)===0&&obs.length<c.maxObs){
     obs.push(mkJerry(c));
     if(Math.random()<c.clusterCh) obs.push(mkJerry(c,'beginner'));
-    if(c.heats>0&&fc%Math.ceil(c.rate*5)===0)
-      for(let i=0;i<c.heats;i++) obs.push(mkJerry(c,'heatseeker'));
+  }
+  // Heat-seekers (already from bottom via worldVy > worldSpd)
+  if(c.heats>0&&fc%Math.ceil(c.rate*5)===0)
+    for(let i=0;i<c.heats;i++) obs.push(mkJerry(c,'heatseeker'));
+
+  // Extra bottom-approach jerrys (slower than world → drift DOWN screen = approach from top,
+  // but we spawn them at screen bottom and give them a high worldVy so they approach from below)
+  if(fc%c.bottomRate===0 && obs.length<c.maxObs+3){
+    const o=mkJerry(c, Math.random()<0.35?'snowboarder':'beginner');
+    o.y = H + o.h + rnd(0,40);
+    // worldVy slightly above worldSpd → approaches from bottom
+    o.worldVy = worldSpd * rnd(1.04, 1.18);
+    obs.push(o);
   }
 
   // Spawn runaway boards
   if(fc%c.boardInt===0) mkBoard();
+
+  // Spawn hotdogs
+  if(fc%c.hotdogInt===0 && hotdogs.length<3) mkHotdog();
 
   // (obstacle movement handled below)
 
@@ -785,15 +958,41 @@ function update(){
     if(b.x < b.w/2 || b.x > W-b.w/2) b.vx *= -1;
   });
 
-  // Jerry Gap detection
+  // Hotdog movement — static on slope, scrolls with terrain just like jibs/jumps
+  // terrainUp is computed below but we need it here; compute it early
+  const terrainUpNow = worldSpd + pl.speedRel;
+  for(let i=hotdogs.length-1;i>=0;i--){
+    const hd=hotdogs[i];
+    hd.bob += 0.07;
+    hd.y   -= terrainUpNow;   // same as jibs — moves UP the screen as player descends
+    // Collect check
+    if(!hd.collected){
+      const dx=Math.abs(pl.x-hd.x), dy=Math.abs((pl.y-pl.jumpH)-hd.y);
+      if(dx<(pl.w/2+hd.w/2)&&dy<(pl.h/2+hd.h/2)){
+        hd.collected=true;
+        hp=Math.min(maxHP, hp+25);
+        score+=50;
+        hudUpdate();
+        popup(hd.x-30, hd.y-40, 'GLIZZY UP! 🌭 +25 HP', '#ff8c00');
+        for(let j=0;j<10;j++) trickPtx.push({
+          x:hd.x,y:hd.y,vx:rnd(-3,3),vy:rnd(-4,-0.5),
+          r:rnd(3,6),life:38,maxL:38,
+          col:['#ff8c00','#ffe033','#fff'][rndI(0,3)]
+        });
+      }
+    }
+    if(hd.collected || hd.y > H+30 || hd.y < -50) hotdogs.splice(i,1);
+  }
   if(pl.airborne&&pl.jumpH>16){
     for(const o of obs){
       if(o.scored) continue;
       const dx=Math.abs(pl.x-o.x), dy=pl.y-o.y;
       if(dx<(pl.w/2+o.w/2-4)&&dy>-12&&dy<o.h){
-        score+=o.type==='big'?260:110;
+        const pts = o.type==='big'?260:110;
+        score+=pts;
         o.scored=true;
-        popup(o.x-35,o.y-48,'JERRY GAP! 🤙',P.pink);
+        popup(o.x-35, o.y-48, `JERRY GAP! 🤙`, P.pink);
+        popup(pl.x+18, pl.y-pl.jumpH-10, `+${pts}`, P.gold);
         for(let i=0;i<14;i++) trickPtx.push({
           x:pl.x,y:pl.y-pl.jumpH,vx:rnd(-3.5,3.5),vy:rnd(-4.5,-0.4),
           r:rnd(3,7),life:42,maxL:42,
@@ -804,8 +1003,8 @@ function update(){
     }
   }
 
-  // Collision
-  if(iTimer===0&&!pl.wiping&&hp>0){
+  // Collision — disabled during finish celebration
+  if(iTimer===0&&!pl.wiping&&hp>0&&state==='playing'){
     for(const o of obs){ if(hits(pl,o)){wipeout(c.dmg);break;} }
     for(const b of boards){ if(hitsBoard(pl,b)){wipeout(c.dmg+6);break;} }
   }
@@ -823,22 +1022,51 @@ function update(){
   for(let i=boards.length-1;i>=0;i--)
     if(boards[i].y > H+40) boards.splice(i,1);
 
-  // Level complete
-  if(gotJerrys>=needJerrys&&state==='playing'){
-    state='levelup';
-    document.getElementById('lu-sc').textContent=score;
-    showOv('ov-lvlup');
-    return;
+  // Accumulate distance scrolled this level
+  runDist += terrainUpNow;
+
+  // Finish line: appears when ~90% distance covered, scrolls with terrain
+  const progress = Math.min(runDist / runTotal, 1);
+  if(progress >= 0.90 && !finishTriggered){
+    // Place finish line well below screen, it will scroll up
+    if(finishY === 9999) finishY = H + 200;
+  }
+  if(finishY < 9999){
+    finishY -= terrainUpNow;
   }
 
-  // Score trickle
-  if(fc%28===0){ score+=level; hudUpdate(); }
+  // Player crosses the finish line
+  if(!finishTriggered && finishY > 0 && finishY < H &&
+     pl.y + pl.h/2 > finishY - 8 && pl.y - pl.h/2 < finishY + 8){
+    finishTriggered = true;
+    state = 'finishing';   // special state: player coasts to bottom
+    pl.speedRel = 2.5;    // tuck into the finish
+    beerAnim = 0;
+    // Bonus points for finishing
+    const bonus = Math.round(hp * 2 + level * 100);
+    score += bonus;
+    hudUpdate();
+    popup(W/2-50, H*0.4, `FINISH! +${bonus}`, P.gold);
+    for(let i=0;i<30;i++) cheerParticles.push({
+      x:rnd(0,W), y:rnd(H*0.1,H*0.6),
+      vx:rnd(-3,3), vy:rnd(-5,1),
+      r:rnd(4,9), life:80, maxL:80,
+      col:[P.pink,P.gold,'#fff',P.purple,'#00e5ff'][rndI(0,5)]
+    });
+  }
+
+  // Score trickle + continuous progress update
+  if(fc%28===0 && state==='playing'){ score+=level; }
+  hudUpdate(); // always update for smooth progress bar
+
+  // Level complete: old Jerry-count trigger now just advances past finishing anim
+  if(gotJerrys>=needJerrys && state==='playing' && !finishTriggered){
+    // All Jerrys cleared but no finish line yet — just let finish line appear immediately
+    if(finishY===9999) finishY = H + 100;
+  }
 
   // ── Terrain scroll ───────────────────────────────────────────────────────
-  // As player descends, terrain features scroll UPWARD past the camera.
-  // Rate = worldSpd + pl.speedRel (if tucking, scenery rushes past faster).
-  // Terrain moves UP = negative Y change each frame.
-  const terrainUp = worldSpd + pl.speedRel;
+  const terrainUp = terrainUpNow;
 
   snow.forEach(p=>{
     p.y -= terrainUp * 0.55;   // snow slightly slower than ground (parallax)
@@ -900,6 +1128,14 @@ function draw(){
   // Jump ramps
   jumps.forEach(drawJump);
 
+  // Finish line banner
+  if(finishY < H + 60 && finishY > -60){
+    drawFinishLine(finishY);
+  }
+
+  // Hotdogs
+  hotdogs.forEach(drawHotdog);
+
   // Snow
   ctx.save();
   snow.forEach(p=>{
@@ -931,6 +1167,14 @@ function draw(){
 
   // Particles
   drawPtx(hitPtx); drawPtx(trickPtx);
+
+  // Cheer particles on finish
+  if(cheerParticles.length) drawPtx(cheerParticles);
+
+  // Beer celebration overlay (during 'finishing' state)
+  if(state==='finishing' && beerAnim > 40){
+    drawBeerCelebration(beerAnim);
+  }
 
   // Pause
   if(state==='paused'){
@@ -1176,11 +1420,348 @@ function drawJerry(o){
   ctx.restore();
 }
 
+// ── Draw hotdog ───────────────────────────────────────
+function drawHotdog(hd){
+  const {x, y, bob} = hd;
+  const floatY = y + Math.sin(bob) * 3;
+  ctx.save();
+  ctx.translate(x, floatY);
+
+  // glow
+  ctx.save();
+  ctx.globalAlpha = 0.35 + Math.sin(bob)*0.1;
+  ctx.fillStyle = '#ff8c00';
+  ctx.beginPath(); ctx.ellipse(0, 0, 18, 12, 0, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // bun (tan)
+  ctx.fillStyle = '#c8843a';
+  ctx.beginPath(); ctx.ellipse(0, 0, 13, 7, 0, 0, Math.PI*2); ctx.fill();
+
+  // sausage (pink-brown)
+  ctx.fillStyle = '#c0442a';
+  ctx.beginPath(); ctx.ellipse(0, 1, 10, 4, 0, 0, Math.PI*2); ctx.fill();
+
+  // mustard squiggle
+  ctx.strokeStyle = '#ffe033';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(-8, 0);
+  for(let xi=-8; xi<=8; xi+=2){
+    ctx.lineTo(xi, (xi%4===0)?-2:2);
+  }
+  ctx.stroke();
+
+  // sparkle
+  ctx.fillStyle = '#fff';
+  ctx.font = '9px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('✦', 14, -8);
+
+  ctx.restore();
+}
+
+// ── Draw finish line ──────────────────────────────────
+function drawFinishLine(fy){
+  ctx.save();
+  // Checkered banner across full width
+  const sqSize = 18;
+  const cols   = Math.ceil(W / sqSize);
+  for(let c=0; c<cols; c++){
+    ctx.fillStyle = (c%2===0) ? '#fff' : '#111';
+    ctx.fillRect(c*sqSize, fy-sqSize, sqSize, sqSize);
+  }
+  // Second row offset
+  for(let c=0; c<cols; c++){
+    ctx.fillStyle = (c%2===0) ? '#111' : '#fff';
+    ctx.fillRect(c*sqSize, fy-sqSize*2, sqSize, sqSize);
+  }
+  // Neon pink border lines
+  ctx.strokeStyle = P.pink;
+  ctx.lineWidth   = 3;
+  ctx.beginPath(); ctx.moveTo(0, fy-sqSize*2); ctx.lineTo(W, fy-sqSize*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, fy);           ctx.lineTo(W, fy);           ctx.stroke();
+  // "FINISH" label centre
+  ctx.font         = "bold 1.1rem 'Bangers',cursive";
+  ctx.textAlign    = 'center';
+  ctx.fillStyle    = P.pink;
+  ctx.shadowColor  = P.gold;
+  ctx.shadowBlur   = 10;
+  ctx.fillText('🏁  F I N I S H  🏁', W/2, fy - sqSize*2 - 6);
+  ctx.shadowBlur   = 0;
+  // Left + right flag poles
+  ctx.strokeStyle = '#ccc'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(8,  fy+20); ctx.lineTo(8,  fy-sqSize*2-30); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W-8,fy+20); ctx.lineTo(W-8,fy-sqSize*2-30); ctx.stroke();
+  // Small flags on poles
+  ctx.fillStyle = P.pink;
+  ctx.beginPath(); ctx.moveTo(8, fy-sqSize*2-30); ctx.lineTo(26,fy-sqSize*2-22); ctx.lineTo(8,fy-sqSize*2-14); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(W-8,fy-sqSize*2-30); ctx.lineTo(W-26,fy-sqSize*2-22); ctx.lineTo(W-8,fy-sqSize*2-14); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+// ── Beer celebration scene ────────────────────────────
+function drawBeerCelebration(frame){
+  const t     = Math.min((frame - 40) / 60, 1); // 0→1 fade/slide in
+  const alpha = t;
+  const slideY= (1-t) * 80;
+
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.82;
+  ctx.fillStyle   = 'rgba(13,8,32,0.88)';
+  ctx.fillRect(0, H*0.38 + slideY, W, H*0.52);
+  ctx.globalAlpha = alpha;
+
+  ctx.translate(0, slideY);
+  const cx = W/2, by = H*0.78;
+
+  // === BEACH BACKGROUND ===
+  // sky gradient behind scene
+  const skyG = ctx.createLinearGradient(0, H*0.4, 0, H*0.62);
+  skyG.addColorStop(0,'#1a6fa8'); skyG.addColorStop(1,'#7ec8e3');
+  ctx.fillStyle = skyG;
+  ctx.fillRect(0, H*0.4, W, H*0.22);
+
+  // Sun
+  ctx.save();
+  ctx.fillStyle = '#ffe033';
+  ctx.shadowColor = '#ffe033'; ctx.shadowBlur = 18;
+  ctx.beginPath(); ctx.arc(W*0.82, H*0.46, 18, 0, Math.PI*2); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.restore();
+
+  // Ocean
+  ctx.fillStyle = '#1e90c8';
+  ctx.fillRect(0, H*0.62, W, H*0.06);
+  // Wave shimmer
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1.5;
+  for(let wx=0; wx<W; wx+=28){
+    ctx.beginPath();
+    ctx.arc(wx + Math.sin(frame*0.06 + wx*0.08)*4, H*0.635, 9, Math.PI, 0);
+    ctx.stroke();
+  }
+
+  // Sand
+  const sandG = ctx.createLinearGradient(0, H*0.68, 0, H*0.92);
+  sandG.addColorStop(0,'#e8c87a'); sandG.addColorStop(1,'#c8a050');
+  ctx.fillStyle = sandG;
+  ctx.fillRect(0, H*0.68, W, H*0.32);
+
+  // Palm tree (left)
+  ctx.save(); ctx.translate(W*0.12, H*0.69);
+  ctx.fillStyle = '#7a5020';
+  ctx.fillRect(-4, -55, 8, 55);
+  ctx.fillStyle = '#2d8a30';
+  for(let ang=-0.7; ang<=0.7; ang+=0.35){
+    ctx.save(); ctx.rotate(ang);
+    ctx.beginPath();
+    ctx.ellipse(0, -58, 28, 8, -0.3+ang*0.5, 0, Math.PI*2);
+    ctx.fill(); ctx.restore();
+  }
+  ctx.restore();
+
+  // === BEACH CHAIR ===
+  ctx.save(); ctx.translate(cx, by);
+
+  // Chair legs
+  ctx.strokeStyle = '#c88030'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-22, 10); ctx.lineTo(-18,-28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo( 22, 10); ctx.lineTo( 18,-28); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-22, 10); ctx.lineTo( 22, 10); ctx.stroke();
+  // Back support
+  ctx.beginPath(); ctx.moveTo(-18,-28); ctx.lineTo(-14,-52); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo( 18,-28); ctx.lineTo( 14,-52); ctx.stroke();
+
+  // Chair fabric (striped — hot pink & white)
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(-18,-28); ctx.lineTo(18,-28); ctx.lineTo(14,-52); ctx.lineTo(-14,-52); ctx.closePath();
+  ctx.clip();
+  for(let sx=-20; sx<20; sx+=6){
+    ctx.fillStyle = (Math.floor((sx+20)/6)%2===0) ? P.pink : '#fff';
+    ctx.fillRect(sx,-52,6,28);
+  }
+  ctx.restore();
+  // Seat fabric
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(-22,10); ctx.lineTo(22,10); ctx.lineTo(18,-28); ctx.lineTo(-18,-28); ctx.closePath();
+  ctx.clip();
+  for(let sx=-24; sx<24; sx+=6){
+    ctx.fillStyle = (Math.floor((sx+24)/6)%2===0) ? P.pink : '#fff';
+    ctx.fillRect(sx,-28,6,40);
+  }
+  ctx.restore();
+
+  // === SKIER (sitting, relaxed) ===
+  // Legs out on chair
+  ctx.fillStyle = P.electric;
+  ctx.fillRect(-18, -10, 36, 10); // seated pants
+  // Shoes
+  ctx.fillStyle = '#333';
+  ctx.beginPath(); ctx.roundRect(12, -4, 14, 7, 3); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(-26, -4, 14, 7, 3); ctx.fill();
+
+  // Body (jacket — same neon magenta as player)
+  const jg2 = ctx.createLinearGradient(-13,-36,13,-36);
+  jg2.addColorStop(0,'#cc10b0'); jg2.addColorStop(1,'#e030cc');
+  ctx.fillStyle = jg2;
+  ctx.beginPath(); ctx.roundRect(-13,-50,26,28,5); ctx.fill();
+
+  // Head
+  ctx.fillStyle = '#ffe5c4';
+  ctx.beginPath(); ctx.arc(0,-58,10,0,Math.PI*2); ctx.fill();
+
+  // Helmet off! — sunglasses instead
+  ctx.fillStyle = '#444';
+  ctx.beginPath(); ctx.roundRect(-10,-60,9,5,2); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(1,-60,9,5,2); ctx.fill();
+  ctx.strokeStyle='#222'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(-1,-57); ctx.lineTo(1,-57); ctx.stroke();
+  // Hair (rad)
+  ctx.fillStyle = '#ffe033';
+  ctx.beginPath(); ctx.arc(0,-66,5,Math.PI,0); ctx.fill();
+
+  // Beer can in right hand — bounce with frame
+  const beerBob = Math.sin(frame*0.12)*3;
+  ctx.save(); ctx.translate(22, -38+beerBob);
+  // Can body
+  const canG = ctx.createLinearGradient(-6,-16,6,-16);
+  canG.addColorStop(0,'#e8c020'); canG.addColorStop(0.5,'#ffe033'); canG.addColorStop(1,'#c0a010');
+  ctx.fillStyle = canG;
+  ctx.beginPath(); ctx.roundRect(-6,-18,12,20,3); ctx.fill();
+  // Can top
+  ctx.fillStyle='#aaa'; ctx.beginPath(); ctx.ellipse(0,-18,6,2.5,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#888'; ctx.beginPath(); ctx.ellipse(0,-18,3,1.5,0,0,Math.PI*2); ctx.fill();
+  // Brand text
+  ctx.fillStyle='#8b0000'; ctx.font="bold 5px 'DM Sans',sans-serif"; ctx.textAlign='center';
+  ctx.fillText('APRÈS', 0, -10);
+  ctx.fillStyle='#8b0000'; ctx.fillText('SKI', 0, -4);
+  // Foam drip
+  ctx.fillStyle='rgba(255,255,255,0.7)';
+  ctx.beginPath(); ctx.arc(0,-18,3,Math.PI,0); ctx.fill();
+  ctx.restore();
+
+  // Arm reaching for beer
+  ctx.strokeStyle='#e030cc'; ctx.lineWidth=5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(13,-42); ctx.lineTo(20,-38+beerBob); ctx.stroke();
+
+  // Speech bubble "Après ski! 🍺"
+  if(frame > 80){
+    const bubbleAlpha = Math.min((frame-80)/20,1);
+    ctx.save(); ctx.globalAlpha *= bubbleAlpha;
+    ctx.fillStyle='#fff';
+    ctx.beginPath(); ctx.roundRect(-46,-95,92,26,8); ctx.fill();
+    ctx.fillStyle='#fff';
+    ctx.beginPath(); ctx.moveTo(-4,-69); ctx.lineTo(8,-69); ctx.lineTo(2,-62); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#1a1a2e'; ctx.font="bold 9px 'DM Sans',sans-serif"; ctx.textAlign='center';
+    ctx.fillText('Après ski! 🍺', 0,-78);
+    ctx.restore();
+  }
+
+  ctx.restore(); // end translate(cx, by)
+  ctx.restore(); // end translate(slideY) + globalAlpha
+}
+
+// ════════════════ LEADERBOARD ════════════════
+const LB_KEY = 'jerrydodger_lb_v1';
+
+function lbLoad(){
+  try { return JSON.parse(localStorage.getItem(LB_KEY)) || []; }
+  catch(e){ return []; }
+}
+function lbSave(entries){ localStorage.setItem(LB_KEY, JSON.stringify(entries)); }
+
+function lbAddScore(name, company, sc, lv){
+  const entries = lbLoad();
+  entries.push({ name: name||'Anonymous', company: company||'', score:sc, level:lv, date: new Date().toLocaleDateString() });
+  entries.sort((a,b)=>b.score-a.score);
+  const trimmed = entries.slice(0,10);
+  lbSave(trimmed);
+  return trimmed;
+}
+
+function lbRender(entries, highlightScore){
+  const tbody = document.getElementById('lb-body');
+  tbody.innerHTML = '';
+  if(!entries.length){
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td colspan="5" style="text-align:center;color:#6a4a88;padding:14px">No scores yet — be the first!</td>';
+    tbody.appendChild(tr);
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  entries.forEach((e,i)=>{
+    const tr=document.createElement('tr');
+    if(e.score===highlightScore) tr.className='lb-you';
+    tr.innerHTML=`
+      <td class="lb-rank">${medals[i]||('#'+(i+1))}</td>
+      <td style="font-weight:600">${escHtml(e.name)}</td>
+      <td style="color:#8870b0;font-size:0.75rem">${escHtml(e.company)}</td>
+      <td class="lb-score">${e.score.toLocaleString()}</td>
+      <td style="color:#8870b0">${e.level}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function showLeaderboard(pendingScore, pendingLevel){
+  // Show/hide name form based on whether score is worth saving
+  const entries = lbLoad();
+  const nameForm = document.getElementById('name-form');
+  const savebtn  = document.getElementById('btn-lb-save');
+  const qualifies = entries.length < 10 || pendingScore > (entries[entries.length-1]?.score||0);
+
+  nameForm.style.display = qualifies ? 'flex' : 'none';
+  savebtn.style.display  = qualifies ? '' : 'none';
+
+  lbRender(entries, pendingScore);
+
+  // Show overlay (inside game-wrapper)
+  ['ov-start','ov-over','ov-lvlup'].forEach(n=>document.getElementById(n).style.display='none');
+  const lb = document.getElementById('ov-lb');
+  lb.style.display = 'flex';
+
+  savebtn.onclick = ()=>{
+    const name = document.getElementById('lb-name').value.trim();
+    const co   = document.getElementById('lb-company').value.trim();
+    const updated = lbAddScore(name, co, pendingScore, pendingLevel);
+    nameForm.style.display = 'none';
+    savebtn.style.display  = 'none';
+    lbRender(updated, pendingScore);
+  };
+
+  document.getElementById('btn-lb-skip').onclick = ()=>{
+    lbRender(lbLoad(), null);
+    nameForm.style.display = 'none';
+    savebtn.style.display  = 'none';
+  };
+
+  document.getElementById('btn-lb-play').onclick = ()=>{
+    lb.style.display = 'none';
+    startGame();
+  };
+}
+
 // ── Loop ─────────────────────────────────────────────
 function loop(ts){
   if(state==='paused') return;
-  lastTs=ts; update(); draw();
-  if(state==='playing'||state==='paused') animId=requestAnimationFrame(loop);
+  lastTs=ts;
+  update();
+  // Run finishing animation frames
+  if(state==='finishing'){
+    beerAnim++;
+    // After ~2.5s coast + celebration, show level-up overlay
+    if(beerAnim===160){
+      state='levelup';
+      document.getElementById('lu-sc').textContent=score;
+      showOv('ov-lvlup');
+    }
+  }
+  draw();
+  if(state==='playing'||state==='paused'||state==='finishing') animId=requestAnimationFrame(loop);
 }
 
 // Boot
@@ -1189,14 +1770,30 @@ initTouchZone();
 showOv('ov-start');
 draw();
 
-// Make overlay buttons work on mobile despite blanket touchstart preventDefault
-['btn-start','btn-restart','btn-next'].forEach(id=>{
+// Wire overlay buttons
+document.getElementById('btn-go-lb').addEventListener('click', ()=> showLeaderboard(score, level));
+document.getElementById('btn-view-lb').addEventListener('click', ()=>{
+  document.getElementById('name-form').style.display='none';
+  document.getElementById('btn-lb-save').style.display='none';
+  lbRender(lbLoad(), null);
+  ['ov-start','ov-over','ov-lvlup'].forEach(n=>document.getElementById(n).style.display='none');
+  document.getElementById('ov-lb').style.display='flex';
+  document.getElementById('btn-lb-play').textContent='← BACK';
+  document.getElementById('btn-lb-play').onclick=()=>{
+    document.getElementById('ov-lb').style.display='none';
+    showOv('ov-start');
+    document.getElementById('btn-lb-play').textContent='PLAY AGAIN';
+    document.getElementById('btn-lb-play').onclick=()=>{ document.getElementById('ov-lb').style.display='none'; startGame(); };
+  };
+});
+
+// Mobile touch handlers for overlay buttons (touchend fires after our blanket preventDefault)
+const touchClick = id => {
   const el = document.getElementById(id);
   if(el) el.addEventListener('touchend', e=>{ e.stopPropagation(); el.click(); }, {passive:false});
-});
-document.getElementById('mob-pause').addEventListener('touchend', e=>{
-  e.stopPropagation(); togglePause();
-}, {passive:false});
+};
+['btn-start','btn-restart','btn-next','btn-go-lb','btn-view-lb','btn-lb-save','btn-lb-skip','btn-lb-play'].forEach(touchClick);
+document.getElementById('mob-pause').addEventListener('touchend', e=>{ e.stopPropagation(); togglePause(); }, {passive:false});
 </script>
 </body>
 </html>
