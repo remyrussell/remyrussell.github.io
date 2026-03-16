@@ -1099,37 +1099,37 @@ function update(){
   // so the progress bar reflects time on the run, not how fast you ski
   runDist += worldSpd;
 
-  // Finish line: spawns ABOVE screen when 90% distance covered, scrolls DOWN toward player
+  // Finish line: spawns above screen when 90% done, scrolls down to player
   const progress = Math.min(runDist / runTotal, 1);
-  if(progress >= 0.90 && !finishTriggered){
-    if(finishY === 9999) finishY = -80;  // above screen, will scroll down to player
+  if(progress >= 0.90 && !finishTriggered && finishY === 9999){
+    finishY = -80;
   }
   if(finishY !== 9999 && !finishTriggered){
-    // Scrolls down same as all static terrain objects
+    const prevFinishY = finishY;
     finishY += worldSpd + pl.speedRel;
+    // Trigger when finishY crosses player Y (catches fast scroll that might skip a frame)
+    if(prevFinishY < pl.y && finishY >= pl.y){
+      finishY = pl.y; // snap to player for clean crossing
+      finishTriggered = true;
+      state = 'finishing';
+      pl.speedRel = 1.5;
+      beerAnim = 0;
+      const bonus = Math.round(hp * 2 + level * 100);
+      score += bonus;
+      hudUpdate();
+      popup(W/2-50, H*0.4, `FINISH! +${bonus}`, P.gold);
+      for(let i=0;i<30;i++) cheerParticles.push({
+        x:rnd(0,W), y:rnd(H*0.1,H*0.6),
+        vx:rnd(-3,3), vy:rnd(-5,1),
+        r:rnd(4,9), life:80, maxL:80,
+        col:[P.pink,P.gold,'#fff',P.purple,'#00e5ff'][rndI(0,5)]
+      });
+    }
   }
 
-  // Player crosses the finish line — triggered when banner scrolls down past player Y
-  if(!finishTriggered && finishY !== 9999 && finishY >= pl.y - pl.h && finishY <= pl.y + pl.h){
-    finishTriggered = true;
-    state = 'finishing';
-    pl.speedRel = 1.5;
-    beerAnim = 0;
-    const bonus = Math.round(hp * 2 + level * 100);
-    score += bonus;
-    hudUpdate();
-    popup(W/2-50, H*0.4, `FINISH! +${bonus}`, P.gold);
-    for(let i=0;i<30;i++) cheerParticles.push({
-      x:rnd(0,W), y:rnd(H*0.1,H*0.6),
-      vx:rnd(-3,3), vy:rnd(-5,1),
-      r:rnd(4,9), life:80, maxL:80,
-      col:[P.pink,P.gold,'#fff',P.purple,'#00e5ff'][rndI(0,5)]
-    });
-  }
-
-  // Fallback: all Jerrys dodged before timer — spawn finish immediately
-  if(gotJerrys>=needJerrys && state==='playing' && !finishTriggered){
-    if(finishY===9999) finishY = -80;
+  // Fallback: all Jerrys cleared — spawn finish immediately if not already coming
+  if(gotJerrys >= needJerrys && state==='playing' && !finishTriggered){
+    if(finishY === 9999) finishY = -80;
     runDist = runTotal;
   }
 
@@ -1260,17 +1260,8 @@ function draw(){
     drawBeerCelebration(beerAnim);
   }
 
-  // DEBUG: show finish line state on screen
-  ctx.save();
-  ctx.fillStyle='rgba(0,0,0,0.6)';
-  ctx.fillRect(0, H-50, W, 50);
-  ctx.fillStyle='#fff';
-  ctx.font='11px monospace';
-  ctx.textAlign='left';
-  const pct = Math.min(runDist/runTotal*100,100).toFixed(1);
-  ctx.fillText(`dist:${Math.round(runDist)}/${runTotal} (${pct}%)  finishY:${Math.round(finishY)}  plY:${Math.round(pl.y)}  triggered:${finishTriggered}`, 6, H-32);
-  ctx.fillText(`state:${state}  speedRel:${pl.speedRel.toFixed(2)}  worldSpd:${worldSpd}  fc:${fc}`, 6, H-14);
-  ctx.restore();
+  // Pause overlay
+  if(state==='paused'){
     ctx.save();
     ctx.fillStyle='rgba(13,8,32,0.6)'; ctx.fillRect(0,0,W,H);
     ctx.font="2.4rem 'Bangers',cursive"; ctx.textAlign='center';
