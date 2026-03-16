@@ -140,35 +140,46 @@ function generateResumePDF(data) {
         return y + (lines.length * size * 0.45);
     }
 
-    // Renders text as normal, then overlays clickable blue link regions for any http/https/www URLs
+    // Renders text with clickable URLs in a single pass — no double-drawing.
+    // URLs appear in blue but same weight/size as surrounding text (no bold, no offset).
     function addTextWithLinks(text, size, style, x, y, maxWidth) {
         doc.setFontSize(size);
         doc.setFont('Helvetica', style);
-        doc.setTextColor(0, 0, 0);
         const lines = doc.splitTextToSize(text, maxWidth);
         const lineHeight = size * 0.45;
-        // Only match explicit http/https/www URLs — no bare domain guessing
         const urlRegex = /((https?:\/\/|www\.)[^\s,;)<>"]+)/g;
+
         lines.forEach((line, i) => {
             const lineY = y + i * lineHeight;
-            // First pass: draw entire line in black
-            doc.setTextColor(0, 0, 0);
-            doc.text(line, x, lineY);
-            // Second pass: re-draw URL segments in blue on top, add link rect
+            let cursor = 0;
+            let drawX = x;
             let match;
             urlRegex.lastIndex = 0;
+
             while ((match = urlRegex.exec(line)) !== null) {
-                const matchText = match[0];
-                const href = matchText.startsWith('www.') ? `https://${matchText}` : matchText;
-                const preText  = line.substring(0, match.index);
-                const preWidth  = doc.getStringUnitWidth(preText)  * size * 0.352778;
-                const linkWidth = doc.getStringUnitWidth(matchText) * size * 0.352778;
-                // Draw URL text in blue (overwrites the black already drawn)
+                // Draw plain text before this URL
+                if (match.index > cursor) {
+                    const plain = line.substring(cursor, match.index);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(plain, drawX, lineY);
+                    drawX += doc.getStringUnitWidth(plain) * size * 0.352778;
+                }
+                // Draw URL in blue, same font/size — no extra weight
+                const urlText = match[0];
+                const href = urlText.startsWith('www.') ? `https://${urlText}` : urlText;
+                const urlWidth = doc.getStringUnitWidth(urlText) * size * 0.352778;
                 doc.setTextColor(0, 0, 180);
-                doc.text(matchText, x + preWidth, lineY);
+                doc.text(urlText, drawX, lineY);
                 doc.setTextColor(0, 0, 0);
-                // Invisible clickable rectangle
-                doc.link(x + preWidth, lineY - lineHeight * 0.75, linkWidth, lineHeight, { url: href });
+                // Clickable rectangle over the URL
+                doc.link(drawX, lineY - lineHeight * 0.75, urlWidth, lineHeight, { url: href });
+                drawX += urlWidth;
+                cursor = match.index + urlText.length;
+            }
+            // Draw any remaining plain text after the last URL
+            if (cursor < line.length) {
+                doc.setTextColor(0, 0, 0);
+                doc.text(line.substring(cursor), drawX, lineY);
             }
         });
         return y + (lines.length * lineHeight);
