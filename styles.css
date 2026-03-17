@@ -132,40 +132,48 @@ h3 {
     font-size: 1.25rem;
 }
 
-/* ── "Tailor with AI" button in resume header ── */
-.tailor-btn {
-    display: inline-flex;
+/* ── "Tailor with AI" footer link at bottom of resume ── */
+.tailor-footer-link {
+    display: flex;
     align-items: center;
-    gap: 0.45rem;
-    margin-top: 1rem;
-    padding: 0.5rem 1.1rem;
-    background: transparent;
-    border: 1.5px solid #c71585;
-    border-radius: 20px;
-    color: #c71585;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 2rem auto 0;
+    padding: 1rem;
+    max-width: 900px;
+    border-top: 1px solid rgba(199, 21, 133, 0.2);
+    color: #999;
     text-decoration: none;
     font-size: 0.82rem;
-    font-weight: 600;
     letter-spacing: 0.03em;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition: color 0.2s ease;
 }
-.tailor-btn:hover {
-    background: #c71585;
-    color: #fff;
+.tailor-footer-link:hover {
+    color: #c71585;
     text-decoration: none;
 }
-.tailor-btn .claude-mark {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
+.tailor-footer-link:hover .anthropic-mark {
+    fill: #c71585;
 }
-.theme-dark .tailor-btn {
-    border-color: #e040a0;
+.anthropic-mark {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    fill: #999;
+    transition: fill 0.2s ease;
+}
+.theme-dark .tailor-footer-link {
+    color: #5a5a7a;
+    border-top-color: rgba(199, 21, 133, 0.15);
+}
+.theme-dark .tailor-footer-link:hover {
     color: #e040a0;
 }
-.theme-dark .tailor-btn:hover {
-    background: #e040a0;
-    color: #fff;
+.theme-dark .tailor-footer-link:hover .anthropic-mark {
+    fill: #e040a0;
+}
+.theme-dark .anthropic-mark {
+    fill: #5a5a7a;
 }
 
 /* Error message for JSON loading issues */
