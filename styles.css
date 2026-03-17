@@ -132,6 +132,42 @@ h3 {
     font-size: 1.25rem;
 }
 
+/* ── "Tailor with AI" button in resume header ── */
+.tailor-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1rem;
+    padding: 0.5rem 1.1rem;
+    background: transparent;
+    border: 1.5px solid #c71585;
+    border-radius: 20px;
+    color: #c71585;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.tailor-btn:hover {
+    background: #c71585;
+    color: #fff;
+    text-decoration: none;
+}
+.tailor-btn .claude-mark {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+.theme-dark .tailor-btn {
+    border-color: #e040a0;
+    color: #e040a0;
+}
+.theme-dark .tailor-btn:hover {
+    background: #e040a0;
+    color: #fff;
+}
+
 /* Error message for JSON loading issues */
 .error-message {
     color: #c71585;
