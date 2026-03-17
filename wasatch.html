@@ -7,141 +7,132 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --ice:#c8e6f5; --sky:#7eb8d4; --deep:#0d1f2d; --deeper:#07131d;
-      --snow:#eaf4fb; --gold:#f0c040; --text:#cde4f0; --muted:#5a7a8a;
-    }
+    :root{--ice:#c8e6f5;--sky:#7eb8d4;--deeper:#07131d;--snow:#eaf4fb;--gold:#f0c040;--text:#cde4f0;--muted:#5a7a8a;}
     *{box-sizing:border-box;margin:0;padding:0;}
     body{background:var(--deeper);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
     body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 0%,rgba(14,80,140,.22) 0%,transparent 60%),radial-gradient(ellipse at 80% 10%,rgba(42,92,69,.12) 0%,transparent 50%);pointer-events:none;z-index:0;}
-
     nav{position:relative;z-index:10;display:flex;align-items:center;gap:1rem;padding:.75rem 1.5rem;background:rgba(7,19,29,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(126,184,212,.2);}
     nav .brand{font-family:'Bebas Neue',cursive;font-size:1.3rem;color:var(--ice);letter-spacing:.1em;margin-right:auto;}
     nav a{color:var(--sky);text-decoration:none;font-size:.82rem;font-weight:600;letter-spacing:.05em;transition:color .2s;}
     nav a:hover{color:var(--ice);}
-
     header{position:relative;z-index:1;padding:2.5rem 1.5rem 1rem;text-align:center;}
     header h1{font-family:'Bebas Neue',cursive;font-size:clamp(2.8rem,8vw,5rem);letter-spacing:.06em;color:var(--snow);text-shadow:0 2px 30px rgba(200,230,245,.3);line-height:1;}
     header h1 span{color:var(--sky);}
     header p{margin-top:.5rem;color:var(--muted);font-size:.85rem;letter-spacing:.04em;}
-
     #tabs{position:relative;z-index:1;display:flex;justify-content:center;gap:.5rem;padding:.5rem 1rem 0;}
     .tab{font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.12em;padding:.5rem 1.4rem;border-radius:6px 6px 0 0;border:1px solid rgba(126,184,212,.2);border-bottom:none;background:rgba(13,31,45,.5);color:var(--muted);cursor:pointer;transition:color .2s,background .2s;}
     .tab.active{background:rgba(13,31,45,.95);color:var(--ice);border-color:rgba(126,184,212,.4);}
     .tab:hover:not(.active){color:var(--text);}
-
-    #panel{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:1.5rem 1rem 3rem;}
-
-    .resort-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem;}
-    .resort-card{background:rgba(13,31,45,.85);border:1px solid rgba(126,184,212,.18);border-radius:12px;padding:1rem 1.1rem 1.25rem;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
+    #panel{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+    /* Resort grid — wider on desktop so 7 fit nicely */
+    .resort-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.85rem;margin-bottom:1rem;}
+    .resort-card{background:rgba(13,31,45,.85);border:1px solid rgba(126,184,212,.18);border-radius:12px;padding:.9rem 1rem 1.1rem;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
     .resort-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--sky),var(--ice));border-radius:12px 12px 0 0;}
+    /* Group dividers */
+    .resort-group-label{font-family:'Bebas Neue',cursive;font-size:.85rem;letter-spacing:.15em;color:var(--muted);margin:1.2rem 0 .4rem;grid-column:1/-1;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-    .resort-name{font-family:'Bebas Neue',cursive;font-size:1.25rem;letter-spacing:.1em;color:var(--ice);margin-bottom:.15rem;}
-    .resort-elev{font-size:.7rem;color:var(--muted);letter-spacing:.05em;margin-bottom:.75rem;}
-    .resort-today{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;}
-    .resort-icon{font-size:1.6rem;}
-    .resort-temp{font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:500;color:var(--snow);}
-    .resort-snow-today{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--sky);margin-bottom:.6rem;}
-    .snow-bar-label{font-size:.68rem;color:var(--muted);letter-spacing:.05em;margin-bottom:.35rem;}
-    .snow-bars{display:flex;gap:3px;align-items:flex-end;height:40px;margin-bottom:.35rem;}
+    .resort-name{font-family:'Bebas Neue',cursive;font-size:1.15rem;letter-spacing:.1em;color:var(--ice);margin-bottom:.12rem;}
+    .resort-elev{font-size:.68rem;color:var(--muted);letter-spacing:.05em;margin-bottom:.65rem;}
+    .resort-today{display:flex;align-items:center;gap:.4rem;margin-bottom:.5rem;}
+    .resort-icon{font-size:1.4rem;}
+    .resort-temp{font-family:'DM Mono',monospace;font-size:1.25rem;font-weight:500;color:var(--snow);}
+    .resort-snow-today{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--sky);margin-bottom:.5rem;}
+    .snow-bar-label{font-size:.65rem;color:var(--muted);letter-spacing:.05em;margin-bottom:.3rem;}
+    .snow-bars{display:flex;gap:2px;align-items:flex-end;height:36px;margin-bottom:.3rem;}
     .snow-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;}
     .snow-bar-fill{width:100%;border-radius:2px 2px 0 0;background:linear-gradient(to top,var(--sky),var(--ice));min-height:2px;}
-    .snow-bar-day{font-size:.52rem;color:var(--muted);font-family:'DM Mono',monospace;}
-    .resort-total{font-size:.75rem;color:var(--gold);font-family:'DM Mono',monospace;margin-top:.25rem;}
-
-    .aq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
+    .snow-bar-day{font-size:.5rem;color:var(--muted);font-family:'DM Mono',monospace;}
+    .resort-total{font-size:.72rem;color:var(--gold);font-family:'DM Mono',monospace;margin-top:.2rem;}
+    /* AQ */
+    .aq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1rem;margin-bottom:1.5rem;}
     .aq-card{background:rgba(13,31,45,.85);border:1px solid rgba(126,184,212,.18);border-radius:12px;padding:1rem 1.1rem;animation:fadeUp .4s ease both;}
-    .aq-card-label{font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;}
-    .aq-card-area{font-family:'Bebas Neue',cursive;font-size:1.1rem;color:var(--ice);letter-spacing:.08em;margin-bottom:.5rem;}
-    .aq-aqi-val{font-family:'DM Mono',monospace;font-size:2rem;font-weight:500;line-height:1;margin-bottom:.25rem;}
-    .aq-category{font-size:.72rem;font-weight:600;letter-spacing:.05em;}
-    .aq-param{font-size:.7rem;color:var(--muted);margin-top:.2rem;}
-    .aqi-good{color:#4cbe8a;} .aqi-moderate{color:#f0c040;} .aqi-sensitive{color:#f08020;}
-    .aqi-unhealthy{color:#e05a3a;} .aqi-very{color:#c03050;} .aqi-hazardous{color:#8b0000;}
+    .aq-card-label{font-size:.68rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.35rem;}
+    .aq-card-area{font-family:'Bebas Neue',cursive;font-size:1rem;color:var(--ice);letter-spacing:.06em;margin-bottom:.45rem;line-height:1.2;}
+    .aq-aqi-val{font-family:'DM Mono',monospace;font-size:2rem;font-weight:500;line-height:1;margin-bottom:.2rem;}
+    .aq-category{font-size:.7rem;font-weight:600;letter-spacing:.04em;}
     .aqi-bar{width:100%;height:5px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:.5rem;overflow:hidden;}
     .aqi-bar-fill{height:100%;border-radius:3px;transition:width .8s ease;}
-
-    .legend{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.7rem;color:var(--muted);margin-top:1rem;font-family:'DM Mono',monospace;}
+    .aqi-good{color:#4cbe8a;}.aqi-moderate{color:#f0c040;}.aqi-sensitive{color:#f08020;}
+    .aqi-unhealthy{color:#e05a3a;}.aqi-very{color:#c03050;}.aqi-hazardous{color:#8b0000;}
+    .legend{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.68rem;color:var(--muted);margin-top:1rem;font-family:'DM Mono',monospace;}
     .legend span{display:flex;align-items:center;gap:.3rem;}
-    .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
-
+    .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}
     .info-box{margin-top:1.5rem;padding:1rem 1.2rem;background:rgba(13,31,45,.6);border:1px solid rgba(126,184,212,.15);border-radius:10px;font-size:.78rem;color:var(--muted);line-height:1.7;}
     .info-box strong{color:var(--text);}
-
     .loading{text-align:center;padding:3rem;color:var(--muted);font-size:.85rem;letter-spacing:.06em;}
     .loading::after{content:'';display:block;width:32px;height:32px;border:2px solid rgba(126,184,212,.2);border-top-color:var(--sky);border-radius:50%;margin:1rem auto 0;animation:spin .8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg)}}
     .error-msg{background:rgba(224,90,58,.12);border:1px solid rgba(224,90,58,.35);border-radius:8px;padding:1rem 1.25rem;font-size:.83rem;color:#f08870;margin:1rem 0;}
-
+    .token-note{background:rgba(126,184,212,.07);border:1px solid rgba(126,184,212,.2);border-radius:8px;padding:.85rem 1.1rem;font-size:.78rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6;}
+    .token-note a{color:var(--sky);}
     footer{position:relative;z-index:1;text-align:center;padding:1rem;font-size:.7rem;color:var(--muted);border-top:1px solid rgba(126,184,212,.1);}
     footer a{color:var(--sky);text-decoration:none;}
-
-    @media(max-width:480px){
+    @media(max-width:600px){
       .resort-grid{grid-template-columns:1fr 1fr;}
       .aq-grid{grid-template-columns:1fr 1fr;}
     }
   </style>
 </head>
 <body>
-
 <nav>
   <span class="brand">RR</span>
   <a href="/">← remyrussell.com</a>
   <a href="/wasatch.html" style="color:var(--ice)">⛷ Wasatch</a>
 </nav>
-
 <header>
-  <h1>WASATCH <span>SNOW</span> & AIR</h1>
-  <p>Live 7-day snow forecast · Cottonwood Canyon resorts · Salt Lake Valley air quality</p>
+  <h1>WASATCH <span>SNOW</span> &amp; AIR</h1>
+  <p>Live 7-day snow forecast · Wasatch resorts · Salt Lake Valley air quality</p>
 </header>
-
 <div id="tabs">
   <div class="tab active" id="tab-snow" onclick="switchTab('snow')">❄ SNOW FORECAST</div>
   <div class="tab"        id="tab-air"  onclick="switchTab('air')">🌬 AIR QUALITY</div>
 </div>
-
 <div id="panel">
   <div class="loading" id="loading-msg">Fetching Wasatch conditions…</div>
 </div>
-
 <footer>
   Snow: <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (HRRR model, no key required) ·
-  Air quality: <a href="https://waqi.info" target="_blank">World Air Quality Index</a> ·
+  Air: <a href="https://waqi.info" target="_blank">World Air Quality Index</a> ·
   Built by <a href="/">Remy Russell</a>
 </footer>
-
 <script>
-// ══════════════════════════════════════════════════
-//  WASATCH SNOW & AIR
-//  Snow:  Open-Meteo  — no key needed
-//  AQ:    WAQI API    — free token embedded (public,
-//         read-only, rate-limited, zero billing risk)
-// ══════════════════════════════════════════════════
-
-const RESORTS = [
+// ── Resort data ───────────────────────────────────
+// Group: Cottonwood Canyons
+const COTTONWOOD = [
   { name:'Alta',     elev:'8,530 ft', lat:40.5884, lon:-111.6386 },
   { name:'Snowbird', elev:'8,100 ft', lat:40.5813, lon:-111.6558 },
   { name:'Brighton', elev:'8,755 ft', lat:40.5985, lon:-111.5831 },
   { name:'Solitude', elev:'7,988 ft', lat:40.6200, lon:-111.5928 },
 ];
+// Group: Park City area
+const PARKCITY = [
+  { name:'Park City',   elev:'6,900 ft', lat:40.6514, lon:-111.5080 },
+  { name:'Deer Valley', elev:'6,570 ft', lat:40.6374, lon:-111.4783 },
+];
+// Group: Northern Wasatch
+const NORTHERN = [
+  { name:'Snowbasin',   elev:'6,400 ft', lat:41.2160, lon:-111.8569 },
+];
+const ALL_RESORTS = [...COTTONWOOD, ...PARKCITY, ...NORTHERN];
 
-// WAQI stations covering the Salt Lake Valley inversion corridor
+// ── AQ monitoring stations: named city lookups ──
+// Using /feed/geo:lat;lon/ endpoint — works with demo token
 const AQ_STATIONS = [
-  { name:'Salt Lake City',  id:'@9830'  },
-  { name:'Murray',          id:'@9831'  },
-  { name:'Bountiful',       id:'@9832'  },
-  { name:'Hawthorne (SLC)', id:'@10172' },
+  { name:'Salt Lake City', lat:40.7608, lon:-111.8910 },
+  { name:'Murray',         lat:40.6669, lon:-111.8880 },
+  { name:'Bountiful',      lat:40.8794, lon:-111.8808 },
+  { name:'Ogden',          lat:41.2230, lon:-111.9738 },
+  { name:'Provo',          lat:40.2338, lon:-111.6585 },
 ];
 
-// Free WAQI token — public, read-only, no billing
-// Safe to embed in a public repo: worst case is shared rate limit
-const WAQI_TOKEN = 'demo';   // ← replace with your free token from https://aqicn.org/data-platform/token/
+// WAQI token — demo works for geo: feed endpoint.
+// For your own dedicated token (instant, free): https://aqicn.org/data-platform/token/
+const WAQI_TOKEN = 'demo';
 
 let snowData  = {};
 let aqResults = [];
 let activeTab = 'snow';
 
-// ── Boot ─────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', loadAll);
 
 async function loadAll(){
@@ -153,8 +144,6 @@ async function loadAll(){
 function setLoading(on){
   document.getElementById('loading-msg').style.display = on ? 'block' : 'none';
 }
-
-// ── Tab ──────────────────────────────────────────
 function switchTab(tab){
   activeTab = tab;
   document.getElementById('tab-snow').classList.toggle('active', tab==='snow');
@@ -162,67 +151,59 @@ function switchTab(tab){
   render();
 }
 
-// ── WMO icon map ─────────────────────────────────
-function wmoIcon(code){
-  if(code===0)    return{e:'☀️', l:'Clear'};
-  if(code<=2)     return{e:'⛅', l:'Partly cloudy'};
-  if(code===3)    return{e:'☁️', l:'Overcast'};
-  if(code<=49)    return{e:'🌫️',l:'Fog'};
-  if(code<=55)    return{e:'🌦️',l:'Drizzle'};
-  if(code<=65)    return{e:'🌧️',l:'Rain'};
-  if(code<=77)    return{e:'🌨️',l:'Snow'};
-  if(code<=82)    return{e:'🌧️',l:'Rain showers'};
-  if(code<=86)    return{e:'🌨️',l:'Snow showers'};
-  if(code<=99)    return{e:'⛈️', l:'Thunderstorm'};
+// ── WMO weather code → emoji ─────────────────────
+function wmoIcon(c){
+  if(c===0)  return{e:'☀️',l:'Clear'};
+  if(c<=2)   return{e:'⛅',l:'Partly cloudy'};
+  if(c===3)  return{e:'☁️',l:'Overcast'};
+  if(c<=49)  return{e:'🌫️',l:'Fog'};
+  if(c<=55)  return{e:'🌦️',l:'Drizzle'};
+  if(c<=65)  return{e:'🌧️',l:'Rain'};
+  if(c<=77)  return{e:'🌨️',l:'Snow'};
+  if(c<=82)  return{e:'🌧️',l:'Showers'};
+  if(c<=86)  return{e:'🌨️',l:'Snow showers'};
+  if(c<=99)  return{e:'⛈️',l:'Thunderstorm'};
   return{e:'❓',l:'Unknown'};
 }
 
 // ── Open-Meteo snow ──────────────────────────────
 async function loadSnow(){
-  const fetches = RESORTS.map(async r => {
+  await Promise.all(ALL_RESORTS.map(async r => {
     try {
       const url = 'https://api.open-meteo.com/v1/forecast'
-        + '?latitude='  + r.lat
-        + '&longitude=' + r.lon
+        + '?latitude='  + r.lat + '&longitude=' + r.lon
         + '&daily=snowfall_sum,temperature_2m_max,temperature_2m_min,weathercode'
         + '&temperature_unit=fahrenheit&precipitation_unit=inch'
         + '&timezone=America%2FDenver&forecast_days=7';
-      const res  = await fetch(url);
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      const json = await res.json();
-      snowData[r.name] = json;
-    } catch(e){
-      console.warn('Snow fetch failed for ' + r.name, e);
-    }
-  });
-  await Promise.all(fetches);
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      snowData[r.name] = await res.json();
+    } catch(e){ console.warn('Snow fetch failed:', r.name, e); }
+  }));
 }
 
-// ── WAQI air quality ─────────────────────────────
+// ── WAQI AQ — geo feed per station ───────────────
+// /feed/geo:lat;lon/ works with demo token (unlike map/bounds)
 async function loadAQ(){
   aqResults = [];
-  // Query by geo bounding box for SLC metro — simpler than station IDs
-  try {
-    const url = 'https://api.waqi.info/map/bounds/?latlng=40.45,-112.1,40.85,-111.7&token=' + WAQI_TOKEN;
-    const res  = await fetch(url);
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    if(json.status === 'ok' && json.data){
-      // Filter for stations with real PM2.5/AQI data, sort by AQI desc, take top 4
-      aqResults = json.data
-        .filter(s => s.aqi && s.aqi !== '-' && Number(s.aqi) > 0)
-        .sort((a,b) => Number(b.aqi) - Number(a.aqi))
-        .slice(0, 5)
-        .map(s => ({
-          name: s.station?.name || 'Station',
-          aqi:  Number(s.aqi),
-          lat:  s.lat,
-          lon:  s.lon,
-        }));
-    }
-  } catch(e){
-    console.warn('AQ fetch failed', e);
-  }
+  await Promise.all(AQ_STATIONS.map(async s => {
+    try {
+      const url = `https://api.waqi.info/feed/geo:${s.lat};${s.lon}/?token=${WAQI_TOKEN}`;
+      const res  = await fetch(url);
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const json = await res.json();
+      if(json.status === 'ok' && json.data?.aqi){
+        aqResults.push({
+          name: s.name,
+          aqi:  Number(json.data.aqi),
+          station: json.data.city?.name || s.name,
+          dominant: json.data.dominentpol || '',
+        });
+      }
+    } catch(e){ console.warn('AQ fetch failed:', s.name, e); }
+  }));
+  // Sort by AQI descending so worst shows first
+  aqResults.sort((a,b) => b.aqi - a.aqi);
 }
 
 // ── AQI helpers ──────────────────────────────────
@@ -230,68 +211,89 @@ function aqiClass(v){ return v<=50?'aqi-good':v<=100?'aqi-moderate':v<=150?'aqi-
 function aqiLabel(v){ return v<=50?'Good':v<=100?'Moderate':v<=150?'Sensitive Groups':v<=200?'Unhealthy':v<=300?'Very Unhealthy':'Hazardous'; }
 function aqiColor(v){ return v<=50?'#4cbe8a':v<=100?'#f0c040':v<=150?'#f08020':v<=200?'#e05a3a':v<=300?'#c03050':'#8b0000'; }
 
-// ── Render dispatcher ────────────────────────────
+// ── Render ────────────────────────────────────────
 function render(){
-  const panel = document.getElementById('panel');
-  if(activeTab==='snow') renderSnow(panel);
-  else renderAir(panel);
+  const p = document.getElementById('panel');
+  activeTab==='snow' ? renderSnow(p) : renderAir(p);
 }
 
 // ── Snow render ──────────────────────────────────
 function renderSnow(panel){
   if(!Object.keys(snowData).length){
-    panel.innerHTML = '<div class="error-msg">⚠️ Could not load snow forecast. Check your connection and try refreshing.</div>';
+    panel.innerHTML='<div class="error-msg">⚠️ Could not load snow forecast. Check your connection and try refreshing.</div>';
     return;
   }
   const today = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'America/Denver'});
-  let html = `<p style="font-size:.72rem;color:var(--muted);margin-bottom:1rem;font-family:'DM Mono',monospace">Updated ${today} · Summit forecasts via Open-Meteo + HRRR</p>`;
-  html += '<div class="resort-grid">';
+  let html = `<p style="font-size:.72rem;color:var(--muted);margin-bottom:.75rem;font-family:'DM Mono',monospace">Updated ${today} · Summit forecasts via Open-Meteo + HRRR model</p>`;
 
-  RESORTS.forEach((resort, ri) => {
-    const d = snowData[resort.name];
-    if(!d?.daily){ html += `<div class="resort-card" style="animation-delay:${ri*.07}s"><div class="resort-name">${resort.name}</div><div style="color:var(--muted);font-size:.8rem;margin-top:.5rem">No data</div></div>`; return; }
-    const {time:days, snowfall_sum:snow, temperature_2m_max:tmax, temperature_2m_min:tmin, weathercode:codes} = d.daily;
-    const todaySnow = snow[0]||0, totalSnow = snow.reduce((a,b)=>(a||0)+(b||0),0);
-    const maxSnow   = Math.max(...snow.map(v=>v||0), 0.5);
-    const icon      = wmoIcon(codes[0]);
-    const bars = days.map((_,i)=>{
-      const ht = Math.max(((snow[i]||0)/maxSnow)*36, 2).toFixed(1);
-      const day= new Date(days[i]+'T12:00:00').toLocaleDateString('en-US',{weekday:'short'}).slice(0,2);
-      return `<div class="snow-bar-col" title="${(snow[i]||0).toFixed(1)}&quot; ${day}"><div class="snow-bar-fill" style="height:${ht}px"></div><div class="snow-bar-day">${day}</div></div>`;
-    }).join('');
-    html += `<div class="resort-card" style="animation-delay:${ri*.07}s">
-      <div class="resort-name">${resort.name}</div>
-      <div class="resort-elev">${resort.elev} summit</div>
-      <div class="resort-today"><span class="resort-icon">${icon.e}</span><span class="resort-temp">${Math.round(tmax[0])}° / ${Math.round(tmin[0])}°</span></div>
-      <div class="resort-snow-today">${todaySnow>0?`❄ ${todaySnow.toFixed(1)}" today`:`No snow today · ${icon.l}`}</div>
-      <div class="snow-bar-label">7-DAY SNOWFALL (inches)</div>
-      <div class="snow-bars">${bars}</div>
-      <div class="resort-total">${totalSnow>0?`${totalSnow.toFixed(1)}" total over 7 days`:'No snow in 7-day window'}</div>
-    </div>`;
-  });
-  html += '</div>';
+  function renderGroup(label, resorts){
+    html += `<div class="resort-grid">`;
+    html += `<div class="resort-group-label">${label}</div>`;
+    resorts.forEach((resort, ri) => {
+      const d = snowData[resort.name];
+      if(!d?.daily){
+        html += `<div class="resort-card"><div class="resort-name">${resort.name}</div><div style="color:var(--muted);font-size:.8rem;margin-top:.5rem">No data</div></div>`;
+        return;
+      }
+      const {time:days,snowfall_sum:snow,temperature_2m_max:tmax,temperature_2m_min:tmin,weathercode:codes} = d.daily;
+      const todaySnow = snow[0]||0;
+      const totalSnow = snow.reduce((a,b)=>(a||0)+(b||0),0);
+      const maxSnow   = Math.max(...snow.map(v=>v||0), 0.5);
+      const icon      = wmoIcon(codes[0]);
+      const bars = days.map((_,i)=>{
+        const ht  = Math.max(((snow[i]||0)/maxSnow)*32,2).toFixed(1);
+        const day = new Date(days[i]+'T12:00:00').toLocaleDateString('en-US',{weekday:'short'}).slice(0,2);
+        return `<div class="snow-bar-col" title="${(snow[i]||0).toFixed(1)}&quot; ${day}">
+          <div class="snow-bar-fill" style="height:${ht}px"></div>
+          <div class="snow-bar-day">${day}</div>
+        </div>`;
+      }).join('');
+      html += `<div class="resort-card" style="animation-delay:${ri*.06}s">
+        <div class="resort-name">${resort.name}</div>
+        <div class="resort-elev">${resort.elev}</div>
+        <div class="resort-today"><span class="resort-icon">${icon.e}</span><span class="resort-temp">${Math.round(tmax[0])}°/${Math.round(tmin[0])}°</span></div>
+        <div class="resort-snow-today">${todaySnow>0?`❄ ${todaySnow.toFixed(1)}" today`:`${icon.l}`}</div>
+        <div class="snow-bar-label">7-DAY SNOWFALL</div>
+        <div class="snow-bars">${bars}</div>
+        <div class="resort-total">${totalSnow>0?`${totalSnow.toFixed(1)}" / 7 days`:'None forecast'}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
 
-  // Comparison table
-  const ref = snowData[RESORTS[0].name];
+  renderGroup('COTTONWOOD CANYONS', COTTONWOOD);
+  renderGroup('PARK CITY AREA', PARKCITY);
+  renderGroup('NORTHERN WASATCH', NORTHERN);
+
+  // Full comparison table
+  const ref = snowData[ALL_RESORTS[0].name];
   if(ref?.daily){
     const {time:days} = ref.daily;
-    html += `<table style="width:100%;border-collapse:collapse;margin-top:1.5rem;font-size:.78rem">
-      <thead><tr style="color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.05em">
-        <th style="text-align:left;padding:.4rem .6rem;border-bottom:1px solid rgba(126,184,212,.15)">DATE</th>
-        ${RESORTS.map(r=>`<th style="text-align:center;padding:.4rem .6rem;border-bottom:1px solid rgba(126,184,212,.15);color:var(--ice)">${r.name.toUpperCase()}</th>`).join('')}
+    html += `<div style="overflow-x:auto;margin-top:1.5rem">
+    <table style="width:100%;border-collapse:collapse;font-size:.76rem;min-width:540px">
+      <thead><tr style="color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.04em">
+        <th style="text-align:left;padding:.4rem .55rem;border-bottom:1px solid rgba(126,184,212,.15)">DATE</th>
+        ${ALL_RESORTS.map(r=>`<th style="text-align:center;padding:.4rem .4rem;border-bottom:1px solid rgba(126,184,212,.15);color:var(--ice);font-size:.68rem">${r.name.split(' ')[0].toUpperCase()}</th>`).join('')}
       </tr></thead>
       <tbody>${days.map((day,i)=>{
         const label = new Date(day+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-        const cells = RESORTS.map(r=>{
+        const cells = ALL_RESORTS.map(r=>{
           const d = snowData[r.name];
           const s  = d?.daily?.snowfall_sum?.[i]||0;
           const hi = Math.round(d?.daily?.temperature_2m_max?.[i]||0);
           const lo = Math.round(d?.daily?.temperature_2m_min?.[i]||0);
           const ic = wmoIcon(d?.daily?.weathercode?.[i]||0);
-          return `<td style="text-align:center;padding:.5rem .6rem;border-bottom:1px solid rgba(126,184,212,.07)">${ic.e} ${s>0?`<span style="color:var(--sky)">${s.toFixed(1)}"</span>`:`<span style="color:var(--muted)">—</span>`}<br><span style="font-size:.68rem;color:var(--muted)">${hi}°/${lo}°</span></td>`;
+          return `<td style="text-align:center;padding:.45rem .4rem;border-bottom:1px solid rgba(126,184,212,.07)">
+            ${ic.e} ${s>0?`<span style="color:var(--sky)">${s.toFixed(1)}"</span>`:`<span style="color:var(--muted)">—</span>`}<br>
+            <span style="font-size:.65rem;color:var(--muted)">${hi}°/${lo}°</span>
+          </td>`;
         }).join('');
-        return `<tr style="background:${i%2===0?'rgba(13,31,45,.4)':'transparent'}"><td style="padding:.5rem .6rem;border-bottom:1px solid rgba(126,184,212,.07);color:var(--text);font-family:'DM Mono',monospace">${label}</td>${cells}</tr>`;
-      }).join('')}</tbody></table>`;
+        return `<tr style="background:${i%2===0?'rgba(13,31,45,.4)':'transparent'}">
+          <td style="padding:.45rem .55rem;border-bottom:1px solid rgba(126,184,212,.07);color:var(--text);font-family:'DM Mono',monospace;white-space:nowrap">${label}</td>
+          ${cells}
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
   }
   panel.innerHTML = html;
 }
@@ -299,25 +301,29 @@ function renderSnow(panel){
 // ── Air quality render ────────────────────────────
 function renderAir(panel){
   if(!aqResults.length){
-    panel.innerHTML = `<div class="error-msg">⚠️ Could not load air quality data. The WAQI API may be temporarily unavailable — try refreshing.</div>`;
+    panel.innerHTML = `<div class="error-msg">⚠️ Could not load air quality data — try refreshing. If this persists, the WAQI demo token may be rate-limited; replace <code>WAQI_TOKEN</code> in the source with your own free token from <a href="https://aqicn.org/data-platform/token/" target="_blank" style="color:var(--sky)">aqicn.org</a>.</div>`;
     return;
   }
-  let html = `<div style="display:flex;align-items:baseline;gap:.75rem;margin-bottom:1.25rem">
-    <h2 style="font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:.1em;color:var(--ice)">AIR QUALITY INDEX</h2>
-    <span style="font-size:.72rem;color:var(--muted);font-family:'DM Mono',monospace">Salt Lake Metro · Real-time</span>
-  </div>
-  <div class="aq-grid">`;
+  let html = `
+    <div style="display:flex;align-items:baseline;gap:.75rem;margin-bottom:1.25rem">
+      <h2 style="font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:.1em;color:var(--ice)">AIR QUALITY INDEX</h2>
+      <span style="font-size:.72rem;color:var(--muted);font-family:'DM Mono',monospace">Wasatch Front · Real-time</span>
+    </div>
+    <div class="aq-grid">`;
+
   aqResults.forEach((s,i)=>{
-    const cls = aqiClass(s.aqi), lbl = aqiLabel(s.aqi), col = aqiColor(s.aqi);
-    const pct = Math.min(Math.round(s.aqi/300*100),100);
-    html += `<div class="aq-card" style="animation-delay:${i*.08}s">
-      <div class="aq-card-label">STATION</div>
-      <div class="aq-card-area" style="font-size:.85rem;text-transform:uppercase">${s.name.split(',')[0]}</div>
+    const cls=aqiClass(s.aqi), lbl=aqiLabel(s.aqi), col=aqiColor(s.aqi);
+    const pct=Math.min(Math.round(s.aqi/300*100),100);
+    html += `<div class="aq-card" style="animation-delay:${i*.07}s">
+      <div class="aq-card-label">LOCATION</div>
+      <div class="aq-card-area">${s.name}</div>
       <div class="aq-aqi-val ${cls}">${s.aqi}</div>
       <div class="aq-category ${cls}">${lbl}</div>
+      ${s.dominant?`<div style="font-size:.68rem;color:var(--muted);margin-top:.2rem">${s.dominant.toUpperCase()}</div>`:''}
       <div class="aqi-bar"><div class="aqi-bar-fill" style="width:${pct}%;background:${col}"></div></div>
     </div>`;
   });
+
   html += `</div>
   <div class="legend">
     <span><span class="legend-dot" style="background:#4cbe8a"></span>0–50 Good</span>
@@ -327,11 +333,10 @@ function renderAir(panel){
     <span><span class="legend-dot" style="background:#c03050"></span>201–300 Very Unhealthy</span>
     <span><span class="legend-dot" style="background:#8b0000"></span>300+ Hazardous</span>
   </div>
-  <div class="info-box">
+  <div class="info-box" style="margin-top:1.25rem">
     <strong>About Wasatch inversions:</strong>
     Salt Lake Valley regularly traps cold air — and PM2.5 fine particulate — beneath a warm air layer during winter high-pressure events.
-    Inversion conditions typically clear after the next storm.
-    Check the ❄ Snow Forecast tab to see whether a powder day is also an air-quality reset.
+    Inversion conditions typically clear after the next storm. Check the ❄ Snow Forecast tab to see if a powder day is also an air-quality reset.
   </div>`;
   panel.innerHTML = html;
 }
