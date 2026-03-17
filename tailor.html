@@ -649,6 +649,8 @@ function downloadCoverLetter() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+function showErr(msg) {
   document.getElementById('err-area').innerHTML = `<div class="error-inner">⚠️ ${msg}</div>`;
 }
 function clearErr() { document.getElementById('err-area').innerHTML = ''; }
