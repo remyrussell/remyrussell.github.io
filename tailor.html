@@ -282,21 +282,28 @@
     }
     footer a { color: var(--accent2); text-decoration: none; }
 
-    /* Print */
+    /* Print — only the resume-card prints, everything else hidden */
     @media print {
-      body, body::before, nav, .hero, .key-notice, .input-wrap,
+      body::before, nav, .hero, .input-wrap,
       #status, .error-msg, .section-rule, .fit-card, .kw-card,
-      .action-row, .cover-card, footer { display: none !important; }
+      .action-row, .cover-card, footer,
+      #kw-card, #err-area { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
       #output { display: block !important; }
-      .out-wrap { padding: 0; max-width: 100%; }
-      .resume-card { background: #fff; color: #000; border: none; border-radius: 0; padding: 0; }
-      .r-name, .r-h3 { color: #000; }
-      .r-contact a { color: #c71585; }
-      .r-bullets li.primary { color: #000; }
-      .r-bullets li.secondary { color: #444; }
-      .r-rule { border-color: #ccc; }
-      .r-h2, .r-meta, .r-role, .r-contact, .r-desc { color: #555; }
-      body { background: #fff; }
+      .out-wrap { padding: 0 !important; max-width: 100% !important; }
+      .resume-card {
+        background: #fff !important; color: #000 !important;
+        border: none !important; border-radius: 0 !important;
+        padding: 0.5rem 0 !important; margin: 0 !important;
+        box-shadow: none !important;
+      }
+      .r-name, .r-h3 { color: #000 !important; }
+      .r-contact { color: #555 !important; }
+      .r-contact a { color: #c71585 !important; }
+      .r-role, .r-meta, .r-h2, .r-desc { color: #555 !important; }
+      .r-bullets li.primary { color: #000 !important; }
+      .r-bullets li.secondary { color: #444 !important; }
+      .r-rule { border-color: #ccc !important; }
     }
 
     @media (max-width:600px) {
@@ -337,7 +344,8 @@
     <div class="section-rule"><span>Results</span></div>
 
     <div class="action-row">
-      <button class="print-btn" onclick="window.print()">⬇ Download resume as PDF</button>
+      <button class="print-btn" onclick="downloadResumePDF()">⬇ Resume PDF</button>
+      <button class="print-btn" style="background:var(--muted)" onclick="downloadCoverLetter()">⬇ Cover Letter</button>
       <button class="reset-btn" onclick="reset()">← Try another role</button>
     </div>
 
@@ -594,7 +602,53 @@ function setLoading(on) {
     clearInterval(window._si);
   }
 }
-function showErr(msg) {
+function downloadResumePDF() {
+  // Open the resume in a clean white tab and trigger print dialog
+  // This produces a proper text-layer PDF that ATS systems can read
+  const resumeHTML = document.getElementById('resume-out').innerHTML;
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8"/>
+<title>Remy Russell — Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; font-size: 10pt; color: #000; background: #fff; padding: 1.8cm 1.8cm 1.5cm; }
+  .r-name { font-family: 'DM Serif Display', serif; font-size: 22pt; margin-bottom: 3pt; }
+  .r-contact { font-family: 'DM Mono', monospace; font-size: 8pt; color: #555; margin-bottom: 2pt; }
+  .r-contact a { color: #c71585; text-decoration: none; }
+  .r-role { font-style: italic; color: #555; font-size: 9pt; margin-bottom: 10pt; }
+  .r-rule { border: none; border-top: 0.5pt solid #ccc; margin: 7pt 0; }
+  .r-h2 { font-family: 'DM Mono', monospace; font-size: 7pt; letter-spacing: 0.12em; text-transform: uppercase; color: #777; margin-bottom: 4pt; }
+  .r-h3 { font-weight: 700; font-size: 10pt; margin-bottom: 1pt; }
+  .r-meta { font-size: 8pt; color: #555; font-style: italic; margin-bottom: 2pt; }
+  .r-desc { color: #444; margin-bottom: 3pt; font-size: 9pt; }
+  .r-bullets { padding-left: 12pt; margin-bottom: 6pt; }
+  .r-bullets li { margin-bottom: 2pt; font-size: 9pt; list-style-type: disc; }
+  .r-bullets li.primary { color: #000; }
+  .r-bullets li.secondary { color: #333; }
+  div[style*="margin-bottom"] { margin-bottom: 8pt !important; }
+</style>
+</head><body>
+${resumeHTML}
+</body></html>`);
+  win.document.close();
+  win.focus();
+  setTimeout(() => { win.print(); }, 600);
+}
+
+function downloadCoverLetter() {
+  const text = document.getElementById('cover-out').textContent;
+  if (!text) return;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'Remy_Russell_Cover_Letter.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
   document.getElementById('err-area').innerHTML = `<div class="error-inner">⚠️ ${msg}</div>`;
 }
 function clearErr() { document.getElementById('err-area').innerHTML = ''; }
