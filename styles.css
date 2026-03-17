@@ -153,14 +153,14 @@ h3 {
     text-decoration: none;
 }
 .tailor-footer-link:hover .anthropic-mark {
-    fill: #c71585;
+    color: #c71585;
 }
 .anthropic-mark {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
-    fill: #999;
-    transition: fill 0.2s ease;
+    color: #999;
+    transition: color 0.2s ease;
 }
 .theme-dark .tailor-footer-link {
     color: #5a5a7a;
@@ -170,10 +170,10 @@ h3 {
     color: #e040a0;
 }
 .theme-dark .tailor-footer-link:hover .anthropic-mark {
-    fill: #e040a0;
+    color: #e040a0;
 }
 .theme-dark .anthropic-mark {
-    fill: #5a5a7a;
+    color: #5a5a7a;
 }
 
 /* Error message for JSON loading issues */
