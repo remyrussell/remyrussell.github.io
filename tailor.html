@@ -518,29 +518,29 @@ function render(r) {
     <hr class="r-rule">
     <div class="r-h2">Professional Experience</div>`;
 
-  // Merge tailored highlights with original experience order
-  // Match on position slug + company first word to handle two roles at same company
+  // Merge tailored highlights with original experience order.
+  // Uses first 3 words of position title as slug to distinguish roles at the same company
+  // e.g. "Business Analyst, Solutions" vs "Business Analyst II," vs "Business Analyst, MI"
   exp.forEach(job => {
-    const positionSlug = job.position.toLowerCase().split(/[\s,]+/)[0]; // e.g. "associate" or "business"
+    const posSlug = job.position.toLowerCase().replace(/[^a-z\s]/g, '').trim().split(/\s+/).slice(0, 4).join(' ');
     const tailored = res.experience?.find(e => {
       if (!e.company) return false;
       const companyMatch = job.company.toLowerCase().includes(e.company.toLowerCase().split(' ')[0]) ||
                            e.company.toLowerCase().includes(job.company.toLowerCase().split(' ')[0]);
       if (!companyMatch) return false;
-      // If the tailored entry includes a position hint, use it to disambiguate
       if (e.position) {
-        return e.position.toLowerCase().includes(positionSlug) ||
-               job.position.toLowerCase().includes(e.position.toLowerCase().split(/[\s,]+/)[0]);
+        const eSlug = e.position.toLowerCase().replace(/[^a-z\s]/g, '').trim().split(/\s+/).slice(0, 4).join(' ');
+        // Require at least 3 words to match to avoid false positives on "business analyst"
+        const jobWords  = posSlug.split(' ');
+        const eWords    = eSlug.split(' ');
+        const matching  = jobWords.filter((w, i) => eWords[i] === w).length;
+        return matching >= Math.min(3, Math.min(jobWords.length, eWords.length));
       }
-      // Fall back: only match if this is the first/only role at that company
+      // No position field: only match if this is the only role at that company
       const sameCompanyRoles = exp.filter(j =>
         j.company.toLowerCase().includes(e.company.toLowerCase().split(' ')[0])
       );
-      if (sameCompanyRoles.length > 1) {
-        // Multiple roles at this company — require position match, don't guess
-        return false;
-      }
-      return true;
+      return sameCompanyRoles.length === 1;
     });
     const bullets = tailored?.highlights?.filter(b => b.weight !== 'omit') || [];
     if (!bullets.length && !job.highlights.length) return;
@@ -611,42 +611,29 @@ function downloadResumePDF() {
 <title>Remy Russell — Resume</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <style>
-  @page { size: letter; margin: 1.2cm 1.6cm; }
+  @page { size: letter; margin: 1.6cm 2cm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 9.5pt; color: #000; background: #fff; }
-  /* Scale everything to fit one page */
-  body { transform-origin: top left; }
-  .r-name { font-family: 'DM Serif Display', serif; font-size: 20pt; margin-bottom: 2pt; }
-  .r-contact { font-family: 'DM Mono', monospace; font-size: 7.5pt; color: #444; margin-bottom: 2pt; }
+  body { font-family: 'DM Sans', sans-serif; font-size: 11pt; color: #111; background: #fff; line-height: 1.42; }
+  .r-name { font-family: 'DM Serif Display', serif; font-size: 24pt; margin-bottom: 3pt; line-height: 1; }
+  .r-contact { font-family: 'DM Mono', monospace; font-size: 8.5pt; color: #444; margin-bottom: 2pt; }
   .r-contact a { color: #c71585; text-decoration: none; }
-  .r-role { font-style: italic; color: #555; font-size: 8.5pt; margin-bottom: 8pt; }
-  .r-rule { border: none; border-top: 0.4pt solid #ccc; margin: 5pt 0; }
-  .r-h2 { font-family: 'DM Mono', monospace; font-size: 6.5pt; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 3pt; margin-top: 1pt; }
-  .r-h3 { font-weight: 700; font-size: 9.5pt; margin-bottom: 1pt; }
-  .r-meta { font-size: 7.5pt; color: #666; font-style: italic; margin-bottom: 1.5pt; }
-  .r-desc { color: #444; margin-bottom: 2pt; font-size: 8.5pt; line-height: 1.35; }
-  .r-bullets { padding-left: 10pt; margin-bottom: 4pt; }
-  .r-bullets li { margin-bottom: 1.5pt; font-size: 8.5pt; list-style-type: disc; line-height: 1.35; }
+  .r-role { font-style: italic; color: #555; font-size: 10.5pt; margin-bottom: 10pt; }
+  .r-rule { border: none; border-top: 0.5pt solid #bbb; margin: 7pt 0; }
+  .r-h2 { font-family: 'DM Mono', monospace; font-size: 7.5pt; letter-spacing: 0.14em; text-transform: uppercase; color: #888; margin-bottom: 4pt; margin-top: 0; }
+  .r-h3 { font-weight: 700; font-size: 11pt; margin-bottom: 1pt; }
+  .r-meta { font-size: 9pt; color: #666; font-style: italic; margin-bottom: 2pt; }
+  .r-desc { color: #444; margin-bottom: 3pt; font-size: 10pt; }
+  .r-bullets { padding-left: 12pt; margin-bottom: 6pt; }
+  .r-bullets li { margin-bottom: 2pt; font-size: 10pt; list-style-type: disc; }
   .r-bullets li.primary { color: #000; }
   .r-bullets li.secondary { color: #333; }
-  div[style*="margin-bottom"] { margin-bottom: 5pt !important; }
+  div[style*="margin-bottom"] { margin-bottom: 7pt !important; }
 </style>
 </head><body>
 ${resumeHTML}
 <script>
-  // Auto-scale to fit one page
   window.addEventListener('load', function() {
-    var body = document.body;
-    var pageH = 9.5 * 96; // ~letter height in px at 96dpi
-    var contentH = body.scrollHeight;
-    if (contentH > pageH) {
-      var scale = pageH / contentH;
-      if (scale < 0.7) scale = 0.7; // don't shrink below 70%
-      body.style.transform = 'scale(' + scale + ')';
-      body.style.transformOrigin = 'top left';
-      body.style.width = (100 / scale) + '%';
-    }
-    setTimeout(function() { window.print(); }, 700);
+    setTimeout(function() { window.print(); }, 600);
   });
 <\/script>
 </body></html>`);
