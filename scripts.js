@@ -182,30 +182,34 @@ function generateResumePDF(data) {
         return yPos + 3;
     }
 
-    // ── Pre-process: combine consecutive same-company experience entries ──────
-    // Acentra BA (MI) + Acentra BA II (UT) → single entry with sub-bullets
+    // ── Pre-process: combine the two Acentra roles into one entry ────────────
+    // Keeps JSON with two separate entries but renders them as one block in the PDF.
+    // Only merges consecutive entries where BOTH companies include "Acentra".
     const rawExp = data.professionalExperience || [];
     const combinedExp = [];
     let i = 0;
     while (i < rawExp.length) {
         const curr = rawExp[i];
         const next = rawExp[i + 1];
-        const sameCompany = next &&
-            curr.company.split(' ')[0].toLowerCase() === next.company.split(' ')[0].toLowerCase();
+        const bothAcentra = next &&
+            curr.company.toLowerCase().includes('acentra') &&
+            next.company.toLowerCase().includes('acentra');
 
-        if (sameCompany) {
-            // Merge: use earlier start date, later end date, combined location
+        if (bothAcentra) {
+            // next is the earlier role (MI), curr is the later role (UT/BA II)
+            // Determine which is earlier by start date
+            const earlier = new Date(next.duration.start) < new Date(curr.duration.start) ? next : curr;
+            const later   = new Date(next.duration.start) < new Date(curr.duration.start) ? curr : next;
             const merged = {
-                position: `${next.position} → ${curr.position}`,
-                company: curr.company,
-                location: `${next.location} → ${curr.location}`,
-                duration: { start: next.duration.start, end: curr.duration.end },
+                position: `Business Analyst → Business Analyst II`,
+                company:  later.company,
+                location: `${earlier.location} → ${later.location}`,
+                duration: { start: earlier.duration.start, end: later.duration.end },
                 description: '',
                 highlights: [
-                    next.description ? `${next.location.split(',')[0]} (${formatDate(next.duration.start)}–${formatDate(next.duration.end)}): ${next.description}` : null,
-                    ...(next.highlights || []).map(h => `  ${h}`),
-                    curr.description ? `${curr.location.split(',')[0]} (${formatDate(curr.duration.start)}–${formatDate(curr.duration.end)}): ${curr.description}` : null,
-                    ...(curr.highlights || []).map(h => `  ${h}`)
+                    `${earlier.location} (${formatDate(earlier.duration.start)}–${formatDate(earlier.duration.end)}): ${earlier.description}`,
+                    `${later.location} (${formatDate(later.duration.start)}–${formatDate(later.duration.end)}): ${later.description}`,
+                    ...(later.highlights || [])
                 ].filter(Boolean)
             };
             combinedExp.push(merged);
