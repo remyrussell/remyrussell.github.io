@@ -422,7 +422,7 @@ const RESUME = {
       company: "Acentra Health (formerly CNSI)",
       location: "Lansing, MI → Salt Lake City, UT",
       duration: { start: "2015-06-01", end: "2019-04-01" },
-      description: "Promoted from BA to BA II across two multi-year government Medicaid system implementations.",
+      description: "",
       highlights: [
         "MI MMIS (2015–2017, Lansing): Analyzed CMS mandates and iterated the Electronic Medicaid Incentive Payment Program solution for provider Meaningful Use reporting",
         "UT MMIS (2017–2019, Salt Lake City): Gap analysis and system design for Utah Dept of Health Medicaid system; guided development/testing of the Provider Enrollment Subsystem"
@@ -541,10 +541,11 @@ function render(r) {
     const startY = new Date(job.duration.start).getFullYear();
     const endY   = job.duration.end ? new Date(job.duration.end).getFullYear() : 'Present';
 
+    const desc = tailored?.description ?? job.description;
     html += `<div style="margin-bottom:1rem">
       <div class="r-h3">${job.position} · ${job.company}</div>
       <div class="r-meta">${startY}–${endY} · ${job.location}</div>
-      <div class="r-desc">${tailored?.description || job.description}</div>`;
+      ${desc ? `<div class="r-desc">${desc}</div>` : ''}`;
 
     if (bullets.length) {
       html += `<ul class="r-bullets">`;
