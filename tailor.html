@@ -550,10 +550,14 @@ function render(r) {
   const exp = RESUME.professionalExperience;
 
   // Hard-cap summary to 2 sentences client-side
-  // Also strip any mention of 160+ from the summary — it's misleading there
+  // Strip 160+ and enterprise jargon from summary — these keep slipping through
   let summary = res.summary || '';
   summary = summary.replace(/\s*(for|across|serving|platform serving)\s+160\+?\s*(health\s+and\s+human\s+services\s+)?organizations?\.?/gi, '.');
   summary = summary.replace(/\s*160\+?\s*(health\s+and\s+human\s+services\s+)?organizations?/gi, '');
+  summary = summary.replace(/enterprise-scale\s*/gi, '');
+  summary = summary.replace(/enterprise\s+solutions?\s*/gi, '');
+  summary = summary.replace(/\bscalable\s+solutions?\b/gi, 'scalable work');
+  summary = summary.trim().replace(/\s+/g, ' ');
   const sentences = summary.match(/[^.!?]+[.!?]+/g) || [summary];
   if (sentences.length > 2) summary = sentences.slice(0, 2).join(' ').trim();
 
