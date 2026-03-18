@@ -240,7 +240,9 @@
     }
     .reset-btn:hover { color: var(--text); border-color: var(--text); }
 
-    /* Resume card */
+    .kw-gaps { border-color: rgba(120,120,160,.25); }
+    .kw-gaps h3 { color: var(--muted); }
+    .kw-gaps .tag { border-color: rgba(120,120,160,.3); color: var(--muted); }
     .resume-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: 10px; padding: 2rem 2rem 1.75rem;
@@ -324,6 +326,7 @@
       position: relative; vertical-align: middle;
       transition: border-color .15s, color .15s;
       font-family: var(--mono);
+      user-select: none;
     }
     .help-trigger:hover, .help-trigger:focus { border-color: var(--accent2); color: var(--accent2); outline: none; }
     .help-tooltip {
@@ -337,12 +340,12 @@
       letter-spacing: 0; text-transform: none;
       box-shadow: 0 8px 24px rgba(0,0,0,.4);
       z-index: 100;
+      cursor: auto;
     }
     .help-tooltip strong { display: block; margin-bottom: .4rem; color: var(--accent2); font-size: .78rem; }
     .help-tooltip a { color: var(--accent2); text-decoration: none; }
     .help-tooltip a:hover { text-decoration: underline; }
-    .help-trigger:hover .help-tooltip,
-    .help-trigger:focus .help-tooltip { display: block; }
+    .help-trigger.open .help-tooltip { display: block; }
   </style>
 </head>
 <body>
@@ -355,7 +358,7 @@
 <div class="hero">
   <div class="kicker">Powered by Claude · For Recruiters &amp; Hiring Managers</div>
   <h1>Is Remy a fit for <em>your</em> role?</h1>
-  <p>Paste a job description and get a tailored resume and cover letter showing exactly how Remy's experience maps to what you're looking for — in seconds.</p>
+  <p>Paste a job description and get an honest fit score, matched keywords, a tailored one-page resume, and a cover letter — all in Remy's voice, in seconds.</p>
 </div>
 
 <!-- API key handled server-side via Cloudflare Worker -->
@@ -402,6 +405,11 @@
     <div class="kw-card" id="kw-card" style="display:none">
       <h3>Key JD terms matched in Remy's background</h3>
       <div id="kw-list"></div>
+    </div>
+
+    <div class="kw-card kw-gaps" id="gap-card" style="display:none">
+      <h3>JD terms not in Remy's background</h3>
+      <div id="gap-list"></div>
     </div>
 
     <div class="resume-card" id="resume-out"></div>
@@ -525,15 +533,26 @@ function render(r) {
   document.getElementById('fit-headline').textContent = r.fitHeadline;
   document.getElementById('fit-para').textContent     = r.fitParagraph;
 
-  // Keywords
+  // Keywords matched
   if (r.atsKeywords?.length) {
     document.getElementById('kw-card').style.display = 'block';
     document.getElementById('kw-list').innerHTML = r.atsKeywords.map(k => `<span class="tag">${k}</span>`).join('');
   }
 
+  // Keywords NOT in background (gaps)
+  if (r.unknownKeywords?.length) {
+    document.getElementById('gap-card').style.display = 'block';
+    document.getElementById('gap-list').innerHTML = r.unknownKeywords.map(k => `<span class="tag">${k}</span>`).join('');
+  }
+
   // Resume
   const res = r.tailoredResume;
   const exp = RESUME.professionalExperience;
+
+  // Hard-cap summary to 2 sentences client-side
+  let summary = res.summary || '';
+  const sentences = summary.match(/[^.!?]+[.!?]+/g) || [summary];
+  if (sentences.length > 2) summary = sentences.slice(0, 2).join(' ').trim();
 
   let html = `
     <div class="r-name">${RESUME.name}</div>
@@ -546,7 +565,7 @@ function render(r) {
     <div class="r-role">${RESUME.role}</div>
     <hr class="r-rule">
     <div class="r-h2">Summary</div>
-    <p class="r-desc">${res.summary}</p>
+    <p class="r-desc">${summary}</p>
     <hr class="r-rule">
     <div class="r-h2">Professional Experience</div>`;
 
@@ -753,6 +772,19 @@ function reset() {
   clearErr();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// Tooltip click-to-toggle
+document.addEventListener('DOMContentLoaded', () => {
+  const trigger = document.querySelector('.help-trigger');
+  if (!trigger) return;
+  trigger.addEventListener('click', e => {
+    e.stopPropagation();
+    trigger.classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (!trigger.contains(e.target)) trigger.classList.remove('open');
+  });
+});
 </script>
 </body>
 </html>
