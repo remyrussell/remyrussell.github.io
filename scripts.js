@@ -201,14 +201,14 @@ function generateResumePDF(data) {
             const earlier = new Date(next.duration.start) < new Date(curr.duration.start) ? next : curr;
             const later   = new Date(next.duration.start) < new Date(curr.duration.start) ? curr : next;
             const merged = {
-                position: `Business Analyst → Business Analyst II`,
+                position: `Business Analyst / Business Analyst II`,
                 company:  later.company,
-                location: `${earlier.location} → ${later.location}`,
+                location: `${earlier.location} to ${later.location}`,
                 duration: { start: earlier.duration.start, end: later.duration.end },
                 description: '',
                 highlights: [
-                    `${earlier.location} (${formatDate(earlier.duration.start)}–${formatDate(earlier.duration.end)}): ${earlier.description}`,
-                    `${later.location} (${formatDate(later.duration.start)}–${formatDate(later.duration.end)}): ${later.description}`,
+                    `${earlier.location} (${formatDate(earlier.duration.start)}-${formatDate(earlier.duration.end)}: ${earlier.description}`,
+                    `${later.location} (${formatDate(later.duration.start)}-${formatDate(later.duration.end)}: ${later.description}`,
                     ...(later.highlights || [])
                 ].filter(Boolean)
             };
@@ -220,18 +220,28 @@ function generateResumePDF(data) {
         }
     }
 
+    // jsPDF Helvetica only supports Latin-1 — strip/replace non-ASCII chars
+    function safe(str) {
+        return String(str)
+            .replace(/–/g, '-').replace(/—/g, '-')
+            .replace(/→|»/g, '>').replace(/←|«/g, '<')
+            .replace(/['']/g, "'").replace(/[""]/g, '"')
+            .replace(/…/g, '...').replace(/·/g, '|')
+            .replace(/[^\x00-\xFF]/g, '');
+    }
+
     // ── Header ────────────────────────────────────────────────────────────────
-    y = addText(data.name || 'Remy Russell', 18, 'bold', margin, y, contentWidth);
+    y = addText(safe(data.name || 'Remy Russell'), 18, 'bold', margin, y, contentWidth);
     const contactParts = [];
     if (data.contact?.email)    contactParts.push(data.contact.email);
     if (data.contact?.website)  contactParts.push(data.contact.website || 'https://remyrussell.com');
     if (data.contact?.linkedin) contactParts.push(data.contact.linkedin);
     if (data.seeking)           contactParts.push(data.seeking);
     if (contactParts.length) {
-        y = addTextWithLinks(contactParts.join('  ·  '), 9.5, 'normal', margin, y + 0.5, contentWidth);
+        y = addTextWithLinks(safe(contactParts.join('  |  ')), 9.5, 'normal', margin, y + 0.5, contentWidth);
     }
     if (data.role) {
-        y = addText(data.role, 10.5, 'italic', margin, y + 0.5, contentWidth);
+        y = addText(safe(data.role), 10.5, 'italic', margin, y + 0.5, contentWidth);
     }
     y += 1;
     y = rule(y);
@@ -239,7 +249,7 @@ function generateResumePDF(data) {
     // ── Summary ───────────────────────────────────────────────────────────────
     y = addText('Summary', 11, 'bold', margin, y, contentWidth);
     if (data.summary) {
-        y = addText(data.summary.trim(), 10, 'normal', margin, y + 0.3, contentWidth);
+        y = addText(safe(data.summary.trim()), 10, 'normal', margin, y + 0.3, contentWidth);
     }
     y += 1;
     y = rule(y);
@@ -250,16 +260,16 @@ function generateResumePDF(data) {
     combinedExp.forEach(exp => {
         const startY = formatDate(exp.duration.start);
         const endY   = formatDate(exp.duration.end);
-        const title  = `${exp.position}  ·  ${exp.company}`;
-        const meta   = `${startY}–${endY}  ·  ${exp.location}`;
+        const title  = safe(`${exp.position}  |  ${exp.company}`);
+        const meta   = safe(`${startY} - ${endY}  |  ${exp.location}`);
         y = addText(title, 10.5, 'bold', margin, y, contentWidth);
         y = addText(meta, 9.5, 'italic', margin, y + 0.2, contentWidth);
         if (exp.description) {
-            y = addText(exp.description, 10, 'normal', margin, y + 0.3, contentWidth);
+            y = addText(safe(exp.description), 10, 'normal', margin, y + 0.3, contentWidth);
         }
         if (exp.highlights?.length) {
             exp.highlights.forEach(h => {
-                y = addTextWithLinks(`• ${h}`, 10, 'normal', margin, y + 0.3, contentWidth);
+                y = addTextWithLinks(`• ${safe(h)}`, 10, 'normal', margin, y + 0.3, contentWidth);
             });
         }
         y += 1.5;
@@ -269,24 +279,21 @@ function generateResumePDF(data) {
     // ── Education ─────────────────────────────────────────────────────────────
     y = addText('Education', 11, 'bold', margin, y, contentWidth);
     if (data.education) {
-        y = addText(data.education.degree, 10.5, 'bold', margin, y + 0.3, contentWidth);
-        y = addText(data.education.institution, 10, 'italic', margin, y + 0.2, contentWidth);
-        // Omit coursework — adds length without ATS value
+        y = addText(safe(data.education.degree), 10.5, 'bold', margin, y + 0.3, contentWidth);
+        y = addText(safe(data.education.institution), 10, 'italic', margin, y + 0.2, contentWidth);
     }
     y += 1;
     y = rule(y);
 
-    // ── Skills — single column for ATS compatibility ──────────────────────────
-    // Two-column layouts can cause ATS to read columns in wrong order or merge them.
-    // Single column guarantees correct parse order.
+    // ── Skills ────────────────────────────────────────────────────────────────
     y = addText('Core Skills', 11, 'bold', margin, y, contentWidth);
     data.skills?.coreSkills?.forEach(s => {
-        y = addText(`• ${s}`, 10, 'normal', margin, y + 0.3, contentWidth);
+        y = addText(`• ${safe(s)}`, 10, 'normal', margin, y + 0.3, contentWidth);
     });
     y += 0.8;
     y = addText('Tools & Frameworks', 11, 'bold', margin, y, contentWidth);
     data.skills?.toolsAndFrameworks?.forEach(t => {
-        y = addTextWithLinks(`• ${t}`, 10, 'normal', margin, y + 0.3, contentWidth);
+        y = addTextWithLinks(`• ${safe(t)}`, 10, 'normal', margin, y + 0.3, contentWidth);
     });
 
     // ── Save ──────────────────────────────────────────────────────────────────
