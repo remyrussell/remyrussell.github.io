@@ -223,7 +223,16 @@ function generateResumePDF(data) {
         }
     }
 
-    // jsPDF Helvetica only supports Latin-1 — strip/replace non-ASCII chars
+    // Renders a bulleted line with hanging indent so wrapped lines align under text not bullet
+    function addBullet(text, size, x, yPos, maxWidth) {
+        const bulletChar = '-';
+        const indent = size * 0.35; // ~3.5mm indent at 10pt
+        doc.setFontSize(size);
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        doc.text(bulletChar, x, yPos);
+        return addTextWithLinks(safe(text), size, 'normal', x + indent, yPos, maxWidth - indent);
+    }
     function safe(str) {
         return String(str)
             .replace(/–/g, '-').replace(/—/g, '-')
@@ -281,7 +290,7 @@ function generateResumePDF(data) {
         }
         if (exp.highlights?.length) {
             exp.highlights.forEach(h => {
-                y = addTextWithLinks(`- ${safe(h)}`, 10, 'normal', margin, y + 0.3, contentWidth);
+                y = addBullet(h, 10, margin, y + 0.3, contentWidth);
             });
         }
         y += 1;
@@ -300,12 +309,12 @@ function generateResumePDF(data) {
     // ── Skills — single column for ATS compatibility ──────────────────────────
     y = addText('Core Skills', 11, 'bold', margin, y, contentWidth);
     data.skills?.coreSkills?.forEach(s => {
-        y = addText(`- ${safe(s)}`, 10, 'normal', margin, y + 0.3, contentWidth);
+        y = addBullet(s, 10, margin, y + 0.3, contentWidth);
     });
     y += 0.5;
     y = addText('Tools & Frameworks', 11, 'bold', margin, y, contentWidth);
     data.skills?.toolsAndFrameworks?.forEach(t => {
-        y = addTextWithLinks(`- ${safe(t)}`, 10, 'normal', margin, y + 0.3, contentWidth);
+        y = addBullet(t, 10, margin, y + 0.3, contentWidth);
     });
 
     // ── Save ──────────────────────────────────────────────────────────────────
