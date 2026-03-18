@@ -184,7 +184,7 @@ function generateResumePDF(data) {
         return yPos;
     }
 
-    const GAP = 4; // mm of whitespace on each side of the rule line
+    const GAP = 2.5; // mm of whitespace on each side of the rule line
 
     function sectionBreak(yPos) {
         return rule(yPos + GAP) + GAP;
