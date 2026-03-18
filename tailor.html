@@ -313,6 +313,40 @@
       .fit-card { flex-direction: column; }
       .resume-card { padding: 1.25rem; }
     }
+
+    /* ── How it works ── */
+    .how-it-works {
+      position: relative; z-index: 1;
+      max-width: 640px; margin: 0 auto 1.5rem;
+      padding: 0 2rem;
+    }
+    .hiw-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: .75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .hiw-item:last-of-type { border-bottom: none; }
+    .hiw-icon {
+      font-size: 1.2rem; flex-shrink: 0;
+      width: 2rem; text-align: center;
+      margin-top: .1rem;
+    }
+    .hiw-text {
+      display: flex; flex-direction: column; gap: .2rem;
+    }
+    .hiw-text strong {
+      font-size: .85rem; font-weight: 600; color: var(--text);
+    }
+    .hiw-text span {
+      font-size: .78rem; color: var(--muted); line-height: 1.5;
+    }
+    .hiw-footer {
+      margin-top: .85rem; padding-top: .75rem;
+      border-top: 1px solid var(--border);
+      font-size: .72rem; color: var(--muted); line-height: 1.6;
+    }
+    .hiw-footer a { color: var(--sky, var(--accent2)); text-decoration: none; }
+    .hiw-footer a:hover { color: var(--text); }
   </style>
 </head>
 <body>
@@ -330,7 +364,32 @@
 
 <!-- API key handled server-side via Cloudflare Worker -->
 
-<div class="input-wrap">
+<div class="how-it-works">
+  <div class="hiw-item">
+    <div class="hiw-icon">📋</div>
+    <div class="hiw-text">
+      <strong>Paste any job description</strong>
+      <span>Title, responsibilities, requirements — the whole thing. The more context, the better the output.</span>
+    </div>
+  </div>
+  <div class="hiw-item">
+    <div class="hiw-icon">🤖</div>
+    <div class="hiw-text">
+      <strong>Claude reads the role</strong>
+      <span>A custom-built Claude API integration — with Remy's full work history, voice, and talking points baked into the prompt — maps his experience to what you're looking for.</span>
+    </div>
+  </div>
+  <div class="hiw-item">
+    <div class="hiw-icon">📄</div>
+    <div class="hiw-text">
+      <strong>Get a tailored resume + cover letter</strong>
+      <span>A one-page resume with the most relevant highlights surfaced, a fit score with honest assessment, and a cover letter written in Remy's voice — downloadable as PDF.</span>
+    </div>
+  </div>
+  <div class="hiw-footer">
+    Built by Remy using the <a href="https://anthropic.com" target="_blank" rel="noopener">Anthropic Claude API</a>, a Cloudflare Worker proxy with rate limiting and prompt injection protection, and vanilla JS — deployed on GitHub Pages. <a href="https://github.com/remyrussell/remyrussell.github.io" target="_blank" rel="noopener" style="color:var(--muted)">View source on GitHub →</a>
+  </div>
+</div>
   <label class="field-label" for="jd">Job description</label>
   <textarea id="jd" placeholder="Paste the full job description here — title, responsibilities, requirements, company context…"></textarea>
   <button class="gen-btn" id="gen-btn" onclick="generate()">Generate tailored materials →</button>
