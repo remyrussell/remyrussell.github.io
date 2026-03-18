@@ -314,39 +314,35 @@
       .resume-card { padding: 1.25rem; }
     }
 
-    /* ── How it works ── */
-    .how-it-works {
-      position: relative; z-index: 1;
-      max-width: 640px; margin: 0 auto 1.5rem;
-      padding: 0 2rem;
+    /* ── Help tooltip on field label ── */
+    .help-trigger {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px;
+      border: 1px solid var(--muted); border-radius: 50%;
+      font-size: .65rem; color: var(--muted);
+      margin-left: .4rem; cursor: pointer;
+      position: relative; vertical-align: middle;
+      transition: border-color .15s, color .15s;
+      font-family: var(--mono);
     }
-    .hiw-item {
-      display: flex; gap: 1rem; align-items: flex-start;
-      padding: .75rem 0;
-      border-bottom: 1px solid var(--border);
+    .help-trigger:hover, .help-trigger:focus { border-color: var(--accent2); color: var(--accent2); outline: none; }
+    .help-tooltip {
+      display: none;
+      position: absolute; bottom: calc(100% + 8px); left: 0;
+      width: 280px;
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: 8px; padding: .85rem 1rem;
+      font-size: .75rem; color: var(--text); line-height: 1.6;
+      font-family: var(--sans); font-weight: 400;
+      letter-spacing: 0; text-transform: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.4);
+      z-index: 100;
     }
-    .hiw-item:last-of-type { border-bottom: none; }
-    .hiw-icon {
-      font-size: 1.2rem; flex-shrink: 0;
-      width: 2rem; text-align: center;
-      margin-top: .1rem;
-    }
-    .hiw-text {
-      display: flex; flex-direction: column; gap: .2rem;
-    }
-    .hiw-text strong {
-      font-size: .85rem; font-weight: 600; color: var(--text);
-    }
-    .hiw-text span {
-      font-size: .78rem; color: var(--muted); line-height: 1.5;
-    }
-    .hiw-footer {
-      margin-top: .85rem; padding-top: .75rem;
-      border-top: 1px solid var(--border);
-      font-size: .72rem; color: var(--muted); line-height: 1.6;
-    }
-    .hiw-footer a { color: var(--sky, var(--accent2)); text-decoration: none; }
-    .hiw-footer a:hover { color: var(--text); }
+    .help-tooltip strong { display: block; margin-bottom: .4rem; color: var(--accent2); font-size: .78rem; }
+    .help-tooltip a { color: var(--accent2); text-decoration: none; }
+    .help-tooltip a:hover { text-decoration: underline; }
+    .help-trigger:hover .help-tooltip,
+    .help-trigger:focus .help-tooltip { display: block; }
   </style>
 </head>
 <body>
@@ -364,33 +360,17 @@
 
 <!-- API key handled server-side via Cloudflare Worker -->
 
-<div class="how-it-works">
-  <div class="hiw-item">
-    <div class="hiw-icon">📋</div>
-    <div class="hiw-text">
-      <strong>Paste any job description</strong>
-      <span>Title, responsibilities, requirements — the whole thing. The more context, the better the output.</span>
-    </div>
-  </div>
-  <div class="hiw-item">
-    <div class="hiw-icon">🤖</div>
-    <div class="hiw-text">
-      <strong>Claude reads the role</strong>
-      <span>A custom-built Claude API integration — with Remy's full work history, voice, and talking points baked into the prompt — maps his experience to what you're looking for.</span>
-    </div>
-  </div>
-  <div class="hiw-item">
-    <div class="hiw-icon">📄</div>
-    <div class="hiw-text">
-      <strong>Get a tailored resume + cover letter</strong>
-      <span>A one-page resume with the most relevant highlights surfaced, a fit score with honest assessment, and a cover letter written in Remy's voice — downloadable as PDF.</span>
-    </div>
-  </div>
-  <div class="hiw-footer">
-    Built by Remy using the <a href="https://anthropic.com" target="_blank" rel="noopener">Anthropic Claude API</a>, a Cloudflare Worker proxy with rate limiting and prompt injection protection, and vanilla JS — deployed on GitHub Pages. <a href="https://github.com/remyrussell/remyrussell.github.io" target="_blank" rel="noopener" style="color:var(--muted)">View source on GitHub →</a>
-  </div>
-</div>
-  <label class="field-label" for="jd">Job description</label>
+<div class="input-wrap">
+  <label class="field-label" for="jd">
+    Job description
+    <span class="help-trigger" tabindex="0" aria-label="How this works">?
+      <span class="help-tooltip">
+        <strong>How this works</strong>
+        Paste a job description and Claude generates a tailored one-page resume and cover letter mapping Remy's experience to your role — plus an honest fit score.<br><br>
+        Built by Remy using the Anthropic Claude API, a Cloudflare Worker proxy (with rate limiting &amp; prompt injection protection), and vanilla JS. <a href="https://github.com/remyrussell/remyrussell.github.io" target="_blank" rel="noopener">View source →</a>
+      </span>
+    </span>
+  </label>
   <textarea id="jd" placeholder="Paste the full job description here — title, responsibilities, requirements, company context…"></textarea>
   <button class="gen-btn" id="gen-btn" onclick="generate()">Generate tailored materials →</button>
 </div>
@@ -569,6 +549,31 @@ function render(r) {
     <p class="r-desc">${res.summary}</p>
     <hr class="r-rule">
     <div class="r-h2">Professional Experience</div>`;
+
+  // Enforce hard bullet limits client-side — Claude can't measure pixels,
+  // so we cap here to guarantee single-page output regardless of model output.
+  // APM: max 4, CaseWorthy BA: max 2, Acentra: max 2 (one per project), others: max 1
+  const BULLET_CAPS = {
+    'associate': 4,   // Associate Product Manager
+    'business analyst, solutions': 2,
+    'business analyst →': 2,
+    'business analyst ii': 1,
+    'business analyst, mi': 1,
+  };
+  if (res.experience) {
+    res.experience.forEach(e => {
+      if (!e.highlights) return;
+      const posKey = (e.position || '').toLowerCase();
+      let cap = 1;
+      if (posKey.includes('associate')) cap = 4;
+      else if (posKey.includes('solutions delivery') || posKey.includes('→')) cap = 2;
+      else cap = 1;
+      // Keep only non-omit bullets up to cap
+      const kept = e.highlights.filter(b => b.weight !== 'omit').slice(0, cap);
+      const omitted = e.highlights.filter(b => b.weight === 'omit');
+      e.highlights = [...kept, ...omitted];
+    });
+  }
 
   // Merge tailored highlights with original experience order.
   // Uses first 3 words of position title as slug to distinguish roles at the same company
