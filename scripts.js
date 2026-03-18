@@ -177,12 +177,12 @@ function generateResumePDF(data) {
     }
 
     function rule(yPos) {
-        const lineY = yPos + 3;
+        const lineY = yPos + 2;
         doc.setDrawColor(180, 180, 180);
         doc.setLineWidth(0.15);
         doc.line(margin, lineY, margin + contentWidth, lineY);
         doc.setDrawColor(0, 0, 0);
-        return lineY + 4;
+        return lineY + 3;
     }
 
     // ── Pre-process: combine the two Acentra roles into one entry ────────────
@@ -261,14 +261,13 @@ function generateResumePDF(data) {
     // ── Summary ───────────────────────────────────────────────────────────────
     y = addText('Summary', 11, 'bold', margin, y, contentWidth);
     if (data.summary) {
-        y = addText(safe(data.summary.trim()), 10, 'normal', margin, y + 0.5, contentWidth);
+        y = addText(safe(data.summary.trim()), 10, 'normal', margin, y + 0.3, contentWidth);
     }
-    y += 0.5;
     y = rule(y);
 
     // ── Experience ────────────────────────────────────────────────────────────
     y = addText('Professional Experience', 11, 'bold', margin, y, contentWidth);
-    y += 0.5;
+    y += 0.3;
     // Track which companies have already appeared to control "formerly X" display
     const seenCompanies = new Set();
     combinedExp.forEach(exp => {
@@ -286,35 +285,34 @@ function generateResumePDF(data) {
         y = addText(title, 10.5, 'bold', margin, y, contentWidth);
         y = addText(meta, 9.5, 'italic', margin, y + 0.2, contentWidth);
         if (exp.description) {
-            y = addText(safe(exp.description), 10, 'normal', margin, y + 0.3, contentWidth);
+            y = addText(safe(exp.description), 10, 'normal', margin, y + 0.2, contentWidth);
         }
         if (exp.highlights?.length) {
             exp.highlights.forEach(h => {
-                y = addBullet(h, 10, margin, y + 0.3, contentWidth);
+                y = addBullet(h, 10, margin, y + 0.2, contentWidth);
             });
         }
-        y += 1;
+        y += 0.8;
     });
     y = rule(y);
 
     // ── Education ─────────────────────────────────────────────────────────────
     y = addText('Education', 11, 'bold', margin, y, contentWidth);
     if (data.education) {
-        y = addText(safe(data.education.degree), 10.5, 'bold', margin, y + 0.5, contentWidth);
+        y = addText(safe(data.education.degree), 10.5, 'bold', margin, y + 0.3, contentWidth);
         y = addText(safe(data.education.institution), 10, 'italic', margin, y + 0.2, contentWidth);
     }
-    y += 0.5;
     y = rule(y);
 
-    // ── Skills — single column for ATS compatibility ──────────────────────────
+    // ── Skills ────────────────────────────────────────────────────────────────
     y = addText('Core Skills', 11, 'bold', margin, y, contentWidth);
     data.skills?.coreSkills?.forEach(s => {
-        y = addBullet(s, 10, margin, y + 0.3, contentWidth);
+        y = addBullet(s, 10, margin, y + 0.2, contentWidth);
     });
-    y += 0.5;
+    y += 0.4;
     y = addText('Tools & Frameworks', 11, 'bold', margin, y, contentWidth);
     data.skills?.toolsAndFrameworks?.forEach(t => {
-        y = addBullet(t, 10, margin, y + 0.3, contentWidth);
+        y = addBullet(t, 10, margin, y + 0.2, contentWidth);
     });
 
     // ── Save ──────────────────────────────────────────────────────────────────
