@@ -184,10 +184,12 @@ function generateResumePDF(data) {
         return yPos;
     }
 
-    const GAP = 2.5; // mm of whitespace on each side of the rule line
+    const GAP = 2.5;
+    const GAP_TIGHT = 1.5; // for sections with less content above
 
-    function sectionBreak(yPos) {
-        return rule(yPos + GAP) + GAP;
+    function sectionBreak(yPos, tight = false) {
+        const g = tight ? GAP_TIGHT : GAP;
+        return rule(yPos + g) + g;
     }
 
     // ── Pre-process: combine the two Acentra roles into one entry ────────────
@@ -306,7 +308,7 @@ function generateResumePDF(data) {
         y = addText(safe(data.education.degree), 10.5, 'bold', margin, y + 0.3, contentWidth);
         y = addText(safe(data.education.institution), 10, 'italic', margin, y + 0.2, contentWidth);
     }
-    y = sectionBreak(y);
+    y = sectionBreak(y, true);
     y = addText('Core Skills', 11, 'bold', margin, y, contentWidth);
     data.skills?.coreSkills?.forEach(s => {
         y = addBullet(s, 10, margin, y + 0.2, contentWidth);
