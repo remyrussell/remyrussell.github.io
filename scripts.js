@@ -177,7 +177,7 @@ function generateResumePDF(data) {
     }
 
     function rule(yPos) {
-        const lineY = yPos - 1; // subtract descender space so line sits closer to content above
+        const lineY = yPos + 1;
         doc.setDrawColor(180, 180, 180);
         doc.setLineWidth(0.15);
         doc.line(margin, lineY, margin + contentWidth, lineY);
