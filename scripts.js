@@ -187,16 +187,12 @@ function generateResumePDF(data) {
     const GAP = 3;
 
     function sectionBreak(yPos) {
-        // yPos = baseline of last text drawn
-        // Add gap, draw line, add same gap before returning for next header
-        const lineY = yPos + GAP;
+        const lineY = yPos + 1.5;
         doc.setDrawColor(180, 180, 180);
         doc.setLineWidth(0.15);
         doc.line(margin, lineY, margin + contentWidth, lineY);
         doc.setDrawColor(0, 0, 0);
-        // Return y position for next section header
-        // Add GAP + font size offset so text baseline sits clearly below the line
-        return lineY + GAP + 3.5;
+        return lineY + 5;
     }
 
     // ── Pre-process: combine the two Acentra roles into one entry ────────────
