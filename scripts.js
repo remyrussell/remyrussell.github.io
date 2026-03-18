@@ -177,12 +177,12 @@ function generateResumePDF(data) {
     }
 
     function rule(yPos) {
-        const lineY = yPos + 2;
+        const lineY = yPos + 3;
         doc.setDrawColor(180, 180, 180);
         doc.setLineWidth(0.15);
         doc.line(margin, lineY, margin + contentWidth, lineY);
         doc.setDrawColor(0, 0, 0);
-        return lineY + 3;
+        return lineY + 5;
     }
 
     // ── Pre-process: combine the two Acentra roles into one entry ────────────
@@ -226,7 +226,7 @@ function generateResumePDF(data) {
     // Renders a bulleted line with hanging indent so wrapped lines align under text not bullet
     function addBullet(text, size, x, yPos, maxWidth) {
         const bulletChar = '-';
-        const indent = size * 0.35; // ~3.5mm indent at 10pt
+        const indent = size * 0.25; // tighter indent — bullet sits closer to text
         doc.setFontSize(size);
         doc.setFont('Helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
@@ -255,7 +255,6 @@ function generateResumePDF(data) {
     if (data.role) {
         y = addText(safe(data.role), 10.5, 'italic', margin, y + 0.5, contentWidth);
     }
-    y += 1;
     y = rule(y);
 
     // ── Summary ───────────────────────────────────────────────────────────────
@@ -292,7 +291,7 @@ function generateResumePDF(data) {
                 y = addBullet(h, 10, margin, y + 0.2, contentWidth);
             });
         }
-        y += 0.8;
+        y += 0.5;
     });
     y = rule(y);
 
@@ -303,8 +302,6 @@ function generateResumePDF(data) {
         y = addText(safe(data.education.institution), 10, 'italic', margin, y + 0.2, contentWidth);
     }
     y = rule(y);
-
-    // ── Skills ────────────────────────────────────────────────────────────────
     y = addText('Core Skills', 11, 'bold', margin, y, contentWidth);
     data.skills?.coreSkills?.forEach(s => {
         y = addBullet(s, 10, margin, y + 0.2, contentWidth);
