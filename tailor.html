@@ -550,7 +550,10 @@ function render(r) {
   const exp = RESUME.professionalExperience;
 
   // Hard-cap summary to 2 sentences client-side
+  // Also strip any mention of 160+ from the summary — it's misleading there
   let summary = res.summary || '';
+  summary = summary.replace(/\s*(for|across|serving|platform serving)\s+160\+?\s*(health\s+and\s+human\s+services\s+)?organizations?\.?/gi, '.');
+  summary = summary.replace(/\s*160\+?\s*(health\s+and\s+human\s+services\s+)?organizations?/gi, '');
   const sentences = summary.match(/[^.!?]+[.!?]+/g) || [summary];
   if (sentences.length > 2) summary = sentences.slice(0, 2).join(' ').trim();
 
@@ -612,17 +615,21 @@ function render(r) {
       return sameCompanyRoles.length === 1;
     });
     const isAcentra = job.company.toLowerCase().includes('acentra');
-    let bullets = tailored?.highlights?.filter(b => b.weight !== 'omit') || [];
-    // For Acentra, always show all original project bullets — Claude can't omit them
-    if (isAcentra && bullets.length < job.highlights.length) {
-      bullets = job.highlights.map(h => ({ text: h, weight: 'secondary' }));
+
+    // Acentra: always render directly from RESUME source — ignore Claude output entirely
+    // Both project bullets are non-negotiable and must always appear
+    let bullets;
+    if (isAcentra) {
+      bullets = job.highlights.map(h => ({ text: h, weight: 'primary' }));
+    } else {
+      bullets = tailored?.highlights?.filter(b => b.weight !== 'omit') || [];
     }
     if (!bullets.length && !job.highlights.length) return;
 
     const startY = new Date(job.duration.start).getFullYear();
     const endY   = job.duration.end ? new Date(job.duration.end).getFullYear() : 'Present';
 
-    const desc = tailored?.description ?? job.description;
+    const desc = isAcentra ? job.description : (tailored?.description ?? job.description);
     html += `<div style="margin-bottom:1rem">
       <div class="r-h3">${job.position} · ${job.company}</div>
       <div class="r-meta">${startY}–${endY} · ${job.location}</div>
