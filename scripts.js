@@ -177,12 +177,12 @@ function generateResumePDF(data) {
     }
 
     function rule(yPos) {
-        const lineY = yPos + 3;
+        const lineY = yPos - 1; // subtract descender space so line sits closer to content above
         doc.setDrawColor(180, 180, 180);
         doc.setLineWidth(0.15);
         doc.line(margin, lineY, margin + contentWidth, lineY);
         doc.setDrawColor(0, 0, 0);
-        return lineY + 3;
+        return lineY + 4;
     }
 
     // ── Pre-process: combine the two Acentra roles into one entry ────────────
