@@ -177,12 +177,17 @@ function generateResumePDF(data) {
     }
 
     function rule(yPos) {
-        const lineY = yPos + 1;
         doc.setDrawColor(180, 180, 180);
         doc.setLineWidth(0.15);
-        doc.line(margin, lineY, margin + contentWidth, lineY);
+        doc.line(margin, yPos, margin + contentWidth, yPos);
         doc.setDrawColor(0, 0, 0);
-        return lineY + 4;
+        return yPos;
+    }
+
+    const GAP = 4; // mm of whitespace on each side of the rule line
+
+    function sectionBreak(yPos) {
+        return rule(yPos + GAP) + GAP;
     }
 
     // ── Pre-process: combine the two Acentra roles into one entry ────────────
@@ -255,14 +260,14 @@ function generateResumePDF(data) {
     if (data.role) {
         y = addText(safe(data.role), 10.5, 'italic', margin, y + 0.5, contentWidth);
     }
-    y = rule(y);
+    y = sectionBreak(y);
 
     // ── Summary ───────────────────────────────────────────────────────────────
     y = addText('Summary', 11, 'bold', margin, y, contentWidth);
     if (data.summary) {
         y = addText(safe(data.summary.trim()), 10, 'normal', margin, y + 0.3, contentWidth);
     }
-    y = rule(y);
+    y = sectionBreak(y);
 
     // ── Experience ────────────────────────────────────────────────────────────
     y = addText('Professional Experience', 11, 'bold', margin, y, contentWidth);
@@ -293,7 +298,7 @@ function generateResumePDF(data) {
         }
         y += 0.5;
     });
-    y = rule(y);
+    y = sectionBreak(y);
 
     // ── Education ─────────────────────────────────────────────────────────────
     y = addText('Education', 11, 'bold', margin, y, contentWidth);
@@ -301,7 +306,7 @@ function generateResumePDF(data) {
         y = addText(safe(data.education.degree), 10.5, 'bold', margin, y + 0.3, contentWidth);
         y = addText(safe(data.education.institution), 10, 'italic', margin, y + 0.2, contentWidth);
     }
-    y = rule(y);
+    y = sectionBreak(y);
     y = addText('Core Skills', 11, 'bold', margin, y, contentWidth);
     data.skills?.coreSkills?.forEach(s => {
         y = addBullet(s, 10, margin, y + 0.2, contentWidth);
