@@ -23,11 +23,11 @@
                 "start": "2022-03-14",
                 "end": "2025-03-27"
             },
-            "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform used by 160 customer organizations providing social services",
+            "description": "Product Lead on the Platform and Integrations R&D team for a configurable Case Management platform serving 160+ health and human services organizations",
             "highlights": [
                 "Enabled ~50% growth in ARR over 3 years by expanding platform interoperability and capabilities",
-                "Shipped a RESTful API from 0 to 1 and onboarded developers from 10 organizations to support custom integrations (https://apidoc.eccovia.com)",
-                "Developed standardized clinical data integrations (HL7, X12) for users to view clinical history, check Medicaid eligibility, and export claims",
+                "Shipped a RESTful API from 0 to 1 and onboarded developers from 10+ organizations to support custom integrations (https://apidoc.eccovia.com)",
+                "Developed standardized clinical data integrations (HL7 ADT, C-CDA, X12 270/271) enabling Health Information Exchange and Medicaid eligibility checking for pilot customers",
                 "Managed MVP & early access testing for platform enhancements (SSO & 2-Step Verification, SMS/email notifications, low-code design tools, etc)",
                 "Solved process painpoints for 6 organizations with a strategic integration partner, enabling thousands of daily meal deliveries with modern features for drivers and dispatchers"   
             ]

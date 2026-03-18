@@ -120,187 +120,176 @@ function generateResumePDF(data) {
     const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
-        format: 'a4',
+        format: 'letter',
         compress: true
     });
 
-    const margin = 10;
-    const pageWidth = 210;
+    const margin = 15;
+    const pageWidth = 215.9; // letter width in mm
     const contentWidth = pageWidth - 2 * margin;
-    let yPosition = margin + 2;
+    let y = margin;
 
     doc.setFont('Helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
 
-    function addText(text, size, style, x, y, maxWidth) {
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function addText(text, size, style, x, yPos, maxWidth) {
         doc.setFontSize(size);
         doc.setFont('Helvetica', style);
-        const lines = doc.splitTextToSize(text, maxWidth);
-        doc.text(lines, x, y);
-        return y + (lines.length * size * 0.45);
+        const lines = doc.splitTextToSize(String(text), maxWidth);
+        doc.text(lines, x, yPos);
+        return yPos + lines.length * size * 0.45;
     }
 
-    // Renders text with clickable URLs in a single pass — no double-drawing.
-    // URLs appear in blue but same weight/size as surrounding text (no bold, no offset).
-    function addTextWithLinks(text, size, style, x, y, maxWidth) {
+    function addTextWithLinks(text, size, style, x, yPos, maxWidth) {
         doc.setFontSize(size);
         doc.setFont('Helvetica', style);
-        const lines = doc.splitTextToSize(text, maxWidth);
-        const lineHeight = size * 0.45;
-        const urlRegex = /((https?:\/\/|www\.)[^\s,;)<>"]+)/g;
-
+        const lines = doc.splitTextToSize(String(text), maxWidth);
+        const lh = size * 0.45;
+        const urlRe = /((https?:\/\/|www\.)[^\s,;)<>"]+)/g;
         lines.forEach((line, i) => {
-            const lineY = y + i * lineHeight;
-            let cursor = 0;
-            let drawX = x;
-            let match;
-            urlRegex.lastIndex = 0;
-
-            while ((match = urlRegex.exec(line)) !== null) {
-                // Draw plain text before this URL
+            const lineY = yPos + i * lh;
+            let cursor = 0, drawX = x, match;
+            urlRe.lastIndex = 0;
+            while ((match = urlRe.exec(line)) !== null) {
                 if (match.index > cursor) {
                     const plain = line.substring(cursor, match.index);
                     doc.setTextColor(0, 0, 0);
                     doc.text(plain, drawX, lineY);
                     drawX += doc.getStringUnitWidth(plain) * size * 0.352778;
                 }
-                // Draw URL in blue, same font/size — no extra weight
                 const urlText = match[0];
                 const href = urlText.startsWith('www.') ? `https://${urlText}` : urlText;
-                const urlWidth = doc.getStringUnitWidth(urlText) * size * 0.352778;
+                const urlW = doc.getStringUnitWidth(urlText) * size * 0.352778;
                 doc.setTextColor(0, 0, 180);
                 doc.text(urlText, drawX, lineY);
+                doc.link(drawX, lineY - lh * 0.75, urlW, lh, { url: href });
                 doc.setTextColor(0, 0, 0);
-                // Clickable rectangle over the URL
-                doc.link(drawX, lineY - lineHeight * 0.75, urlWidth, lineHeight, { url: href });
-                drawX += urlWidth;
+                drawX += urlW;
                 cursor = match.index + urlText.length;
             }
-            // Draw any remaining plain text after the last URL
             if (cursor < line.length) {
                 doc.setTextColor(0, 0, 0);
                 doc.text(line.substring(cursor), drawX, lineY);
             }
         });
-        return y + (lines.length * lineHeight);
+        return yPos + lines.length * lh;
     }
 
-    function addHorizontalLine(y, offset) {
+    function rule(yPos) {
         doc.setLineWidth(0.2);
-        doc.line(margin, y - offset, margin + contentWidth, y - offset);
+        doc.line(margin, yPos, margin + contentWidth, yPos);
+        return yPos + 3;
     }
 
-    yPosition = addText(data.name || 'Remy Russell', 16, 'bold', margin, yPosition, contentWidth);
-    // Build contact line: email | website | linkedin
-    let contactParts = [];
-    if (data.contact?.email)    contactParts.push(`${data.contact.email}`);
-    if (data.contact?.website)  contactParts.push(data.contact.website);
-    else                        contactParts.push('https://remyrussell.com');
+    // ── Pre-process: combine consecutive same-company experience entries ──────
+    // Acentra BA (MI) + Acentra BA II (UT) → single entry with sub-bullets
+    const rawExp = data.professionalExperience || [];
+    const combinedExp = [];
+    let i = 0;
+    while (i < rawExp.length) {
+        const curr = rawExp[i];
+        const next = rawExp[i + 1];
+        const sameCompany = next &&
+            curr.company.split(' ')[0].toLowerCase() === next.company.split(' ')[0].toLowerCase();
+
+        if (sameCompany) {
+            // Merge: use earlier start date, later end date, combined location
+            const merged = {
+                position: `${next.position} → ${curr.position}`,
+                company: curr.company,
+                location: `${next.location} → ${curr.location}`,
+                duration: { start: next.duration.start, end: curr.duration.end },
+                description: '',
+                highlights: [
+                    next.description ? `${next.location.split(',')[0]} (${formatDate(next.duration.start)}–${formatDate(next.duration.end)}): ${next.description}` : null,
+                    ...(next.highlights || []).map(h => `  ${h}`),
+                    curr.description ? `${curr.location.split(',')[0]} (${formatDate(curr.duration.start)}–${formatDate(curr.duration.end)}): ${curr.description}` : null,
+                    ...(curr.highlights || []).map(h => `  ${h}`)
+                ].filter(Boolean)
+            };
+            combinedExp.push(merged);
+            i += 2;
+        } else {
+            combinedExp.push(curr);
+            i++;
+        }
+    }
+
+    // ── Header ────────────────────────────────────────────────────────────────
+    y = addText(data.name || 'Remy Russell', 18, 'bold', margin, y, contentWidth);
+    const contactParts = [];
+    if (data.contact?.email)    contactParts.push(data.contact.email);
+    if (data.contact?.website)  contactParts.push(data.contact.website || 'https://remyrussell.com');
     if (data.contact?.linkedin) contactParts.push(data.contact.linkedin);
+    if (data.seeking)           contactParts.push(data.seeking);
     if (contactParts.length) {
-        yPosition = addTextWithLinks(contactParts.join('  |  '), 10.5, 'normal', margin, yPosition + 0.5, contentWidth);
+        y = addTextWithLinks(contactParts.join('  ·  '), 9.5, 'normal', margin, y + 0.5, contentWidth);
     }
-    yPosition += 0.5;
-    if (data.role || data.seeking) {
-        const roleText = data.role || '';
-        const seekingText = data.seeking || '';
-        const combinedText = roleText && seekingText ? `${roleText} | ${seekingText}` : roleText || seekingText;
-        yPosition = addText(combinedText, 10.5, 'italic', margin, yPosition, contentWidth);
+    if (data.role) {
+        y = addText(data.role, 10.5, 'italic', margin, y + 0.5, contentWidth);
     }
-    yPosition += 1.2;
+    y += 1;
+    y = rule(y);
 
-    addHorizontalLine(yPosition, 2.5);
-    yPosition += 2;
-    yPosition = addText('Summary', 12.25, 'bold', margin, yPosition, contentWidth);
+    // ── Summary ───────────────────────────────────────────────────────────────
+    y = addText('Summary', 11, 'bold', margin, y, contentWidth);
     if (data.summary) {
-        yPosition = addText(data.summary, 10.5, 'normal', margin, yPosition, contentWidth);
+        y = addText(data.summary.trim(), 10, 'normal', margin, y + 0.3, contentWidth);
     }
-    yPosition += 1.5;
+    y += 1;
+    y = rule(y);
 
-    addHorizontalLine(yPosition, 2.5);
-    yPosition += 2;
-    yPosition = addText('Professional Experience', 12.25, 'bold', margin, yPosition, contentWidth);
-    let previousCompany = null;
-    if (data.professionalExperience) {
-        data.professionalExperience.forEach(exp => {
-            const title = `${exp.position} at ${exp.company}`;
-            yPosition = addText(title, 11.5, 'bold', margin, yPosition, contentWidth);
-            const duration = `${formatDate(exp.duration.start)} - ${formatDate(exp.duration.end)}`;
-            yPosition = addText(`${duration} | ${exp.location}`, 10.5, 'italic', margin, yPosition, contentWidth);
-            if (exp.description) {
-                yPosition = addText(exp.description, 10.5, 'normal', margin, yPosition, contentWidth);
-                yPosition += 0.3;
-            }
-            if (exp.highlights) {
-                exp.highlights.forEach(highlight => {
-                    yPosition = addTextWithLinks(`- ${highlight}`, 10.5, 'normal', margin, yPosition, contentWidth);
-                });
-            }
-            yPosition += 1;
-        });
-    }
-    yPosition += 1.2;
+    // ── Experience ────────────────────────────────────────────────────────────
+    y = addText('Professional Experience', 11, 'bold', margin, y, contentWidth);
+    y += 0.5;
+    combinedExp.forEach(exp => {
+        const startY = formatDate(exp.duration.start);
+        const endY   = formatDate(exp.duration.end);
+        const title  = `${exp.position}  ·  ${exp.company}`;
+        const meta   = `${startY}–${endY}  ·  ${exp.location}`;
+        y = addText(title, 10.5, 'bold', margin, y, contentWidth);
+        y = addText(meta, 9.5, 'italic', margin, y + 0.2, contentWidth);
+        if (exp.description) {
+            y = addText(exp.description, 10, 'normal', margin, y + 0.3, contentWidth);
+        }
+        if (exp.highlights?.length) {
+            exp.highlights.forEach(h => {
+                y = addTextWithLinks(`• ${h}`, 10, 'normal', margin, y + 0.3, contentWidth);
+            });
+        }
+        y += 1.5;
+    });
+    y = rule(y);
 
-    addHorizontalLine(yPosition, 2.5);
-    yPosition += 2;
-    yPosition = addText('Education', 12.25, 'bold', margin, yPosition, contentWidth);
+    // ── Education ─────────────────────────────────────────────────────────────
+    y = addText('Education', 11, 'bold', margin, y, contentWidth);
     if (data.education) {
-        yPosition = addText(data.education.degree, 11.5, 'bold', margin, yPosition, contentWidth);
-        yPosition = addText(data.education.institution, 10.5, 'italic', margin, yPosition, contentWidth);
-        if (data.education.coursework) {
-            yPosition = addText(`Coursework: ${data.education.coursework.join(', ')}`, 10.5, 'normal', margin, yPosition, contentWidth);
-        }
+        y = addText(data.education.degree, 10.5, 'bold', margin, y + 0.3, contentWidth);
+        y = addText(data.education.institution, 10, 'italic', margin, y + 0.2, contentWidth);
+        // Omit coursework — adds length without ATS value
     }
-    yPosition += 2;
+    y += 1;
+    y = rule(y);
 
-    addHorizontalLine(yPosition, 4);
-    yPosition += 2;
-    if (data.skills) {  // Removed certifications condition
-        const columnWidth = (contentWidth - 2) / 2;
-        const leftColumnX = margin;
-        const rightColumnX = margin + columnWidth + 3;
+    // ── Skills — single column for ATS compatibility ──────────────────────────
+    // Two-column layouts can cause ATS to read columns in wrong order or merge them.
+    // Single column guarantees correct parse order.
+    y = addText('Core Skills', 11, 'bold', margin, y, contentWidth);
+    data.skills?.coreSkills?.forEach(s => {
+        y = addText(`• ${s}`, 10, 'normal', margin, y + 0.3, contentWidth);
+    });
+    y += 0.8;
+    y = addText('Tools & Frameworks', 11, 'bold', margin, y, contentWidth);
+    data.skills?.toolsAndFrameworks?.forEach(t => {
+        y = addTextWithLinks(`• ${t}`, 10, 'normal', margin, y + 0.3, contentWidth);
+    });
 
-        let leftY = yPosition;
-        let rightY = yPosition;
-
-        if (data.skills?.coreSkills) {
-            leftY = addText('Core Skills', 12.25, 'bold', leftColumnX, leftY, columnWidth);
-            data.skills.coreSkills.forEach(skill => {
-                leftY = addText(`- ${skill}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
-            });
-        }
-
-        if (data.skills?.fun) {
-            leftY += 0.8;
-            leftY = addText('Interests & Hobbies', 12.25, 'bold', leftColumnX, leftY, columnWidth);
-            data.skills.fun.forEach(fun => {
-                leftY = addText(`- ${fun}`, 10.5, 'normal', leftColumnX, leftY, columnWidth);
-            });
-        }
-
-        if (data.skills?.toolsAndFrameworks) {
-            rightY = addText('Tools & Frameworks', 12.25, 'bold', rightColumnX, rightY, columnWidth);
-            data.skills.toolsAndFrameworks.forEach(tool => {
-                rightY = addText(`- ${tool}`, 10.5, 'normal', rightColumnX, rightY, columnWidth);
-            });
-        }
-
-        // Removed Certifications block
-
-        const maxY = Math.max(leftY, rightY);
-        doc.setLineWidth(0.2);
-        doc.line(margin + columnWidth + 1, yPosition - 4, margin + columnWidth + 1, maxY);
-
-        yPosition = maxY;
-    }
-
-    const pdfOutput = doc.output('blob');
-    const url = URL.createObjectURL(pdfOutput);
-    const newTab = window.open(url, '_blank');
-    if (newTab) {
-        newTab.document.title = 'Remy_Russell_Resume.pdf';
-    } else {
-        console.error('Failed to open new tab. Pop-up blocker may be enabled.');
+    // ── Save ──────────────────────────────────────────────────────────────────
+    const blob = doc.output('blob');
+    const url  = URL.createObjectURL(blob);
+    const tab  = window.open(url, '_blank');
+    if (!tab) {
         alert('Unable to open PDF in new tab. Please allow pop-ups and try again.');
     }
 }
