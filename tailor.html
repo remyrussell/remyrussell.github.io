@@ -571,26 +571,19 @@ function render(r) {
 
   // Enforce hard bullet limits client-side — Claude can't measure pixels,
   // so we cap here to guarantee single-page output regardless of model output.
-  // APM: max 4, CaseWorthy BA: max 2, Acentra: max 2 (one per project), others: max 1
-  const BULLET_CAPS = {
-    'associate': 4,   // Associate Product Manager
-    'business analyst, solutions': 2,
-    'business analyst →': 2,
-    'business analyst ii': 1,
-    'business analyst, mi': 1,
-  };
   if (res.experience) {
     res.experience.forEach(e => {
       if (!e.highlights) return;
       const posKey = (e.position || '').toLowerCase();
-      let cap = 1;
-      if (posKey.includes('associate')) cap = 4;
-      else if (posKey.includes('solutions delivery') || posKey.includes('→')) cap = 2;
-      else cap = 1;
-      // Keep only non-omit bullets up to cap
-      const kept = e.highlights.filter(b => b.weight !== 'omit').slice(0, cap);
+      let cap;
+      if (posKey.includes('associate'))             cap = 4; // APM role
+      else if (posKey.includes('solutions'))        cap = 2; // CaseWorthy BA
+      else if (posKey.includes('→') || posKey.includes('acentra') ||
+               e.company?.toLowerCase().includes('acentra')) cap = 2; // Acentra combined — always keep both project bullets
+      else                                          cap = 2; // default
+      const kept    = e.highlights.filter(b => b.weight !== 'omit').slice(0, cap);
       const omitted = e.highlights.filter(b => b.weight === 'omit');
-      e.highlights = [...kept, ...omitted];
+      e.highlights  = [...kept, ...omitted];
     });
   }
 
