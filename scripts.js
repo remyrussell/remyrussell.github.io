@@ -124,8 +124,8 @@ function generateResumePDF(data) {
         compress: true
     });
 
-    const margin = 15;
-    const pageWidth = 215.9; // letter width in mm
+    const margin = 20;
+    const pageWidth = 215.9;
     const contentWidth = pageWidth - 2 * margin;
     let y = margin;
 
@@ -187,12 +187,12 @@ function generateResumePDF(data) {
     const GAP = 3;
 
     function sectionBreak(yPos) {
-        const lineY = yPos + 1.5;
+        const lineY = yPos - 2.5;
         doc.setDrawColor(180, 180, 180);
         doc.setLineWidth(0.15);
         doc.line(margin, lineY, margin + contentWidth, lineY);
         doc.setDrawColor(0, 0, 0);
-        return lineY + 5;
+        return lineY + 4;
     }
 
     // ── Pre-process: combine the two Acentra roles into one entry ────────────
