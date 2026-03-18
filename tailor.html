@@ -611,7 +611,12 @@ function render(r) {
       );
       return sameCompanyRoles.length === 1;
     });
-    const bullets = tailored?.highlights?.filter(b => b.weight !== 'omit') || [];
+    const isAcentra = job.company.toLowerCase().includes('acentra');
+    let bullets = tailored?.highlights?.filter(b => b.weight !== 'omit') || [];
+    // For Acentra, always show all original project bullets — Claude can't omit them
+    if (isAcentra && bullets.length < job.highlights.length) {
+      bullets = job.highlights.map(h => ({ text: h, weight: 'secondary' }));
+    }
     if (!bullets.length && !job.highlights.length) return;
 
     const startY = new Date(job.duration.start).getFullYear();
