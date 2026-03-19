@@ -94,7 +94,7 @@
     display: flex; align-items: center; justify-content: center;
   }
   .dog-card.linkedin .img-wrap img {
-    width: 78%; height: 78%;
+    width: 58%; height: 58%;
     object-fit: cover;
     border-radius: 50%;
     border: 3px solid var(--accent);
@@ -108,24 +108,25 @@
     position: absolute;
     bottom: 0; left: 0; right: 0;
     background: linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.65) 55%, transparent 100%);
-    padding: 2.5rem .85rem .85rem;
-    font-size: .78rem;
+    padding: 2.5rem 1rem 1rem;
+    font-size: 1rem;
     line-height: 1.6;
     color: #f0f0f0;
     z-index: 4;
   }
   .dog-card.reality .overlay-text { font-style: italic; color: #f5dde8; }
 
-  /* LinkedIn: text sits BELOW the circle image in its own section */
+  /* LinkedIn: text sits BELOW the circle image */
   .linkedin-body {
-    padding: .85rem;
-    font-size: .72rem;
-    line-height: 1.6;
+    padding: 1rem;
+    font-size: .95rem;
+    line-height: 1.7;
     color: var(--ink);
     background: var(--card);
     border-top: 1px solid var(--border);
-    max-height: 320px;
+    max-height: 420px;
     overflow-y: auto;
+    min-height: 60px;
   }
 
   .hashtags { margin-top: .4rem; color: var(--accent-light); font-size: .63rem; font-family: var(--mono); word-break: break-word; }
@@ -287,18 +288,22 @@ async function generate() {
   document.getElementById('reactionCount').textContent =
     `👍❤️🔥  ${(Math.floor(Math.random()*900)+100).toLocaleString()} reactions`;
 
+  document.getElementById('linkedinText').innerHTML = '<em style="color:#666">Generating thought leadership...</em>';
+
   try {
     const res = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ activity })
     });
-    if (!res.ok) throw new Error(res.status);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     currentPost = data.post || '';
+    if (!currentPost) throw new Error('Empty response');
     renderLinkedIn(currentPost);
   } catch(e) {
-    currentPost = "Consuming your own output isn't failure. It's vertical integration.\n\nI've done it. I've studied it. I've built a framework around it.\n\nBe the loop.\n\n#Leadership #GrowthMindset #DogMindset #Disruption";
+    console.error('Worker error:', e);
+    currentPost = "Consuming your own output isn't failure. It's vertical integration.\n\nI've done it. I've studied it. I've built a 5-step framework around it.\n\n1. Identify the output\n2. Question its value\n3. Reabsorb it anyway\n4. Call it a pivot\n5. Post about it on LinkedIn\n\nMost leaders are too afraid to close the loop. Be the loop.\n\nDrop a 🐾 if you've been the loop.\n\n#Leadership #GrowthMindset #DogMindset #Disruption #Synergy";
     renderLinkedIn(currentPost);
   } finally {
     btn.disabled = false;
