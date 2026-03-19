@@ -299,9 +299,10 @@
     font-family: var(--sans); font-size: .85rem; font-weight: 600;
     padding: .85rem 1.5rem; cursor: pointer;
     transition: background .15s;
-    flex: 1; justify-content: center; max-width: 200px;
+    flex: 1; justify-content: center; max-width: 220px;
   }
   .btn-share:hover { background: #43a047; }
+  .btn-share:disabled { opacity: .5; cursor: not-allowed; }
 
   footer { text-align: center; padding: 2rem; font-size: .68rem; color: var(--muted); border-top: 1px solid var(--border); }
   footer a { color: var(--accent-light); text-decoration: none; }
@@ -311,6 +312,7 @@
     .hero h1 { font-size: 2rem; }
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -373,8 +375,7 @@
   </div>
 
   <div class="actions">
-    <button class="btn-share" id="shareBtn" onclick="sharePost()">🔗 Share post</button>
-    <button class="btn-copy" id="copyBtn" onclick="copyPost()">📋 Copy text</button>
+    <button class="btn-share" id="shareBtn" onclick="saveAsImage()">📸 Save as image</button>
   </div>
 </div>
 
@@ -493,33 +494,56 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
 }
 
-async function sharePost() {
-  const shareText = `${currentActivity}\n\n${currentPost}\n\n— Parmigiano Reggiano (Reggie), MBA\n\nvia remyrussell.com/doglinkedin.html`;
+async function saveAsImage() {
   const btn = document.getElementById('shareBtn');
+  const orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳ Capturing...';
 
-  // Use native share sheet on mobile if available
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: 'Dog LinkedIn vs Reality',
-        text: shareText,
-        url: 'https://remyrussell.com/doglinkedin.html'
-      });
-      return;
-    } catch(e) {
-      if (e.name === 'AbortError') return; // user cancelled
-    }
-  }
-
-  // Fallback: copy to clipboard
   try {
-    await navigator.clipboard.writeText(shareText);
-    const orig = btn.textContent;
-    btn.textContent = '✓ Link + post copied!';
-    setTimeout(() => btn.textContent = orig, 2500);
+    const grid = document.querySelector('.meme-grid');
+
+    const canvas = await html2canvas(grid, {
+      backgroundColor: '#0f0f13',
+      scale: 2, // retina quality
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      onclone: (doc) => {
+        // Ensure fonts render in the clone
+        doc.querySelector('.meme-grid').style.borderRadius = '0';
+      }
+    });
+
+    // Download the image
+    const link = document.createElement('a');
+    link.download = `reggie-linkedin-${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    btn.textContent = '✓ Saved!';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.disabled = false;
+    }, 2000);
+
+    // Also offer native share on mobile if available
+    if (navigator.share && navigator.canShare) {
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'reggie-linkedin.png', { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file], title: 'Dog LinkedIn vs Reality' });
+          } catch(e) { /* user cancelled or not supported */ }
+        }
+      });
+    }
+
   } catch(e) {
-    btn.textContent = '⚠️ Try copy button';
-    setTimeout(() => btn.textContent = '🔗 Share post', 2000);
+    console.error('Capture failed:', e);
+    btn.textContent = '⚠️ Try screenshot instead';
+    btn.disabled = false;
+    setTimeout(() => btn.textContent = orig, 2500);
   }
 }
 
