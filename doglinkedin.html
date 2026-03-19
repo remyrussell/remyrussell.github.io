@@ -84,41 +84,48 @@
   }
 
   .img-wrap img {
-    width: 100%; height: 100%; object-fit: contain; display: block; position: relative; z-index: 1;
+    width: 100%; height: 100%; object-fit: contain; display: block;
   }
 
-  /* LinkedIn: circle crop centered in upper portion */
+  /* LinkedIn: circle crop — use fixed pixel size to guarantee round */
+  .dog-card.linkedin .img-wrap {
+    aspect-ratio: 1;
+    background: #0d1a2d;
+    display: flex; align-items: center; justify-content: center;
+  }
   .dog-card.linkedin .img-wrap img {
-    width: 65%; height: 65%;
+    width: 78%; height: 78%;
     object-fit: cover;
     border-radius: 50%;
     border: 3px solid var(--accent);
-    box-shadow: 0 0 0 6px rgba(10,102,194,.2), 0 0 0 12px rgba(10,102,194,.07);
-    position: absolute;
-    top: 32%; left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
+    box-shadow: 0 0 0 7px rgba(10,102,194,.2), 0 0 0 14px rgba(10,102,194,.07);
+    position: static;
+    transform: none;
   }
 
-  /* Text overlaid at bottom of each image */
+  /* Reality: text overlaid on image */
   .overlay-text {
     position: absolute;
     bottom: 0; left: 0; right: 0;
     background: linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.65) 55%, transparent 100%);
     padding: 2.5rem .85rem .85rem;
-    font-size: .74rem;
+    font-size: .78rem;
     line-height: 1.6;
     color: #f0f0f0;
     z-index: 4;
   }
+  .dog-card.reality .overlay-text { font-style: italic; color: #f5dde8; }
 
-  .dog-card.reality .overlay-text { font-style: italic; color: #f5dde8; z-index: 4; }
-
-  .dog-card.linkedin .overlay-text {
-    padding-top: 2rem;
-    font-size: .67rem;
-    line-height: 1.55;
-    z-index: 4;
+  /* LinkedIn: text sits BELOW the circle image in its own section */
+  .linkedin-body {
+    padding: .85rem;
+    font-size: .72rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    max-height: 320px;
+    overflow-y: auto;
   }
 
   .hashtags { margin-top: .4rem; color: var(--accent-light); font-size: .63rem; font-family: var(--mono); word-break: break-word; }
@@ -193,8 +200,8 @@
       <div class="card-label">💼 LinkedIn</div>
       <div class="img-wrap">
         <img src="assets/images/reggie-professional.JPG" alt="Professional Reggie">
-        <div class="overlay-text" id="linkedinText"></div>
       </div>
+      <div class="linkedin-body" id="linkedinText"></div>
       <div class="li-footer">
         <span class="li-name">Reggie T. Goodboy, MBA · Chief Disruption Officer</span>
         <span class="li-reactions" id="reactionCount"></span>
