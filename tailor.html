@@ -387,7 +387,9 @@
 
     <div class="action-row">
       <button class="print-btn" onclick="downloadResumePDF()">⬇ Resume PDF</button>
-      <button class="print-btn" style="background:var(--muted)" onclick="downloadCoverLetter()">⬇ Cover Letter</button>
+      <button class="print-btn" onclick="downloadResumeDocx()">⬇ Resume DOCX</button>
+      <button class="print-btn" style="background:var(--muted)" onclick="downloadCoverLetter()">⬇ Cover Letter PDF</button>
+      <button class="print-btn" style="background:var(--muted)" onclick="downloadCoverLetterDocx()">⬇ Cover Letter DOCX</button>
       <button class="reset-btn" onclick="reset()">← Try another role</button>
     </div>
 
@@ -547,6 +549,7 @@ function render(r) {
 
   // Resume
   const res = r.tailoredResume;
+  window._lastTailoredResult = res; // saved for DOCX download
   const exp = RESUME.professionalExperience;
 
   const SUMMARY_BASELINE = "An optimistic tech enthusiast with 3 years of Product Management and 7 years of Business Analysis experience building SaaS solutions for Health and Human Services providers.";
@@ -581,7 +584,7 @@ function render(r) {
     <div class="r-role">${RESUME.role}</div>
     <hr class="r-rule">
     <div class="r-h2">Summary</div>
-    <p class="r-desc">${summary}</p>
+    <p class="r-desc r-summary">${summary}</p>
     <hr class="r-rule">
     <div class="r-h2">Professional Experience</div>`;
 
@@ -594,8 +597,7 @@ function render(r) {
       let cap;
       if (posKey.includes('associate'))             cap = 4; // APM role
       else if (posKey.includes('solutions'))        cap = 2; // CaseWorthy BA
-      else if (posKey.includes('→') || posKey.includes('acentra') ||
-               e.company?.toLowerCase().includes('acentra')) cap = 2; // Acentra combined — always keep both project bullets
+      else if (e.company?.toLowerCase().includes('acentra')) cap = 1; // each Acentra entry has 1 bullet
       else                                          cap = 2; // default
       const kept    = e.highlights.filter(b => b.weight !== 'omit').slice(0, cap);
       const omitted = e.highlights.filter(b => b.weight === 'omit');
@@ -643,7 +645,7 @@ function render(r) {
     const endY   = job.duration.end ? new Date(job.duration.end).getFullYear() : 'Present';
 
     const desc = isAcentra ? job.description : (tailored?.description ?? job.description);
-    html += `<div style="margin-bottom:1rem">
+    html += `<div class="r-exp-block" style="margin-bottom:1rem">
       <div class="r-h3">${job.position} · ${job.company}</div>
       <div class="r-meta">${startY}–${endY} · ${job.location}</div>
       ${desc ? `<div class="r-desc">${desc}</div>` : ''}`;
@@ -661,7 +663,7 @@ function render(r) {
   });
 
   if (res.relevantSkills?.length) {
-    html += `<hr class="r-rule"><div class="r-h2">Skills & Tools</div><p class="r-desc">${res.relevantSkills.join(' · ')}</p>`;
+    html += `<hr class="r-rule"><div class="r-h2">Skills & Tools</div><p class="r-desc r-skills">${res.relevantSkills.join(' · ')}</p>`;
   }
 
   html += `<hr class="r-rule"><div class="r-h2">Education</div>
@@ -708,8 +710,12 @@ function downloadResumePDF() {
 <style>
   @page { size: letter; margin: 0; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { font-family: 'DM Sans', sans-serif; font-size: 11pt; color: #111; background: #fff; line-height: 1.42;
          padding: 1.6cm 2cm; }
+  .print-tip { background: #fffbea; border: 1px solid #f0d060; border-radius: 6px; padding: .6rem 1rem;
+               font-size: 10pt; color: #7a5c00; margin-bottom: 1rem; font-family: sans-serif; }
+  @media print { .print-tip { display: none !important; } }
   .r-name { font-family: 'DM Serif Display', serif; font-size: 24pt; margin-bottom: 3pt; line-height: 1; }
   .r-contact { font-family: 'DM Mono', monospace; font-size: 8.5pt; color: #444; margin-bottom: 2pt; }
   .r-contact a { color: #555; text-decoration: none; }
@@ -724,12 +730,15 @@ function downloadResumePDF() {
   .r-bullets li.primary { color: #000; }
   .r-bullets li.secondary { color: #333; }
   div[style*="margin-bottom"] { margin-bottom: 7pt !important; }
+  h3, .r-h3 { page-break-after: avoid; }
+  li { page-break-inside: avoid; }
 </style>
 </head><body>
+<div class="print-tip">💡 For best results: in the print dialog, set margins to <strong>None</strong> and uncheck <strong>Headers and Footers</strong>.</div>
 ${resumeHTML}
 <script>
   window.addEventListener('load', function() {
-    setTimeout(function() { window.print(); }, 600);
+    setTimeout(function() { window.print(); }, 900);
   });
 <\/script>
 </body></html>`);
@@ -752,6 +761,7 @@ function downloadCoverLetter() {
 <style>
   @page { size: letter; margin: 0; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body { font-family: 'DM Sans', sans-serif; font-size: 11pt; color: #111; background: #fff; line-height: 1.7;
          padding: 2.2cm 2.4cm; }
   .header { margin-bottom: 2em; }
@@ -760,8 +770,12 @@ function downloadCoverLetter() {
   .header .contact a { color: #555; text-decoration: none; }
   p { margin-bottom: 1em; }
   p:last-child { margin-bottom: 0; }
+  .print-tip { background: #fffbea; border: 1px solid #f0d060; border-radius: 6px; padding: .6rem 1rem;
+               font-size: 10pt; color: #7a5c00; margin-bottom: 1.5rem; font-family: sans-serif; }
+  @media print { .print-tip { display: none !important; } }
 </style>
 </head><body>
+<div class="print-tip">💡 For best results: in the print dialog, set margins to <strong>None</strong> and uncheck <strong>Headers and Footers</strong>.</div>
 <div class="header">
   <div class="name">Remy Russell</div>
   <div class="contact">
@@ -774,7 +788,7 @@ function downloadCoverLetter() {
 ${paraHTML}
 <script>
   window.addEventListener('load', function() {
-    setTimeout(function() { window.print(); }, 500);
+    setTimeout(function() { window.print(); }, 900);
   });
 <\/script>
 </body></html>`);
@@ -805,6 +819,154 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!trigger.contains(e.target)) trigger.classList.remove('open');
   });
 });
+</script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<script>
+// ── DOCX helpers ──────────────────────────────────────────────────────────────
+const { Document, Packer, Paragraph, TextRun, ExternalHyperlink,
+        AlignmentType, BorderStyle, LevelFormat } = docx;
+
+const DXA_PAGE   = 12240;  // letter width in DXA
+const DXA_MARGIN = 1080;   // 0.75 inch margins
+
+function p(children, opts = {}) {
+  return new Paragraph({ children, spacing: { before: 0, after: 80 }, ...opts });
+}
+function run(text, opts = {}) {
+  return new TextRun({ text, font: 'Calibri', size: 20, ...opts }); // 10pt
+}
+function rule() {
+  return new Paragraph({
+    border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'AAAAAA', space: 2 } },
+    spacing: { before: 80, after: 80 }
+  });
+}
+
+async function downloadResumeDocx() {
+  const resumeCard = document.getElementById('resume-out');
+  if (!resumeCard || !resumeCard.innerHTML.trim()) {
+    alert('Generate a tailored resume first'); return;
+  }
+
+  const children = [];
+
+  // ── Name ──
+  const nameEl = resumeCard.querySelector('.r-name');
+  const name = nameEl?.textContent?.trim() || 'Remy Russell';
+  children.push(p([run(name, { bold: true, size: 32 })]));
+
+  // ── Contact ──
+  children.push(p([
+    run('remyrussell@pm.me  |  linkedin.com/in/remyrussell  |  remyrussell.com  |  Salt Lake City, UT',
+      { size: 16, color: '555555' })
+  ], { spacing: { after: 120 } }));
+  children.push(rule());
+
+  // ── Summary ──
+  const summaryEl = resumeCard.querySelector('.r-summary');
+  const summaryText = summaryEl?.textContent?.trim();
+  if (summaryText) {
+    children.push(sectionHeader('Summary'));
+    children.push(p([run(summaryText)], { spacing: { after: 120 } }));
+    children.push(rule());
+  }
+
+  // ── Experience ──
+  children.push(sectionHeader('Professional Experience'));
+  resumeCard.querySelectorAll('.r-exp-block').forEach(block => {
+    const title   = block.querySelector('.r-h3')?.textContent?.trim() || '';
+    const meta    = block.querySelector('.r-meta')?.textContent?.trim() || '';
+    const desc    = block.querySelector('.r-desc')?.textContent?.trim() || '';
+    const bullets = [...block.querySelectorAll('.r-bullets li')].map(li => li.textContent.trim());
+
+    children.push(p([run(title, { bold: true, size: 22 })], { spacing: { before: 140, after: 20 } }));
+    children.push(p([run(meta, { italics: true, size: 18, color: '666666' })], { spacing: { after: 20 } }));
+    if (desc) children.push(p([run(desc, { size: 18, color: '444444' })], { spacing: { after: 20 } }));
+    bullets.forEach(bullet => {
+      children.push(new Paragraph({
+        children: [run(bullet, { size: 20 })],
+        numbering: { reference: 'bullets', level: 0 },
+        spacing: { before: 0, after: 40 }
+      }));
+    });
+  });
+  children.push(rule());
+
+  // ── Skills ──
+  const skillsEl = resumeCard.querySelector('.r-skills');
+  if (skillsEl) {
+    children.push(sectionHeader('Skills & Tools'));
+    children.push(p([run(skillsEl.textContent.trim(), { size: 18 })], { spacing: { after: 120 } }));
+    children.push(rule());
+  }
+
+  // ── Education ──
+  children.push(sectionHeader('Education'));
+  children.push(p([run(RESUME.education.degree, { bold: true, size: 20 })]));
+  children.push(p([run(RESUME.education.institution, { italics: true, size: 18, color: '666666' })]));
+
+  await buildAndDownloadDocx(children, 'Remy_Russell_Resume.docx');
+}
+
+function sectionHeader(text) {
+  return p([run(text.toUpperCase(), { bold: true, size: 16, color: '888888', allCaps: true })],
+    { spacing: { before: 100, after: 60 } });
+}
+
+async function buildAndDownloadDocx(children, filename) {
+  const doc = new Document({
+    numbering: {
+      config: [{
+        reference: 'bullets',
+        levels: [{ level: 0, format: LevelFormat.BULLET, text: '•', alignment: AlignmentType.LEFT,
+          style: { paragraph: { indent: { left: 360, hanging: 180 } } } }]
+      }]
+    },
+    sections: [{
+      properties: {
+        page: {
+          size: { width: 12240, height: 15840 },
+          margin: { top: 1080, right: 1080, bottom: 1080, left: 1080 }
+        }
+      },
+      children
+    }]
+  });
+  const blob = await Packer.toBlob(doc);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function downloadCoverLetterDocx() {
+  const coverText = document.getElementById('cover-out')?.textContent?.trim();
+  if (!coverText) { alert('Generate a cover letter first'); return; }
+
+  const paragraphs = coverText.split(/\n\n+/).filter(p => p.trim());
+  const children = [];
+
+  // Header
+  children.push(p([run('Remy Russell', { bold: true, size: 28 })], { spacing: { after: 60 } }));
+  children.push(p([run(
+    'remyrussell@pm.me  |  linkedin.com/in/remyrussell  |  remyrussell.com  |  Salt Lake City, UT',
+    { size: 16, color: '666666' }
+  )], {
+    spacing: { after: 240 },
+    border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'CCCCCC', space: 4 } }
+  }));
+
+  // Body
+  paragraphs.forEach(para => {
+    children.push(new Paragraph({
+      children: [run(para.trim(), { size: 22 })],
+      spacing: { before: 0, after: 240 },
+      alignment: AlignmentType.JUSTIFIED
+    }));
+  });
+
+  await buildAndDownloadDocx(children, 'Remy_Russell_Cover_Letter.docx');
+}
 </script>
 </body>
 </html>

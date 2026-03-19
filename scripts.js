@@ -195,43 +195,7 @@ function generateResumePDF(data) {
         return lineY + 4;
     }
 
-    // ── Pre-process: combine the two Acentra roles into one entry ────────────
-    // Keeps JSON with two separate entries but renders them as one block in the PDF.
-    // Only merges consecutive entries where BOTH companies include "Acentra".
     const rawExp = data.professionalExperience || [];
-    const combinedExp = [];
-    let i = 0;
-    while (i < rawExp.length) {
-        const curr = rawExp[i];
-        const next = rawExp[i + 1];
-        const bothAcentra = next &&
-            curr.company.toLowerCase().includes('acentra') &&
-            next.company.toLowerCase().includes('acentra');
-
-        if (bothAcentra) {
-            // next is the earlier role (MI), curr is the later role (UT/BA II)
-            // Determine which is earlier by start date
-            const earlier = new Date(next.duration.start) < new Date(curr.duration.start) ? next : curr;
-            const later   = new Date(next.duration.start) < new Date(curr.duration.start) ? curr : next;
-            const merged = {
-                position: `Business Analyst / Business Analyst II`,
-                company:  later.company,
-                location: `${earlier.location} to ${later.location}`,
-                duration: { start: earlier.duration.start, end: later.duration.end },
-                description: '',
-                highlights: [
-                    `${earlier.location} (${formatDate(earlier.duration.start)}-${formatDate(earlier.duration.end)}): ${earlier.description}`,
-                    `${later.location} (${formatDate(later.duration.start)}-${formatDate(later.duration.end)}): ${later.description}`,
-                    ...(later.highlights || [])
-                ].filter(Boolean)
-            };
-            combinedExp.push(merged);
-            i += 2;
-        } else {
-            combinedExp.push(curr);
-            i++;
-        }
-    }
 
     // Renders a bulleted line with hanging indent so wrapped lines align under text not bullet
     function addBullet(text, size, x, yPos, maxWidth) {
@@ -279,7 +243,7 @@ function generateResumePDF(data) {
     y += 0.3;
     // Track which companies have already appeared to control "formerly X" display
     const seenCompanies = new Set();
-    combinedExp.forEach(exp => {
+    rawExp.forEach(exp => {
         const startY = formatDate(exp.duration.start);
         const endY   = formatDate(exp.duration.end);
         // Only show "(formerly Eccovia)" on first CaseWorthy appearance
