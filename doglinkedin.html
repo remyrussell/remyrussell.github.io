@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dog LinkedIn | remyrussell.com</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --card: #ffffff;
+    --ink: #1a1a2e;
+    --muted: #6b6b8a;
+    --accent: #0a66c2;   /* LinkedIn blue */
+    --gold: #e8b84b;
+    --pink: #e8478a;
+    --border: #e0ddd5;
+    --serif: 'Playfair Display', serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Subtle paper texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .9rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(245,240,232,.92);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav .brand { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); }
+  nav a { font-family: var(--mono); font-size: .75rem; color: var(--muted); text-decoration: none; letter-spacing: .05em; }
+  nav a:hover { color: var(--ink); }
+
+  .hero {
+    text-align: center;
+    padding: 3.5rem 2rem 2rem;
+    position: relative; z-index: 1;
+  }
+  .hero .eyebrow {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .75rem;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: .5rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p {
+    color: var(--muted);
+    font-size: .95rem;
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+
+  .generate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: .1em;
+    padding: .85rem 2rem;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    text-transform: uppercase;
+  }
+  .generate-btn:hover { background: #2d2d4a; }
+  .generate-btn:active { transform: scale(.98); }
+  .generate-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .generate-btn .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    display: none;
+  }
+  .generate-btn.loading .spinner { display: block; }
+  .generate-btn.loading .btn-text { opacity: .6; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Main output card */
+  #output {
+    display: none;
+    max-width: 900px;
+    margin: 0 auto 4rem;
+    padding: 0 1.5rem;
+    position: relative; z-index: 1;
+    animation: fadeUp .5s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Dog activity pill */
+  .activity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: #fff3cd;
+    border: 1px solid #f0d060;
+    border-radius: 20px;
+    padding: .35rem 1rem;
+    font-family: var(--mono);
+    font-size: .75rem;
+    color: #7a5c00;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  /* Side by side meme cards */
+  .meme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .dog-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,.06);
+  }
+
+  .dog-card .card-label {
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: .6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .dog-card.reality .card-label { color: var(--pink); background: #fff0f5; }
+  .dog-card.linkedin .card-label { color: var(--accent); background: #f0f6ff; }
+
+  .dog-img-wrap {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #f0ede8;
+  }
+  .dog-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* LinkedIn profile circle */
+  .li-profile-wrap {
+    position: relative;
+    aspect-ratio: 1;
+    background: #e8f0f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .li-profile-wrap img {
+    width: 78%;
+    height: 78%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #0a66c2;
+    box-shadow: 0 0 0 6px rgba(10,102,194,.15), 0 0 0 10px rgba(10,102,194,.06);
+    display: block;
+  }
+  .li-profile-badge {
+    position: absolute;
+    bottom: 12%;
+    right: 12%;
+    background: #0a66c2;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: .5rem;
+    font-weight: 500;
+    letter-spacing: .06em;
+    padding: .2rem .45rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  /* LinkedIn-style post */
+  .linkedin-post {
+    border-top: 1px solid var(--border);
+    padding: 1rem;
+  }
+  .li-header {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    margin-bottom: .75rem;
+  }
+  .li-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--accent);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+  .li-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .li-name { font-weight: 600; font-size: .85rem; line-height: 1.2; }
+  .li-title { font-size: .72rem; color: var(--muted); }
+  .li-time { font-size: .68rem; color: var(--muted); }
+  .li-body {
+    font-size: .82rem;
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-line;
+  }
+  .li-reactions {
+    margin-top: .75rem;
+    font-size: .72rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    border-top: 1px solid var(--border);
+    padding-top: .6rem;
+  }
+
+  /* Reality card caption */
+  .reality-caption {
+    padding: 1rem;
+    font-size: .85rem;
+    line-height: 1.6;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  /* Actions row */
+  .actions {
+    display: flex;
+    gap: .75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-secondary {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: .6rem 1.2rem;
+    cursor: pointer;
+    color: var(--muted);
+    transition: border-color .15s, color .15s;
+  }
+  .btn-secondary:hover { border-color: var(--ink); color: var(--ink); }
+  .btn-share {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: .6rem 1.2rem;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn-share:hover { opacity: .85; }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: .72rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    position: relative; z-index: 1;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .meme-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">Remy Russell</span>
+  <a href="/">← remyrussell.com</a>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">A Vibecoded Masterpiece</div>
+  <h1>Dog LinkedIn<br><em>vs. Reality</em></h1>
+  <p>Reggie has thoughts about disruption, synergy, and eating things off the ground. Here's what it taught him about leadership.</p>
+  <button class="generate-btn" id="genBtn" onclick="generate()">
+    <span class="spinner"></span>
+    <span class="btn-text">🐾 Generate Post</span>
+  </button>
+</div>
+
+<div id="output">
+  <div style="text-align:center; margin-bottom:1.5rem;">
+    <div class="activity-badge" id="activityBadge">
+      <span>🐕</span>
+      <span id="activityText"></span>
+    </div>
+  </div>
+
+  <div class="meme-grid">
+    <!-- Reality card -->
+    <div class="dog-card reality">
+      <div class="card-label">🙈 Reality</div>
+      <div class="dog-img-wrap">
+        <img src="assets/images/reggie-casual.jpg" alt="Reggie being a dog" id="casualImg"
+             onerror="this.style.display='none';this.parentElement.style.background='#f5e6c8';this.parentElement.innerHTML+='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:5rem;padding:2rem;\'>🐕</div>'">
+      </div>
+      <div class="reality-caption" id="realityCaption"></div>
+    </div>
+
+    <!-- LinkedIn card -->
+    <div class="dog-card linkedin">
+      <div class="card-label">💼 LinkedIn</div>
+      <div class="dog-img-wrap li-profile-wrap">
+        <img src="assets/images/reggie-professional.jpg" alt="Professional Reggie" id="proImg"
+             onerror="this.style.display='none';this.parentElement.innerHTML+='<div style=\'font-size:5rem;\'>🐕</div>'">
+        <div class="li-profile-badge">Open to work</div>
+      </div>
+      <div class="linkedin-post">
+        <div class="li-header">
+          <div class="li-avatar">
+            <img src="assets/images/reggie-professional.jpg" alt="Reggie"
+                 onerror="this.parentElement.innerHTML='🐕'">
+          </div>
+          <div>
+            <div class="li-name">Reggie T. Goodboy, MBA</div>
+            <div class="li-title">Chief Disruption Officer | Synergy Enthusiast | 🐾 Thought Leader</div>
+            <div class="li-time">Just now · 🌐</div>
+          </div>
+        </div>
+        <div class="li-body" id="linkedinPost"></div>
+        <div class="li-reactions">
+          <span>👍❤️🔥</span>
+          <span id="reactionCount"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-secondary" onclick="generate()">🔄 Another one</button>
+    <button class="btn-share" onclick="copyPost()">📋 Copy LinkedIn post</button>
+  </div>
+</div>
+
+<footer>
+  Built by <a href="/">Remy Russell</a> · Powered by <a href="https://anthropic.com">Claude</a> · Reggie did not consent to this but he also ate a sock so
+</footer>
+
+<script>
+const WORKER_URL = 'https://doglinkedin.remyrussell1.workers.dev';
+
+const DOG_ACTIVITIES = [
+  "Today I ate my own poo",
+  "I spent 45 minutes smelling a fire hydrant",
+  "I barked at nothing for 20 minutes straight",
+  "I rolled in something dead",
+  "I stole a sock and ate half of it",
+  "I chased my tail for 10 minutes and didn't catch it",
+  "I licked a stranger's hand at the park",
+  "I ate grass and immediately threw it up",
+  "I sat on my owner's laptop during a Zoom call",
+  "I drank from the toilet",
+  "I destroyed a throw pillow",
+  "I stared at the wall for an hour",
+  "I begged for food I don't even like",
+  "I woke my owner up at 3am to go outside and then didn't go",
+  "I sniffed another dog's butt as a greeting",
+  "I dragged my butt across the carpet",
+  "I jumped into a mud puddle immediately after a bath",
+  "I ate a crayon",
+  "I barked at my own reflection",
+  "I sat in the exact spot everyone was trying to walk through"
+];
+
+const REALITY_CAPTIONS = {
+  "Today I ate my own poo": "Reggie, 8am. No context. No regrets.",
+  "I spent 45 minutes smelling a fire hydrant": "The data was in there somewhere.",
+  "I barked at nothing for 20 minutes straight": "Protecting the perimeter. You're welcome.",
+  "I rolled in something dead": "Rebranding.",
+  "I stole a sock and ate half of it": "Supply chain disruption.",
+  "I chased my tail for 10 minutes and didn't catch it": "The goal was the journey.",
+  "I licked a stranger's hand at the park": "Networking.",
+  "I ate grass and immediately threw it up": "A/B testing. Results inconclusive.",
+  "I sat on my owner's laptop during a Zoom call": "Joining the meeting.",
+  "I drank from the toilet": "Hydration optimization.",
+  "I destroyed a throw pillow": "Restructuring.",
+  "I stared at the wall for an hour": "Deep work.",
+  "I begged for food I don't even like": "Stakeholder management.",
+  "I woke my owner up at 3am to go outside and then didn't go": "Exploring optionality.",
+  "I sniffed another dog's butt as a greeting": "Due diligence.",
+  "I dragged my butt across the carpet": "Friction reduction.",
+  "I jumped into a mud puddle immediately after a bath": "Iterating on feedback.",
+  "I ate a crayon": "Diversifying the portfolio.",
+  "I barked at my own reflection": "Competing with myself.",
+  "I sat in the exact spot everyone was trying to walk through": "Owning the space."
+};
+
+let currentPost = '';
+let currentActivity = '';
+
+async function generate() {
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.querySelector('.btn-text').textContent = 'Generating...';
+
+  // Pick random activity
+  const activity = DOG_ACTIVITIES[Math.floor(Math.random() * DOG_ACTIVITIES.length)];
+  currentActivity = activity;
+
+  document.getElementById('activityText').textContent = activity;
+  document.getElementById('realityCaption').textContent = REALITY_CAPTIONS[activity] || activity;
+  document.getElementById('reactionCount').textContent = `${Math.floor(Math.random()*800+200)} reactions · ${Math.floor(Math.random()*80+20)} comments`;
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ activity })
+    });
+
+    if (!res.ok) throw new Error('Worker error');
+    const data = await res.json();
+    currentPost = data.post || '';
+    document.getElementById('linkedinPost').textContent = currentPost;
+    document.getElementById('output').style.display = 'block';
+    document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e) {
+    document.getElementById('linkedinPost').textContent = "Excited to share that eating my own poo has given me 7 key insights about disruption that your company doesn't want you to know. #Hustle #Leadership #DogMindset";
+    document.getElementById('output').style.display = 'block';
+    document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.querySelector('.btn-text').textContent = '🐾 Generate Post';
+  }
+}
+
+function copyPost() {
+  const text = `${currentActivity}\n\n${currentPost}\n\n— Reggie T. Goodboy, MBA`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-share');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy LinkedIn post', 2000);
+  });
+}
+</script>
+</body>
+</html>
