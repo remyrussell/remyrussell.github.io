@@ -33,20 +33,63 @@
   nav a { font-family: var(--mono); font-size: .72rem; color: var(--muted); text-decoration: none; letter-spacing: .05em; }
   nav a:hover { color: var(--ink); }
 
-  .hero { text-align: center; padding: 3.5rem 2rem 2.5rem; }
-  .eyebrow { font-family: var(--mono); font-size: .65rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent-light); margin-bottom: .7rem; }
-  .hero h1 { font-family: var(--serif); font-size: clamp(2rem, 6vw, 3.6rem); font-weight: 900; line-height: 1.1; margin-bottom: .6rem; }
+  .hero {
+    text-align: center;
+    padding: 1.5rem 1.5rem 0;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: .3rem;
+  }
   .hero h1 em { font-style: italic; color: var(--accent-light); }
-  .hero p { color: var(--muted); font-size: .9rem; max-width: 400px; margin: 0 auto 2rem; line-height: 1.7; }
+  .hero p {
+    color: var(--muted);
+    font-size: .82rem;
+    margin: 0 auto .9rem;
+    line-height: 1.5;
+  }
+
+  /* Compact control bar — always visible */
+  .control-bar {
+    display: flex;
+    gap: .6rem;
+    align-items: stretch;
+    max-width: 860px;
+    margin: 0 auto .9rem;
+    padding: 0 1.25rem;
+    flex-wrap: wrap;
+  }
+  .custom-input {
+    flex: 1;
+    min-width: 180px;
+    background: #1a1a24;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: .9rem;
+    padding: .75rem 1rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .custom-input::placeholder { color: var(--muted); }
+  .custom-input:focus { border-color: var(--accent); }
 
   .gen-btn {
-    display: inline-flex; align-items: center; gap: .6rem;
+    display: inline-flex; align-items: center; gap: .5rem;
     background: var(--accent); color: #fff; border: none; border-radius: 8px;
-    font-family: var(--sans); font-size: 1.1rem; font-weight: 600;
-    padding: 1rem 2.5rem; cursor: pointer;
+    font-family: var(--sans); font-size: .95rem; font-weight: 600;
+    padding: .75rem 1.5rem; cursor: pointer;
     transition: background .2s, transform .1s;
-    box-shadow: 0 4px 20px rgba(10,102,194,.4);
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(10,102,194,.35);
   }
+  .gen-btn:hover { background: var(--accent-light); }
+  .gen-btn:active { transform: scale(.97); }
+  .gen-btn:disabled { opacity: .45; cursor: not-allowed; }
   .gen-btn:hover { background: var(--accent-light); }
   .gen-btn:active { transform: scale(.98); }
   .gen-btn:disabled { opacity: .45; cursor: not-allowed; }
@@ -54,7 +97,7 @@
   .gen-btn.loading .spinner { display: block; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  #output { display: none; max-width: 860px; margin: 0 auto 4rem; padding: 0 1.25rem; animation: fadeUp .4s ease both; }
+  #output { display: none; max-width: 860px; margin: 0 auto 2rem; padding: 0 1.25rem; animation: fadeUp .4s ease both; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
   .activity-pill { display: none; }
@@ -268,12 +311,15 @@
 </nav>
 
 <div class="hero">
-  <div class="eyebrow">A Vibecoded Masterpiece</div>
-  <h1>Dog LinkedIn<br><em>vs. Reality</em></h1>
-  <p>Reggie has thoughts on disruption, synergy, and eating things off the ground.</p>
+  <h1>Dog LinkedIn <em>vs. Reality</em></h1>
+  <p>What would Parmigiano Reggiano post about this?</p>
+</div>
+
+<div class="control-bar">
+  <input class="custom-input" id="customActivity" placeholder="Enter your own reality (e.g. I ate a sock)… or leave blank for random 🎲" maxlength="120">
   <button class="gen-btn" id="genBtn" onclick="generate()">
     <span class="spinner" id="spinner"></span>
-    <span id="btnText">✨ Generate Post</span>
+    <span id="btnText">✨ Generate</span>
   </button>
 </div>
 
@@ -319,8 +365,7 @@
   </div>
 
   <div class="actions">
-    <button class="btn-regenerate" onclick="generate()">✨ Generate another post</button>
-    <button class="btn-copy" id="copyBtn" onclick="copyPost()">📋 Copy</button>
+    <button class="btn-copy" id="copyBtn" onclick="copyPost()">📋 Copy post</button>
   </div>
 </div>
 
@@ -386,7 +431,8 @@ async function generate() {
   document.getElementById('spinner').style.display = 'block';
   document.getElementById('btnText').textContent = 'Generating...';
 
-  const activity = ACTIVITIES[Math.floor(Math.random() * ACTIVITIES.length)];
+  const customInput = document.getElementById('customActivity').value.trim();
+  const activity = customInput || ACTIVITIES[Math.floor(Math.random() * ACTIVITIES.length)];
   currentActivity = activity;
 
   document.getElementById('activityText').textContent = '';
