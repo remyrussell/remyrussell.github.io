@@ -549,15 +549,24 @@ function render(r) {
   const res = r.tailoredResume;
   const exp = RESUME.professionalExperience;
 
+  const SUMMARY_BASELINE = "An optimistic tech enthusiast with 3 years of Product Management and 7 years of Business Analysis experience building SaaS solutions for Health and Human Services providers.";
+
   // Hard-cap summary to 2 sentences client-side
-  // Strip 160+ and enterprise jargon from summary — these keep slipping through
+  // Strip 160+, enterprise jargon, and healthcare misframing from summary
   let summary = res.summary || '';
   summary = summary.replace(/\s*(for|across|serving|platform serving)\s+160\+?\s*(health\s+and\s+human\s+services\s+)?organizations?\.?/gi, '.');
   summary = summary.replace(/\s*160\+?\s*(health\s+and\s+human\s+services\s+)?organizations?/gi, '');
   summary = summary.replace(/enterprise-scale\s*/gi, '');
   summary = summary.replace(/enterprise\s+solutions?\s*/gi, '');
   summary = summary.replace(/\bscalable\s+solutions?\b/gi, 'scalable work');
+  summary = summary.replace(/\bhealthcare\s+(integrations|workflows|SaaS|platforms?)\b/gi, 'HHS $1');
   summary = summary.trim().replace(/\s+/g, ' ');
+
+  // Nuclear fallback: if it doesn't start with Remy's voice, revert to baseline
+  if (!summary.toLowerCase().startsWith('an optimistic')) {
+    summary = SUMMARY_BASELINE;
+  }
+
   const sentences = summary.match(/[^.!?]+[.!?]+/g) || [summary];
   if (sentences.length > 2) summary = sentences.slice(0, 2).join(' ').trim();
 
