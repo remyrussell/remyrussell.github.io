@@ -52,15 +52,26 @@
     line-height: 1.5;
   }
 
-  /* Compact control bar — always visible */
   .control-bar {
     display: flex;
-    gap: .6rem;
+    gap: .5rem;
     align-items: stretch;
     max-width: 860px;
     margin: 0 auto .9rem;
     padding: 0 1.25rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+  }
+  .input-row {
+    display: flex;
+    gap: .6rem;
+    align-items: stretch;
+  }
+  .input-hint {
+    font-size: .72rem;
+    color: var(--muted);
+    font-family: var(--mono);
+    padding: 0 .2rem;
+    margin: 0;
   }
   .custom-input {
     flex: 1;
@@ -310,9 +321,8 @@
   @media (max-width: 560px) {
     .meme-grid { grid-template-columns: 1fr; }
     .hero h1 { font-size: 2rem; }
-    .control-bar { flex-direction: column; }
-    .gen-btn { max-width: 100%; width: 100%; justify-content: center; }
-    .custom-input { min-width: 0; width: 100%; }
+    .input-row { flex-direction: column; }
+    .gen-btn { width: 100%; justify-content: center; }
   }
 </style>
 </head>
@@ -328,11 +338,14 @@
 </div>
 
 <div class="control-bar">
-  <input class="custom-input" id="customActivity" placeholder="Enter your own prompt (e.g. I stole a sock)… or leave blank for random 🎲" maxlength="120">
-  <button class="gen-btn" id="genBtn" onclick="generate()">
-    <span class="spinner" id="spinner"></span>
-    <span id="btnText">✨ Generate</span>
-  </button>
+  <div class="input-row">
+    <input class="custom-input" id="customActivity" placeholder="Enter your own prompt… or leave blank for random 🎲" maxlength="120">
+    <button class="gen-btn" id="genBtn" onclick="generate()">
+      <span class="spinner" id="spinner"></span>
+      <span id="btnText">✨ Generate</span>
+    </button>
+  </div>
+  <p class="input-hint">e.g. "I stole a sock" · "I rolled in something dead" · "I drank from the toilet"</p>
 </div>
 
 <div id="output">
