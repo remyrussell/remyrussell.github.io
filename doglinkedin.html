@@ -78,46 +78,47 @@
   /* Image + overlay wrapper */
   .img-wrap {
     position: relative;
-    aspect-ratio: 1;
+    aspect-ratio: 3/4;
     overflow: hidden;
     background: #1a1a1a;
-    display: flex; align-items: center; justify-content: center;
   }
 
   .img-wrap img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
+    width: 100%; height: 100%; object-fit: contain; display: block; position: relative; z-index: 1;
   }
 
-  /* LinkedIn: circle crop */
+  /* LinkedIn: circle crop centered in upper portion */
   .dog-card.linkedin .img-wrap img {
-    width: 68%; height: 68%;
+    width: 65%; height: 65%;
     object-fit: cover;
     border-radius: 50%;
     border: 3px solid var(--accent);
     box-shadow: 0 0 0 6px rgba(10,102,194,.2), 0 0 0 12px rgba(10,102,194,.07);
     position: absolute;
-    top: 38%; left: 50%;
+    top: 32%; left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1;
   }
 
-  /* Text overlaid at bottom of image */
+  /* Text overlaid at bottom of each image */
   .overlay-text {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.93) 0%, rgba(0,0,0,.55) 65%, transparent 100%);
-    padding: 2rem .85rem .85rem;
+    background: linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.65) 55%, transparent 100%);
+    padding: 2.5rem .85rem .85rem;
     font-size: .74rem;
-    line-height: 1.55;
+    line-height: 1.6;
     color: #f0f0f0;
-    z-index: 3;
+    z-index: 4;
   }
 
-  .dog-card.reality .overlay-text { font-style: italic; color: #f5dde8; }
+  .dog-card.reality .overlay-text { font-style: italic; color: #f5dde8; z-index: 4; }
 
   .dog-card.linkedin .overlay-text {
-    padding-top: 3rem;
-    font-size: .68rem;
+    padding-top: 2rem;
+    font-size: .67rem;
+    line-height: 1.55;
+    z-index: 4;
   }
 
   .hashtags { margin-top: .4rem; color: var(--accent-light); font-size: .63rem; font-family: var(--mono); word-break: break-word; }
