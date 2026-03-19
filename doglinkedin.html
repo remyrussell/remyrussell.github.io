@@ -87,20 +87,60 @@
     width: 100%; height: 100%; object-fit: contain; display: block;
   }
 
-  /* LinkedIn: circle crop — use fixed pixel size to guarantee round */
+  /* LinkedIn: profile area */
   .dog-card.linkedin .img-wrap {
-    aspect-ratio: 1;
-    background: #0d1a2d;
+    background: #1b2838;
     display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem 1rem 1rem;
+    flex-direction: column;
+    gap: .75rem;
+    aspect-ratio: auto;
+    min-height: 320px;
   }
-  .dog-card.linkedin .img-wrap img {
-    width: 32%; height: 32%;
-    object-fit: cover;
+
+  /* Open to Work green dashed ring via SVG background */
+  .otw-ring {
+    position: relative;
+    width: 240px; height: 240px;
+    flex-shrink: 0;
+  }
+  .otw-ring::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
     border-radius: 50%;
-    border: 3px solid var(--accent);
-    box-shadow: 0 0 0 7px rgba(10,102,194,.2), 0 0 0 14px rgba(10,102,194,.07);
-    position: static;
-    transform: none;
+    background: conic-gradient(
+      #4caf50 0deg 300deg,
+      transparent 300deg 360deg
+    );
+    z-index: 0;
+  }
+  .otw-ring::after {
+    content: 'Open to Work';
+    position: absolute;
+    bottom: -4px; left: 50%;
+    transform: translateX(-50%);
+    background: #4caf50;
+    color: #fff;
+    font-size: .6rem;
+    font-weight: 700;
+    font-family: var(--sans);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: .2rem .6rem;
+    border-radius: 10px;
+    white-space: nowrap;
+    z-index: 3;
+  }
+  .otw-ring img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
+    border: 4px solid #1b2838;
+    position: relative;
+    z-index: 1;
+    display: block;
   }
 
   /* Reality: text overlaid on image */
@@ -116,30 +156,69 @@
   }
   .dog-card.reality .overlay-text { font-style: italic; color: #f5dde8; }
 
-  /* LinkedIn: text sits BELOW the circle image */
+  .hashtags { margin-top: .5rem; color: var(--accent-light); font-size: .8rem; font-family: var(--mono); word-break: break-word; }
+  .li-profile-info {
+    text-align: center;
+    padding: 0 .5rem;
+  }
+  .li-profile-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .li-profile-title {
+    font-size: .82rem;
+    color: #a0b0c0;
+    margin-top: .25rem;
+    line-height: 1.4;
+  }
+  .li-profile-meta {
+    font-size: .72rem;
+    color: var(--accent-light);
+    margin-top: .3rem;
+    font-weight: 600;
+  }
+
+  /* LinkedIn post body */
   .linkedin-body {
     padding: 1rem;
-    font-size: .95rem;
+    font-size: .9rem;
     line-height: 1.7;
-    color: var(--ink);
-    background: var(--card);
+    color: #e8e8f0;
+    background: #16202c;
     border-top: 1px solid var(--border);
-    max-height: 420px;
+    max-height: 380px;
     overflow-y: auto;
-    min-height: 60px;
   }
 
-  .hashtags { margin-top: .4rem; color: var(--accent-light); font-size: .63rem; font-family: var(--mono); word-break: break-word; }
-
-  /* LinkedIn footer bar */
-  .li-footer {
-    background: rgba(10,102,194,.07);
-    border-top: 1px solid rgba(10,102,194,.15);
-    padding: .4rem .85rem;
-    display: flex; align-items: center; justify-content: space-between;
+  /* LinkedIn reaction bar */
+  .li-reactions-bar {
+    padding: .5rem 1rem;
+    background: #16202c;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: .75rem;
   }
-  .li-name { font-family: var(--mono); font-size: .55rem; letter-spacing: .05em; color: var(--accent-light); }
-  .li-reactions { font-size: .6rem; color: var(--muted); font-family: var(--mono); }
+  .li-reaction-emojis { font-size: .9rem; }
+  .li-reaction-count { color: #a0b0c0; }
+  .li-action-btns {
+    display: flex; gap: 1rem;
+    padding: .5rem 1rem;
+    background: #16202c;
+    border-top: 1px solid var(--border);
+  }
+  .li-action-btn {
+    flex: 1; text-align: center;
+    font-size: .72rem; color: #a0b0c0;
+    font-weight: 600; cursor: default;
+    padding: .3rem 0;
+    border-radius: 4px;
+    transition: background .15s;
+  }
+  .li-action-btn:hover { background: rgba(255,255,255,.05); color: var(--ink); }
 
   /* Actions */
   .actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
@@ -200,12 +279,25 @@
     <div class="dog-card linkedin">
       <div class="card-label">💼 LinkedIn</div>
       <div class="img-wrap">
-        <img src="assets/images/reggie-professional.JPG" alt="Professional Reggie">
+        <div class="otw-ring">
+          <img src="assets/images/reggie-professional.JPG" alt="Professional Reggie">
+        </div>
+        <div class="li-profile-info">
+          <div class="li-profile-name">Reggie T. Goodboy, MBA</div>
+          <div class="li-profile-title">Chief Disruption Officer · Synergy Enthusiast · 🐾 Thought Leader</div>
+          <div class="li-profile-meta">🔗 847 connections · Salt Lake City, UT</div>
+        </div>
       </div>
       <div class="linkedin-body" id="linkedinText"></div>
-      <div class="li-footer">
-        <span class="li-name">Reggie T. Goodboy, MBA · Chief Disruption Officer</span>
-        <span class="li-reactions" id="reactionCount"></span>
+      <div class="li-reactions-bar">
+        <span class="li-reaction-emojis">👍❤️🔥💡</span>
+        <span class="li-reaction-count" id="reactionCount"></span>
+      </div>
+      <div class="li-action-btns">
+        <span class="li-action-btn">👍 Like</span>
+        <span class="li-action-btn">💬 Comment</span>
+        <span class="li-action-btn">↗ Repost</span>
+        <span class="li-action-btn">✉️ Send</span>
       </div>
     </div>
 
