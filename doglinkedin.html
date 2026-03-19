@@ -293,7 +293,15 @@
     transition: border-color .15s, color .15s;
     flex: 1; justify-content: center; max-width: 200px;
   }
-  .btn-copy:hover { border-color: var(--ink); color: var(--ink); }
+  .btn-share {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: #4caf50; color: #fff; border: none; border-radius: 8px;
+    font-family: var(--sans); font-size: .85rem; font-weight: 600;
+    padding: .85rem 1.5rem; cursor: pointer;
+    transition: background .15s;
+    flex: 1; justify-content: center; max-width: 200px;
+  }
+  .btn-share:hover { background: #43a047; }
 
   footer { text-align: center; padding: 2rem; font-size: .68rem; color: var(--muted); border-top: 1px solid var(--border); }
   footer a { color: var(--accent-light); text-decoration: none; }
@@ -312,11 +320,11 @@
 
 <div class="hero">
   <h1>Dog LinkedIn <em>vs. Reality</em></h1>
-  <p>What would Parmigiano Reggiano post about this?</p>
+  <p>Reggie has thoughts on disruption, synergy, and eating things off the ground.<br>What would he post about this?</p>
 </div>
 
 <div class="control-bar">
-  <input class="custom-input" id="customActivity" placeholder="Enter your own reality (e.g. I ate a sock)… or leave blank for random 🎲" maxlength="120">
+  <input class="custom-input" id="customActivity" placeholder="Enter your own prompt (e.g. I stole a sock)… or leave blank for random 🎲" maxlength="120">
   <button class="gen-btn" id="genBtn" onclick="generate()">
     <span class="spinner" id="spinner"></span>
     <span id="btnText">✨ Generate</span>
@@ -365,7 +373,8 @@
   </div>
 
   <div class="actions">
-    <button class="btn-copy" id="copyBtn" onclick="copyPost()">📋 Copy post</button>
+    <button class="btn-share" id="shareBtn" onclick="sharePost()">🔗 Share post</button>
+    <button class="btn-copy" id="copyBtn" onclick="copyPost()">📋 Copy text</button>
   </div>
 </div>
 
@@ -482,6 +491,36 @@ function renderLinkedIn(text) {
 
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+async function sharePost() {
+  const shareText = `${currentActivity}\n\n${currentPost}\n\n— Parmigiano Reggiano (Reggie), MBA\n\nvia remyrussell.com/doglinkedin.html`;
+  const btn = document.getElementById('shareBtn');
+
+  // Use native share sheet on mobile if available
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: 'Dog LinkedIn vs Reality',
+        text: shareText,
+        url: 'https://remyrussell.com/doglinkedin.html'
+      });
+      return;
+    } catch(e) {
+      if (e.name === 'AbortError') return; // user cancelled
+    }
+  }
+
+  // Fallback: copy to clipboard
+  try {
+    await navigator.clipboard.writeText(shareText);
+    const orig = btn.textContent;
+    btn.textContent = '✓ Link + post copied!';
+    setTimeout(() => btn.textContent = orig, 2500);
+  } catch(e) {
+    btn.textContent = '⚠️ Try copy button';
+    setTimeout(() => btn.textContent = '🔗 Share post', 2000);
+  }
 }
 
 function copyPost() {
