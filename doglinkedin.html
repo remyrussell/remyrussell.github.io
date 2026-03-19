@@ -40,11 +40,12 @@
   .hero p { color: var(--muted); font-size: .9rem; max-width: 400px; margin: 0 auto 2rem; line-height: 1.7; }
 
   .gen-btn {
-    display: inline-flex; align-items: center; gap: .55rem;
-    background: var(--accent); color: #fff; border: none; border-radius: 6px;
-    font-family: var(--mono); font-size: .75rem; letter-spacing: .1em;
-    text-transform: uppercase; padding: .85rem 2rem; cursor: pointer;
+    display: inline-flex; align-items: center; gap: .6rem;
+    background: var(--accent); color: #fff; border: none; border-radius: 8px;
+    font-family: var(--sans); font-size: 1.1rem; font-weight: 600;
+    padding: 1rem 2.5rem; cursor: pointer;
     transition: background .2s, transform .1s;
+    box-shadow: 0 4px 20px rgba(10,102,194,.4);
   }
   .gen-btn:hover { background: var(--accent-light); }
   .gen-btn:active { transform: scale(.98); }
@@ -224,21 +225,32 @@
   .li-action-btn:hover { background: rgba(255,255,255,.05); color: var(--ink); }
 
   /* Actions */
-  .actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
-  .btn-ghost {
-    background: transparent; border: 1px solid var(--border); border-radius: 6px;
-    font-family: var(--mono); font-size: .68rem; letter-spacing: .08em;
-    text-transform: uppercase; padding: .6rem 1.2rem; cursor: pointer;
-    color: var(--muted); transition: border-color .15s, color .15s;
+  .actions {
+    display: flex;
+    gap: .75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 1rem;
   }
-  .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+  .btn-regenerate {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--accent); color: #fff; border: none; border-radius: 8px;
+    font-family: var(--sans); font-size: 1rem; font-weight: 600;
+    padding: .85rem 2rem; cursor: pointer;
+    transition: background .2s, transform .1s;
+    flex: 1; justify-content: center; max-width: 300px;
+  }
+  .btn-regenerate:hover { background: var(--accent-light); }
+  .btn-regenerate:active { transform: scale(.97); }
   .btn-copy {
-    background: var(--accent); color: #fff; border: none; border-radius: 6px;
-    font-family: var(--mono); font-size: .68rem; letter-spacing: .08em;
-    text-transform: uppercase; padding: .6rem 1.2rem; cursor: pointer;
-    transition: background .15s;
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: transparent; color: var(--muted); border: 1px solid var(--border);
+    border-radius: 8px; font-family: var(--sans); font-size: .85rem;
+    padding: .85rem 1.5rem; cursor: pointer;
+    transition: border-color .15s, color .15s;
+    flex: 1; justify-content: center; max-width: 200px;
   }
-  .btn-copy:hover { background: var(--accent-light); }
+  .btn-copy:hover { border-color: var(--ink); color: var(--ink); }
 
   footer { text-align: center; padding: 2rem; font-size: .68rem; color: var(--muted); border-top: 1px solid var(--border); }
   footer a { color: var(--accent-light); text-decoration: none; }
@@ -261,7 +273,7 @@
   <p>Reggie has thoughts on disruption, synergy, and eating things off the ground.</p>
   <button class="gen-btn" id="genBtn" onclick="generate()">
     <span class="spinner" id="spinner"></span>
-    <span id="btnText">🐾 Generate Post</span>
+    <span id="btnText">✨ Generate Post</span>
   </button>
 </div>
 
@@ -286,7 +298,7 @@
           <span class="otw-badge">Open to Work</span>
         </div>
         <div class="li-profile-info">
-          <div class="li-profile-name">Reggie T. Goodboy, MBA</div>
+          <div class="li-profile-name">Parmigiano Reggiano (Reggie), MBA</div>
           <div class="li-profile-title">Chief Disruption Officer · Synergy Enthusiast · 🐾 Thought Leader</div>
           <div class="li-profile-meta">🔗 847 connections · Salt Lake City, UT</div>
         </div>
@@ -307,8 +319,8 @@
   </div>
 
   <div class="actions">
-    <button class="btn-ghost" onclick="generate()">🔄 Another one</button>
-    <button class="btn-copy" id="copyBtn" onclick="copyPost()">📋 Copy post</button>
+    <button class="btn-regenerate" onclick="generate()">✨ Generate another post</button>
+    <button class="btn-copy" id="copyBtn" onclick="copyPost()">📋 Copy</button>
   </div>
 </div>
 
@@ -379,7 +391,7 @@ async function generate() {
 
   document.getElementById('activityText').textContent = '';
   document.getElementById('realityText').innerHTML =
-    `<div style="font-size:.7rem;opacity:.7;margin-bottom:.4rem;font-style:normal;font-family:var(--mono);">${escHtml(activity)}</div><div style="font-size:1.1rem;font-style:italic;">${escHtml(CAPTIONS[activity] || activity)}</div>`;
+    `<div style="font-size:1.3rem;font-style:italic;line-height:1.4;">"${escHtml(activity)}"</div>`;
   document.getElementById('reactionCount').textContent =
     `👍❤️🔥  ${(Math.floor(Math.random()*900)+100).toLocaleString()} reactions`;
 
@@ -427,7 +439,7 @@ function escHtml(s) {
 }
 
 function copyPost() {
-  const text = `${currentActivity}\n\n${currentPost}\n\n— Reggie T. Goodboy, MBA`;
+  const text = `${currentActivity}\n\n${currentPost}\n\n— Parmigiano Reggiano (Reggie), MBA`;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copyBtn');
     btn.textContent = '✓ Copied!';
