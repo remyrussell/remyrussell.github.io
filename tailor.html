@@ -467,14 +467,23 @@ const RESUME = {
       ]
     },
     {
-      position: "Business Analyst → Business Analyst II",
+      position: "Business Analyst II",
       company: "Acentra Health (formerly CNSI)",
-      location: "Lansing, MI → Salt Lake City, UT",
-      duration: { start: "2015-06-01", end: "2019-04-01" },
+      location: "Salt Lake City, UT",
+      duration: { start: "2017-08-01", end: "2019-04-01" },
       description: "",
       highlights: [
-        "MI MMIS (2015–2017, Lansing): Analyzed CMS mandates and iterated the Electronic Medicaid Incentive Payment Program solution for provider Meaningful Use reporting",
-        "UT MMIS (2017–2019, Salt Lake City): Gap analysis and system design for Utah Dept of Health Medicaid system; guided development/testing of the Provider Enrollment Subsystem"
+        "Gap analysis and system design for Utah Dept of Health Medicaid system; guided development/testing of the Provider Enrollment Subsystem"
+      ]
+    },
+    {
+      position: "Business Analyst",
+      company: "Acentra Health (formerly CNSI)",
+      location: "Lansing, MI",
+      duration: { start: "2015-06-01", end: "2017-08-01" },
+      description: "",
+      highlights: [
+        "Analyzed CMS mandates and iterated the Electronic Medicaid Incentive Payment Program solution for provider Meaningful Use reporting"
       ]
     }
   ],
@@ -550,6 +559,13 @@ function render(r) {
   // Resume
   const res = r.tailoredResume;
   window._lastTailoredResult = res; // saved for DOCX download
+
+  // Extract company name for filenames — grab from worker response or parse JD
+  const rawCompany = r.company || '';
+  window._companySlug = rawCompany
+    ? rawCompany.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '')
+    : 'Company';
+
   const exp = RESUME.professionalExperience;
 
   const SUMMARY_BASELINE = "An optimistic tech enthusiast with 3 years of Product Management and 7 years of Business Analysis experience building SaaS solutions for Health and Human Services providers.";
@@ -705,7 +721,7 @@ function downloadResumePDF() {
   win.document.write(`<!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"/>
-<title>Remy Russell — Resume</title>
+<title>Remy Russell — ${window._companySlug ? window._companySlug.replace(/_/g,' ') + ' — ' : ''}Resume</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <style>
   @page { size: letter; margin: 0; }
@@ -756,7 +772,7 @@ function downloadCoverLetter() {
   win.document.write(`<!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"/>
-<title>Remy Russell — Cover Letter</title>
+<title>Remy Russell — ${window._companySlug ? window._companySlug.replace(/_/g,' ') + ' — ' : ''}Cover Letter</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <style>
   @page { size: letter; margin: 0; }
@@ -905,7 +921,7 @@ async function downloadResumeDocx() {
   children.push(p([run(RESUME.education.degree, { bold: true, size: 20 })]));
   children.push(p([run(RESUME.education.institution, { italics: true, size: 18, color: '666666' })]));
 
-  await buildAndDownloadDocx(children, 'Remy_Russell_Resume.docx');
+  await buildAndDownloadDocx(children, `Remy_Russell_${window._companySlug || 'Resume'}_Resume.docx`);
 }
 
 function sectionHeader(text) {
@@ -965,7 +981,7 @@ async function downloadCoverLetterDocx() {
     }));
   });
 
-  await buildAndDownloadDocx(children, 'Remy_Russell_Cover_Letter.docx');
+  await buildAndDownloadDocx(children, `Remy_Russell_${window._companySlug || 'Cover_Letter'}_Cover_Letter.docx`);
 }
 </script>
 </body>
