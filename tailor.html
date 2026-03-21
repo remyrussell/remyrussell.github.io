@@ -621,6 +621,9 @@ function render(r) {
     });
   }
 
+  // Dedup: strip bullets from later roles that already appeared in an earlier role
+  const seenBullets = new Set();
+
   // Merge tailored highlights with original experience order.
   // Uses first 3 words of position title as slug to distinguish roles at the same company
   // e.g. "Business Analyst, Solutions" vs "Business Analyst II," vs "Business Analyst, MI"
@@ -683,11 +686,21 @@ function render(r) {
 
     if (bullets.length) {
       html += `<ul class="r-bullets">`;
-      bullets.forEach(b => { html += `<li class="${b.weight}">${b.text}</li>`; });
+      bullets.forEach(b => {
+        const key = (b.text || b).trim().toLowerCase().slice(0, 60);
+        if (seenBullets.has(key)) return; // skip duplicate
+        seenBullets.add(key);
+        html += `<li class="${b.weight}">${b.text}</li>`;
+      });
       html += `</ul>`;
     } else if (job.highlights.length) {
       html += `<ul class="r-bullets">`;
-      job.highlights.forEach(h => { html += `<li class="secondary">${h}</li>`; });
+      job.highlights.forEach(h => {
+        const key = h.trim().toLowerCase().slice(0, 60);
+        if (seenBullets.has(key)) return;
+        seenBullets.add(key);
+        html += `<li class="secondary">${h}</li>`;
+      });
       html += `</ul>`;
     }
     html += `</div>`;
