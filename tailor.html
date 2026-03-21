@@ -451,7 +451,7 @@ const RESUME = {
         "Managed MVP & early access testing for platform enhancements: SSO, 2-Step Verification, SMS/email notifications (Twilio/SendGrid), low-code design tools, client-facing messaging portal",
         "Solved process pain points for 6 organizations with a strategic delivery partner, enabling thousands of daily meal deliveries via Onfleet integration",
         "Championed ProductBoard adoption integrating HubSpot, Teams, Jira, and internal support tools for consolidated product-led prioritization",
-        "Authored technical documentation, integration guides, and API docs (help.eccovia.com, apidoc.eccovia.com)"
+        "Authored technical documentation and integration guides for external developers and customers (help.eccovia.com)"
       ]
     },
     {
@@ -662,7 +662,8 @@ function render(r) {
 
     const desc = isAcentra ? job.description : (tailored?.description ?? job.description);
     html += `<div class="r-exp-block" style="margin-bottom:1rem">
-      <div class="r-h3">${job.position} · ${job.company}</div>
+      <div class="r-h3">${job.position}</div>
+      <div class="r-h3" style="font-weight:400">${job.company}</div>
       <div class="r-meta">${startY}–${endY} · ${job.location}</div>
       ${desc ? `<div class="r-desc">${desc}</div>` : ''}`;
 
@@ -890,12 +891,15 @@ async function downloadResumeDocx() {
   // ── Experience ──
   children.push(sectionHeader('Professional Experience'));
   resumeCard.querySelectorAll('.r-exp-block').forEach(block => {
-    const title   = block.querySelector('.r-h3')?.textContent?.trim() || '';
+    const h3s    = [...block.querySelectorAll('.r-h3')];
+    const title  = h3s[0]?.textContent?.trim() || '';
+    const company = h3s[1]?.textContent?.trim() || '';
     const meta    = block.querySelector('.r-meta')?.textContent?.trim() || '';
-    const desc    = block.querySelector('.r-desc')?.textContent?.trim() || '';
+    const desc    = block.querySelector('.r-desc:not(.r-summary):not(.r-skills)')?.textContent?.trim() || '';
     const bullets = [...block.querySelectorAll('.r-bullets li')].map(li => li.textContent.trim());
 
-    children.push(p([run(title, { bold: true, size: 22 })], { spacing: { before: 140, after: 20 } }));
+    children.push(p([run(title, { bold: true, size: 22 })], { spacing: { before: 140, after: 0 } }));
+    if (company) children.push(p([run(company, { size: 20, color: '333333' })], { spacing: { before: 0, after: 20 } }));
     children.push(p([run(meta, { italics: true, size: 18, color: '666666' })], { spacing: { after: 20 } }));
     if (desc) children.push(p([run(desc, { size: 18, color: '444444' })], { spacing: { after: 20 } }));
     bullets.forEach(bullet => {
