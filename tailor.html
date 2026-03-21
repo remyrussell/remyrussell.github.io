@@ -451,7 +451,7 @@ const RESUME = {
         "Managed MVP & early access testing for platform enhancements: SSO, 2-Step Verification, SMS/email notifications (Twilio/SendGrid), low-code design tools, client-facing messaging portal",
         "Solved process pain points for 6 organizations with a strategic delivery partner, enabling thousands of daily meal deliveries via Onfleet integration",
         "Championed ProductBoard adoption integrating HubSpot, Teams, Jira, and internal support tools for consolidated product-led prioritization",
-        "Authored technical documentation and integration guides for external developers and customers (help.eccovia.com)"
+        "Authored technical documentation and integration guides for external developers and customers, including an integration guide (help.eccovia.com/integrations/clienttrack-user-containers) and a 2-step verification guide (help.eccovia.com/authentication/2-step-verification)"
       ]
     },
     {
@@ -490,7 +490,7 @@ const RESUME = {
   education: { degree: "BS in Industrial & Operations Engineering, 2015", institution: "University of Michigan, Ann Arbor" },
   skills: {
     core: ["Problem discovery & user research", "Stakeholder communication & cross-functional alignment", "Agile delivery, backlog management, sprint leadership", "Data-driven prioritization", "Defining epics, user stories, acceptance criteria"],
-    tools: ["Jira, Confluence, ProductBoard", "SQL, PowerBI, HubSpot", "Figma, FigJam, Lucidchart", "Claude, Gemini, Cursor (AI tools)", "Postman, Zapier, Power Automate"]
+    tools: ["Jira, Confluence, ProductBoard", "SQL, PowerBI, HubSpot", "Figma, FigJam, Lucidchart", "Claude, Gemini (AI tools)", "Postman, Zapier, Power Automate"]
   },
   certifications: [
     { name: "HL7 Fundamentals", issuer: "HL7 International", date: "2020" },
@@ -684,13 +684,21 @@ function render(r) {
       <div class="r-meta">${startY}–${endY} · ${job.location}</div>
       ${desc ? `<div class="r-desc">${desc}</div>` : ''}`;
 
-    if (bullets.length) {
+    // Auto-linkify URLs in bullet/skill text → clickable <a> tags
+  function linkify(text) {
+    return (text || '').replace(/(https?:\/\/[^\s)]+|(?:apidoc|help)\.eccovia\.com[^\s)]*)/g, url => {
+      const href = url.startsWith('http') ? url : 'https://' + url;
+      return `<a href="${href}" target="_blank">${url}</a>`;
+    });
+  }
+
+  if (bullets.length) {
       html += `<ul class="r-bullets">`;
       bullets.forEach(b => {
         const key = (b.text || b).trim().toLowerCase().slice(0, 60);
         if (seenBullets.has(key)) return; // skip duplicate
         seenBullets.add(key);
-        html += `<li class="${b.weight}">${b.text}</li>`;
+        html += `<li class="${b.weight}">${linkify(b.text)}</li>`;
       });
       html += `</ul>`;
     } else if (job.highlights.length) {
@@ -699,7 +707,7 @@ function render(r) {
         const key = h.trim().toLowerCase().slice(0, 60);
         if (seenBullets.has(key)) return;
         seenBullets.add(key);
-        html += `<li class="secondary">${h}</li>`;
+        html += `<li class="secondary">${linkify(h)}</li>`;
       });
       html += `</ul>`;
     }
@@ -923,15 +931,29 @@ async function downloadResumeDocx() {
     const company = h3s[1]?.textContent?.trim() || '';
     const meta    = block.querySelector('.r-meta')?.textContent?.trim() || '';
     const desc    = block.querySelector('.r-desc:not(.r-summary):not(.r-skills)')?.textContent?.trim() || '';
-    const bullets = [...block.querySelectorAll('.r-bullets li')].map(li => li.textContent.trim());
+    const bullets = [...block.querySelectorAll('.r-bullets li')].map(li => {
+      // Parse any <a> tags into mixed children array
+      const children = [];
+      li.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          if (node.textContent) children.push(run(node.textContent, { size: 20 }));
+        } else if (node.nodeName === 'A') {
+          children.push(new ExternalHyperlink({ link: node.href, children: [
+            new TextRun({ text: node.textContent, font: 'Calibri', size: 20, color: '0563C1', underline: {} })
+          ]}));
+        }
+      });
+      return children.length > 1 ? children : li.textContent.trim();
+    });
 
     children.push(p([run(title, { bold: true, size: 22 })], { spacing: { before: 140, after: 0 } }));
     if (company) children.push(p([run(company, { size: 20, color: '333333' })], { spacing: { before: 0, after: 20 } }));
     children.push(p([run(meta, { italics: true, size: 18, color: '666666' })], { spacing: { after: 20 } }));
     if (desc) children.push(p([run(desc, { size: 18, color: '444444' })], { spacing: { after: 20 } }));
     bullets.forEach(bullet => {
+      const bulletChildren = Array.isArray(bullet) ? bullet : [run(bullet, { size: 20 })];
       children.push(new Paragraph({
-        children: [run(bullet, { size: 20 })],
+        children: bulletChildren,
         numbering: { reference: 'bullets', level: 0 },
         spacing: { before: 0, after: 40 }
       }));
