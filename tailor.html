@@ -655,6 +655,20 @@ function render(r) {
     } else {
       bullets = tailored?.highlights?.filter(b => b.weight !== 'omit') || [];
     }
+
+    // If any bullet already references apidoc.eccovia.com, strip it from other bullets
+    // to prevent the link appearing twice (once in the API bullet, once in docs bullet)
+    const hasApidocBullet = bullets.some(b => (b.text || b).includes('apidoc.eccovia.com'));
+    if (hasApidocBullet) {
+      bullets = bullets.map(b => {
+        const text = b.text || b;
+        if (text.includes('apidoc.eccovia.com') && text.includes('help.eccovia.com')) {
+          const cleaned = text.replace(/,?\s*apidoc\.eccovia\.com/g, '').replace(/apidoc\.eccovia\.com,?\s*/g, '');
+          return b.text !== undefined ? { ...b, text: cleaned } : cleaned;
+        }
+        return b;
+      });
+    }
     if (!bullets.length && !job.highlights.length) return;
 
     const startY = new Date(job.duration.start).getFullYear();
