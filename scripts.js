@@ -89,11 +89,18 @@ function attachThemeToggleEvent() {
                 window.scrollTo(0, 0);
             }
         });
+        let scrollTicking = false;
         window.addEventListener('scroll', () => {
-            const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-            const viewportHeight = window.innerHeight;
-            backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
-        });
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+                    const viewportHeight = window.innerHeight;
+                    backToTopButton.style.display = scrollPosition > viewportHeight ? 'block' : 'none';
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
     }
     toggleDropdown();
 
@@ -316,7 +323,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let data;
     try {
         console.log('Fetching ./resume.json...');
-        let response = await fetchWithRetry('./resume.json', { cache: 'no-store' });
+        let response = await fetchWithRetry('./resume.json', {});
         if (!response.ok) {
             throw new Error(`Failed to fetch resume.json: ${response.status} ${response.statusText}`);
         }
