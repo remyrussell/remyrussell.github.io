@@ -908,10 +908,17 @@ async function downloadResumeDocx() {
   children.push(p([run(name, { bold: true, size: 32 })]));
 
   // ── Contact ──
-  children.push(p([
-    run('remyrussell@pm.me  |  linkedin.com/in/remyrussell  |  remyrussell.com  |  Salt Lake City, UT',
-      { size: 16, color: '555555' })
-  ], { spacing: { after: 120 } }));
+  children.push(new Paragraph({
+    children: [
+      new ExternalHyperlink({ link: 'mailto:remyrussell@pm.me', children: [new TextRun({ text: 'remyrussell@pm.me', font: 'Calibri', size: 16, color: '0563C1', underline: {} })] }),
+      new TextRun({ text: '  |  ', font: 'Calibri', size: 16, color: '555555' }),
+      new ExternalHyperlink({ link: 'https://www.linkedin.com/in/remyrussell', children: [new TextRun({ text: 'linkedin.com/in/remyrussell', font: 'Calibri', size: 16, color: '0563C1', underline: {} })] }),
+      new TextRun({ text: '  |  ', font: 'Calibri', size: 16, color: '555555' }),
+      new ExternalHyperlink({ link: 'https://remyrussell.com', children: [new TextRun({ text: 'remyrussell.com', font: 'Calibri', size: 16, color: '0563C1', underline: {} })] }),
+      new TextRun({ text: '  |  Salt Lake City, UT', font: 'Calibri', size: 16, color: '555555' }),
+    ],
+    spacing: { after: 120 }
+  }));
   children.push(rule());
 
   // ── Summary ──
@@ -1017,10 +1024,15 @@ async function downloadCoverLetterDocx() {
 
   // Header
   children.push(p([run('Remy Russell', { bold: true, size: 28 })], { spacing: { after: 60 } }));
-  children.push(p([run(
-    'remyrussell@pm.me  |  linkedin.com/in/remyrussell  |  remyrussell.com  |  Salt Lake City, UT',
-    { size: 16, color: '666666' }
-  )], {
+  children.push(new Paragraph({
+    children: [
+      new ExternalHyperlink({ link: 'mailto:remyrussell@pm.me', children: [new TextRun({ text: 'remyrussell@pm.me', font: 'Calibri', size: 16, color: '0563C1', underline: {} })] }),
+      new TextRun({ text: '  |  ', font: 'Calibri', size: 16, color: '666666' }),
+      new ExternalHyperlink({ link: 'https://www.linkedin.com/in/remyrussell', children: [new TextRun({ text: 'linkedin.com/in/remyrussell', font: 'Calibri', size: 16, color: '0563C1', underline: {} })] }),
+      new TextRun({ text: '  |  ', font: 'Calibri', size: 16, color: '666666' }),
+      new ExternalHyperlink({ link: 'https://remyrussell.com', children: [new TextRun({ text: 'remyrussell.com', font: 'Calibri', size: 16, color: '0563C1', underline: {} })] }),
+      new TextRun({ text: '  |  Salt Lake City, UT', font: 'Calibri', size: 16, color: '666666' }),
+    ],
     spacing: { after: 240 },
     border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'CCCCCC', space: 4 } }
   }));
