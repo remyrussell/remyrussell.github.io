@@ -104,17 +104,18 @@ function attachThemeToggleEvent() {
     }
     toggleDropdown();
 
-    // Vibecoded Tools accordion
-    const vibecodeToggle = document.getElementById('vibecodeToggle');
-    const vibecodeContent = document.getElementById('vibecodeContent');
-    const vibecodeChevron = document.getElementById('vibecodeChevron');
-    if (vibecodeToggle && vibecodeContent) {
-        vibecodeToggle.addEventListener('click', () => {
-            const isOpen = vibecodeContent.classList.toggle('open');
-            vibecodeToggle.setAttribute('aria-expanded', isOpen);
-            if (vibecodeChevron) vibecodeChevron.classList.toggle('rotated', isOpen);
-        });
-    }
+    // Accordion menus (Vibecoding, Case Studies, etc.)
+    document.querySelectorAll('.menu-accordion-toggle').forEach(toggle => {
+        const content = toggle.nextElementSibling;
+        const chevron = toggle.querySelector('.menu-chevron');
+        if (toggle && content) {
+            toggle.addEventListener('click', () => {
+                const isOpen = content.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', isOpen);
+                if (chevron) chevron.classList.toggle('rotated', isOpen);
+            });
+        }
+    });
 }
 
 function generateResumePDF(data) {

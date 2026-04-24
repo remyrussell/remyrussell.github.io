@@ -6,6 +6,13 @@
     <title>Remy Russell Resume</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Fix menu overflow when accordions are expanded */
+        .menu ul {
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
@@ -30,6 +37,14 @@
                     <li><a href="/doglinkedin.html" class="menu-text menu-sub"><i class="fas fa-dog"></i> Dog LinkedIn vs Reality</a></li>
                     <li><a href="/jerrydodger.html" class="menu-text menu-sub"><i class="fas fa-skiing"></i> Jerry Dodger (the game)</a></li>
                     <li><a href="/wasatch.html" class="menu-text menu-sub"><i class="fas fa-mountain"></i> Wasatch Snow &amp; Air</a></li>
+                </ul>
+            </li>
+            <li class="menu-accordion">
+                <button class="menu-accordion-toggle" id="caseStudyToggle" aria-expanded="false">
+                    <i class="fas fa-briefcase"></i> Case Studies <i class="fas fa-chevron-down menu-chevron" id="caseStudyChevron"></i>
+                </button>
+                <ul class="menu-accordion-content" id="caseStudyContent">
+                    <li><a href="/case-study-onfleet.html" class="menu-text menu-sub"><i class="fas fa-truck"></i> Last Mile Delivery</a></li>
                 </ul>
             </li>
             <li class="theme-toggle-wrapper">
