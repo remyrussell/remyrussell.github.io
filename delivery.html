@@ -219,57 +219,56 @@ footer a:hover{color:var(--accent-bright)}
 
 <section id="problem">
   <div class="section-label">02 — Prioritization &amp; Problem Definition</div>
-  <h2>How We Got Here</h2>
-  <p>This didn't start as a strategic initiative. It started as individual customer requests that revealed a pattern — and each engagement taught us more about the real problem.</p>
+  <h2>How We Prioritized This</h2>
 
+  <h3>The signal that this vertical was worth investing in</h3>
   <div class="timeline">
     <div class="timeline-item">
-      <div class="tl-date">Inherited</div>
-      <h3>Samsara — Limited, One-way Integration</h3>
+      <div class="tl-date">Pre-existing</div>
+      <h3>Samsara — Already Sold &amp; Implemented</h3>
       <ul class="talk">
-        <li>Essentially one-way: delivery tasks exported from ClientTrack to Samsara for route planning</li>
-        <li>Only the dispatcher used it — drivers still on paper manifests</li>
-        <li>Planners still manually prepared info for kitchen and drivers</li>
-        <li>Still had to manually indicate missed deliveries after drivers returned</li>
-        <li>Integration served a narrow purpose in an otherwise heavily manual workflow</li>
+        <li>Sales had already sold (and the Solution Delivery team had already implemented) a Samsara integration for one customer</li>
+        <li>Essentially one-way: delivery tasks exported to Samsara for route planning — only the dispatcher used it</li>
+        <li>Drivers still on paper, planners still manually prepping kitchen info and driver manifests, still manually tracking missed deliveries after routes completed</li>
+        <li>Integration served a narrow purpose in a heavily manual workflow</li>
       </ul>
     </div>
     <div class="timeline-item">
-      <div class="tl-date">Phase 1: Customer-suggested</div>
-      <h3>WorkWave — Better Dispatch, But Drivers Still on Paper</h3>
+      <div class="tl-date">First signal</div>
+      <h3>WorkWave — Two Customers, Same Pattern</h3>
       <ul class="talk">
-        <li>Two customers suggested WorkWave — I led discovery and solutioning</li>
-        <li>Decent dispatch/route optimization features for planners</li>
-        <li>Limited driver-facing features and rough learning curve — most drivers continued using paper route sheets</li>
-        <li>Two customers got slightly different solutions from separate implementation teams</li>
-        <li><strong style="color:var(--accent-bright)">Key insight:</strong> Working across both customers, I started seeing the shared problems and needs despite different org structures — crucial for the strategic decision that followed</li>
+        <li>Two more customers wanted fleet integration, both suggesting WorkWave — I led discovery and solutioning</li>
+        <li>Decent dispatch features for planners, but limited driver-facing UX and rough learning curve — most drivers still defaulted to paper</li>
+        <li>Separate implementation teams built slightly different solutions — both took longer than expected given operational complexity and integration challenges</li>
+        <li><strong style="color:var(--accent-bright)">Key insight:</strong> Despite different org structures, the implementations had a lot of similarities. Working across both, I started recognizing shared problems and needs</li>
       </ul>
     </div>
     <div class="timeline-item">
-      <div class="tl-date">Phase 2: Strategic decision</div>
-      <h3>Onfleet — Superior API, Superior UX</h3>
+      <div class="tl-date">Tipping point</div>
+      <h3>3+ More Prospects in the Same Vertical</h3>
       <ul class="talk">
-        <li>Superior API enabling deeper bidirectional integration</li>
-        <li>Driver app with near-zero learning curve — new volunteers could start within minutes of receiving a text invite</li>
-        <li>Webhook-driven architecture for real-time delivery status sync</li>
+        <li>Sales pipeline had 3+ additional prospects in the meal delivery / food-as-medicine vertical</li>
+        <li>Combined with lessons from Samsara and WorkWave, this was the signal: the ROI of productizing core last-mile delivery integration features was worth prioritizing</li>
+        <li>This is when we began formally evaluating WorkWave vs. Onfleet and other potential integration partners</li>
+      </ul>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-date">Strategic decision</div>
+      <h3>Onfleet Selected — Superior API, Superior Driver UX</h3>
+      <ul class="talk">
+        <li>Evaluated third-party APIs, features, and lessons learned from WorkWave implementations</li>
+        <li>Onfleet won on API quality (bidirectional, webhook-driven), driver app UX (near-zero learning curve), and integration flexibility</li>
         <li>Designed a shared microservice with patterns accommodating similarities and differences across customers</li>
-        <li>Shipped one to production, two more in progress at departure</li>
       </ul>
     </div>
     <div class="timeline-item">
-      <div class="tl-date">Alignment</div>
-      <h3>Sales &amp; Leadership Buy-in</h3>
+      <div class="tl-date">Enablement</div>
+      <h3>Org-wide Alignment &amp; Implementation Enablement</h3>
       <ul class="talk">
-        <li>Established org-wide alignment on Onfleet as the strategic direction for all future last-mile delivery customers</li>
+        <li>Established alignment with Sales, Leadership, and Implementation teams on Onfleet as the strategic direction</li>
         <li>Shifted from reactive, per-customer vendor selection to a proactive platform strategy with reusable patterns</li>
-      </ul>
-    </div>
-    <div class="timeline-item">
-      <div class="tl-date">March 2025</div>
-      <h3>Documented Handoff</h3>
-      <ul class="talk">
-        <li>One Onfleet deployment in production, two in progress</li>
-        <li>Documented integration playbook for implementation team to deploy independently</li>
+        <li>Created integration guides and playbooks for implementation teams to deploy independently</li>
+        <li>At departure: one Onfleet deployment in production, two more in progress</li>
       </ul>
     </div>
   </div>
@@ -375,6 +374,21 @@ footer a:hover{color:var(--accent-bright)}
       <div class="arch-box onfleet">Onfleet<br><small>Last-Mile Delivery</small></div>
     </div>
     <div style="text-align:center;margin-top:1rem;font-size:.75rem;color:var(--text-dim)">Scoped API keys for multi-environment isolation · Shared microservice accommodating customer-specific differences</div>
+  </div>
+
+  <!-- Environment Management -->
+  <div class="challenge-box">
+    <h3>🔑 Environment &amp; API Key Management</h3>
+    <p>One of the less obvious but critical challenges was enabling safe development, testing, and debugging without impacting live delivery operations.</p>
+    <ul class="talk">
+      <li>Each customer needed separate dev/sandbox and production environments connected to Onfleet via scoped API keys</li>
+      <li>Before and after go-live, we needed the ability to test changes, iterate on enhancements, and debug or do root cause analysis for integration issues — all without creating phantom deliveries or corrupting real operational data</li>
+      <li>Spent significant time setting up the environment architecture and preparing both end-user admins and internal implementation teams to manage dev/prod integrations for each customer</li>
+      <li>Documented the setup and key management process in the integration guide to make this repeatable</li>
+    </ul>
+    <div class="callout warn" style="margin-top:1rem">
+      <p><strong>Unforeseen challenge:</strong> I underestimated how much time and attention environment management would require. In hindsight, I'd design the multi-environment architecture upfront rather than retrofitting it after realizing we needed safe iteration paths that wouldn't disrupt active meal delivery operations.</p>
+    </div>
   </div>
 
   <!-- Nutritionist Intake -->
@@ -580,7 +594,6 @@ footer a:hover{color:var(--accent-bright)}
   <h3 style="margin-top:2rem">Artifacts &amp; Documentation</h3>
   <div>
     <a href="https://help.eccovia.com/integrations/managing-api-keys-and-webhooks-to-integrate-clienttrack-and-onfleet" target="_blank" class="artifact-link"><span style="font-size:1rem">📄</span>API Keys &amp; Webhooks Integration Guide<span style="color:var(--text-dim);font-size:.72rem;margin-left:.5rem">help.eccovia.com</span></a>
-    <a href="https://help.eccovia.com/integrations/clienttrack-user-containers" target="_blank" class="artifact-link"><span style="font-size:1rem">📄</span>User Containers Guide<span style="color:var(--text-dim);font-size:.72rem;margin-left:.5rem">help.eccovia.com</span></a>
   </div>
 
   <div class="callout" style="margin-top:1.5rem">
@@ -644,6 +657,7 @@ footer a:hover{color:var(--accent-bright)}
     <div class="card"><h3>1. Structured Vendor Evaluation Before Shipping</h3><p>Instead of building what customers suggested and discovering better options later, I'd invest in a structured vendor evaluation early — scoring on API quality, webhook support, driver UX, onboarding friction, and pricing. The path from Samsara to WorkWave to Onfleet was educational but not efficient.</p></div>
     <div class="card"><h3>2. Design for Non-tech Users from Day One</h3><p>The volunteer driver gap was foreseeable given the population. I'd invest earlier in the manual fallback UX and think harder about whether paper and digital could coexist more gracefully.</p></div>
     <div class="card"><h3>3. Standardize Across Impl Teams Earlier</h3><p>The two WorkWave customers getting different solutions from separate teams created inconsistency. Establishing shared patterns and documentation earlier would have prevented this divergence and made the Onfleet transition smoother.</p></div>
+    <div class="card"><h3>4. Plan Multi-environment Architecture Upfront</h3><p>The dev/sandbox vs. production environment setup for API key management and webhook routing took more time and attention than anticipated. I'd design that architecture upfront rather than retrofitting it after realizing we needed safe iteration and debugging paths that wouldn't disrupt active delivery operations.</p></div>
   </div>
 </section>
 
