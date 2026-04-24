@@ -7,8 +7,17 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Fix menu overflow when accordions are expanded */
-        .menu ul {
+        /* Accordion: collapsed by default, only show when .open */
+        .menu-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease;
+        }
+        .menu-accordion-content.open {
+            max-height: 500px;
+        }
+        /* Ensure menu itself can scroll if both accordions are expanded */
+        .menu > ul {
             max-height: calc(100vh - 2rem);
             overflow-y: auto;
         }
