@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Last Mile Delivery Integration — Remy Russell</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0b14;--bg-card:#16121e;--bg-card-hover:#1e1928;--bg-surface:#1a1524;--text:#ece8f4;--text-muted:#a099b0;--text-dim:#6b6380;--accent:#aa7ff5;--accent-bright:#c4a0ff;--accent-dim:#7c5cb8;--accent-glow:rgba(170,127,245,.12);--green:#6ee7a0;--green-dim:rgba(110,231,160,.12);--warm:#f0a050;--warm-dim:rgba(240,160,80,.12);--red:#f06070;--red-dim:rgba(240,96,112,.12);--blue:#60b0f0;--blue-dim:rgba(96,176,240,.12);--border:#2a2436;--border-accent:rgba(170,127,245,.25);--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(14,11,20,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between}
+nav .logo{font-family:var(--mono);font-size:.78rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+nav .nav-links{display:flex;gap:1.5rem;list-style:none}
+nav .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.78rem;font-weight:500;letter-spacing:.03em;transition:color .2s}
+nav .nav-links a:hover{color:var(--accent-bright)}
+@media(max-width:768px){nav .nav-links{display:none}}
+section{max-width:960px;margin:0 auto;padding:5rem 2rem}
+section+section{border-top:1px solid var(--border)}
+.section-label{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.15em;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.section-label::before{content:'';display:block;width:24px;height:1px;background:var(--accent)}
+h1{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.15;color:var(--text);margin-bottom:1.5rem;font-weight:400}
+h1 em{color:var(--accent-bright);font-style:italic}
+h2{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.25;color:var(--text);margin-bottom:1rem;font-weight:400}
+h3{font-family:var(--sans);font-size:1rem;font-weight:600;color:var(--text);margin-bottom:.5rem}
+p{color:var(--text-muted);font-size:1.02rem;margin-bottom:1rem;max-width:680px}
+.lead{font-size:1.15rem;color:var(--text);line-height:1.7}
+ul.talk{list-style:none;padding:0;margin:.75rem 0 1rem}
+ul.talk li{font-size:.92rem;color:var(--text-muted);padding:.35rem 0;padding-left:1.2rem;position:relative;line-height:1.55}
+ul.talk li::before{content:'→';position:absolute;left:0;color:var(--accent-dim);font-size:.8rem}
+.hero{padding-top:10rem;padding-bottom:5rem;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(170,127,245,.06) 0%,transparent 70%);pointer-events:none}
+.hero .subtitle{font-size:1rem;color:var(--text-muted);margin-bottom:.5rem}
+.hero .meta-row{display:flex;flex-wrap:wrap;gap:2rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.meta-item{display:flex;flex-direction:column;gap:.2rem}
+.meta-label{font-family:var(--mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-dim)}
+.meta-value{font-size:.92rem;color:var(--text);font-weight:500}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1rem;margin-top:1.5rem}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;transition:background .2s,border-color .2s}
+.card:hover{background:var(--bg-card-hover);border-color:var(--border-accent)}
+.card .card-icon{font-size:1.5rem;margin-bottom:.7rem}
+.card p{font-size:.9rem;color:var(--text-muted);margin-bottom:0}
+.card ul.talk{margin-top:.5rem;margin-bottom:0}
+.card ul.talk li{font-size:.85rem;padding:.25rem 0 .25rem 1.1rem}
+.timeline{position:relative;margin-top:2rem;padding-left:2rem}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--text-dim),var(--warm),var(--accent-bright),var(--accent),var(--green));border-radius:1px}
+.timeline-item{position:relative;padding-bottom:2.5rem}
+.timeline-item::before{content:'';position:absolute;left:-2rem;top:.35rem;width:10px;height:10px;border-radius:50%;background:var(--text-muted);border:2px solid var(--bg)}
+.timeline-item:nth-child(2)::before{background:var(--warm)}
+.timeline-item:nth-child(3)::before{background:var(--accent-bright)}
+.timeline-item:nth-child(4)::before{background:var(--accent)}
+.timeline-item:nth-child(5)::before{background:var(--green)}
+.tl-date{font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;margin-bottom:.25rem}
+.timeline-item:nth-child(1) .tl-date{color:var(--text-dim)}
+.timeline-item:nth-child(2) .tl-date{color:var(--warm)}
+.timeline-item:nth-child(3) .tl-date{color:var(--accent-bright)}
+.timeline-item:nth-child(4) .tl-date{color:var(--accent)}
+.timeline-item:nth-child(5) .tl-date{color:var(--green)}
+.timeline-item h3{font-size:.95rem}
+.timeline-item p{font-size:.88rem;margin-bottom:0}
+.persona-flow{display:grid;grid-template-columns:1fr;gap:1.25rem;margin-top:1.5rem}
+.persona{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1.25rem;align-items:start}
+.persona-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.persona-avatar.cm{background:var(--accent-glow);border:1px solid var(--border-accent)}
+.persona-avatar.diet{background:var(--green-dim);border:1px solid rgba(110,231,160,.25)}
+.persona-avatar.dispatch{background:var(--warm-dim);border:1px solid rgba(240,160,80,.25)}
+.persona-avatar.kitchen{background:var(--red-dim);border:1px solid rgba(240,96,112,.25)}
+.persona-avatar.driver{background:var(--blue-dim);border:1px solid rgba(96,176,240,.25)}
+.persona-role{font-family:var(--mono);font-size:.68rem;color:var(--text-dim);letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem}
+.persona-body p{font-size:.88rem;margin-bottom:0}
+.persona-body ul.talk{margin-bottom:0}
+.persona-body ul.talk li{font-size:.85rem;padding:.25rem 0 .25rem 1.1rem}
+.persona-tools{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+.tool-tag{font-family:var(--mono);font-size:.63rem;padding:.2rem .5rem;border-radius:4px;background:var(--accent-glow);border:1px solid var(--border-accent);color:var(--accent-bright)}
+.tool-tag.external{background:var(--warm-dim);border-color:rgba(240,160,80,.2);color:var(--warm)}
+.tool-tag.paper{background:rgba(160,150,170,.08);border-color:rgba(160,150,170,.2);color:var(--text-muted)}
+.diagram-container{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2rem;margin:2rem 0;overflow-x:auto}
+.diagram-title{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-dim);margin-bottom:1.5rem}
+.arch-flow{display:flex;align-items:stretch;justify-content:center;gap:0;flex-wrap:wrap;padding:1rem 0;min-height:100px}
+.arch-box{padding:1rem 1.4rem;border-radius:10px;font-family:var(--mono);font-size:.75rem;font-weight:500;text-align:center;min-width:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem}
+.arch-box small{font-family:var(--sans);font-weight:400}
+.arch-box.ct{background:var(--accent-glow);border:1px solid var(--border-accent);color:var(--accent-bright)}
+.arch-box.ct small{color:var(--text-dim)}
+.arch-box.micro{background:var(--blue-dim);border:1px solid rgba(96,176,240,.25);color:var(--blue)}
+.arch-box.micro small{color:var(--text-dim)}
+.arch-box.onfleet{background:var(--warm-dim);border:1px solid rgba(240,160,80,.25);color:var(--warm)}
+.arch-box.onfleet small{color:var(--text-dim)}
+.arch-connector{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 .6rem;min-width:80px}
+.arch-connector .conn-label{font-size:.6rem;color:var(--text-dim);margin-bottom:.2rem;text-align:center}
+.arch-connector .conn-arrow{font-size:1.6rem;color:var(--text-dim)}
+.arch-connector .conn-label-bottom{font-size:.6rem;color:var(--text-dim);margin-top:.2rem;text-align:center}
+.mockup-container{background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:2rem 0}
+.mockup-titlebar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;align-items:center;gap:.5rem}
+.mockup-dot{width:8px;height:8px;border-radius:50%}
+.mockup-dot.r{background:#f06070}.mockup-dot.y{background:#f0a050}.mockup-dot.g{background:#6ee7a0}
+.mockup-titlebar-text{font-family:var(--mono);font-size:.65rem;color:var(--text-dim);margin-left:.5rem}
+.mockup-body{padding:1.5rem}
+.mockup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem}
+.mockup-header h3{font-size:1rem;color:var(--text);margin-bottom:.25rem}
+.mockup-date{font-family:var(--mono);font-size:.72rem;color:var(--accent)}
+.mockup-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:6px;border:none;font-family:var(--sans);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s}
+.mockup-btn.primary{background:var(--accent);color:var(--bg)}
+.mockup-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text-muted)}
+.mockup-btn.sm{padding:.35rem .7rem;font-size:.72rem}
+.mockup-table{width:100%;border-collapse:collapse;margin-top:.5rem}
+.mockup-table th{font-family:var(--mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);text-align:left;padding:.6rem .75rem;border-bottom:1px solid var(--border)}
+.mockup-table td{font-size:.82rem;color:var(--text-muted);padding:.65rem .75rem;border-bottom:1px solid rgba(42,36,54,.5)}
+.mockup-table tr:hover td{background:rgba(170,127,245,.03)}
+.status-badge{font-family:var(--mono);font-size:.6rem;padding:.15rem .45rem;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.status-badge.ready{background:var(--green-dim);color:var(--green)}
+.status-badge.sent{background:var(--accent-glow);color:var(--accent-bright)}
+.status-badge.delivered{background:var(--green-dim);color:var(--green)}
+.status-badge.missed{background:var(--red-dim);color:var(--red)}
+.status-badge.manual{background:var(--warm-dim);color:var(--warm)}
+.status-badge.active{background:var(--blue-dim);color:var(--blue)}
+.mockup-check{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border);cursor:pointer;position:relative}
+.mockup-check.checked{background:var(--accent);border-color:var(--accent)}
+.mockup-check.checked::after{content:'✓';position:absolute;top:-2px;left:1.5px;font-size:.6rem;color:white}
+.mockup-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.mockup-tab{padding:.5rem 1rem;font-size:.78rem;font-weight:500;color:var(--text-dim);border-bottom:2px solid transparent;cursor:pointer}
+.mockup-tab.active{color:var(--accent-bright);border-bottom-color:var(--accent)}
+.mockup-field{margin-bottom:.75rem}
+.mockup-field-label{font-family:var(--mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:.3rem}
+.mockup-field-value{font-size:.88rem;color:var(--text);padding:.45rem .65rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:5px}
+.mockup-field-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:640px){.mockup-field-row{grid-template-columns:1fr}}
+.mockup-tag{display:inline-block;font-family:var(--mono);font-size:.6rem;padding:.15rem .4rem;border-radius:3px;margin-right:.3rem;margin-bottom:.3rem}
+.mockup-tag.allergy{background:var(--red-dim);color:var(--red)}
+.mockup-tag.diet{background:var(--green-dim);color:var(--green)}
+.mockup-tag.icd{background:var(--blue-dim);color:var(--blue)}
+.mockup-note{font-size:.82rem;color:var(--text-dim);font-style:italic;margin-top:1rem;padding:.75rem;background:rgba(255,255,255,.02);border-radius:6px;border-left:2px solid var(--border)}
+.screenshot-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-top:1.5rem}
+.screenshot-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.screenshot-img{width:100%;aspect-ratio:16/10;border-bottom:1px solid var(--border);background:var(--bg-surface);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.screenshot-img img{width:100%;height:100%;object-fit:cover}
+.screenshot-img .fallback{color:var(--text-dim);font-size:.78rem;font-style:italic;padding:1rem;text-align:center}
+.screenshot-caption{padding:1rem 1.25rem}
+.screenshot-caption h4{font-size:.85rem;color:var(--text);margin-bottom:.3rem}
+.screenshot-caption p{font-size:.8rem;color:var(--text-muted);margin-bottom:0}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.5rem}
+@media(max-width:640px){.split{grid-template-columns:1fr}}
+.split-col h3{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem}
+.split-col ul{list-style:none;padding:0}
+.split-col li{font-size:.88rem;color:var(--text-muted);padding:.5rem 0;padding-left:1.2rem;position:relative}
+.split-col li::before{content:'→';position:absolute;left:0;color:var(--text-dim);font-size:.8rem}
+.went-well li::before{color:var(--green)}
+.went-wrong li::before{color:var(--red);content:'✗'}
+.callout{background:var(--accent-glow);border-left:3px solid var(--accent);padding:1.25rem 1.5rem;border-radius:0 8px 8px 0;margin:1.5rem 0}
+.callout.warn{background:var(--warm-dim);border-left-color:var(--warm)}
+.callout.lesson{background:var(--blue-dim);border-left-color:var(--blue)}
+.callout p{margin-bottom:0;font-size:.92rem}
+.callout strong{color:var(--text)}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.5rem}
+.result-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;text-align:center}
+.result-stat .stat-value{font-family:var(--serif);font-size:2rem;color:var(--accent-bright);line-height:1;margin-bottom:.5rem}
+.result-stat .stat-label{font-size:.82rem;color:var(--text-muted)}
+.artifact-link{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:.7rem 1.1rem;color:var(--text);text-decoration:none;font-size:.85rem;font-weight:500;transition:border-color .2s,background .2s;margin-top:.5rem;margin-right:.5rem}
+.artifact-link:hover{border-color:var(--accent);background:var(--bg-card-hover)}
+.challenge-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2rem;margin:2rem 0}
+.challenge-box>h3{font-size:1.1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.two-path{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.25rem}
+@media(max-width:640px){.two-path{grid-template-columns:1fr}}
+.path-card{border:1px solid var(--border);border-radius:8px;padding:1.25rem;background:var(--bg-surface)}
+.path-card h4{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.path-card.happy h4{color:var(--accent-bright)}
+.path-card.fallback h4{color:var(--warm)}
+.path-card p{font-size:.85rem;margin-bottom:0}
+.path-card .path-flow{display:flex;flex-direction:column;gap:.4rem;margin-top:.75rem}
+.path-step{font-family:var(--mono);font-size:.68rem;color:var(--text-muted);padding:.35rem .6rem;border-radius:4px;background:rgba(255,255,255,.03);border-left:2px solid var(--border)}
+.path-card.happy .path-step{border-left-color:var(--accent-dim)}
+.path-card.fallback .path-step{border-left-color:var(--warm)}
+.mockup-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.5rem}
+@media(max-width:768px){.mockup-grid{grid-template-columns:1fr}}
+footer{max-width:960px;margin:0 auto;padding:3rem 2rem 4rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+footer .footer-left{font-family:var(--serif);font-size:1.1rem;color:var(--text)}
+footer .footer-right{display:flex;gap:1.5rem}
+footer a{color:var(--text-muted);text-decoration:none;font-size:.83rem;transition:color .2s}
+footer a:hover{color:var(--accent-bright)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Remy Russell — Case Study</div>
+  <ul class="nav-links">
+    <li><a href="#context">Context</a></li>
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#personas">Personas</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#detours">Detours</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#retro">Retro</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="top">
+  <div class="section-label">Product Case Study</div>
+  <p class="subtitle">CaseWorthy (formerly Eccovia) · 2023–2025</p>
+  <h1>Food as Medicine:<br><em>Last Mile Delivery</em> Integration</h1>
+  <p class="lead">Connecting a case management platform with last-mile delivery software to help health and human services organizations deliver meals to vulnerable people — spanning three vendor evaluations, five user personas, and a build-vs-buy journey that transformed reactive one-off integrations into a scalable platform capability.</p>
+  <div class="meta-row">
+    <div class="meta-item"><span class="meta-label">Role</span><span class="meta-value">Assoc. Product Manager, Platform &amp; Integrations</span></div>
+    <div class="meta-item"><span class="meta-label">Duration</span><span class="meta-value">~18 months (iterative)</span></div>
+  </div>
+
+  <div class="diagram-container" style="margin-top:1.5rem">
+    <div class="diagram-title">Who I Worked With</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <h3 style="font-size:.85rem;margin-bottom:.5rem;color:var(--accent-bright)">R&amp;D Team (Microservice)</h3>
+        <ul class="talk" style="margin:0">
+          <li>1 Tech Lead (my partner on architecture &amp; API design)</li>
+          <li>1–3 Software Engineers</li>
+          <li>1 QA Resource</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-size:.85rem;margin-bottom:.5rem;color:var(--warm)">Solutions Delivery &amp; Customers</h3>
+        <ul class="talk" style="margin:0">
+          <li>Implementation Engineers (consuming the microservice, building customer-specific config)</li>
+          <li>Customer stakeholders &amp; end users (discovery, iteration, training)</li>
+          <li>Trained customers on Onfleet capabilities</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="context">
+  <div class="section-label">01 — Context</div>
+  <h2>Why Meal Delivery Mattered</h2>
+  <ul class="talk">
+    <li>CaseWorthy served 160+ health and human services organizations — nonprofits, government agencies, community orgs</li>
+    <li>Growing segment ran "food as medicine" and home-delivered meals programs for elderly, homebound, or medically fragile clients</li>
+    <li>Needed to coordinate <strong>case management</strong> (eligibility, dietary needs, care plans) with <strong>last-mile delivery</strong> (routes, dispatch, tracking) — two workflows in separate systems with no connection</li>
+    <li>These were recurring meals for vulnerable people, often the only hot meal they'd receive that day — a missed delivery was a failed care intervention</li>
+  </ul>
+</section>
+
+<section id="problem">
+  <div class="section-label">02 — Prioritization &amp; Problem Definition</div>
+  <h2>How We Prioritized This</h2>
+
+  <h3>The signal that this vertical was worth investing in</h3>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="tl-date">Pre-existing</div>
+      <h3>Samsara — Already Sold &amp; Implemented</h3>
+      <ul class="talk">
+        <li>Sales had already sold (and the Solution Delivery team had already implemented) a Samsara integration for one customer</li>
+        <li>Essentially one-way: delivery tasks exported to Samsara for route planning — only the dispatcher used it</li>
+        <li>Drivers still on paper, planners still manually prepping kitchen info and driver manifests, still manually tracking missed deliveries after routes completed</li>
+        <li>Integration served a narrow purpose in a heavily manual workflow</li>
+      </ul>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-date">First signal</div>
+      <h3>WorkWave — Two Customers, Same Pattern</h3>
+      <ul class="talk">
+        <li>Two more customers wanted fleet integration, both suggesting WorkWave — I led discovery and solutioning</li>
+        <li>Decent dispatch features for planners, but limited driver-facing UX and rough learning curve — most drivers still defaulted to paper</li>
+        <li>Separate implementation teams built slightly different solutions — both took longer than expected given operational complexity and integration challenges</li>
+        <li><strong style="color:var(--accent-bright)">Key insight:</strong> Despite different org structures, the implementations had a lot of similarities. Working across both, I started recognizing shared problems and needs</li>
+      </ul>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-date">Tipping point</div>
+      <h3>3+ More Prospects in the Same Vertical</h3>
+      <ul class="talk">
+        <li>Sales pipeline had 3+ additional prospects in the meal delivery / food-as-medicine vertical</li>
+        <li>Combined with lessons from Samsara and WorkWave, this was the signal: the ROI of productizing core last-mile delivery integration features was worth prioritizing</li>
+        <li>This is when we began formally evaluating WorkWave vs. Onfleet and other potential integration partners</li>
+      </ul>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-date">Strategic decision</div>
+      <h3>Onfleet Selected — Superior API, Superior Driver UX</h3>
+      <ul class="talk">
+        <li>Evaluated third-party APIs, features, and lessons learned from WorkWave implementations</li>
+        <li>Onfleet won on API quality (bidirectional, webhook-driven), driver app UX (near-zero learning curve), and integration flexibility</li>
+        <li>Designed a shared microservice with patterns accommodating similarities and differences across customers</li>
+      </ul>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-date">Enablement</div>
+      <h3>Org-wide Alignment &amp; Implementation Enablement</h3>
+      <ul class="talk">
+        <li>Established alignment with Sales, Leadership, and Implementation teams on Onfleet as the strategic direction</li>
+        <li>Shifted from reactive, per-customer vendor selection to a proactive platform strategy with reusable patterns</li>
+        <li>Created integration guides and playbooks for implementation teams to deploy independently</li>
+        <li>At departure: one Onfleet deployment in production, two more in progress</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-top:2.5rem">The Core Problems</h3>
+  <div class="cards">
+    <div class="card"><div class="card-icon">🔄</div><h3>Dual-system Disconnect</h3>
+      <ul class="talk"><li>Eligibility and dietary needs lived in ClientTrack</li><li>Route planning and dispatch lived in the fleet tool</li><li>Changes in one didn't flow to the other</li></ul>
+    </div>
+    <div class="card"><div class="card-icon">📋</div><h3>Manual Handoffs Everywhere</h3>
+      <ul class="talk"><li>Planners manually prepared kitchen reports, printed labels, compiled driver manifests</li><li>Delivery statuses entered manually after drivers returned</li><li>Every handoff was an opportunity for error</li></ul>
+    </div>
+    <div class="card"><div class="card-icon">👁️</div><h3>No Closed Loop</h3>
+      <ul class="talk"><li>Case managers couldn't confirm whether meals were delivered</li><li>Program managers couldn't report on outcomes</li><li>The delivery happened in a black box separate from the care record</li></ul>
+    </div>
+  </div>
+</section>
+
+<section id="personas">
+  <div class="section-label">03 — User Personas &amp; Workflows</div>
+  <h2>Five Personas, Two Systems, One Delivery</h2>
+
+  <div class="persona-flow">
+    <div class="persona">
+      <div class="persona-avatar diet">🥗</div>
+      <div class="persona-body">
+        <h3>Nutritionist / Dietitian</h3>
+        <div class="persona-role">ClientTrack · Initial Intake &amp; Meal Planning</div>
+        <ul class="talk">
+          <li>Collected diagnoses (ICD codes) and allergies during client intake</li>
+          <li>Specified meal plans, dietary restrictions, and delivery frequency</li>
+          <li>Clinical inputs determined what the kitchen prepared and what appeared on bag labels</li>
+        </ul>
+        <div class="persona-tools"><span class="tool-tag">ClientTrack</span></div>
+      </div>
+    </div>
+    <div class="persona">
+      <div class="persona-avatar cm">📁</div>
+      <div class="persona-body">
+        <h3>Case Manager</h3>
+        <div class="persona-role">ClientTrack · Ongoing Coordination</div>
+        <ul class="talk">
+          <li>Ongoing client coordination: case notes, contacts, program enrollments, service changes</li>
+          <li>Needed delivery confirmation as part of the care record</li>
+          <li>Didn't manage meal plans directly but needed to follow up on missed deliveries</li>
+        </ul>
+        <div class="persona-tools"><span class="tool-tag">ClientTrack</span></div>
+      </div>
+    </div>
+    <div class="persona">
+      <div class="persona-avatar dispatch">📍</div>
+      <div class="persona-body">
+        <h3>Dispatcher / Planner</h3>
+        <div class="persona-role">ClientTrack + Onfleet · Prep → Print → Dispatch</div>
+        <ul class="talk">
+          <li>Used ClientTrack to prepare kitchen reports (meal counts by type) and print bag labels (recipient, diet, allergies, contents)</li>
+          <li>Sent batch of delivery tasks by date and/or region to Onfleet</li>
+          <li>Used Onfleet to optimize driver assignments and delivery sequence per driver</li>
+        </ul>
+        <div class="persona-tools"><span class="tool-tag">ClientTrack</span><span class="tool-tag external">Onfleet Dashboard</span><span class="tool-tag paper">Printer</span></div>
+      </div>
+    </div>
+    <div class="persona">
+      <div class="persona-avatar kitchen">🍳</div>
+      <div class="persona-body">
+        <h3>Kitchen Staff</h3>
+        <div class="persona-role">Printed Reports &amp; Labels</div>
+        <ul class="talk">
+          <li>Received printed kitchen prep report showing meal counts by type</li>
+          <li>Used printed bag labels with recipient name, address, diet tags, allergies, and contents</li>
+        </ul>
+        <div class="persona-tools"><span class="tool-tag paper">Kitchen Report</span><span class="tool-tag paper">Bag Labels</span></div>
+      </div>
+    </div>
+    <div class="persona">
+      <div class="persona-avatar driver">🚗</div>
+      <div class="persona-body">
+        <h3>Driver (Staff &amp; Volunteer)</h3>
+        <div class="persona-role">Onfleet Mobile <span style="color:var(--warm)">(or paper route sheet)</span></div>
+        <ul class="talk">
+          <li>Onfleet app intuitive enough that new volunteers could start within minutes of a text invite</li>
+          <li>Marked each delivery as <strong>completed</strong> or <strong>missed</strong> (with a reason if missed)</li>
+          <li>Could contact recipients and dispatcher when needed</li>
+          <li>Some elderly volunteers still preferred paper, requiring a manual fallback</li>
+        </ul>
+        <div class="persona-tools"><span class="tool-tag external">Onfleet Mobile</span><span class="tool-tag paper">Paper Route Sheet</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="section-label">04 — The Solution</div>
+  <h2>What We Built</h2>
+
+  <div class="diagram-container">
+    <div class="diagram-title">Integration Architecture</div>
+    <div class="arch-flow">
+      <div class="arch-box ct">ClientTrack<br><small>Case Management</small></div>
+      <div class="arch-connector"><div class="conn-label">API Requests →</div><div class="conn-arrow">⇄</div><div class="conn-label-bottom">← Webhooks</div></div>
+      <div class="arch-box micro">Microservice<br><small>Orchestration Layer</small></div>
+      <div class="arch-connector"><div class="conn-label">Onfleet API →</div><div class="conn-arrow">⇄</div><div class="conn-label-bottom">← Webhook Events</div></div>
+      <div class="arch-box onfleet">Onfleet<br><small>Last-Mile Delivery</small></div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;font-size:.75rem;color:var(--text-dim)">Scoped API keys for multi-environment isolation · Shared microservice accommodating customer-specific differences</div>
+  </div>
+
+  <!-- Environment Management -->
+  <div class="challenge-box">
+    <h3>🔑 Environment &amp; API Key Management</h3>
+    <p>One of the less obvious but critical challenges was enabling safe development, testing, and debugging without impacting live delivery operations.</p>
+    <ul class="talk">
+      <li>Each customer needed separate dev/sandbox and production environments connected to Onfleet via scoped API keys</li>
+      <li>Before and after go-live, we needed the ability to test changes, iterate on enhancements, and debug or do root cause analysis for integration issues — all without creating phantom deliveries or corrupting real operational data</li>
+      <li>Spent significant time setting up the environment architecture and preparing both end-user admins and internal implementation teams to manage dev/prod integrations for each customer</li>
+      <li>Documented the setup and key management process in the integration guide to make this repeatable</li>
+    </ul>
+    <div class="callout warn" style="margin-top:1rem">
+      <p><strong>Unforeseen challenge:</strong> I underestimated how much time and attention environment management would require. In hindsight, I'd design the multi-environment architecture upfront rather than retrofitting it after realizing we needed safe iteration paths that wouldn't disrupt active meal delivery operations.</p>
+    </div>
+  </div>
+
+  <!-- Nutritionist Intake -->
+  <h3>Nutritionist — Client Intake &amp; Meal Plan <span style="font-weight:400;font-size:.82rem;color:var(--text-dim)">(Mockup)</span></h3>
+  <div class="mockup-container">
+    <div class="mockup-titlebar"><div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div><span class="mockup-titlebar-text">ClientTrack · Nutritional Assessment</span></div>
+    <div class="mockup-body">
+      <div class="mockup-tabs"><div class="mockup-tab">Demographics</div><div class="mockup-tab active">Nutritional Assessment</div><div class="mockup-tab">Services</div><div class="mockup-tab">Case Notes</div></div>
+      <div class="mockup-field-row">
+        <div class="mockup-field"><div class="mockup-field-label">Client</div><div class="mockup-field-value">Margaret H. · DOB 04/12/1941</div></div>
+        <div class="mockup-field"><div class="mockup-field-label">Program</div><div class="mockup-field-value">Home-Delivered Meals — Medical</div></div>
+      </div>
+      <div class="mockup-field"><div class="mockup-field-label">Diagnoses (ICD-10)</div><div style="margin-top:.3rem"><span class="mockup-tag icd">E11.65 — Type 2 Diabetes w/ Hyperglycemia</span><span class="mockup-tag icd">I10 — Essential Hypertension</span><span class="mockup-tag icd">N18.3 — CKD Stage 3</span></div></div>
+      <div class="mockup-field"><div class="mockup-field-label">Allergies</div><div style="margin-top:.3rem"><span class="mockup-tag allergy">Tree Nuts</span><span class="mockup-tag allergy">Shellfish</span></div></div>
+      <div class="mockup-field-row">
+        <div class="mockup-field"><div class="mockup-field-label">Dietary Restrictions</div><div style="margin-top:.3rem"><span class="mockup-tag diet">Diabetic</span><span class="mockup-tag diet">Low Sodium</span><span class="mockup-tag diet">Renal-friendly</span></div></div>
+        <div class="mockup-field"><div class="mockup-field-label">Texture</div><div class="mockup-field-value">Regular (no modifications)</div></div>
+      </div>
+      <div class="mockup-field-row">
+        <div class="mockup-field"><div class="mockup-field-label">Meals per Delivery</div><div class="mockup-field-value">2 (lunch + dinner)</div></div>
+        <div class="mockup-field"><div class="mockup-field-label">Delivery Frequency</div><div class="mockup-field-value">Monday, Wednesday, Friday</div></div>
+      </div>
+      <div class="mockup-field"><div class="mockup-field-label">Special Instructions</div><div class="mockup-field-value">Leave meals with front desk if client doesn't answer. Client is hard of hearing — knock loudly.</div></div>
+    </div>
+  </div>
+
+  <!-- Case Manager -->
+  <h3>Case Manager — Service Record &amp; Delivery History <span style="font-weight:400;font-size:.82rem;color:var(--text-dim)">(Mockup)</span></h3>
+  <div class="mockup-container">
+    <div class="mockup-titlebar"><div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div><span class="mockup-titlebar-text">ClientTrack · Client Record — Margaret H.</span></div>
+    <div class="mockup-body">
+      <div class="mockup-tabs"><div class="mockup-tab">Demographics</div><div class="mockup-tab">Nutritional Assessment</div><div class="mockup-tab active">Services</div><div class="mockup-tab">Case Notes</div></div>
+      <h3 style="font-size:.92rem;margin-bottom:.5rem">Active Enrollments</h3>
+      <table class="mockup-table">
+        <thead><tr><th>Program</th><th>Enrolled</th><th>Status</th><th>Frequency</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--text)">Home-Delivered Meals — Medical</td><td>01/15/2024</td><td><span class="status-badge active">Active</span></td><td>3x/week</td></tr>
+          <tr><td style="color:var(--text)">Wellness Check-in Calls</td><td>01/15/2024</td><td><span class="status-badge active">Active</span></td><td>Weekly</td></tr>
+        </tbody>
+      </table>
+      <h3 style="font-size:.92rem;margin-bottom:.5rem;margin-top:1.25rem">Recent Delivery History</h3>
+      <table class="mockup-table">
+        <thead><tr><th>Date</th><th>Meals</th><th>Driver</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>04/23</td><td>2</td><td>M. Torres (Staff)</td><td><span class="status-badge delivered">Delivered</span></td><td style="font-size:.75rem;color:var(--text-dim)">Left with front desk</td></tr>
+          <tr><td>04/21</td><td>2</td><td>M. Torres (Staff)</td><td><span class="status-badge delivered">Delivered</span></td><td style="font-size:.75rem;color:var(--text-dim)">Handed to client</td></tr>
+          <tr><td>04/18</td><td>2</td><td>B. Chen (Vol.)</td><td><span class="status-badge missed">Missed</span></td><td style="font-size:.75rem;color:var(--red)">Client not home</td></tr>
+          <tr><td>04/16</td><td>2</td><td>M. Torres (Staff)</td><td><span class="status-badge delivered">Delivered</span></td><td style="font-size:.75rem;color:var(--text-dim)">—</td></tr>
+        </tbody>
+      </table>
+      <div class="mockup-note">Delivery history visible alongside other services. Missed deliveries flagged for case manager follow-up.</div>
+    </div>
+  </div>
+
+  <!-- Dispatcher: Kitchen Prep + Labels -->
+  <h3>Dispatcher — Kitchen Prep &amp; Bag Labels <span style="font-weight:400;font-size:.82rem;color:var(--text-dim)">(Mockup)</span></h3>
+  <div class="mockup-grid">
+    <div class="mockup-container" style="margin:0">
+      <div class="mockup-titlebar"><div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div><span class="mockup-titlebar-text">Kitchen Prep Report — 04/23/2025</span></div>
+      <div class="mockup-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem"><h3 style="font-size:.88rem;margin-bottom:0">Meal Counts by Type</h3><button class="mockup-btn secondary sm">🖨 Print</button></div>
+        <table class="mockup-table">
+          <thead><tr><th>Meal Type</th><th>Count</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--text)">Regular</td><td><strong style="color:var(--text)">12</strong></td></tr>
+            <tr><td style="color:var(--text)">Diabetic</td><td><strong style="color:var(--text)">8</strong></td></tr>
+            <tr><td style="color:var(--text)">Low Sodium</td><td><strong style="color:var(--text)">6</strong></td></tr>
+            <tr><td style="color:var(--text)">Pureed</td><td><strong style="color:var(--text)">3</strong></td></tr>
+            <tr><td style="color:var(--text)">Renal</td><td><strong style="color:var(--text)">4</strong></td></tr>
+            <tr><td style="color:var(--text)">Gluten-free</td><td><strong style="color:var(--text)">2</strong></td></tr>
+          </tbody>
+          <tfoot><tr><td style="font-weight:600;color:var(--text)">Total</td><td style="font-weight:600;color:var(--accent-bright)">35</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="mockup-container" style="margin:0">
+      <div class="mockup-titlebar"><div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div><span class="mockup-titlebar-text">Bag Label Preview</span></div>
+      <div class="mockup-body" style="display:flex;flex-direction:column;align-items:center;gap:1rem">
+        <div style="width:100%;max-width:320px;border:2px dashed var(--border);border-radius:8px;padding:1rem;background:rgba(255,255,255,.02)">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:.5rem">
+            <div><div style="font-weight:700;font-size:.95rem;color:var(--text)">Margaret H.</div><div style="font-size:.75rem;color:var(--text-muted)">2841 S Highland Dr</div></div>
+            <div style="font-family:var(--mono);font-size:.6rem;color:var(--text-dim);text-align:right">Route: East-1<br>Stop: 3 of 8</div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:.5rem;margin-top:.25rem"><div style="font-family:var(--mono);font-size:.63rem;color:var(--text-dim);margin-bottom:.3rem">DIET</div><span class="mockup-tag diet">Diabetic</span><span class="mockup-tag diet">Low-Na</span><span class="mockup-tag diet">Renal</span></div>
+          <div style="border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem"><div style="font-family:var(--mono);font-size:.63rem;color:var(--text-dim);margin-bottom:.3rem">ALLERGIES</div><span class="mockup-tag allergy">Tree Nuts</span><span class="mockup-tag allergy">Shellfish</span></div>
+          <div style="border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem"><div style="font-family:var(--mono);font-size:.63rem;color:var(--text-dim);margin-bottom:.2rem">CONTENTS</div><div style="font-size:.78rem;color:var(--text-muted)">1× Lunch (Diabetic/Renal) · 1× Dinner (Diabetic/Renal)</div></div>
+          <div style="border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;font-size:.72rem;color:var(--warm)">⚠ Leave with front desk if no answer</div>
+        </div>
+        <button class="mockup-btn secondary sm">🖨 Print All Labels (35)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dispatcher: Batch Send -->
+  <h3 style="margin-top:2rem">Dispatcher — Delivery Task Batch &amp; Status <span style="font-weight:400;font-size:.82rem;color:var(--text-dim)">(Mockup)</span></h3>
+  <div class="mockup-container">
+    <div class="mockup-titlebar"><div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div><span class="mockup-titlebar-text">ClientTrack · Delivery Task Management</span></div>
+    <div class="mockup-body">
+      <div class="mockup-header">
+        <div><h3 style="margin-bottom:.25rem">Delivery Tasks</h3><div class="mockup-date">Wednesday, April 23, 2025 · East Region</div></div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="mockup-btn secondary">↻ Refresh Status</button><button class="mockup-btn primary">▶ Send to Onfleet</button></div>
+      </div>
+      <table class="mockup-table">
+        <thead><tr><th style="width:30px"></th><th>Client</th><th>Address</th><th>Diet</th><th>Meals</th><th>Driver</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><div class="mockup-check checked"></div></td><td style="color:var(--text)">Margaret H.</td><td>2841 S Highland Dr</td><td style="font-family:var(--mono);font-size:.72rem">Diabetic, Low-Na</td><td>2</td><td>Staff</td><td><span class="status-badge delivered">Delivered</span></td></tr>
+          <tr><td><div class="mockup-check checked"></div></td><td style="color:var(--text)">Robert P.</td><td>1190 E 3300 S</td><td style="font-family:var(--mono);font-size:.72rem">Regular</td><td>1</td><td>Staff</td><td><span class="status-badge delivered">Delivered</span></td></tr>
+          <tr><td><div class="mockup-check checked"></div></td><td style="color:var(--text)">Dorothy M.</td><td>4560 S 900 E, #12</td><td style="font-family:var(--mono);font-size:.72rem">Pureed, GF</td><td>3</td><td>Volunteer</td><td><span class="status-badge manual">Manual Entry</span></td></tr>
+          <tr><td><div class="mockup-check checked"></div></td><td style="color:var(--text)">James W.</td><td>6789 Cottonwood St</td><td style="font-family:var(--mono);font-size:.72rem">Renal</td><td>2</td><td>Staff</td><td><span class="status-badge sent">In Transit</span></td></tr>
+          <tr><td><div class="mockup-check"></div></td><td style="color:var(--text)">Helen K.</td><td>3321 Murray Blvd</td><td style="font-family:var(--mono);font-size:.72rem">Diabetic</td><td>1</td><td>Volunteer</td><td><span class="status-badge missed">Missed</span></td></tr>
+          <tr><td><div class="mockup-check checked"></div></td><td style="color:var(--text)">Frank L.</td><td>7200 Bengal Blvd</td><td style="font-family:var(--mono);font-size:.72rem">Low-Na, Soft</td><td>2</td><td>Staff</td><td><span class="status-badge ready">Ready</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+        <span style="font-size:.75rem;color:var(--text-dim)">6 tasks · 3 delivered · 1 in transit · 1 missed · 1 ready</span>
+        <button class="mockup-btn secondary" style="font-size:.72rem">Mark Selected as Delivered (Manual)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Driver Screenshots -->
+  <h3 style="margin-top:2rem">Driver — Onfleet Mobile Experience</h3>
+  <p>New volunteers could start delivering within minutes of receiving a text invite. Drivers marked deliveries as complete or missed (with a reason), and those events fired webhooks back to ClientTrack automatically.</p>
+  <div class="screenshot-gallery">
+    <div class="screenshot-card">
+      <div class="screenshot-img"><img src="https://d3jsrlr7ydwqi5.cloudfront.net/s419ad06/images/features/driver-app/hero.png" alt="Onfleet driver app" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=fallback>Onfleet Driver App — task list with addresses, notes, and turn-by-turn navigation</div>'"></div>
+      <div class="screenshot-caption"><h4>Task List &amp; Navigation</h4><p>Optimized route with turn-by-turn nav. Delivery details, special instructions, and communication with dispatcher/recipient.</p></div>
+    </div>
+    <div class="screenshot-card">
+      <div class="screenshot-img"><img src="https://d3jsrlr7ydwqi5.cloudfront.net/s419ad06/images/features/driver-app/easy-to-learn.png" alt="Onfleet driver app easy to use" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=fallback>Easy-to-learn interface — drivers can start immediately with no training</div>'"></div>
+      <div class="screenshot-caption"><h4>Easy to Learn, Easy to Use</h4><p>Near-zero onboarding friction. This was the key differentiator vs. WorkWave — volunteers actually adopted it.</p></div>
+    </div>
+    <div class="screenshot-card">
+      <div class="screenshot-img"><img src="https://d3jsrlr7ydwqi5.cloudfront.net/s419ad06/images/features/driver-app/simple-and-secure.png" alt="Onfleet communication" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=fallback>In-app communication between drivers, dispatchers, and recipients</div>'"></div>
+      <div class="screenshot-caption"><h4>Driver ↔ Recipient Communication</h4><p>Drivers could contact recipients directly — reducing missed deliveries when a client wasn't answering the door.</p></div>
+    </div>
+  </div>
+
+  <!-- Dispatcher Dashboard Screenshot -->
+  <div class="screenshot-gallery" style="margin-top:1.25rem;grid-template-columns:1fr">
+    <div class="screenshot-card">
+      <div class="screenshot-img" style="aspect-ratio:21/9"><img src="https://d3jsrlr7ydwqi5.cloudfront.net/s828de39/images/features/assignment-and-dispatching/hero.png" alt="Onfleet dispatcher dashboard" style="object-fit:cover;width:100%;height:100%" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=fallback>Onfleet Dispatcher Dashboard — map view with driver locations, route assignments, task management</div>'"></div>
+      <div class="screenshot-caption"><h4>Dispatcher Dashboard — Route Assignment &amp; Monitoring</h4><p>After sending the batch from ClientTrack, planners used Onfleet's web dashboard to optimize driver assignments, sequence deliveries, and monitor routes in real-time.</p></div>
+    </div>
+  </div>
+
+  <!-- Reporting -->
+  <h3 style="margin-top:2rem">Program Reporting — Delivery Outcomes <span style="font-weight:400;font-size:.82rem;color:var(--text-dim)">(Mockup)</span></h3>
+  <p>Program staff reported on delivery outcomes for program impact, funder requirements, and identifying clients with recurring misses.</p>
+  <div class="mockup-container">
+    <div class="mockup-titlebar"><div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div><span class="mockup-titlebar-text">ClientTrack · Delivery Program Report</span></div>
+    <div class="mockup-body">
+      <div class="mockup-header">
+        <div><h3 style="margin-bottom:.25rem">Home-Delivered Meals — Monthly Summary</h3><div class="mockup-date">April 2025 · All Regions</div></div>
+        <div style="display:flex;gap:.5rem"><button class="mockup-btn secondary sm">📥 Export CSV</button><button class="mockup-btn secondary sm">🖨 Print</button></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.25rem">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center"><div style="font-family:var(--serif);font-size:1.6rem;color:var(--accent-bright)">847</div><div style="font-size:.72rem;color:var(--text-dim)">Total Deliveries</div></div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center"><div style="font-family:var(--serif);font-size:1.6rem;color:var(--green)">94.2%</div><div style="font-size:.72rem;color:var(--text-dim)">Completion Rate</div></div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center"><div style="font-family:var(--serif);font-size:1.6rem;color:var(--text)">62</div><div style="font-size:.72rem;color:var(--text-dim)">Active Clients</div></div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center"><div style="font-family:var(--serif);font-size:1.6rem;color:var(--red)">49</div><div style="font-size:.72rem;color:var(--text-dim)">Missed Deliveries</div></div>
+      </div>
+      <h3 style="font-size:.85rem;margin-bottom:.5rem">Clients with Recurring Missed Deliveries (3+ in period)</h3>
+      <table class="mockup-table">
+        <thead><tr><th>Client</th><th>Missed</th><th>Total</th><th>Rate</th><th>Common Reason</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--text)">Helen K.</td><td style="color:var(--red)">5</td><td>12</td><td style="color:var(--red)">58%</td><td style="font-size:.75rem">Client not home</td></tr>
+          <tr><td style="color:var(--text)">Arthur G.</td><td style="color:var(--warm)">3</td><td>13</td><td style="color:var(--warm)">77%</td><td style="font-size:.75rem">Wrong address</td></tr>
+        </tbody>
+      </table>
+      <div class="mockup-note">Delivery statuses — whether from Onfleet webhooks or manual entry — fed the same reporting pipeline. Program staff could monitor outcomes regardless of how status was captured.</div>
+    </div>
+  </div>
+  <p style="font-size:.82rem;color:var(--text-dim);font-style:italic">All mockups are representative. The actual ClientTrack UI used the platform's configurable form designer with API plug-ins.</p>
+
+  <!-- Volunteer Driver Challenge -->
+  <div class="challenge-box">
+    <h3>⚠️ The Volunteer Driver Challenge</h3>
+    <p>Onfleet's app dramatically improved driver adoption vs. WorkWave — but some elderly volunteers still preferred paper. We needed a dual-path approach.</p>
+    <div class="two-path">
+      <div class="path-card happy">
+        <h4>Path A: Onfleet App (Happy Path)</h4>
+        <div class="path-flow">
+          <div class="path-step">Driver receives text invite, opens app</div>
+          <div class="path-step">Follows optimized route w/ navigation</div>
+          <div class="path-step">Marks each delivery: ✓ Complete or ✗ Missed + reason</div>
+          <div class="path-step">Webhook → ClientTrack auto-updates</div>
+        </div>
+      </div>
+      <div class="path-card fallback">
+        <h4>Path B: Paper Route Sheet (Fallback)</h4>
+        <div class="path-flow">
+          <div class="path-step">Planner prints route sheet from ClientTrack</div>
+          <div class="path-step">Volunteer delivers with paper list</div>
+          <div class="path-step">Returns, reports missed deliveries</div>
+          <div class="path-step">Coordinator marks status manually in ClientTrack</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Artifacts -->
+  <h3 style="margin-top:2rem">Artifacts &amp; Documentation</h3>
+  <div>
+    <a href="https://help.eccovia.com/integrations/managing-api-keys-and-webhooks-to-integrate-clienttrack-and-onfleet" target="_blank" class="artifact-link"><span style="font-size:1rem">📄</span>API Keys &amp; Webhooks Integration Guide<span style="color:var(--text-dim);font-size:.72rem;margin-left:.5rem">help.eccovia.com</span></a>
+  </div>
+
+  <div class="callout" style="margin-top:1.5rem">
+    <p><strong>Build vs. Buy:</strong> Route optimization, driver apps, and real-time GPS are hard, specialized problems. Our value was connecting case management context — who needs what, with what dietary restrictions, and did they receive it — to the delivery operation. Onfleet's API and UX quality validated this decision repeatedly.</p>
+  </div>
+</section>
+
+<section id="detours">
+  <div class="section-label">05 — Detours &amp; What Went Wrong</div>
+  <h2>Where Things Got Messy</h2>
+  <div class="split">
+    <div class="split-col went-well">
+      <h3>✅ What Went Well</h3>
+      <ul>
+        <li>Onfleet's mobile UX solved the driver adoption problem that plagued Samsara and WorkWave</li>
+        <li>Pattern recognition across WorkWave customers enabled a shared microservice design</li>
+        <li>Webhook architecture closed the delivery loop automatically for app-based drivers</li>
+        <li>Scoped API keys solved multi-tenant isolation across environments</li>
+        <li>Documentation enabled independent deployment by implementation engineers</li>
+        <li>Manual fallback kept the solution viable for programs with elderly volunteers</li>
+      </ul>
+    </div>
+    <div class="split-col went-wrong">
+      <h3>❌ What Didn't Go Well</h3>
+      <ul>
+        <li>Vendor evaluation was reactive — built what customers suggested, discovered better options later</li>
+        <li>Two WorkWave customers got different solutions from separate impl teams — inconsistency complicated support</li>
+        <li>Volunteer drivers who wouldn't use the app created a persistent UX gap requiring manual fallback</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout warn" style="margin-top:1.5rem">
+    <p><strong>The WorkWave lesson:</strong> A tool can be excellent for dispatchers but fail if drivers won't use it. The best route optimization in the world doesn't matter if the driver is on paper and no one knows whether the meal was delivered until they return. Onfleet succeeded because it treated the driver as a first-class user, not an afterthought.</p>
+  </div>
+</section>
+
+<section id="results">
+  <div class="section-label">06 — Results</div>
+  <h2>What We Achieved</h2>
+  <div class="results-grid">
+    <div class="result-stat"><div class="stat-value">3</div><div class="stat-label">Customers in progress on the<br>productized Onfleet integration</div></div>
+    <div class="result-stat"><div class="stat-value" style="font-size:1.5rem">Dramatically</div><div class="stat-label">Reduced manual effort<br>for planners &amp; coordinators</div></div>
+    <div class="result-stat"><div class="stat-value" style="font-size:1.5rem">New</div><div class="stat-label">Recipient features: delivery ETAs,<br>driver communication, fewer misses</div></div>
+  </div>
+
+  <h3 style="margin-top:2rem">Outcomes</h3>
+  <ul class="talk">
+    <li><strong>For planners/coordinators:</strong> Greatly reduced manual effort — batch task creation replaced spreadsheet exports, webhook-driven status updates replaced manual data entry after routes</li>
+    <li><strong>For drivers:</strong> Dramatically improved experience — Onfleet's intuitive mobile app replaced paper manifests for most drivers, with navigation, communication, and one-tap status updates</li>
+    <li><strong>For recipients:</strong> New features they never had before — delivery ETA notifications, the ability for drivers to contact them directly, and fewer missed deliveries as a result</li>
+    <li><strong>For program staff:</strong> Delivery outcomes now visible in the care record and reportable, closing the loop between delivery operations and case management</li>
+    <li><strong>For the platform:</strong> Established reusable integration guides and a shared microservice, giving implementation teams a solid foundation to more quickly and easily solution for a growing vertical of meal delivery customers</li>
+    <li><strong>Delighted customers and users</strong> across all personas — from kitchen staff to case managers</li>
+  </ul>
+</section>
+
+<section id="retro">
+  <div class="section-label">07 — Retrospective</div>
+  <h2>What I'd Do Differently</h2>
+  <div class="cards" style="grid-template-columns:1fr">
+    <div class="card"><h3>1. Structured Vendor Evaluation Before Shipping</h3><p>Instead of building what customers suggested and discovering better options later, I'd invest in a structured vendor evaluation early — scoring on API quality, webhook support, driver UX, onboarding friction, and pricing. The path from Samsara to WorkWave to Onfleet was educational but not efficient.</p></div>
+    <div class="card"><h3>2. Design for Non-tech Users from Day One</h3><p>The volunteer driver gap was foreseeable given the population. I'd invest earlier in the manual fallback UX and think harder about whether paper and digital could coexist more gracefully.</p></div>
+    <div class="card"><h3>3. Standardize Across Impl Teams Earlier</h3><p>The two WorkWave customers getting different solutions from separate teams created inconsistency. Establishing shared patterns and documentation earlier would have prevented this divergence and made the Onfleet transition smoother.</p></div>
+    <div class="card"><h3>4. Plan Multi-environment Architecture Upfront</h3><p>The dev/sandbox vs. production environment setup for API key management and webhook routing took more time and attention than anticipated. I'd design that architecture upfront rather than retrofitting it after realizing we needed safe iteration and debugging paths that wouldn't disrupt active delivery operations.</p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left">Remy Russell</div>
+  <div class="footer-right">
+    <a href="https://remyrussell.com" target="_blank">remyrussell.com</a>
+    <a href="https://www.linkedin.com/in/remyrussell" target="_blank">LinkedIn</a>
+    <a href="mailto:remyrussell@pm.me">remyrussell@pm.me</a>
+  </div>
+</footer>
+
+</body>
+</html>
