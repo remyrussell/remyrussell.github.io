@@ -20,8 +20,9 @@
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;overflow:hidden;background:var(--ink);font-family:var(--sans);color:var(--text)}
+  html,body{height:100%;overflow:hidden;background:var(--ink);font-family:var(--sans);color:var(--text);overscroll-behavior:none;position:fixed;width:100%;touch-action:none}
   #map{position:absolute;inset:0}
+  #map canvas,.maplibregl-canvas-container{touch-action:none !important;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
   #map canvas{cursor:grab}
   #map canvas:active{cursor:grabbing}
 
@@ -377,15 +378,25 @@ const map = new maplibregl.Map({
   bearing:105,
   maxPitch:85,
   attributionControl:{compact:true},
-  antialias:true
+  antialias:true,
+  /* the flight loop owns the camera — kill every built-in gesture
+     at construction so touch inertia can never fight it */
+  dragPan:false, dragRotate:false, scrollZoom:false, keyboard:false,
+  doubleClickZoom:false, touchZoomRotate:false, touchPitch:false, boxZoom:false
 });
 
-/* We own ALL input — disable every built-in interaction so the
-   flight loop and MapLibre's handlers never fight each other.   */
+/* belt and suspenders for any handler the options missed */
 ["keyboard","dragPan","dragRotate","scrollZoom","doubleClickZoom",
  "touchZoomRotate","touchPitch","boxZoom"].forEach(h=>{
   try{ if(map[h] && map[h].disable) map[h].disable(); }catch(e){}
 });
+
+/* stop iOS/Android native scroll, pinch and rubber-band on the map.
+   (touchmove only — preventing touchstart would kill label taps) */
+const mapEl = document.getElementById("map");
+mapEl.addEventListener("touchmove",(e)=>e.preventDefault(),{passive:false});
+mapEl.addEventListener("gesturestart",(e)=>e.preventDefault());
+mapEl.addEventListener("gesturechange",(e)=>e.preventDefault());
 
 const RAD = Math.PI/180;
 let exaggeration = 1.25;
@@ -444,9 +455,11 @@ const cam = { lng:-111.86, lat:40.62, alt:3200, bearing:105, pitch:78 };
 let vel = 0;              // forward airspeed, m/s
 let hover = false;
 let lastVertRate = 0;     // m/s for VSI
+let smoothGround = null;  // low-pass-filtered terrain under the drone
 const MAX_SPD = 320;
 const keys = {};
 let flying = false;
+const lastCam = { lng:NaN, lat:NaN, alt:NaN, bearing:NaN, pitch:NaN };
 
 const helpModal = document.getElementById("helpModal");
 let helpOpen = true;
@@ -506,6 +519,7 @@ function clamp(v,a,b){ return Math.min(b,Math.max(a,v)); }
 
 /* ---------- camera application: free camera, with jumpTo fallback ---------- */
 let useFallback = false;
+let fbZoom = null;                           // smoothed fallback zoom
 const FOV_DEG = 36.87;                       // MapLibre default vertical FOV
 const TAN_HALF_FOV = Math.tan(FOV_DEG/2*RAD);
 
@@ -525,7 +539,7 @@ function applyCamera(){
   /* Fallback: place the map CENTER at the point the drone is looking at,
      and derive zoom from camera height — works on every MapLibre build. */
   const pitchR = cam.pitch*RAD;
-  const groundCam = groundAt(cam.lng,cam.lat) ?? 1500;
+  const groundCam = smoothGround ?? groundAt(cam.lng,cam.lat) ?? 1500;
   const agl = Math.max(cam.alt - groundCam, 30);
   const dist = agl*Math.tan(pitchR);
   const cLat = cam.lat + (dist*Math.cos(cam.bearing*RAD))/111320;
@@ -534,8 +548,9 @@ function applyCamera(){
   const camAboveCenter = Math.max(cam.alt - elevC, 60);
   const c2cPx = 0.5*canvas.clientHeight/TAN_HALF_FOV;
   const mpp = camAboveCenter/(Math.cos(pitchR)*c2cPx);
-  const zoom = Math.log2(40075016.686*Math.cos(cLat*RAD)/(mpp*512));
-  map.jumpTo({center:[cLng,cLat], zoom:clamp(zoom,7,17.5), pitch:cam.pitch, bearing:cam.bearing});
+  const zTarget = clamp(Math.log2(40075016.686*Math.cos(cLat*RAD)/(mpp*512)), 7, 17.5);
+  fbZoom = (fbZoom==null) ? zTarget : fbZoom + (zTarget - fbZoom)*0.25;
+  map.jumpTo({center:[cLng,cLat], zoom:fbZoom, pitch:cam.pitch, bearing:cam.bearing});
 }
 
 /* ---------- main loop ---------- */
@@ -555,8 +570,15 @@ requestAnimationFrame(frame);
 function step(dt){
   const boost = (keys.ShiftLeft||keys.ShiftRight) ? 2.5 : 1;
 
+  /* --- smoothed terrain under the drone (raw queries jitter as tiles load) --- */
+  const gRaw = groundAt(cam.lng,cam.lat);
+  if(gRaw!=null){
+    smoothGround = (smoothGround==null) ? gRaw
+      : smoothGround + (gRaw - smoothGround)*Math.min(1, 6*dt);
+  }
+
   /* --- turn --- */
-  const turn = 70*dt;
+  const turn = 75*dt;
   if(keys.ArrowLeft)  cam.bearing = (cam.bearing - turn + 360)%360;
   if(keys.ArrowRight) cam.bearing = (cam.bearing + turn)%360;
 
@@ -567,31 +589,40 @@ function step(dt){
     vel *= Math.max(0, 1 - 5*dt);                 // damp to a standstill
     if(throttle) hover = false;                   // throttle exits hover
   } else {
-    if(throttle) vel += 70*boost*dt;
-    if(brake)    vel -= 110*dt;
-    if(!throttle && !brake) vel *= (1 - 0.10*dt); // long, slow glide decay
-    vel += Math.cos(cam.pitch*RAD)*9.8*dt*0.6;    // dive to gain speed
+    if(throttle) vel += 95*boost*dt;
+    if(brake)    vel -= 120*dt;
+    if(!throttle && !brake){
+      vel *= (1 - 0.10*dt);                       // long, slow glide decay
+      if(vel < 2) vel = 0;                        // settle — no idle creep
+    }
+    if(vel > 3 || throttle)                       // dive to gain speed (only in flight)
+      vel += Math.cos(cam.pitch*RAD)*9.8*dt*0.6;
     vel = clamp(vel, 0, MAX_SPD*boost);
   }
+
+  /* --- ground-relative speed scaling: precise low, fast high --- */
+  const agl = (smoothGround!=null) ? (cam.alt - smoothGround) : 600;
+  const scale = clamp(agl/600, 0.8, 2.2);
+  const eff = vel*scale;
 
   /* --- displacement (FPV: travel where you look) --- */
   let dx=0, dy=0, dz=0;
   if(!hover && vel > 0.5){
     const horiz = Math.sin(cam.pitch*RAD);
     const down  = Math.cos(cam.pitch*RAD);
-    dx += vel*dt*horiz*Math.sin(cam.bearing*RAD);
-    dy += vel*dt*horiz*Math.cos(cam.bearing*RAD);
-    dz -= vel*dt*down;
+    dx += eff*dt*horiz*Math.sin(cam.bearing*RAD);
+    dy += eff*dt*horiz*Math.cos(cam.bearing*RAD);
+    dz -= eff*dt*down;
     dz -= 2.0*dt;                                  // sink rate while gliding
   }
   if(keys.KeyA || keys.KeyD){                      // drone strafe
     const s = (keys.KeyD?1:0) - (keys.KeyA?1:0);
     const sb = (cam.bearing+90)*RAD;
-    dx += s*48*boost*dt*Math.sin(sb);
-    dy += s*48*boost*dt*Math.cos(sb);
+    dx += s*60*boost*scale*dt*Math.sin(sb);
+    dy += s*60*boost*scale*dt*Math.cos(sb);
   }
-  if(keys.KeyE || keys.PageUp)   dz += 40*boost*dt;   // rotor climb
-  if(keys.KeyQ || keys.PageDown) dz -= 40*boost*dt;
+  if(keys.KeyE || keys.PageUp)   dz += 48*boost*dt;   // rotor climb
+  if(keys.KeyQ || keys.PageDown) dz -= 48*boost*dt;
 
   cam.lat += dy/111320;
   cam.lng += dx/(111320*Math.cos(cam.lat*RAD));
@@ -599,15 +630,25 @@ function step(dt){
   lastVertRate = dz/dt;
 
   /* --- terrain collision --- */
-  const ground = groundAt(cam.lng,cam.lat);
-  if(ground!=null && cam.alt < ground+22){
-    cam.alt = ground+22;
+  if(smoothGround!=null && cam.alt < smoothGround+22){
+    cam.alt = smoothGround+22;
     vel *= Math.max(0, 1 - 1.5*dt);               // scrubbing the deck bleeds speed
   }
   cam.alt = clamp(cam.alt, 1250, 15000);
 
-  applyCamera();
-  updateHUD(ground);
+  /* --- only touch the camera when something actually changed ---
+     (re-applying an identical camera every frame caused visible
+      jitter on mobile and wasted battery)                        */
+  if( Math.abs(cam.lng-lastCam.lng) > 1e-8 ||
+      Math.abs(cam.lat-lastCam.lat) > 1e-8 ||
+      Math.abs(cam.alt-lastCam.alt) > 0.02 ||
+      Math.abs(cam.bearing-lastCam.bearing) > 0.005 ||
+      Math.abs(cam.pitch-lastCam.pitch) > 0.005 ){
+    applyCamera();
+    lastCam.lng=cam.lng; lastCam.lat=cam.lat; lastCam.alt=cam.alt;
+    lastCam.bearing=cam.bearing; lastCam.pitch=cam.pitch;
+  }
+  updateHUD(smoothGround, eff);
 }
 
 /* ============================================================
@@ -645,7 +686,7 @@ const TAPE_HALF = 116;
 })();
 
 const M2FT = 3.28084;
-function updateHUD(ground){
+function updateHUD(ground, effSpd){
   tapeStrip.style.transform = "translateX(" + (TAPE_HALF - cam.bearing*PX_PER_DEG) + "px)";
   hdgReadout.textContent = "HDG " + String(Math.round(cam.bearing)%360).padStart(3,"0") + "°";
   altMsl.innerHTML = Math.round(cam.alt*M2FT).toLocaleString() + "<small>ft</small>";
@@ -656,7 +697,7 @@ function updateHUD(ground){
   } else {
     altAgl.innerHTML = "—<small>ft</small>";
   }
-  spdEl.innerHTML = Math.round(hover?0:vel) + "<small>m/s</small>";
+  spdEl.innerHTML = Math.round(hover?0:(effSpd||0)) + "<small>m/s</small>";
   const fpm = Math.round(lastVertRate*M2FT*60/10)*10;
   vsEl.innerHTML = (fpm>0?"+":"") + fpm.toLocaleString() + "<small>fpm</small>";
   vsEl.classList.toggle("vs-up", fpm>50);
@@ -681,8 +722,8 @@ PRESETS.forEach((pz,i)=>{
 function goPreset(i){
   const z = PRESETS[i];
   cam.lat=z[1]; cam.lng=z[2]; cam.alt=z[3]; cam.bearing=z[4]; cam.pitch=z[5];
-  vel = 0; hover = false;
-  if(!flying) applyCamera();
+  vel = 55; hover = false; smoothGround = null; fbZoom = null;
+  applyCamera();
 }
 
 function bindToggle(id, fn){ document.getElementById(id).addEventListener("change",(e)=>fn(e.target.checked)); }
@@ -708,6 +749,7 @@ function showHelp(open){
   helpOpen = open;
   helpModal.style.display = open ? "flex" : "none";
   flying = !open;
+  for(const k in keys) keys[k]=false;
   if(!open) lastT = performance.now();
 }
 document.getElementById("startBtn").addEventListener("click",()=>showHelp(false));
