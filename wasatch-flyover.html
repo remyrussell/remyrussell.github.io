@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Wasatch Flyover — 3D Backcountry Terrain Explorer</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" />
+<style>
+  :root{
+    --ink:#0a0e12;
+    --panel:rgba(10,14,18,.78);
+    --panel-line:rgba(255,255,255,.10);
+    --text:#e9eef3;
+    --dim:#9fb0bd;
+    --cyan:#7fd8e8;
+    --amber:#f2b544;
+    --drain:#9cd4f0;
+    --canyon:#bfe8b0;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,Menlo,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;background:var(--ink);font-family:var(--sans);color:var(--text)}
+  #map{position:absolute;inset:0}
+  #map canvas{cursor:grab}
+  #map canvas:active{cursor:grabbing}
+
+  .brand{position:absolute;top:14px;left:14px;z-index:10;pointer-events:none}
+  .brand h1{font-size:15px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+  .brand h1 span{color:var(--cyan)}
+  .brand p{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:3px;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+
+  /* ---------- flight HUD ---------- */
+  .hud{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:13px;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--panel-line);border-radius:10px;padding:10px 16px;user-select:none}
+  .hud .block{display:flex;flex-direction:column;align-items:center;min-width:68px}
+  .hud .lbl{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
+  .hud .val{font-family:var(--mono);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+  .hud .val small{font-size:10px;color:var(--dim);font-weight:400;margin-left:2px}
+  .hud .val.agl-low{color:var(--amber)}
+  .hud .val.vs-up{color:var(--cyan)}
+  .hud .val.vs-dn{color:var(--amber)}
+  .hud .divider{width:1px;height:34px;background:var(--panel-line)}
+  .hover-pill{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--cyan);color:#06262c;font-size:9px;font-weight:800;letter-spacing:.2em;padding:3px 10px;border-radius:999px;display:none}
+  .hover-pill.on{display:block}
+
+  .tape-wrap{display:flex;flex-direction:column;align-items:center}
+  .tape{position:relative;width:232px;height:34px;overflow:hidden;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid var(--panel-line)}
+  .tape-strip{position:absolute;top:0;left:0;height:100%;will-change:transform}
+  .tick{position:absolute;bottom:0;width:1px;background:rgba(255,255,255,.35);height:7px}
+  .tick.major{height:11px;background:rgba(255,255,255,.6)}
+  .tick-label{position:absolute;top:3px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--dim);white-space:nowrap}
+  .tick-label.cardinal{color:var(--cyan);font-weight:700}
+  .tape-needle{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--cyan);transform:translateX(-50%);box-shadow:0 0 8px rgba(127,216,232,.7)}
+  .tape-readout{font-family:var(--mono);font-size:11px;margin-top:3px;font-variant-numeric:tabular-nums}
+
+  /* ---------- settings panel ---------- */
+  .panel-toggle{position:absolute;top:14px;right:14px;z-index:12;width:38px;height:38px;border-radius:9px;background:var(--panel);border:1px solid var(--panel-line);backdrop-filter:blur(10px);color:var(--text);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .panel-toggle:hover{border-color:var(--cyan)}
+  .panel{position:absolute;top:60px;right:14px;z-index:11;width:252px;max-height:calc(100% - 150px);overflow-y:auto;background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--panel-line);border-radius:12px;padding:14px;display:none}
+  .panel.open{display:block}
+  .panel h2{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin:14px 0 8px}
+  .panel h2:first-child{margin-top:0}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:11.5px;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--panel-line);color:var(--text);cursor:pointer;font-family:var(--sans)}
+  .chip:hover{border-color:var(--cyan);color:var(--cyan)}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12.5px}
+  .row label{cursor:pointer}
+  .row .sub-note{display:block;font-size:10px;color:var(--dim)}
+  .switch{position:relative;width:34px;height:19px;flex:none}
+  .switch input{opacity:0;width:0;height:0}
+  .slider-sw{position:absolute;inset:0;background:rgba(255,255,255,.12);border-radius:999px;transition:.15s;cursor:pointer}
+  .slider-sw:before{content:"";position:absolute;width:13px;height:13px;left:3px;top:3px;border-radius:50%;background:var(--dim);transition:.15s}
+  .switch input:checked + .slider-sw{background:rgba(127,216,232,.35)}
+  .switch input:checked + .slider-sw:before{transform:translateX(15px);background:var(--cyan)}
+  .panel input[type=range]{width:100%;accent-color:var(--cyan)}
+  .range-row{font-size:11px;color:var(--dim);display:flex;justify-content:space-between;margin-top:2px;font-family:var(--mono)}
+  .legend{font-size:11px;line-height:1.7;color:var(--dim)}
+  .swatch{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .fineprint{font-size:10px;color:var(--dim);margin-top:12px;line-height:1.5}
+
+  /* ---------- help modal ---------- */
+  .modal-bg{position:absolute;inset:0;z-index:30;background:rgba(5,8,11,.66);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+  .modal{width:min(460px,92vw);max-height:92vh;overflow-y:auto;background:rgba(13,18,24,.96);border:1px solid var(--panel-line);border-radius:14px;padding:26px 28px}
+  .modal h1{font-size:16px;font-weight:800;letter-spacing:.26em;text-transform:uppercase}
+  .modal h1 span{color:var(--cyan)}
+  .modal .sub{font-size:12px;color:var(--dim);margin:6px 0 18px;line-height:1.5}
+  .keys{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:12.5px;align-items:center}
+  .keys kbd{font-family:var(--mono);font-size:11px;background:rgba(255,255,255,.08);border:1px solid var(--panel-line);border-bottom-width:2px;border-radius:5px;padding:2px 7px;white-space:nowrap}
+  .keys .what{color:var(--dim)}
+  .go{margin-top:20px;width:100%;padding:11px;border:none;border-radius:9px;background:var(--cyan);color:#06262c;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+  .go:hover{filter:brightness(1.08)}
+  .modal .hint{font-size:10.5px;color:var(--dim);text-align:center;margin-top:10px}
+
+  /* ---------- touch controls ---------- */
+  .touch-ui{display:none}
+  @media (pointer:coarse){
+    .touch-ui{display:block}
+    .hud{bottom:110px;padding:8px 10px;gap:8px}
+    .tape{width:140px}
+    .hud .block{min-width:50px}
+    .hud .val{font-size:14px}
+  }
+  .touch-cluster{position:absolute;bottom:16px;z-index:10;display:grid;gap:8px}
+  .touch-cluster.left{left:16px;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(2,52px)}
+  .touch-cluster.right{right:16px;grid-template-columns:52px;grid-template-rows:repeat(3,52px)}
+  .tbtn{border-radius:12px;background:var(--panel);border:1px solid var(--panel-line);color:var(--text);font-size:17px;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;touch-action:none}
+  .tbtn:active,.tbtn.held{background:rgba(127,216,232,.3);border-color:var(--cyan)}
+
+  .maplibregl-ctrl-attrib{font-size:10px !important;background:rgba(10,14,18,.6) !important;color:var(--dim) !important}
+  .maplibregl-ctrl-attrib a{color:var(--dim) !important}
+
+  @media (max-width:720px){
+    .brand h1{font-size:12px}
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div class="brand">
+  <h1>WASATCH <span>FLYOVER</span></h1>
+  <p>3D backcountry terrain explorer</p>
+</div>
+
+<button class="panel-toggle" id="panelToggle" title="Settings & locations" aria-label="Open settings">☰</button>
+
+<div class="panel" id="panel">
+  <h2>Fly to</h2>
+  <div class="chips" id="presetChips"></div>
+
+  <h2>Trails &amp; labels</h2>
+  <div class="row"><label for="tTrails">Hiking routes (OSM)</label><span class="switch"><input type="checkbox" id="tTrails" checked><span class="slider-sw"></span></span></div>
+  <div class="row"><label for="tMtb">MTB routes (OSM)</label><span class="switch"><input type="checkbox" id="tMtb" checked><span class="slider-sw"></span></span></div>
+  <div class="row"><label for="tLabels">Peaks &amp; drainages</label><span class="switch"><input type="checkbox" id="tLabels" checked><span class="slider-sw"></span></span></div>
+  <div class="row"><label for="tPlaces">Towns &amp; roads</label><span class="switch"><input type="checkbox" id="tPlaces"><span class="slider-sw"></span></span></div>
+
+  <h2>Imagery</h2>
+  <div class="row">
+    <label for="tDaily">Daily satellite<span class="sub-note" id="dailyDate">snow extent · low-res</span></label>
+    <span class="switch"><input type="checkbox" id="tDaily"><span class="slider-sw"></span></span>
+  </div>
+
+  <h2>Terrain exaggeration</h2>
+  <input type="range" id="exag" min="1" max="2" step="0.05" value="1.25">
+  <div class="range-row"><span>real</span><span id="exagVal">1.25×</span><span>dramatic</span></div>
+
+  <h2>Label key</h2>
+  <div class="legend">
+    <span class="swatch" style="background:#ffffff"></span>Peak&nbsp;&nbsp;
+    <span class="swatch" style="background:var(--drain)"></span>Drainage<br>
+    <span class="swatch" style="background:var(--canyon)"></span>Canyon&nbsp;&nbsp;
+    <span class="swatch" style="background:var(--amber)"></span>Resort
+  </div>
+
+  <div class="fineprint">Label positions are approximate — for exploration, not navigation. Always carry a real map, beacon, shovel and probe in avalanche terrain.</div>
+</div>
+
+<!-- flight HUD -->
+<div class="hud" id="hud">
+  <div class="hover-pill" id="hoverPill">HOVER</div>
+  <div class="tape-wrap">
+    <div class="tape">
+      <div class="tape-strip" id="tapeStrip"></div>
+      <div class="tape-needle"></div>
+    </div>
+    <div class="tape-readout" id="hdgReadout">HDG 090°</div>
+  </div>
+  <div class="divider"></div>
+  <div class="block"><div class="lbl">Alt MSL</div><div class="val" id="altMsl">—<small>ft</small></div></div>
+  <div class="block"><div class="lbl">AGL</div><div class="val" id="altAgl">—<small>ft</small></div></div>
+  <div class="divider"></div>
+  <div class="block"><div class="lbl">Speed</div><div class="val" id="spdVal">0<small>m/s</small></div></div>
+  <div class="block"><div class="lbl">Vert</div><div class="val" id="vsVal">0<small>fpm</small></div></div>
+</div>
+
+<!-- touch controls -->
+<div class="touch-ui">
+  <div class="touch-cluster left">
+    <div class="tbtn" data-k="ArrowLeft">⟲</div>
+    <div class="tbtn" data-k="ArrowUp">▲</div>
+    <div class="tbtn" data-k="ArrowRight">⟳</div>
+    <div class="tbtn" data-k="KeyA">◀</div>
+    <div class="tbtn" data-k="ArrowDown">▼</div>
+    <div class="tbtn" data-k="KeyD">▶</div>
+  </div>
+  <div class="touch-cluster right">
+    <div class="tbtn" data-k="KeyE">＋</div>
+    <div class="tbtn" data-k="Space" id="hoverBtn">⏸</div>
+    <div class="tbtn" data-k="KeyQ">－</div>
+  </div>
+</div>
+
+<!-- help modal -->
+<div class="modal-bg" id="helpModal">
+  <div class="modal">
+    <h1>WASATCH <span>FLYOVER</span></h1>
+    <p class="sub">A glider–drone hybrid over real 3D Wasatch terrain. Throttle up, then steer by looking — you fly toward wherever you point the camera. Ease off and you'll soar; dive to gain speed; hover to study a line.</p>
+    <div class="keys">
+      <span><kbd>W</kbd> / <kbd>↑</kbd></span><span class="what">throttle up</span>
+      <span><kbd>S</kbd> / <kbd>↓</kbd></span><span class="what">airbrake</span>
+      <span><kbd>drag mouse</kbd></span><span class="what">steer — you fly where you look</span>
+      <span><kbd>←</kbd> <kbd>→</kbd></span><span class="what">turn</span>
+      <span><kbd>A</kbd> <kbd>D</kbd></span><span class="what">strafe (drone slide)</span>
+      <span><kbd>E</kbd> <kbd>Q</kbd></span><span class="what">climb / descend</span>
+      <span><kbd>Space</kbd></span><span class="what">hover — hold position</span>
+      <span><kbd>Shift</kbd></span><span class="what">boost</span>
+      <span><kbd>scroll</kbd></span><span class="what">trim speed</span>
+      <span><kbd>1</kbd>–<kbd>9</kbd></span><span class="what">jump to zones</span>
+      <span><kbd>?</kbd></span><span class="what">this help</span>
+    </div>
+    <button class="go" id="startBtn">Start flying</button>
+    <p class="hint">Tip: click any peak label to fly straight to it.</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   Named features (approximate coordinates — exploration only)
+   ============================================================ */
+function feat(name,lat,lng,type,elev){
+  return {type:"Feature",
+    properties:{name:name + (elev?("\n"+elev):""), ftype:type},
+    geometry:{type:"Point",coordinates:[lng,lat]}};
+}
+function p(n,la,ln,e){return feat(n,la,ln,"peak",e)}
+function d(n,la,ln){return feat(n,la,ln,"drainage")}
+function c(n,la,ln){return feat(n,la,ln,"canyon")}
+function r(n,la,ln){return feat(n,la,ln,"resort")}
+
+const FEATURES = [
+  p("Mount Olympus", 40.6631,-111.7478,"9,026'"),
+  p("Grandeur Peak", 40.7070,-111.7600,"8,299'"),
+  p("Mount Aire", 40.6968,-111.6789,"8,621'"),
+  p("Mount Raymond", 40.6258,-111.7029,"10,241'"),
+  p("Gobblers Knob", 40.6280,-111.6886,"10,246'"),
+  p("Kessler Peak", 40.6090,-111.6614,"10,403'"),
+  p("Broads Fork Twin Peaks", 40.5650,-111.7320,"11,330'"),
+  p("Sunrise Peak", 40.5621,-111.7106,"11,275'"),
+  p("Dromedary Peak", 40.5614,-111.7053,"11,107'"),
+  p("Mount Superior", 40.5781,-111.6644,"11,050'"),
+  p("Mount Baldy", 40.5680,-111.6360,"11,068'"),
+  p("Sugarloaf Peak", 40.5658,-111.6111,"11,051'"),
+  p("Devils Castle", 40.5645,-111.6190,"10,920'"),
+  p("AF Twin Peaks", 40.5625,-111.6739,"11,489'"),
+  p("Sunset Peak", 40.5755,-111.6050,"10,648'"),
+  p("Pfeifferhorn", 40.5311,-111.7058,"11,326'"),
+  p("Lone Peak", 40.5278,-111.7456,"11,253'"),
+  p("Box Elder Peak", 40.5097,-111.6975,"11,101'"),
+  p("Mount Timpanogos", 40.3908,-111.6457,"11,749'"),
+  p("Mount Nebo", 39.8219,-111.7597,"11,928'"),
+  p("Ben Lomond", 41.3760,-111.9580,"9,712'"),
+  p("Mount Ogden", 41.2074,-111.8758,"9,572'"),
+  d("White Pine Fork", 40.5560,-111.6810),
+  d("Red Pine Fork", 40.5560,-111.6960),
+  d("Maybird Gulch", 40.5520,-111.7080),
+  d("Hogum Fork", 40.5530,-111.7230),
+  d("Bells Canyon", 40.5540,-111.7700),
+  d("Broads Fork", 40.5840,-111.7250),
+  d("Mill B South Fork", 40.5950,-111.7140),
+  d("Mineral Fork", 40.6040,-111.6860),
+  d("Cardiff Fork", 40.6080,-111.6480),
+  d("Days Fork", 40.6090,-111.6320),
+  d("Silver Fork", 40.6060,-111.6090),
+  d("Grizzly Gulch", 40.5860,-111.6230),
+  d("Wolverine Cirque", 40.5890,-111.6020),
+  d("Neffs Canyon", 40.6700,-111.7600),
+  d("Ferguson Canyon", 40.5970,-111.7800),
+  c("Little Cottonwood Canyon", 40.5715,-111.7230),
+  c("Big Cottonwood Canyon", 40.6340,-111.7100),
+  c("Mill Creek Canyon", 40.6900,-111.7300),
+  c("American Fork Canyon", 40.4440,-111.7000),
+  c("Provo Canyon", 40.3530,-111.6030),
+  r("Snowbird", 40.5817,-111.6558),
+  r("Alta", 40.5884,-111.6386),
+  r("Brighton", 40.5977,-111.5836),
+  r("Solitude", 40.6199,-111.5919),
+  r("Park City Mountain", 40.6510,-111.5080),
+  r("Deer Valley", 40.6374,-111.4783),
+  r("Sundance", 40.3934,-111.5887),
+  r("Snowbasin", 41.2160,-111.8569),
+  r("Powder Mountain", 41.3786,-111.7807)
+];
+
+/* camera presets: [name, lat, lng, altitude m MSL, bearing°, pitch°] */
+const PRESETS = [
+  ["Little Cottonwood", 40.5740,-111.7950, 2450, 100, 80],
+  ["Mount Superior",    40.5690,-111.6620, 3650, 350, 77],
+  ["Lone Peak Cirque",  40.5400,-111.7600, 3650, 118, 75],
+  ["Broads Fork Twins", 40.5810,-111.7310, 3750, 190, 75],
+  ["Mount Olympus",     40.6660,-111.7920, 2950, 108, 80],
+  ["Brighton Bowls",    40.6060,-111.5900, 3300, 200, 78],
+  ["Timpanogos",        40.4170,-111.6920, 3850, 138, 75],
+  ["Snowbasin",         41.2310,-111.8920, 3250, 140, 78],
+  ["Mount Nebo",        39.8520,-111.8030, 3850, 150, 75]
+];
+
+/* ============================================================
+   Map setup — free, open data sources (no API keys)
+   ============================================================ */
+const yest = new Date(Date.now() - 36*3600*1000);          // ~1.5 days back for GIBS latency
+const gibsDate = yest.toISOString().slice(0,10);
+
+const style = {
+  version: 8,
+  glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+  sources: {
+    satellite: {
+      type:"raster", tileSize:256, maxzoom:19,
+      tiles:["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+      attribution:"Imagery © Esri, Maxar, Earthstar Geographics"
+    },
+    dem: {
+      type:"raster-dem", tileSize:256, maxzoom:15, encoding:"terrarium",
+      tiles:["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+      attribution:"Terrain: Mapzen/AWS Open Data"
+    },
+    daily: {
+      type:"raster", tileSize:256, maxzoom:9,
+      tiles:["https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/default/"+gibsDate+"/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg"],
+      attribution:"Daily imagery: NASA GIBS / VIIRS"
+    },
+    trails: {
+      type:"raster", tileSize:256, maxzoom:18,
+      tiles:["https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png"],
+      attribution:"Trails © Waymarked Trails, OpenStreetMap contributors"
+    },
+    mtb: {
+      type:"raster", tileSize:256, maxzoom:18,
+      tiles:["https://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png"]
+    },
+    places: {
+      type:"raster", tileSize:256, maxzoom:19,
+      tiles:["https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"]
+    },
+    poi: { type:"geojson", data:{type:"FeatureCollection",features:FEATURES} }
+  },
+  layers: [
+    {id:"sat", type:"raster", source:"satellite"},
+    {id:"daily", type:"raster", source:"daily", layout:{visibility:"none"}, paint:{"raster-opacity":0.85}},
+    {id:"trails", type:"raster", source:"trails", paint:{"raster-opacity":0.92}},
+    {id:"mtb", type:"raster", source:"mtb", paint:{"raster-opacity":0.92}},
+    {id:"places", type:"raster", source:"places", layout:{visibility:"none"}, paint:{"raster-opacity":0.9}},
+    {id:"poi-labels", type:"symbol", source:"poi",
+      layout:{
+        "text-field":["get","name"],
+        "text-font":["Open Sans Semibold"],
+        "text-size":["interpolate",["linear"],["zoom"], 9, 10, 12, 13, 14, 16],
+        "text-line-height":1.15,
+        "text-letter-spacing":0.04,
+        "text-padding":6,
+        "symbol-sort-key":["match",["get","ftype"],"peak",0,"resort",1,"canyon",2,3]
+      },
+      paint:{
+        "text-color":["match",["get","ftype"],
+          "peak","#ffffff",
+          "drainage","#9cd4f0",
+          "canyon","#bfe8b0",
+          "resort","#f2b544",
+          "#ffffff"],
+        "text-halo-color":"#0a0e12",
+        "text-halo-width":1.6
+      }
+    }
+  ]
+};
+
+const map = new maplibregl.Map({
+  container:"map",
+  style,
+  center:[-111.86, 40.62],
+  zoom:12.5,
+  pitch:60,
+  bearing:105,
+  maxPitch:85,
+  attributionControl:{compact:true},
+  antialias:true
+});
+
+/* We own ALL input — disable every built-in interaction so the
+   flight loop and MapLibre's handlers never fight each other.   */
+["keyboard","dragPan","dragRotate","scrollZoom","doubleClickZoom",
+ "touchZoomRotate","touchPitch","boxZoom"].forEach(h=>{
+  try{ if(map[h] && map[h].disable) map[h].disable(); }catch(e){}
+});
+
+const RAD = Math.PI/180;
+let exaggeration = 1.25;
+let mapReady = false;
+
+map.on("load", ()=>{
+  map.setTerrain({source:"dem", exaggeration});
+  mapReady = true;
+  try{
+    map.setSky({
+      "sky-color":"#7cb4d8",
+      "horizon-color":"#dcecf5",
+      "fog-color":"#e8f1f7",
+      "sky-horizon-blend":0.6,
+      "horizon-fog-blend":0.6,
+      "fog-ground-blend":0.85,
+      "atmosphere-blend":["interpolate",["linear"],["zoom"],8,1,12,0.4]
+    });
+  }catch(e){}
+
+  map.on("click","poi-labels",(e)=>{
+    const f = e.features && e.features[0];
+    if(!f) return;
+    const [lng,lat] = f.geometry.coordinates;
+    const ground = groundAt(lng,lat) ?? 2500;
+    cam.lng = lng - 0.012*Math.sin(cam.bearing*RAD);
+    cam.lat = lat - 0.012*Math.cos(cam.bearing*RAD);
+    cam.alt = ground + 500;
+    cam.pitch = 72;
+    vel = 0;
+  });
+  map.on("mouseenter","poi-labels",()=>{ map.getCanvas().style.cursor="pointer"; });
+  map.on("mouseleave","poi-labels",()=>{ map.getCanvas().style.cursor=""; });
+});
+map.on("error",()=>{ /* ignore individual tile errors */ });
+
+function groundAt(lng,lat){
+  if(!mapReady) return null;
+  try{
+    const v = map.queryTerrainElevation([lng,lat]);
+    return (typeof v === "number" && isFinite(v)) ? v : null;
+  }catch(e){ return null; }
+}
+
+/* ============================================================
+   Flight model — glider/drone hybrid
+   ------------------------------------------------------------
+   - Throttle (W) accelerates; release and you SOAR with slow
+     aerodynamic decay. Airbrake (S) bleeds speed fast.
+   - You travel along the view direction: dive to gain speed,
+     pull toward the horizon to stretch a glide.
+   - E/Q is rotor thrust (climb/descend). Space toggles HOVER:
+     velocity damps to zero and altitude holds.
+   ============================================================ */
+const cam = { lng:-111.86, lat:40.62, alt:3200, bearing:105, pitch:78 };
+let vel = 0;              // forward airspeed, m/s
+let hover = false;
+let lastVertRate = 0;     // m/s for VSI
+const MAX_SPD = 320;
+const keys = {};
+let flying = false;
+
+const helpModal = document.getElementById("helpModal");
+let helpOpen = true;
+
+addEventListener("keydown",(e)=>{
+  if(e.key==="?" ){ showHelp(true); return; }
+  if(helpOpen){
+    if(e.code==="Enter"||e.code==="Escape"||e.code==="Space"){ showHelp(false); e.preventDefault(); }
+    return;
+  }
+  if(e.code==="Space"){ hover = !hover; e.preventDefault(); return; }
+  const n = parseInt(e.key,10);
+  if(!isNaN(n) && n>=1 && n<=PRESETS.length){ goPreset(n-1); return; }
+  keys[e.code]=true;
+  if(e.code.startsWith("Arrow")) e.preventDefault();
+});
+addEventListener("keyup",(e)=>{ keys[e.code]=false; });
+addEventListener("blur",()=>{ for(const k in keys) keys[k]=false; });
+
+/* look steering — our own drag handler (built-ins are disabled) */
+let dragging=false, lastX=0, lastY=0;
+const canvas = map.getCanvas();
+canvas.addEventListener("pointerdown",(e)=>{
+  dragging=true; lastX=e.clientX; lastY=e.clientY;
+  try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
+});
+canvas.addEventListener("pointermove",(e)=>{
+  if(!dragging) return;
+  cam.bearing = (cam.bearing + (e.clientX-lastX)*0.22 + 360)%360;
+  cam.pitch   = clamp(cam.pitch - (e.clientY-lastY)*0.14, 15, 85);
+  lastX=e.clientX; lastY=e.clientY;
+});
+addEventListener("pointerup",()=>{ dragging=false; });
+addEventListener("pointercancel",()=>{ dragging=false; });
+
+canvas.addEventListener("wheel",(e)=>{
+  e.preventDefault();
+  vel = clamp(vel + (e.deltaY<0 ? 8 : -8), 0, MAX_SPD);
+},{passive:false});
+
+/* touch buttons */
+document.querySelectorAll(".tbtn").forEach(btn=>{
+  const k = btn.dataset.k;
+  if(k==="Space"){
+    btn.addEventListener("pointerdown",(e)=>{ e.preventDefault(); hover=!hover; });
+    return;
+  }
+  const down=(e)=>{ e.preventDefault(); keys[k]=true; btn.classList.add("held"); };
+  const up=(e)=>{ e.preventDefault(); keys[k]=false; btn.classList.remove("held"); };
+  btn.addEventListener("pointerdown",down);
+  btn.addEventListener("pointerup",up);
+  btn.addEventListener("pointercancel",up);
+  btn.addEventListener("pointerleave",up);
+});
+
+function clamp(v,a,b){ return Math.min(b,Math.max(a,v)); }
+
+/* ---------- camera application: free camera, with jumpTo fallback ---------- */
+let useFallback = false;
+const FOV_DEG = 36.87;                       // MapLibre default vertical FOV
+const TAN_HALF_FOV = Math.tan(FOV_DEG/2*RAD);
+
+function applyCamera(){
+  if(!useFallback){
+    try{
+      const fc = map.getFreeCameraOptions();
+      fc.position = maplibregl.MercatorCoordinate.fromLngLat({lng:cam.lng,lat:cam.lat}, cam.alt);
+      fc.setPitchBearing(cam.pitch, cam.bearing);
+      map.setFreeCameraOptions(fc);
+      return;
+    }catch(err){
+      console.warn("Free camera unavailable, switching to fallback:", err);
+      useFallback = true;
+    }
+  }
+  /* Fallback: place the map CENTER at the point the drone is looking at,
+     and derive zoom from camera height — works on every MapLibre build. */
+  const pitchR = cam.pitch*RAD;
+  const groundCam = groundAt(cam.lng,cam.lat) ?? 1500;
+  const agl = Math.max(cam.alt - groundCam, 30);
+  const dist = agl*Math.tan(pitchR);
+  const cLat = cam.lat + (dist*Math.cos(cam.bearing*RAD))/111320;
+  const cLng = cam.lng + (dist*Math.sin(cam.bearing*RAD))/(111320*Math.cos(cam.lat*RAD));
+  const elevC = groundAt(cLng,cLat) ?? groundCam;
+  const camAboveCenter = Math.max(cam.alt - elevC, 60);
+  const c2cPx = 0.5*canvas.clientHeight/TAN_HALF_FOV;
+  const mpp = camAboveCenter/(Math.cos(pitchR)*c2cPx);
+  const zoom = Math.log2(40075016.686*Math.cos(cLat*RAD)/(mpp*512));
+  map.jumpTo({center:[cLng,cLat], zoom:clamp(zoom,7,17.5), pitch:cam.pitch, bearing:cam.bearing});
+}
+
+/* ---------- main loop ---------- */
+let lastT = performance.now();
+function frame(now){
+  const dt = Math.min((now-lastT)/1000, 0.1);
+  lastT = now;
+  try{
+    if(flying && mapReady) step(dt);
+  }catch(err){
+    console.warn("flight step error:", err);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+function step(dt){
+  const boost = (keys.ShiftLeft||keys.ShiftRight) ? 2.5 : 1;
+
+  /* --- turn --- */
+  const turn = 70*dt;
+  if(keys.ArrowLeft)  cam.bearing = (cam.bearing - turn + 360)%360;
+  if(keys.ArrowRight) cam.bearing = (cam.bearing + turn)%360;
+
+  /* --- throttle / soar / brake --- */
+  const throttle = keys.KeyW || keys.ArrowUp;
+  const brake    = keys.KeyS || keys.ArrowDown;
+  if(hover){
+    vel *= Math.max(0, 1 - 5*dt);                 // damp to a standstill
+    if(throttle) hover = false;                   // throttle exits hover
+  } else {
+    if(throttle) vel += 70*boost*dt;
+    if(brake)    vel -= 110*dt;
+    if(!throttle && !brake) vel *= (1 - 0.10*dt); // long, slow glide decay
+    vel += Math.cos(cam.pitch*RAD)*9.8*dt*0.6;    // dive to gain speed
+    vel = clamp(vel, 0, MAX_SPD*boost);
+  }
+
+  /* --- displacement (FPV: travel where you look) --- */
+  let dx=0, dy=0, dz=0;
+  if(!hover && vel > 0.5){
+    const horiz = Math.sin(cam.pitch*RAD);
+    const down  = Math.cos(cam.pitch*RAD);
+    dx += vel*dt*horiz*Math.sin(cam.bearing*RAD);
+    dy += vel*dt*horiz*Math.cos(cam.bearing*RAD);
+    dz -= vel*dt*down;
+    dz -= 2.0*dt;                                  // sink rate while gliding
+  }
+  if(keys.KeyA || keys.KeyD){                      // drone strafe
+    const s = (keys.KeyD?1:0) - (keys.KeyA?1:0);
+    const sb = (cam.bearing+90)*RAD;
+    dx += s*48*boost*dt*Math.sin(sb);
+    dy += s*48*boost*dt*Math.cos(sb);
+  }
+  if(keys.KeyE || keys.PageUp)   dz += 40*boost*dt;   // rotor climb
+  if(keys.KeyQ || keys.PageDown) dz -= 40*boost*dt;
+
+  cam.lat += dy/111320;
+  cam.lng += dx/(111320*Math.cos(cam.lat*RAD));
+  cam.alt += dz;
+  lastVertRate = dz/dt;
+
+  /* --- terrain collision --- */
+  const ground = groundAt(cam.lng,cam.lat);
+  if(ground!=null && cam.alt < ground+22){
+    cam.alt = ground+22;
+    vel *= Math.max(0, 1 - 1.5*dt);               // scrubbing the deck bleeds speed
+  }
+  cam.alt = clamp(cam.alt, 1250, 15000);
+
+  applyCamera();
+  updateHUD(ground);
+}
+
+/* ============================================================
+   HUD
+   ============================================================ */
+const tapeStrip = document.getElementById("tapeStrip");
+const hdgReadout = document.getElementById("hdgReadout");
+const altMsl = document.getElementById("altMsl");
+const altAgl = document.getElementById("altAgl");
+const spdEl = document.getElementById("spdVal");
+const vsEl = document.getElementById("vsVal");
+const hoverPill = document.getElementById("hoverPill");
+const PX_PER_DEG = 2.0;
+const TAPE_HALF = 116;
+
+(function buildTape(){
+  const frag = document.createDocumentFragment();
+  const names = {0:"N",45:"NE",90:"E",135:"SE",180:"S",225:"SW",270:"W",315:"NW"};
+  for(let deg=-360; deg<=720; deg+=15){
+    const x = deg*PX_PER_DEG;
+    const norm = ((deg%360)+360)%360;
+    const tick = document.createElement("div");
+    tick.className = "tick" + (norm%45===0?" major":"");
+    tick.style.left = x+"px";
+    frag.appendChild(tick);
+    if(norm%45===0){
+      const lab = document.createElement("div");
+      lab.className = "tick-label"+(norm%90===0?" cardinal":"");
+      lab.style.left = x+"px";
+      lab.textContent = names[norm];
+      frag.appendChild(lab);
+    }
+  }
+  tapeStrip.appendChild(frag);
+})();
+
+const M2FT = 3.28084;
+function updateHUD(ground){
+  tapeStrip.style.transform = "translateX(" + (TAPE_HALF - cam.bearing*PX_PER_DEG) + "px)";
+  hdgReadout.textContent = "HDG " + String(Math.round(cam.bearing)%360).padStart(3,"0") + "°";
+  altMsl.innerHTML = Math.round(cam.alt*M2FT).toLocaleString() + "<small>ft</small>";
+  if(ground!=null){
+    const agl = Math.max(0, Math.round((cam.alt-ground)*M2FT));
+    altAgl.innerHTML = agl.toLocaleString() + "<small>ft</small>";
+    altAgl.classList.toggle("agl-low", agl < 300);
+  } else {
+    altAgl.innerHTML = "—<small>ft</small>";
+  }
+  spdEl.innerHTML = Math.round(hover?0:vel) + "<small>m/s</small>";
+  const fpm = Math.round(lastVertRate*M2FT*60/10)*10;
+  vsEl.innerHTML = (fpm>0?"+":"") + fpm.toLocaleString() + "<small>fpm</small>";
+  vsEl.classList.toggle("vs-up", fpm>50);
+  vsEl.classList.toggle("vs-dn", fpm<-50);
+  hoverPill.classList.toggle("on", hover);
+}
+
+/* ============================================================
+   Panel, presets, toggles
+   ============================================================ */
+const panel = document.getElementById("panel");
+document.getElementById("panelToggle").addEventListener("click",()=> panel.classList.toggle("open"));
+
+const chips = document.getElementById("presetChips");
+PRESETS.forEach((pz,i)=>{
+  const b = document.createElement("button");
+  b.className="chip";
+  b.textContent = (i+1)+" · "+pz[0];
+  b.addEventListener("click",()=>{ goPreset(i); panel.classList.remove("open"); });
+  chips.appendChild(b);
+});
+function goPreset(i){
+  const z = PRESETS[i];
+  cam.lat=z[1]; cam.lng=z[2]; cam.alt=z[3]; cam.bearing=z[4]; cam.pitch=z[5];
+  vel = 0; hover = false;
+  if(!flying) applyCamera();
+}
+
+function bindToggle(id, fn){ document.getElementById(id).addEventListener("change",(e)=>fn(e.target.checked)); }
+function setVis(layer, on){ if(map.getLayer(layer)) map.setLayoutProperty(layer,"visibility", on?"visible":"none"); }
+bindToggle("tTrails", on=>setVis("trails",on));
+bindToggle("tMtb",    on=>setVis("mtb",on));
+bindToggle("tLabels", on=>setVis("poi-labels",on));
+bindToggle("tPlaces", on=>setVis("places",on));
+bindToggle("tDaily",  on=>setVis("daily",on));
+document.getElementById("dailyDate").textContent = "VIIRS · "+gibsDate+" · snow extent, low-res";
+
+const exagEl = document.getElementById("exag"), exagVal = document.getElementById("exagVal");
+exagEl.addEventListener("input",()=>{
+  exaggeration = parseFloat(exagEl.value);
+  exagVal.textContent = exaggeration.toFixed(2)+"×";
+  if(mapReady) map.setTerrain({source:"dem", exaggeration});
+});
+
+/* ============================================================
+   Help modal
+   ============================================================ */
+function showHelp(open){
+  helpOpen = open;
+  helpModal.style.display = open ? "flex" : "none";
+  flying = !open;
+  if(!open) lastT = performance.now();
+}
+document.getElementById("startBtn").addEventListener("click",()=>showHelp(false));
+helpModal.addEventListener("click",(e)=>{ if(e.target===helpModal) showHelp(false); });
+
+})();
+</script>
+</body>
+</html>
