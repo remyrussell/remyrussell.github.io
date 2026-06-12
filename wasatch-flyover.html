@@ -110,6 +110,10 @@
   .maplibregl-ctrl-attrib{font-size:10px !important;background:rgba(10,14,18,.6) !important;color:var(--dim) !important}
   .maplibregl-ctrl-attrib a{color:var(--dim) !important}
 
+  .err-banner{position:absolute;top:60px;left:50%;transform:translateX(-50%);z-index:40;max-width:92vw;background:rgba(120,30,30,.95);border:1px solid rgba(255,120,120,.5);color:#ffd9d9;font-family:var(--mono);font-size:10.5px;line-height:1.5;padding:8px 30px 8px 12px;border-radius:8px;display:none;word-break:break-word}
+  .err-banner.on{display:block}
+  .err-banner .err-x{position:absolute;top:4px;right:8px;cursor:pointer;color:#ffd9d9;font-size:13px}
+
   @media (max-width:720px){
     .brand h1{font-size:12px}
   }
@@ -117,6 +121,7 @@
 </head>
 <body>
 <div id="map"></div>
+<div class="err-banner" id="errBanner"><span class="err-x" id="errX">✕</span><span id="errMsg"></span></div>
 
 <div class="brand">
   <h1>WASATCH <span>FLYOVER</span></h1>
@@ -218,6 +223,18 @@
 <script>
 (function(){
 "use strict";
+
+/* ---- on-screen error reporter (mobile has no console) ---- */
+function showError(msg){
+  try{
+    const b=document.getElementById("errBanner");
+    document.getElementById("errMsg").textContent = String(msg).slice(0,300);
+    b.classList.add("on");
+  }catch(e){}
+}
+window.addEventListener("error",(e)=>showError(e.message + (e.lineno?(" @"+e.lineno):"")));
+window.addEventListener("unhandledrejection",(e)=>showError("Promise: "+(e.reason&&e.reason.message||e.reason)));
+document.getElementById("errX").addEventListener("click",()=>document.getElementById("errBanner").classList.remove("on"));
 
 /* ============================================================
    Named features (approximate coordinates — exploration only)
@@ -517,27 +534,15 @@ document.querySelectorAll(".tbtn").forEach(btn=>{
 
 function clamp(v,a,b){ return Math.min(b,Math.max(a,v)); }
 
-/* ---------- camera application: free camera, with jumpTo fallback ---------- */
-let useFallback = false;
-let fbZoom = null;                           // smoothed fallback zoom
+/* ---------- camera application ----------
+   MapLibre has no free-camera API (that's Mapbox-only), so we drive
+   the camera by placing the map CENTER at the point the drone is
+   looking at and deriving zoom from camera height above terrain.    */
+let fbZoom = null;                           // smoothed zoom
 const FOV_DEG = 36.87;                       // MapLibre default vertical FOV
 const TAN_HALF_FOV = Math.tan(FOV_DEG/2*RAD);
 
 function applyCamera(){
-  if(!useFallback){
-    try{
-      const fc = map.getFreeCameraOptions();
-      fc.position = maplibregl.MercatorCoordinate.fromLngLat({lng:cam.lng,lat:cam.lat}, cam.alt);
-      fc.setPitchBearing(cam.pitch, cam.bearing);
-      map.setFreeCameraOptions(fc);
-      return;
-    }catch(err){
-      console.warn("Free camera unavailable, switching to fallback:", err);
-      useFallback = true;
-    }
-  }
-  /* Fallback: place the map CENTER at the point the drone is looking at,
-     and derive zoom from camera height — works on every MapLibre build. */
   const pitchR = cam.pitch*RAD;
   const groundCam = smoothGround ?? groundAt(cam.lng,cam.lat) ?? 1500;
   const agl = Math.max(cam.alt - groundCam, 30);
@@ -636,14 +641,16 @@ function step(dt){
   }
   cam.alt = clamp(cam.alt, 1250, 15000);
 
-  /* --- only touch the camera when something actually changed ---
-     (re-applying an identical camera every frame caused visible
-      jitter on mobile and wasted battery)                        */
-  if( Math.abs(cam.lng-lastCam.lng) > 1e-8 ||
+  /* --- only touch the camera when something actually changed.
+     NOTE: lastCam starts as NaN, and NaN comparisons are always
+     false — so we must explicitly treat "never applied" as dirty. --- */
+  const dirty = isNaN(lastCam.lng) ||
+      Math.abs(cam.lng-lastCam.lng) > 1e-8 ||
       Math.abs(cam.lat-lastCam.lat) > 1e-8 ||
       Math.abs(cam.alt-lastCam.alt) > 0.02 ||
       Math.abs(cam.bearing-lastCam.bearing) > 0.005 ||
-      Math.abs(cam.pitch-lastCam.pitch) > 0.005 ){
+      Math.abs(cam.pitch-lastCam.pitch) > 0.005;
+  if(dirty){
     applyCamera();
     lastCam.lng=cam.lng; lastCam.lat=cam.lat; lastCam.alt=cam.alt;
     lastCam.bearing=cam.bearing; lastCam.pitch=cam.pitch;
