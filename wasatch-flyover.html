@@ -16,6 +16,7 @@
     --amber:#f2b544;
     --drain:#9cd4f0;
     --canyon:#bfe8b0;
+    --run:#f2a0c0;
     --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,Menlo,monospace;
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   }
@@ -23,29 +24,33 @@
   html,body{height:100%;overflow:hidden;background:var(--ink);font-family:var(--sans);color:var(--text);overscroll-behavior:none;position:fixed;width:100%;touch-action:none}
   #map{position:absolute;inset:0}
   #map canvas,.maplibregl-canvas-container{touch-action:none !important;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-  #map canvas{cursor:grab}
-  #map canvas:active{cursor:grabbing}
 
   .brand{position:absolute;top:14px;left:14px;z-index:10;pointer-events:none}
   .brand h1{font-size:15px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.8)}
   .brand h1 span{color:var(--cyan)}
   .brand p{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:3px;text-shadow:0 1px 4px rgba(0,0,0,.8)}
 
+  /* ---------- the glider (third-person character) ---------- */
+  .glider{position:absolute;left:50%;top:58%;z-index:9;pointer-events:none;transform:translate(-50%,-50%);will-change:transform}
+  .glider svg{display:block;overflow:visible}
+  .glider-shadow{position:absolute;left:50%;top:calc(58% + 46px);z-index:8;width:74px;height:13px;border-radius:50%;background:#000;opacity:0;pointer-events:none;transform:translate(-50%,-50%);will-change:transform,opacity}
+  .glider .boost-trail{position:absolute;left:50%;top:78%;width:8px;height:0;transform:translateX(-50%);border-radius:999px;background:linear-gradient(to bottom, rgba(127,216,232,.95), rgba(127,216,232,0));transition:height .15s ease;filter:blur(1px)}
+  .glider.boosting .boost-trail{height:74px}
+
   /* ---------- flight HUD ---------- */
   .hud{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:13px;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--panel-line);border-radius:10px;padding:10px 16px;user-select:none}
-  .hud .block{display:flex;flex-direction:column;align-items:center;min-width:68px}
+  .hud .block{display:flex;flex-direction:column;align-items:center;min-width:64px}
   .hud .lbl{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
   .hud .val{font-family:var(--mono);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
   .hud .val small{font-size:10px;color:var(--dim);font-weight:400;margin-left:2px}
   .hud .val.agl-low{color:var(--amber)}
-  .hud .val.vs-up{color:var(--cyan)}
-  .hud .val.vs-dn{color:var(--amber)}
   .hud .divider{width:1px;height:34px;background:var(--panel-line)}
-  .hover-pill{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--cyan);color:#06262c;font-size:9px;font-weight:800;letter-spacing:.2em;padding:3px 10px;border-radius:999px;display:none}
-  .hover-pill.on{display:block}
+  .state-pill{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--cyan);color:#06262c;font-size:9px;font-weight:800;letter-spacing:.2em;padding:3px 10px;border-radius:999px;display:none}
+  .state-pill.on{display:block}
+  .state-pill.landed{background:var(--canyon)}
 
   .tape-wrap{display:flex;flex-direction:column;align-items:center}
-  .tape{position:relative;width:232px;height:34px;overflow:hidden;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid var(--panel-line)}
+  .tape{position:relative;width:220px;height:34px;overflow:hidden;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid var(--panel-line)}
   .tape-strip{position:absolute;top:0;left:0;height:100%;will-change:transform}
   .tick{position:absolute;bottom:0;width:1px;background:rgba(255,255,255,.35);height:7px}
   .tick.major{height:11px;background:rgba(255,255,255,.6)}
@@ -81,11 +86,11 @@
 
   /* ---------- help modal ---------- */
   .modal-bg{position:absolute;inset:0;z-index:30;background:rgba(5,8,11,.66);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
-  .modal{width:min(460px,92vw);max-height:92vh;overflow-y:auto;background:rgba(13,18,24,.96);border:1px solid var(--panel-line);border-radius:14px;padding:26px 28px}
+  .modal{width:min(450px,92vw);max-height:92vh;overflow-y:auto;background:rgba(13,18,24,.96);border:1px solid var(--panel-line);border-radius:14px;padding:26px 28px}
   .modal h1{font-size:16px;font-weight:800;letter-spacing:.26em;text-transform:uppercase}
   .modal h1 span{color:var(--cyan)}
   .modal .sub{font-size:12px;color:var(--dim);margin:6px 0 18px;line-height:1.5}
-  .keys{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:12.5px;align-items:center}
+  .keys{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:13px;align-items:center}
   .keys kbd{font-family:var(--mono);font-size:11px;background:rgba(255,255,255,.08);border:1px solid var(--panel-line);border-bottom-width:2px;border-radius:5px;padding:2px 7px;white-space:nowrap}
   .keys .what{color:var(--dim)}
   .go{margin-top:20px;width:100%;padding:11px;border:none;border-radius:9px;background:var(--cyan);color:#06262c;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
@@ -96,15 +101,16 @@
   .touch-ui{display:none}
   @media (pointer:coarse){
     .touch-ui{display:block}
-    .hud{bottom:110px;padding:8px 10px;gap:8px}
-    .tape{width:140px}
-    .hud .block{min-width:50px}
+    .hud{bottom:120px;padding:8px 10px;gap:8px}
+    .tape{width:130px}
+    .hud .block{min-width:48px}
     .hud .val{font-size:14px}
   }
   .touch-cluster{position:absolute;bottom:16px;z-index:10;display:grid;gap:8px}
-  .touch-cluster.left{left:16px;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(2,52px)}
-  .touch-cluster.right{right:16px;grid-template-columns:52px;grid-template-rows:repeat(3,52px)}
-  .tbtn{border-radius:12px;background:var(--panel);border:1px solid var(--panel-line);color:var(--text);font-size:17px;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;touch-action:none}
+  .touch-cluster.left{left:16px;grid-template-columns:repeat(2,58px);grid-template-rows:58px}
+  .touch-cluster.right{right:16px;grid-template-columns:58px;grid-template-rows:repeat(2,58px)}
+  .boost-btn{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:10;width:96px;height:46px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.16em}
+  .tbtn{border-radius:14px;background:var(--panel);border:1px solid var(--panel-line);color:var(--text);font-size:19px;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;touch-action:none}
   .tbtn:active,.tbtn.held{background:rgba(127,216,232,.3);border-color:var(--cyan)}
 
   .maplibregl-ctrl-attrib{font-size:10px !important;background:rgba(10,14,18,.6) !important;color:var(--dim) !important}
@@ -128,6 +134,21 @@
   <p>3D backcountry terrain explorer</p>
 </div>
 
+<!-- third-person glider sprite -->
+<div class="glider-shadow" id="gliderShadow"></div>
+<div class="glider" id="glider">
+  <svg width="104" height="64" viewBox="0 0 104 64" xmlns="http://www.w3.org/2000/svg">
+    <path d="M52 14 L100 34 Q76 28 52 30 Q28 28 4 34 Z" fill="#e8484f"/>
+    <path d="M52 14 L100 34 Q76 28 52 30 Z" fill="#c93a44"/>
+    <path d="M52 15 L52 30" stroke="#7a2228" stroke-width="2"/>
+    <ellipse cx="52" cy="40" rx="4.5" ry="9" fill="#23303a"/>
+    <circle cx="52" cy="33.5" r="3.4" fill="#f0c8a0"/>
+    <path d="M48.8 32 a3.6 3.6 0 0 1 6.4 0 l-0.4 -3 h-5.6 Z" fill="#2b6f8a"/>
+    <path d="M52 22 L48 33 M52 22 L56 33" stroke="#9fb0bd" stroke-width="1" opacity="0.8"/>
+  </svg>
+  <div class="boost-trail"></div>
+</div>
+
 <button class="panel-toggle" id="panelToggle" title="Settings & locations" aria-label="Open settings">☰</button>
 
 <div class="panel" id="panel">
@@ -138,6 +159,7 @@
   <div class="row"><label for="tTrails">Hiking routes (OSM)</label><span class="switch"><input type="checkbox" id="tTrails" checked><span class="slider-sw"></span></span></div>
   <div class="row"><label for="tMtb">MTB routes (OSM)</label><span class="switch"><input type="checkbox" id="tMtb" checked><span class="slider-sw"></span></span></div>
   <div class="row"><label for="tLabels">Peaks &amp; drainages</label><span class="switch"><input type="checkbox" id="tLabels" checked><span class="slider-sw"></span></span></div>
+  <div class="row"><label for="tRuns">Backcountry runs<span class="sub-note">curated · approximate</span></label><span class="switch"><input type="checkbox" id="tRuns" checked><span class="slider-sw"></span></span></div>
   <div class="row"><label for="tPlaces">Towns &amp; roads</label><span class="switch"><input type="checkbox" id="tPlaces"><span class="slider-sw"></span></span></div>
 
   <h2>Imagery</h2>
@@ -147,23 +169,28 @@
   </div>
 
   <h2>Terrain exaggeration</h2>
-  <input type="range" id="exag" min="1" max="2" step="0.05" value="1.25">
-  <div class="range-row"><span>real</span><span id="exagVal">1.25×</span><span>dramatic</span></div>
+  <input type="range" id="exag" min="1" max="2" step="0.05" value="1">
+  <div class="range-row"><span>real</span><span id="exagVal">1.00×</span><span>dramatic</span></div>
+
+  <h2>Cruise speed</h2>
+  <input type="range" id="cruise" min="40" max="150" step="5" value="75">
+  <div class="range-row"><span>soar</span><span id="cruiseVal">75 m/s</span><span>swift</span></div>
 
   <h2>Label key</h2>
   <div class="legend">
     <span class="swatch" style="background:#ffffff"></span>Peak&nbsp;&nbsp;
     <span class="swatch" style="background:var(--drain)"></span>Drainage<br>
     <span class="swatch" style="background:var(--canyon)"></span>Canyon&nbsp;&nbsp;
+    <span class="swatch" style="background:var(--run)"></span>Ski run<br>
     <span class="swatch" style="background:var(--amber)"></span>Resort
   </div>
 
-  <div class="fineprint">Label positions are approximate — for exploration, not navigation. Always carry a real map, beacon, shovel and probe in avalanche terrain.</div>
+  <div class="fineprint">Label and run positions are approximate — for exploration, not navigation. Always carry a real map, beacon, shovel and probe in avalanche terrain.</div>
 </div>
 
 <!-- flight HUD -->
 <div class="hud" id="hud">
-  <div class="hover-pill" id="hoverPill">HOVER</div>
+  <div class="state-pill" id="statePill">BOOST</div>
   <div class="tape-wrap">
     <div class="tape">
       <div class="tape-strip" id="tapeStrip"></div>
@@ -176,46 +203,36 @@
   <div class="block"><div class="lbl">AGL</div><div class="val" id="altAgl">—<small>ft</small></div></div>
   <div class="divider"></div>
   <div class="block"><div class="lbl">Speed</div><div class="val" id="spdVal">0<small>m/s</small></div></div>
-  <div class="block"><div class="lbl">Vert</div><div class="val" id="vsVal">0<small>fpm</small></div></div>
 </div>
 
-<!-- touch controls -->
+<!-- touch controls: arrows + boost only -->
 <div class="touch-ui">
   <div class="touch-cluster left">
-    <div class="tbtn" data-k="ArrowLeft">⟲</div>
-    <div class="tbtn" data-k="ArrowUp">▲</div>
-    <div class="tbtn" data-k="ArrowRight">⟳</div>
-    <div class="tbtn" data-k="KeyA">◀</div>
-    <div class="tbtn" data-k="ArrowDown">▼</div>
-    <div class="tbtn" data-k="KeyD">▶</div>
+    <div class="tbtn" data-k="ArrowLeft">◀</div>
+    <div class="tbtn" data-k="ArrowRight">▶</div>
   </div>
   <div class="touch-cluster right">
-    <div class="tbtn" data-k="KeyE">＋</div>
-    <div class="tbtn" data-k="Space" id="hoverBtn">⏸</div>
-    <div class="tbtn" data-k="KeyQ">－</div>
+    <div class="tbtn" data-k="ArrowUp">▲</div>
+    <div class="tbtn" data-k="ArrowDown">▼</div>
   </div>
+  <div class="tbtn boost-btn" data-k="Space">BOOST</div>
 </div>
 
 <!-- help modal -->
 <div class="modal-bg" id="helpModal">
   <div class="modal">
     <h1>WASATCH <span>FLYOVER</span></h1>
-    <p class="sub">A glider–drone hybrid over real 3D Wasatch terrain. Throttle up, then steer by looking — you fly toward wherever you point the camera. Ease off and you'll soar; dive to gain speed; hover to study a line.</p>
+    <p class="sub">An open-world glider over the real Wasatch. Bank to carve, dive to gain speed, climb to clear the ridgelines — or bleed off speed and set it down on any summit, then boost to launch again. Peaks, drainages and classic backcountry runs are labeled below you.</p>
     <div class="keys">
-      <span><kbd>W</kbd> / <kbd>↑</kbd></span><span class="what">throttle up</span>
-      <span><kbd>S</kbd> / <kbd>↓</kbd></span><span class="what">airbrake</span>
-      <span><kbd>drag mouse</kbd></span><span class="what">steer — you fly where you look</span>
-      <span><kbd>←</kbd> <kbd>→</kbd></span><span class="what">turn</span>
-      <span><kbd>A</kbd> <kbd>D</kbd></span><span class="what">strafe (drone slide)</span>
-      <span><kbd>E</kbd> <kbd>Q</kbd></span><span class="what">climb / descend</span>
-      <span><kbd>Space</kbd></span><span class="what">hover — hold position</span>
-      <span><kbd>Shift</kbd></span><span class="what">boost</span>
-      <span><kbd>scroll</kbd></span><span class="what">trim speed</span>
-      <span><kbd>1</kbd>–<kbd>9</kbd></span><span class="what">jump to zones</span>
+      <span><kbd>←</kbd> <kbd>→</kbd></span><span class="what">bank left / right (rotate when landed)</span>
+      <span><kbd>↑</kbd></span><span class="what">climb · take off when landed</span>
+      <span><kbd>↓</kbd></span><span class="what">dive — gains speed</span>
+      <span><kbd>Space</kbd></span><span class="what">boost — hold to keep accelerating, no limit</span>
+      <span><kbd>1</kbd>–<kbd>9</kbd></span><span class="what">jump between zones</span>
       <span><kbd>?</kbd></span><span class="what">this help</span>
     </div>
-    <button class="go" id="startBtn">Start flying</button>
-    <p class="hint">Tip: click any peak label to fly straight to it.</p>
+    <button class="go" id="startBtn">Take off</button>
+    <p class="hint">Land by slowing down near the surface. Click any label to teleport.</p>
   </div>
 </div>
 
@@ -236,6 +253,76 @@ window.addEventListener("error",(e)=>showError(e.message + (e.lineno?(" @"+e.lin
 window.addEventListener("unhandledrejection",(e)=>showError("Promise: "+(e.reason&&e.reason.message||e.reason)));
 document.getElementById("errX").addEventListener("click",()=>document.getElementById("errBanner").classList.remove("on"));
 
+const RAD = Math.PI/180;
+function clamp(v,a,b){ return Math.min(b,Math.max(a,v)); }
+function ease(k,dt){ return 1 - Math.exp(-k*dt); }
+function lerpAngle(a,b,t){
+  let d = ((b - a + 540) % 360) - 180;
+  return (a + d*t + 360) % 360;
+}
+
+/* ============================================================
+   Absolute elevation sampler
+   ------------------------------------------------------------
+   MapLibre's queryTerrainElevation returns elevation RELATIVE to
+   the map center's elevation — useless for physics with a moving
+   camera. So we sample the same terrarium tiles the renderer
+   uses, decode them ourselves, and get stable absolute meters
+   above sea level. Bilinear-filtered, LRU-cached, prefetched
+   along the flight path. This is what makes landing on a peak
+   read the peak's true elevation.
+   ============================================================ */
+const ELEV_Z = 13;                       // ~19 m/px in the Wasatch
+const tileCache = new Map();
+function requestTile(tx,ty){
+  const key = tx+"_"+ty;
+  let rec = tileCache.get(key);
+  if(rec) return rec;
+  rec = {state:"loading", data:null};
+  tileCache.set(key, rec);
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = ()=>{
+    try{
+      const c = document.createElement("canvas");
+      c.width = c.height = 256;
+      const ctx = c.getContext("2d",{willReadFrequently:true});
+      ctx.drawImage(img,0,0);
+      rec.data = ctx.getImageData(0,0,256,256).data;
+      rec.state = "ready";
+    }catch(e){ rec.state="error"; showError("elev decode: "+e.message); }
+  };
+  img.onerror = ()=>{ rec.state = "error"; };
+  img.src = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/"+ELEV_Z+"/"+tx+"/"+ty+".png";
+  if(tileCache.size > 90){
+    const oldest = tileCache.keys().next().value;
+    if(oldest !== key) tileCache.delete(oldest);
+  }
+  return rec;
+}
+function lngLatToTileF(lng,lat){
+  const n = Math.pow(2,ELEV_Z);
+  const latR = lat*RAD;
+  return [ (lng+180)/360*n,
+           (1 - Math.log(Math.tan(latR)+1/Math.cos(latR))/Math.PI)/2*n ];
+}
+/* absolute elevation in meters MSL, or null while the tile loads */
+function elevationAt(lng,lat){
+  const [fx,fy] = lngLatToTileF(lng,lat);
+  const tx = Math.floor(fx), ty = Math.floor(fy);
+  const rec = requestTile(tx,ty);
+  if(rec.state !== "ready") return null;
+  const px = clamp((fx-tx)*256 - 0.5, 0, 255);
+  const py = clamp((fy-ty)*256 - 0.5, 0, 255);
+  const x0 = Math.floor(px), y0 = Math.floor(py);
+  const x1 = Math.min(x0+1,255), y1 = Math.min(y0+1,255);
+  const dx = px-x0, dy = py-y0;
+  const d = rec.data;
+  const h = (x,y)=>{ const i=(y*256+x)*4; return d[i]*256 + d[i+1] + d[i+2]/256 - 32768; };
+  return h(x0,y0)*(1-dx)*(1-dy) + h(x1,y0)*dx*(1-dy)
+       + h(x0,y1)*(1-dx)*dy   + h(x1,y1)*dx*dy;
+}
+
 /* ============================================================
    Named features (approximate coordinates — exploration only)
    ============================================================ */
@@ -248,50 +335,102 @@ function p(n,la,ln,e){return feat(n,la,ln,"peak",e)}
 function d(n,la,ln){return feat(n,la,ln,"drainage")}
 function c(n,la,ln){return feat(n,la,ln,"canyon")}
 function r(n,la,ln){return feat(n,la,ln,"resort")}
+function rn(n,la,ln){return feat(n,la,ln,"run")}
 
 const FEATURES = [
+  /* --- peaks --- */
   p("Mount Olympus", 40.6631,-111.7478,"9,026'"),
   p("Grandeur Peak", 40.7070,-111.7600,"8,299'"),
   p("Mount Aire", 40.6968,-111.6789,"8,621'"),
   p("Mount Raymond", 40.6258,-111.7029,"10,241'"),
   p("Gobblers Knob", 40.6280,-111.6886,"10,246'"),
   p("Kessler Peak", 40.6090,-111.6614,"10,403'"),
+  p("Reynolds Peak", 40.6450,-111.6440,"9,422'"),
   p("Broads Fork Twin Peaks", 40.5650,-111.7320,"11,330'"),
   p("Sunrise Peak", 40.5621,-111.7106,"11,275'"),
   p("Dromedary Peak", 40.5614,-111.7053,"11,107'"),
   p("Mount Superior", 40.5781,-111.6644,"11,050'"),
+  p("Monte Cristo", 40.5770,-111.6680,"11,132'"),
+  p("Hidden Peak", 40.5610,-111.6450,"11,000'"),
+  p("Flagstaff Mountain", 40.5900,-111.6420,"10,530'"),
+  p("Honeycomb Cliffs", 40.5950,-111.6200,"10,479'"),
+  p("Mount Wolverine", 40.5910,-111.6080,"10,795'"),
+  p("Patsy Marley", 40.5830,-111.6160,"10,535'"),
+  p("Mount Tuscarora", 40.5810,-111.6060,"10,648'"),
+  p("Mount Millicent", 40.5930,-111.6000,"10,452'"),
+  p("Clayton Peak", 40.5876,-111.5760,"10,721'"),
   p("Mount Baldy", 40.5680,-111.6360,"11,068'"),
   p("Sugarloaf Peak", 40.5658,-111.6111,"11,051'"),
   p("Devils Castle", 40.5645,-111.6190,"10,920'"),
   p("AF Twin Peaks", 40.5625,-111.6739,"11,489'"),
   p("Sunset Peak", 40.5755,-111.6050,"10,648'"),
+  p("White Baldy", 40.5430,-111.6920,"11,321'"),
+  p("Red Baldy", 40.5460,-111.6760,"11,171'"),
   p("Pfeifferhorn", 40.5311,-111.7058,"11,326'"),
+  p("South Thunder Mountain", 40.5430,-111.7440,"11,154'"),
+  p("North Thunder Mountain", 40.5500,-111.7480,"11,150'"),
+  p("Bighorn Peak", 40.5210,-111.7320,"10,877'"),
   p("Lone Peak", 40.5278,-111.7456,"11,253'"),
   p("Box Elder Peak", 40.5097,-111.6975,"11,101'"),
+  p("Jupiter Peak", 40.6210,-111.5060,"9,998'"),
   p("Mount Timpanogos", 40.3908,-111.6457,"11,749'"),
+  p("Cascade Mountain", 40.3030,-111.6190,"10,908'"),
+  p("Provo Peak", 40.2280,-111.5950,"11,068'"),
+  p("Spanish Fork Peak", 40.0680,-111.5390,"10,192'"),
+  p("Loafer Mountain", 39.9530,-111.7330,"10,687'"),
+  p("Santaquin Peak", 39.9450,-111.7560,"10,685'"),
   p("Mount Nebo", 39.8219,-111.7597,"11,928'"),
-  p("Ben Lomond", 41.3760,-111.9580,"9,712'"),
+  p("Grandview Peak", 40.8390,-111.7560,"9,410'"),
+  p("Francis Peak", 40.9620,-111.8420,"9,547'"),
+  p("Thurston Peak", 41.0120,-111.9130,"9,706'"),
   p("Mount Ogden", 41.2074,-111.8758,"9,572'"),
+  p("Ben Lomond", 41.3760,-111.9580,"9,712'"),
+  p("Willard Peak", 41.3960,-111.9710,"9,763'"),
+  /* --- drainages --- */
   d("White Pine Fork", 40.5560,-111.6810),
   d("Red Pine Fork", 40.5560,-111.6960),
   d("Maybird Gulch", 40.5520,-111.7080),
   d("Hogum Fork", 40.5530,-111.7230),
   d("Bells Canyon", 40.5540,-111.7700),
   d("Broads Fork", 40.5840,-111.7250),
-  d("Mill B South Fork", 40.5950,-111.7140),
+  d("Stairs Gulch", 40.5950,-111.7300),
+  d("Mill B South Fork", 40.5940,-111.7140),
   d("Mineral Fork", 40.6040,-111.6860),
   d("Cardiff Fork", 40.6080,-111.6480),
   d("Days Fork", 40.6090,-111.6320),
   d("Silver Fork", 40.6060,-111.6090),
   d("Grizzly Gulch", 40.5860,-111.6230),
   d("Wolverine Cirque", 40.5890,-111.6020),
+  d("Beartrap Fork", 40.6280,-111.6190),
+  d("Willow Heights", 40.6350,-111.6080),
   d("Neffs Canyon", 40.6700,-111.7600),
+  d("Porter Fork", 40.6650,-111.7150),
+  d("Alexander Basin", 40.6830,-111.6920),
   d("Ferguson Canyon", 40.5970,-111.7800),
+  /* --- classic backcountry runs (curated, approximate) --- */
+  rn("Suicide Chute", 40.5760,-111.6670),
+  rn("Cardiac Bowl", 40.5830,-111.6660),
+  rn("Holy Toledo", 40.5880,-111.6600),
+  rn("Main Days", 40.5990,-111.6330),
+  rn("God's Lawnmower", 40.6065,-111.6650),
+  rn("Argenta", 40.6130,-111.6700),
+  rn("Bonkers", 40.5930,-111.6120),
+  rn("Emma Ridges", 40.5890,-111.6350),
+  rn("Meadow Chutes", 40.6120,-111.6080),
+  rn("USA Bowl", 40.6130,-111.6210),
+  rn("Room of Doom", 40.5990,-111.6890),
+  rn("Hypodermic Needle", 40.5330,-111.7030),
+  rn("Coalpit Headwall", 40.5570,-111.7420),
+  rn("Tanners Gulch", 40.5690,-111.7090),
+  rn("Pink Pine Ridge", 40.5660,-111.6900),
+  rn("Scotties Bowl", 40.6190,-111.6420),
+  /* --- canyons --- */
   c("Little Cottonwood Canyon", 40.5715,-111.7230),
   c("Big Cottonwood Canyon", 40.6340,-111.7100),
   c("Mill Creek Canyon", 40.6900,-111.7300),
   c("American Fork Canyon", 40.4440,-111.7000),
   c("Provo Canyon", 40.3530,-111.6030),
+  /* --- resorts --- */
   r("Snowbird", 40.5817,-111.6558),
   r("Alta", 40.5884,-111.6386),
   r("Brighton", 40.5977,-111.5836),
@@ -303,23 +442,23 @@ const FEATURES = [
   r("Powder Mountain", 41.3786,-111.7807)
 ];
 
-/* camera presets: [name, lat, lng, altitude m MSL, bearing°, pitch°] */
+/* presets: [name, lat, lng, AGL m, heading°] */
 const PRESETS = [
-  ["Little Cottonwood", 40.5740,-111.7950, 2450, 100, 80],
-  ["Mount Superior",    40.5690,-111.6620, 3650, 350, 77],
-  ["Lone Peak Cirque",  40.5400,-111.7600, 3650, 118, 75],
-  ["Broads Fork Twins", 40.5810,-111.7310, 3750, 190, 75],
-  ["Mount Olympus",     40.6660,-111.7920, 2950, 108, 80],
-  ["Brighton Bowls",    40.6060,-111.5900, 3300, 200, 78],
-  ["Timpanogos",        40.4170,-111.6920, 3850, 138, 75],
-  ["Snowbasin",         41.2310,-111.8920, 3250, 140, 78],
-  ["Mount Nebo",        39.8520,-111.8030, 3850, 150, 75]
+  ["Little Cottonwood", 40.5740,-111.7950, 600, 100],
+  ["Mount Superior",    40.5690,-111.6620, 500, 350],
+  ["Lone Peak Cirque",  40.5400,-111.7600, 500, 118],
+  ["Broads Fork Twins", 40.5810,-111.7310, 500, 190],
+  ["Mount Olympus",     40.6660,-111.7920, 500, 108],
+  ["Brighton Bowls",    40.6060,-111.5900, 450, 200],
+  ["Timpanogos",        40.4170,-111.6920, 550, 138],
+  ["Snowbasin",         41.2310,-111.8920, 500, 140],
+  ["Mount Nebo",        39.8520,-111.8030, 550, 150]
 ];
 
 /* ============================================================
    Map setup — free, open data sources (no API keys)
    ============================================================ */
-const yest = new Date(Date.now() - 36*3600*1000);          // ~1.5 days back for GIBS latency
+const yest = new Date(Date.now() - 36*3600*1000);
 const gibsDate = yest.toISOString().slice(0,10);
 
 const style = {
@@ -362,25 +501,73 @@ const style = {
     {id:"trails", type:"raster", source:"trails", paint:{"raster-opacity":0.92}},
     {id:"mtb", type:"raster", source:"mtb", paint:{"raster-opacity":0.92}},
     {id:"places", type:"raster", source:"places", layout:{visibility:"none"}, paint:{"raster-opacity":0.9}},
+
+    /* peaks: arrow icon pinned at the summit, name floating above */
+    {id:"peak-labels", type:"symbol", source:"poi",
+      filter:["==",["get","ftype"],"peak"],
+      layout:{
+        "icon-image":"peak-arrow",
+        "icon-anchor":"bottom",
+        "icon-allow-overlap":true,
+        "icon-size":["interpolate",["linear"],["zoom"], 9, 0.7, 13, 1.0, 15, 1.2],
+        "text-field":["get","name"],
+        "text-font":["Open Sans Semibold"],
+        "text-size":["interpolate",["linear"],["zoom"], 9, 9.5, 12, 12.5, 14, 15],
+        "text-anchor":"bottom",
+        "text-offset":[0,-1.5],
+        "text-line-height":1.15,
+        "text-letter-spacing":0.04,
+        "text-padding":2,
+        "text-optional":true
+      },
+      paint:{
+        "text-color":"#ffffff",
+        "text-halo-color":"#0a0e12",
+        "text-halo-width":1.6
+      }
+    },
+    /* everything except peaks and runs */
     {id:"poi-labels", type:"symbol", source:"poi",
+      filter:["all",["!=",["get","ftype"],"peak"],["!=",["get","ftype"],"run"]],
       layout:{
         "text-field":["get","name"],
         "text-font":["Open Sans Semibold"],
-        "text-size":["interpolate",["linear"],["zoom"], 9, 10, 12, 13, 14, 16],
+        "text-size":["interpolate",["linear"],["zoom"], 9, 9.5, 12, 12.5, 14, 15],
         "text-line-height":1.15,
         "text-letter-spacing":0.04,
-        "text-padding":6,
-        "symbol-sort-key":["match",["get","ftype"],"peak",0,"resort",1,"canyon",2,3]
+        "text-padding":2,
+        "text-variable-anchor":["top","bottom","left","right"],
+        "text-radial-offset":0.4,
+        "text-justify":"auto",
+        "symbol-sort-key":["match",["get","ftype"],"resort",1,"canyon",2,3]
       },
       paint:{
         "text-color":["match",["get","ftype"],
-          "peak","#ffffff",
           "drainage","#9cd4f0",
           "canyon","#bfe8b0",
           "resort","#f2b544",
           "#ffffff"],
         "text-halo-color":"#0a0e12",
         "text-halo-width":1.6
+      }
+    },
+    /* curated backcountry runs */
+    {id:"run-labels", type:"symbol", source:"poi",
+      filter:["==",["get","ftype"],"run"],
+      layout:{
+        "text-field":["get","name"],
+        "text-font":["Open Sans Semibold"],
+        "text-size":["interpolate",["linear"],["zoom"], 11, 10, 14, 13],
+        "text-letter-spacing":0.04,
+        "text-padding":2,
+        "text-variable-anchor":["top","bottom","left","right"],
+        "text-radial-offset":0.3,
+        "text-justify":"auto"
+      },
+      paint:{
+        "text-color":"#f2a0c0",
+        "text-halo-color":"#0a0e12",
+        "text-halo-width":1.5
       }
     }
   ]
@@ -390,36 +577,39 @@ const map = new maplibregl.Map({
   container:"map",
   style,
   center:[-111.86, 40.62],
-  zoom:12.5,
+  zoom:13,
   pitch:60,
   bearing:105,
   maxPitch:85,
   attributionControl:{compact:true},
   antialias:true,
-  /* the flight loop owns the camera — kill every built-in gesture
-     at construction so touch inertia can never fight it */
   dragPan:false, dragRotate:false, scrollZoom:false, keyboard:false,
   doubleClickZoom:false, touchZoomRotate:false, touchPitch:false, boxZoom:false
 });
-
-/* belt and suspenders for any handler the options missed */
 ["keyboard","dragPan","dragRotate","scrollZoom","doubleClickZoom",
  "touchZoomRotate","touchPitch","boxZoom"].forEach(h=>{
   try{ if(map[h] && map[h].disable) map[h].disable(); }catch(e){}
 });
-
-/* stop iOS/Android native scroll, pinch and rubber-band on the map.
-   (touchmove only — preventing touchstart would kill label taps) */
 const mapEl = document.getElementById("map");
 mapEl.addEventListener("touchmove",(e)=>e.preventDefault(),{passive:false});
 mapEl.addEventListener("gesturestart",(e)=>e.preventDefault());
 mapEl.addEventListener("gesturechange",(e)=>e.preventDefault());
 
-const RAD = Math.PI/180;
-let exaggeration = 1.25;
+let exaggeration = 1.0;
 let mapReady = false;
 
 map.on("load", ()=>{
+  /* arrow icon: triangle whose tip sits exactly on the summit coordinate */
+  const ac = document.createElement("canvas");
+  ac.width = ac.height = 26;
+  const a = ac.getContext("2d");
+  a.beginPath();
+  a.moveTo(13,24); a.lineTo(5,8); a.lineTo(21,8); a.closePath();
+  a.lineJoin = "round";
+  a.strokeStyle = "#0a0e12"; a.lineWidth = 4; a.stroke();
+  a.fillStyle = "#ffffff"; a.fill();
+  map.addImage("peak-arrow", a.getImageData(0,0,26,26), {pixelRatio:2});
+
   map.setTerrain({source:"dem", exaggeration});
   mapReady = true;
   try{
@@ -434,96 +624,75 @@ map.on("load", ()=>{
     });
   }catch(e){}
 
-  map.on("click","poi-labels",(e)=>{
-    const f = e.features && e.features[0];
-    if(!f) return;
-    const [lng,lat] = f.geometry.coordinates;
-    const ground = groundAt(lng,lat) ?? 2500;
-    cam.lng = lng - 0.012*Math.sin(cam.bearing*RAD);
-    cam.lat = lat - 0.012*Math.cos(cam.bearing*RAD);
-    cam.alt = ground + 500;
-    cam.pitch = 72;
-    vel = 0;
+  ["peak-labels","poi-labels","run-labels"].forEach(layer=>{
+    map.on("click",layer,(e)=>{
+      const f = e.features && e.features[0];
+      if(!f) return;
+      const [lng,lat] = f.geometry.coordinates;
+      g.lng = lng; g.lat = lat;
+      const ground = groundAt(lng,lat);
+      g.alt = (ground ?? 2500) + 400;
+      g.speed = cruise; landed = false;
+    });
+    map.on("mouseenter",layer,()=>{ map.getCanvas().style.cursor="pointer"; });
+    map.on("mouseleave",layer,()=>{ map.getCanvas().style.cursor=""; });
   });
-  map.on("mouseenter","poi-labels",()=>{ map.getCanvas().style.cursor="pointer"; });
-  map.on("mouseleave","poi-labels",()=>{ map.getCanvas().style.cursor=""; });
 });
 map.on("error",()=>{ /* ignore individual tile errors */ });
 
+/* ground height in SIM units (real elevation × exaggeration, so the
+   physics always matches what the renderer draws) */
 function groundAt(lng,lat){
-  if(!mapReady) return null;
-  try{
-    const v = map.queryTerrainElevation([lng,lat]);
-    return (typeof v === "number" && isFinite(v)) ? v : null;
-  }catch(e){ return null; }
+  const e = elevationAt(lng,lat);
+  return (e==null) ? null : e*exaggeration;
 }
 
 /* ============================================================
-   Flight model — glider/drone hybrid
-   ------------------------------------------------------------
-   - Throttle (W) accelerates; release and you SOAR with slow
-     aerodynamic decay. Airbrake (S) bleeds speed fast.
-   - You travel along the view direction: dive to gain speed,
-     pull toward the horizon to stretch a glide.
-   - E/Q is rotor thrust (climb/descend). Space toggles HOVER:
-     velocity damps to zero and altitude holds.
+   The glider — open-world third-person flight
    ============================================================ */
-const cam = { lng:-111.86, lat:40.62, alt:3200, bearing:105, pitch:78 };
-let vel = 0;              // forward airspeed, m/s
-let hover = false;
-let lastVertRate = 0;     // m/s for VSI
-let smoothGround = null;  // low-pass-filtered terrain under the drone
-const MAX_SPD = 320;
+const g = {
+  lng:-111.86, lat:40.62, alt:3200,
+  heading:105,
+  speed:75,
+  vert:0,
+  bank:0
+};
+let cruise = 75;
+let landed = false;
+let camBearing = g.heading;
+let camZoom = null;
+let camPitch = 70;
+let follow = 200;
+let elevCS = null;            // smoothed terrain at the camera's look-point
+let lastAgl = 600;
+let smoothGround = null;
 const keys = {};
 let flying = false;
-const lastCam = { lng:NaN, lat:NaN, alt:NaN, bearing:NaN, pitch:NaN };
+let boosting = false;
 
+const FOV_DEG = 36.87;
+const TAN_HALF_FOV = Math.tan(FOV_DEG/2*RAD);
+
+/* ---------- input: arrows + space only ---------- */
 const helpModal = document.getElementById("helpModal");
 let helpOpen = true;
 
 addEventListener("keydown",(e)=>{
-  if(e.key==="?" ){ showHelp(true); return; }
+  if(e.key==="?"){ showHelp(true); return; }
   if(helpOpen){
     if(e.code==="Enter"||e.code==="Escape"||e.code==="Space"){ showHelp(false); e.preventDefault(); }
     return;
   }
-  if(e.code==="Space"){ hover = !hover; e.preventDefault(); return; }
   const n = parseInt(e.key,10);
   if(!isNaN(n) && n>=1 && n<=PRESETS.length){ goPreset(n-1); return; }
-  keys[e.code]=true;
-  if(e.code.startsWith("Arrow")) e.preventDefault();
+  if(e.code==="Space"){ keys.Space=true; e.preventDefault(); return; }
+  if(e.code.startsWith("Arrow")){ keys[e.code]=true; e.preventDefault(); }
 });
 addEventListener("keyup",(e)=>{ keys[e.code]=false; });
 addEventListener("blur",()=>{ for(const k in keys) keys[k]=false; });
 
-/* look steering — our own drag handler (built-ins are disabled) */
-let dragging=false, lastX=0, lastY=0;
-const canvas = map.getCanvas();
-canvas.addEventListener("pointerdown",(e)=>{
-  dragging=true; lastX=e.clientX; lastY=e.clientY;
-  try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
-});
-canvas.addEventListener("pointermove",(e)=>{
-  if(!dragging) return;
-  cam.bearing = (cam.bearing + (e.clientX-lastX)*0.22 + 360)%360;
-  cam.pitch   = clamp(cam.pitch - (e.clientY-lastY)*0.14, 15, 85);
-  lastX=e.clientX; lastY=e.clientY;
-});
-addEventListener("pointerup",()=>{ dragging=false; });
-addEventListener("pointercancel",()=>{ dragging=false; });
-
-canvas.addEventListener("wheel",(e)=>{
-  e.preventDefault();
-  vel = clamp(vel + (e.deltaY<0 ? 8 : -8), 0, MAX_SPD);
-},{passive:false});
-
-/* touch buttons */
 document.querySelectorAll(".tbtn").forEach(btn=>{
   const k = btn.dataset.k;
-  if(k==="Space"){
-    btn.addEventListener("pointerdown",(e)=>{ e.preventDefault(); hover=!hover; });
-    return;
-  }
   const down=(e)=>{ e.preventDefault(); keys[k]=true; btn.classList.add("held"); };
   const up=(e)=>{ e.preventDefault(); keys[k]=false; btn.classList.remove("held"); };
   btn.addEventListener("pointerdown",down);
@@ -532,30 +701,30 @@ document.querySelectorAll(".tbtn").forEach(btn=>{
   btn.addEventListener("pointerleave",up);
 });
 
-function clamp(v,a,b){ return Math.min(b,Math.max(a,v)); }
+/* ---------- chase camera ---------- */
+const canvas = map.getCanvas();
+function applyCamera(dt){
+  const groundHere = smoothGround ?? groundAt(g.lng,g.lat) ?? 1500;
+  const agl = Math.max(g.alt - groundHere, 4);
 
-/* ---------- camera application ----------
-   MapLibre has no free-camera API (that's Mapbox-only), so we drive
-   the camera by placing the map CENTER at the point the drone is
-   looking at and deriving zoom from camera height above terrain.    */
-let fbZoom = null;                           // smoothed zoom
-const FOV_DEG = 36.87;                       // MapLibre default vertical FOV
-const TAN_HALF_FOV = Math.tan(FOV_DEG/2*RAD);
+  /* look-ahead along the glider's heading */
+  const lookAhead = 130 + agl*0.9 + Math.min(g.speed,200)*1.0;
+  const cLat = g.lat + (lookAhead*Math.cos(g.heading*RAD))/111320;
+  const cLng = g.lng + (lookAhead*Math.sin(g.heading*RAD))/(111320*Math.cos(g.lat*RAD));
 
-function applyCamera(){
-  const pitchR = cam.pitch*RAD;
-  const groundCam = smoothGround ?? groundAt(cam.lng,cam.lat) ?? 1500;
-  const agl = Math.max(cam.alt - groundCam, 30);
-  const dist = agl*Math.tan(pitchR);
-  const cLat = cam.lat + (dist*Math.cos(cam.bearing*RAD))/111320;
-  const cLng = cam.lng + (dist*Math.sin(cam.bearing*RAD))/(111320*Math.cos(cam.lat*RAD));
-  const elevC = groundAt(cLng,cLat) ?? groundCam;
-  const camAboveCenter = Math.max(cam.alt - elevC, 60);
+  /* smooth the look-point's terrain so zoom doesn't breathe as the
+     center sweeps over ridges and gullies during turns */
+  const elevRaw = groundAt(cLng,cLat) ?? groundHere;
+  elevCS = (elevCS==null) ? elevRaw : elevCS + (elevRaw - elevCS)*ease(1.6, dt);
+
+  const camAlt = g.alt + follow;
+  const camAboveCenter = Math.max(camAlt - elevCS, follow*0.55);
   const c2cPx = 0.5*canvas.clientHeight/TAN_HALF_FOV;
-  const mpp = camAboveCenter/(Math.cos(pitchR)*c2cPx);
-  const zTarget = clamp(Math.log2(40075016.686*Math.cos(cLat*RAD)/(mpp*512)), 7, 17.5);
-  fbZoom = (fbZoom==null) ? zTarget : fbZoom + (zTarget - fbZoom)*0.25;
-  map.jumpTo({center:[cLng,cLat], zoom:fbZoom, pitch:cam.pitch, bearing:cam.bearing});
+  const mpp = camAboveCenter/(Math.cos(camPitch*RAD)*c2cPx);
+  const zTarget = clamp(Math.log2(40075016.686*Math.cos(cLat*RAD)/(mpp*512)), 8, 17.2);
+  camZoom = (camZoom==null) ? zTarget : camZoom + (zTarget - camZoom)*ease(4.5, dt);
+
+  map.jumpTo({center:[cLng,cLat], zoom:camZoom, pitch:camPitch, bearing:camBearing});
 }
 
 /* ---------- main loop ---------- */
@@ -566,96 +735,118 @@ function frame(now){
   try{
     if(flying && mapReady) step(dt);
   }catch(err){
-    console.warn("flight step error:", err);
+    showError("flight: "+err.message);
   }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 
 function step(dt){
-  const boost = (keys.ShiftLeft||keys.ShiftRight) ? 2.5 : 1;
+  boosting = !!keys.Space;
 
-  /* --- smoothed terrain under the drone (raw queries jitter as tiles load) --- */
-  const gRaw = groundAt(cam.lng,cam.lat);
+  /* --- smoothed terrain under the glider --- */
+  const gRaw = groundAt(g.lng,g.lat);
   if(gRaw!=null){
     smoothGround = (smoothGround==null) ? gRaw
-      : smoothGround + (gRaw - smoothGround)*Math.min(1, 6*dt);
+      : smoothGround + (gRaw - smoothGround)*ease(6,dt);
   }
+  /* prefetch elevation 2 km ahead so the ground never pops in late */
+  const pLat = g.lat + (2000*Math.cos(g.heading*RAD))/111320;
+  const pLng = g.lng + (2000*Math.sin(g.heading*RAD))/(111320*Math.cos(g.lat*RAD));
+  elevationAt(pLng,pLat);
 
-  /* --- turn --- */
-  const turn = 75*dt;
-  if(keys.ArrowLeft)  cam.bearing = (cam.bearing - turn + 360)%360;
-  if(keys.ArrowRight) cam.bearing = (cam.bearing + turn)%360;
-
-  /* --- throttle / soar / brake --- */
-  const throttle = keys.KeyW || keys.ArrowUp;
-  const brake    = keys.KeyS || keys.ArrowDown;
-  if(hover){
-    vel *= Math.max(0, 1 - 5*dt);                 // damp to a standstill
-    if(throttle) hover = false;                   // throttle exits hover
-  } else {
-    if(throttle) vel += 95*boost*dt;
-    if(brake)    vel -= 120*dt;
-    if(!throttle && !brake){
-      vel *= (1 - 0.10*dt);                       // long, slow glide decay
-      if(vel < 2) vel = 0;                        // settle — no idle creep
+  if(landed){
+    /* ----- on the ground: settle, pivot, launch ----- */
+    g.speed = Math.max(0, g.speed - 60*dt);
+    g.vert = 0;
+    if(smoothGround!=null) g.alt = smoothGround;
+    const spin = 70*dt;
+    if(keys.ArrowLeft)  g.heading = (g.heading - spin + 360)%360;
+    if(keys.ArrowRight) g.heading = (g.heading + spin)%360;
+    g.bank += (0 - g.bank)*ease(6,dt);
+    if(keys.ArrowUp || boosting){
+      g.speed += (boosting?110:55)*dt;
+      if(g.speed > 30){ landed = false; g.vert = 12; }
     }
-    if(vel > 3 || throttle)                       // dive to gain speed (only in flight)
-      vel += Math.cos(cam.pitch*RAD)*9.8*dt*0.6;
-    vel = clamp(vel, 0, MAX_SPD*boost);
+  } else {
+    /* ----- airborne ----- */
+    const bankTarget = (keys.ArrowLeft?-30:0) + (keys.ArrowRight?30:0);
+    g.bank += (bankTarget - g.bank)*ease(5,dt);
+    g.heading = (g.heading + g.bank*2.6*dt + 360) % 360;
+
+    let vertTarget = 0;
+    if(keys.ArrowUp)   vertTarget += boosting ? 60 : 30;
+    if(keys.ArrowDown) vertTarget -= 50;
+    if(!keys.ArrowUp && !keys.ArrowDown) vertTarget = -3;   // natural sink
+    g.vert += (vertTarget - g.vert)*ease(3.5,dt);
+
+    /* speed: boost accelerates WITHOUT limit; otherwise drift to cruise */
+    if(boosting){
+      g.speed += 150*dt;                                    // keep climbing forever
+    } else {
+      g.speed += (cruise - g.speed)*ease(0.35,dt);
+    }
+    if(keys.ArrowDown) g.speed += 26*dt;
+    if(keys.ArrowUp)   g.speed -= Math.min(14*dt, Math.max(0,g.speed-35)*dt);
+    g.speed = Math.max(g.speed, 28);
   }
 
-  /* --- ground-relative speed scaling: precise low, fast high --- */
-  const agl = (smoothGround!=null) ? (cam.alt - smoothGround) : 600;
-  const scale = clamp(agl/600, 0.8, 2.2);
-  const eff = vel*scale;
+  /* --- move forward along heading (turning never touches altitude) --- */
+  g.lat += (g.speed*dt*Math.cos(g.heading*RAD))/111320;
+  g.lng += (g.speed*dt*Math.sin(g.heading*RAD))/(111320*Math.cos(g.lat*RAD));
+  if(!landed) g.alt += g.vert*dt;
 
-  /* --- displacement (FPV: travel where you look) --- */
-  let dx=0, dy=0, dz=0;
-  if(!hover && vel > 0.5){
-    const horiz = Math.sin(cam.pitch*RAD);
-    const down  = Math.cos(cam.pitch*RAD);
-    dx += eff*dt*horiz*Math.sin(cam.bearing*RAD);
-    dy += eff*dt*horiz*Math.cos(cam.bearing*RAD);
-    dz -= eff*dt*down;
-    dz -= 2.0*dt;                                  // sink rate while gliding
+  /* --- ground contact --- */
+  if(!landed && smoothGround!=null && g.alt <= smoothGround + 2){
+    g.alt = smoothGround + 2;
+    if(g.vert < 0) g.vert = 0;
+    if(g.speed < 16){
+      landed = true;                                        // touchdown
+      g.alt = smoothGround;
+    } else {
+      g.speed = Math.max(16, g.speed*(1 - 0.9*dt));         // scrubbing the deck
+    }
   }
-  if(keys.KeyA || keys.KeyD){                      // drone strafe
-    const s = (keys.KeyD?1:0) - (keys.KeyA?1:0);
-    const sb = (cam.bearing+90)*RAD;
-    dx += s*60*boost*scale*dt*Math.sin(sb);
-    dy += s*60*boost*scale*dt*Math.cos(sb);
-  }
-  if(keys.KeyE || keys.PageUp)   dz += 48*boost*dt;   // rotor climb
-  if(keys.KeyQ || keys.PageDown) dz -= 48*boost*dt;
+  g.alt = clamp(g.alt, 1200, 12000);
 
-  cam.lat += dy/111320;
-  cam.lng += dx/(111320*Math.cos(cam.lat*RAD));
-  cam.alt += dz;
-  lastVertRate = dz/dt;
+  const agl = Math.max(g.alt - (smoothGround ?? g.alt-600), 0);
+  lastAgl = agl;
 
-  /* --- terrain collision --- */
-  if(smoothGround!=null && cam.alt < smoothGround+22){
-    cam.alt = smoothGround+22;
-    vel *= Math.max(0, 1 - 1.5*dt);               // scrubbing the deck bleeds speed
-  }
-  cam.alt = clamp(cam.alt, 1250, 15000);
+  /* --- camera dynamics --- */
+  const lowness = 1 - clamp(agl/1100, 0, 1);
+  const followT = landed ? 130 : clamp(60 + agl*0.28, 65, 330);
+  follow += (followT - follow)*ease(2.2,dt);
+  const pitchT = landed ? 72 : 64 + 14*lowness;
+  camPitch += (pitchT - camPitch)*ease(2.2,dt);
+  camBearing = lerpAngle(camBearing, g.heading, ease(5.5,dt));
 
-  /* --- only touch the camera when something actually changed.
-     NOTE: lastCam starts as NaN, and NaN comparisons are always
-     false — so we must explicitly treat "never applied" as dirty. --- */
-  const dirty = isNaN(lastCam.lng) ||
-      Math.abs(cam.lng-lastCam.lng) > 1e-8 ||
-      Math.abs(cam.lat-lastCam.lat) > 1e-8 ||
-      Math.abs(cam.alt-lastCam.alt) > 0.02 ||
-      Math.abs(cam.bearing-lastCam.bearing) > 0.005 ||
-      Math.abs(cam.pitch-lastCam.pitch) > 0.005;
-  if(dirty){
-    applyCamera();
-    lastCam.lng=cam.lng; lastCam.lat=cam.lat; lastCam.alt=cam.alt;
-    lastCam.bearing=cam.bearing; lastCam.pitch=cam.pitch;
-  }
-  updateHUD(smoothGround, eff);
+  applyCamera(dt);
+  updateSprite();
+  updateHUD(smoothGround, g.speed);
+}
+
+/* ---------- sprite + shadow animation ---------- */
+const gliderEl = document.getElementById("glider");
+const shadowEl = document.getElementById("gliderShadow");
+function updateSprite(){
+  const diff = ((g.heading - camBearing + 540)%360) - 180;
+  const xOff = clamp(diff*2.6, -78, 78);
+  const pitchPx = clamp(-g.vert*0.45, -16, 20);
+  const squash = 1 - clamp(Math.abs(g.vert)/300, 0, 0.12);
+  const grounded = landed ? " scale(0.96)" : "";
+  gliderEl.style.transform =
+    "translate(calc(-50% + "+xOff.toFixed(1)+"px),-50%)"+
+    " translateY("+pitchPx.toFixed(1)+"px)"+
+    " rotate("+g.bank.toFixed(1)+"deg) scaleY("+squash.toFixed(3)+")"+grounded;
+  gliderEl.classList.toggle("boosting", boosting && !landed);
+
+  const op = landed ? 0.6 : clamp(0.55 - lastAgl/500*0.55, 0, 0.55);
+  const blur = landed ? 2 : 3 + clamp(lastAgl/40, 0, 10);
+  const sc = landed ? 1.05 : clamp(1.05 - lastAgl/1600, 0.4, 1.05);
+  shadowEl.style.opacity = op.toFixed(2);
+  shadowEl.style.filter = "blur("+blur.toFixed(0)+"px)";
+  shadowEl.style.transform =
+    "translate(calc(-50% + "+xOff.toFixed(1)+"px),-50%) scaleX("+sc.toFixed(2)+")";
 }
 
 /* ============================================================
@@ -666,10 +857,9 @@ const hdgReadout = document.getElementById("hdgReadout");
 const altMsl = document.getElementById("altMsl");
 const altAgl = document.getElementById("altAgl");
 const spdEl = document.getElementById("spdVal");
-const vsEl = document.getElementById("vsVal");
-const hoverPill = document.getElementById("hoverPill");
+const statePill = document.getElementById("statePill");
 const PX_PER_DEG = 2.0;
-const TAPE_HALF = 116;
+const TAPE_HALF = 110;
 
 (function buildTape(){
   const frag = document.createDocumentFragment();
@@ -693,23 +883,23 @@ const TAPE_HALF = 116;
 })();
 
 const M2FT = 3.28084;
-function updateHUD(ground, effSpd){
-  tapeStrip.style.transform = "translateX(" + (TAPE_HALF - cam.bearing*PX_PER_DEG) + "px)";
-  hdgReadout.textContent = "HDG " + String(Math.round(cam.bearing)%360).padStart(3,"0") + "°";
-  altMsl.innerHTML = Math.round(cam.alt*M2FT).toLocaleString() + "<small>ft</small>";
+function updateHUD(ground, spd){
+  tapeStrip.style.transform = "translateX(" + (TAPE_HALF - g.heading*PX_PER_DEG) + "px)";
+  hdgReadout.textContent = "HDG " + String(Math.round(g.heading)%360).padStart(3,"0") + "°";
+  /* report REAL elevations: divide sim units by exaggeration so a
+     landing on Superior reads ~11,050 ft regardless of the slider */
+  altMsl.innerHTML = Math.round(g.alt/exaggeration*M2FT).toLocaleString() + "<small>ft</small>";
   if(ground!=null){
-    const agl = Math.max(0, Math.round((cam.alt-ground)*M2FT));
+    const agl = Math.max(0, Math.round((g.alt-ground)/exaggeration*M2FT));
     altAgl.innerHTML = agl.toLocaleString() + "<small>ft</small>";
-    altAgl.classList.toggle("agl-low", agl < 300);
+    altAgl.classList.toggle("agl-low", agl < 300 && !landed);
   } else {
     altAgl.innerHTML = "—<small>ft</small>";
   }
-  spdEl.innerHTML = Math.round(hover?0:(effSpd||0)) + "<small>m/s</small>";
-  const fpm = Math.round(lastVertRate*M2FT*60/10)*10;
-  vsEl.innerHTML = (fpm>0?"+":"") + fpm.toLocaleString() + "<small>fpm</small>";
-  vsEl.classList.toggle("vs-up", fpm>50);
-  vsEl.classList.toggle("vs-dn", fpm<-50);
-  hoverPill.classList.toggle("on", hover);
+  spdEl.innerHTML = Math.round(landed?0:spd) + "<small>m/s</small>";
+  statePill.textContent = landed ? "LANDED" : "BOOST";
+  statePill.classList.toggle("landed", landed);
+  statePill.classList.toggle("on", landed || (boosting && !helpOpen));
 }
 
 /* ============================================================
@@ -728,25 +918,47 @@ PRESETS.forEach((pz,i)=>{
 });
 function goPreset(i){
   const z = PRESETS[i];
-  cam.lat=z[1]; cam.lng=z[2]; cam.alt=z[3]; cam.bearing=z[4]; cam.pitch=z[5];
-  vel = 55; hover = false; smoothGround = null; fbZoom = null;
-  applyCamera();
+  g.lat=z[1]; g.lng=z[2]; g.heading=z[4];
+  const ground = groundAt(g.lng,g.lat);
+  g.alt = (ground ?? 2200) + z[3];
+  g.speed = cruise; g.vert = 0; g.bank = 0; landed = false;
+  camBearing = g.heading; camZoom = null; smoothGround = null; elevCS = null;
+  follow = 200; camPitch = 70;
+  applyCamera(0.016);
 }
 
 function bindToggle(id, fn){ document.getElementById(id).addEventListener("change",(e)=>fn(e.target.checked)); }
 function setVis(layer, on){ if(map.getLayer(layer)) map.setLayoutProperty(layer,"visibility", on?"visible":"none"); }
 bindToggle("tTrails", on=>setVis("trails",on));
 bindToggle("tMtb",    on=>setVis("mtb",on));
-bindToggle("tLabels", on=>setVis("poi-labels",on));
+bindToggle("tLabels", on=>{ setVis("poi-labels",on); setVis("peak-labels",on); });
+bindToggle("tRuns",   on=>setVis("run-labels",on));
 bindToggle("tPlaces", on=>setVis("places",on));
 bindToggle("tDaily",  on=>setVis("daily",on));
 document.getElementById("dailyDate").textContent = "VIIRS · "+gibsDate+" · snow extent, low-res";
 
 const exagEl = document.getElementById("exag"), exagVal = document.getElementById("exagVal");
 exagEl.addEventListener("input",()=>{
-  exaggeration = parseFloat(exagEl.value);
+  const newEx = parseFloat(exagEl.value);
+  /* keep AGL constant through the change so the glider doesn't pop */
+  const groundOld = smoothGround;
+  if(groundOld!=null){
+    const aglOld = g.alt - groundOld;
+    const real = groundOld/exaggeration;
+    exaggeration = newEx;
+    smoothGround = real*exaggeration;
+    g.alt = smoothGround + aglOld;
+  } else {
+    exaggeration = newEx;
+  }
+  elevCS = null;
   exagVal.textContent = exaggeration.toFixed(2)+"×";
   if(mapReady) map.setTerrain({source:"dem", exaggeration});
+});
+const cruiseEl = document.getElementById("cruise"), cruiseVal = document.getElementById("cruiseVal");
+cruiseEl.addEventListener("input",()=>{
+  cruise = parseFloat(cruiseEl.value);
+  cruiseVal.textContent = Math.round(cruise)+" m/s";
 });
 
 /* ============================================================
@@ -756,9 +968,13 @@ function showHelp(open){
   helpOpen = open;
   helpModal.style.display = open ? "flex" : "none";
   flying = !open;
+  gliderEl.style.display = open ? "none" : "block";
+  shadowEl.style.display = open ? "none" : "block";
   for(const k in keys) keys[k]=false;
   if(!open) lastT = performance.now();
 }
+gliderEl.style.display = "none";
+shadowEl.style.display = "none";
 document.getElementById("startBtn").addEventListener("click",()=>showHelp(false));
 helpModal.addEventListener("click",(e)=>{ if(e.target===helpModal) showHelp(false); });
 
