@@ -104,7 +104,7 @@ function attachThemeToggleEvent() {
     }
     toggleDropdown();
 
-    // Accordion menus (Vibecoding, Case Studies, etc.)
+    // Accordion menus (Vibecoding, etc.)
     document.querySelectorAll('.menu-accordion-toggle').forEach(toggle => {
         const content = toggle.nextElementSibling;
         const chevron = toggle.querySelector('.menu-chevron');
